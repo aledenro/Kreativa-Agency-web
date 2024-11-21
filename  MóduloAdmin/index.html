@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo Administrativo</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="particles-js"></div> <!-- Puntos nevados -->
+
+  <header>
+    <div class="logo-container">
+      <img src="img/1.png" alt="Logo Kreativa Agency" class="logo" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#">Gestión de Usuarios</a></li>
+        <li><a href="#">Reportes</a></li>
+        <li><a href="#">Configuración</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Bienvenido al Módulo Administrativo</h2>
+      <p>Administra usuarios, reportes y más desde un lugar centralizado.</p>
+    </section>
+    <section class="cards">
+      <div class="card">
+        <h3>Gestión de Usuarios</h3>
+        <p>Accede para agregar, editar o eliminar usuarios.</p>
+      </div>
+      <div class="card">
+        <h3>Reportes</h3>
+        <p>Consulta y genera reportes para tus proyectos.</p>
+      </div>
+      <div class="card">
+        <h3>Configuración</h3>
+        <p>Personaliza ajustes del sistema.</p>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2024 Kreativa Agency - Módulo Administrativo</p>
+  </footer>
+
+  <!-- Scripts para partículas -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 200,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ff0072" /* Partículas en rosado */
+        },
+        "shape": {
+          "type": "circle"
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": true
+        },
+        "size": {
+          "value": 3,
+          "random": true
+        },
+        "line_linked": {
+          "enable": false
+        },
+        "move": {
+          "enable": true,
+          "speed": 3,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": false
+          },
+          "onclick": {
+            "enable": false
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>
