@@ -5,48 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Módulo Administrativo</title>
   <link rel="stylesheet" href="css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <div id="particles-js"></div> <!-- Puntos nevados -->
+  <!-- Contenedor de partículas -->
+  <div id="particles-js"></div>
 
-  <header>
+  <!-- Sidebar -->
+  <aside class="sidebar">
     <div class="logo-container">
       <img src="img/1.png" alt="Logo Kreativa Agency" class="logo" />
     </div>
-    <nav>
-      <ul>
-        <li><a href="#">Inicio</a></li>
-        <li><a href="#">Gestión de Usuarios</a></li>
-        <li><a href="#">Reportes</a></li>
-        <li><a href="#">Configuración</a></li>
-      </ul>
-    </nav>
-  </header>
+    <ul>
+      <li><i class="fas fa-home"></i><a href="#">Inicio</a></li>
+      <li><i class="fas fa-users"></i><a href="#">Gestión de Usuarios</a></li>
+      <li><i class="fas fa-file-alt"></i><a href="#">Reportes</a></li>
+      <li><i class="fas fa-cog"></i><a href="#">Configuración</a></li>
+    </ul>
+  </aside>
 
+  <!-- Contenido principal -->
   <main>
-    <section class="hero">
-      <h2>Bienvenido al Módulo Administrativo</h2>
-      <p>Administra usuarios, reportes y más desde un lugar centralizado.</p>
-    </section>
-    <section class="cards">
-      <div class="card">
-        <h3>Gestión de Usuarios</h3>
-        <p>Accede para agregar, editar o eliminar usuarios.</p>
-      </div>
-      <div class="card">
-        <h3>Reportes</h3>
-        <p>Consulta y genera reportes para tus proyectos.</p>
-      </div>
-      <div class="card">
-        <h3>Configuración</h3>
-        <p>Personaliza ajustes del sistema.</p>
-      </div>
-    </section>
+    <!-- Texto de bienvenida centrado arriba -->
+    <div class="welcome">
+      <h1>Bienvenido al Módulo Administrativo</h1>
+      <p>Administra usuarios, reportes y configuraciones desde aquí.</p>
+    </div>
   </main>
-  <footer>
-    <p>&copy; 2024 Kreativa Agency - Módulo Administrativo</p>
-  </footer>
+
+  <!-- Texto del Footer -->
+  <div class="footer-text">
+    &copy; 2024 Kreativa Agency - Módulo Administrativo
+  </div>
 
   <!-- Scripts para partículas -->
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -61,7 +51,7 @@
           }
         },
         "color": {
-          "value": "#ff0072" /* Partículas en rosado */
+          "value": "#ff0072"
         },
         "shape": {
           "type": "circle"
@@ -81,10 +71,7 @@
           "enable": true,
           "speed": 3,
           "direction": "none",
-          "random": false,
-          "straight": false,
-          "out_mode": "out",
-          "bounce": false
+          "random": false
         }
       },
       "interactivity": {
