@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingreso de Usuarios</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <!-- Enlace a Font Awesome -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- Contenedor de partículas -->
+  <div id="particles-js"></div>
+
+  <!-- Contenedor principal -->
+  <div class="admin-container">
+    <!-- Botón de salida -->
+    <button class="logout-button" title="Salir">
+      <i class="fas fa-sign-out-alt"></i> <!-- Ícono de salida -->
+    </button>
+
+    <!-- Sección izquierda -->
+    <div class="admin-left"></div>
+
+    <!-- Sección derecha -->
+    <div class="admin-right">
+      <div class="form-container">
+        <!-- Ícono encima del título -->
+        <div class="icon-container">
+          <i class="fas fa-users"></i> <!-- Ícono de usuarios -->
+        </div>
+        <h1>Registro de Usuarios</h1>
+        <form action="#">
+          <div class="form-group">
+            <label for="name">
+              <i class="fas fa-user"></i> Nombre
+            </label>
+            <input type="text" id="name" placeholder="Nombre completo" required>
+          </div>
+          <div class="form-group">
+            <label for="username">
+              <i class="fas fa-user-circle"></i> Usuario
+            </label>
+            <input type="text" id="username" placeholder="Nombre de usuario" required>
+          </div>
+          <div class="form-group">
+            <label for="email">
+              <i class="fas fa-envelope"></i> Correo Electrónico
+            </label>
+            <input type="email" id="email" placeholder="usuario@kreativa.com" required>
+          </div>
+          <div class="form-group">
+            <label for="password">
+              <i class="fas fa-lock"></i> Contraseña
+            </label>
+            <input type="password" id="password" placeholder="********" required>
+          </div>
+          <div class="form-group">
+            <label for="role">
+              <i class="fas fa-user-tag"></i> Rol
+            </label>
+            <select id="role" required>
+              <option value="">Seleccione un rol</option>
+              <option value="admin">Administrador</option>
+              <option value="colaborador">Colaborador</option>
+              <option value="cliente">Cliente</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-submit">
+            Registrar Usuario
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script de partículas -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 150, density: { enable: true, value_area: 800 } },
+        color: { value: "#ff0072" },
+        shape: { type: "circle" },
+        opacity: {
+          value: 0.4,
+          random: true,
+          anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false }
+        },
+        size: {
+          value: 3,
+          random: true,
+          anim: { enable: true, speed: 2, size_min: 0.1, sync: false }
+        },
+        line_linked: { enable: false },
+        move: {
+          enable: true,
+          speed: 1,
+          direction: "bottom",
+          random: true,
+          straight: false,
+          out_mode: "out",
+          bounce: false,
+          attract: { enable: false, rotateX: 600, rotateY: 1200 }
+        }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: false },
+          onclick: { enable: false },
+          resize: true
+        }
+      },
+      retina_detect: true
+    });
+  </script>
+</body>
+</html>

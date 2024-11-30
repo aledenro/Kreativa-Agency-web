@@ -1,155 +1,188 @@
 /* General Styles */
 body {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(135deg, #110d27, #181ddb);
-  color: #fff;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: row;
-  overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #110d27;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
 }
 
 /* Particles Container */
 #particles-js {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: -1; /* Detrás del contenido */
-  pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1; /* Detrás del contenido */
+    pointer-events: none;
 }
 
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 100%;
-  background-color: #0d0b25; /* Fondo oscuro */
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 1rem;
-  overflow: hidden;
+/* Admin Container */
+.admin-container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative; /* Necesario para el efecto */
+    z-index: 2; /* Asegura que esté sobre las partículas */
 }
 
-.sidebar::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 5px; /* Grosor de la línea */
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(255, 0, 114, 0.2), rgba(255, 0, 114, 0.8));
-  animation: smoothScroll 4s linear infinite; /* Animación suave y continua */
-  opacity: 0.6; /* Transparencia */
+/* Efecto de línea neón animada */
+.admin-container::before {
+    content: "";
+    position: absolute;
+    top:0px; /* Más cerca del borde superior */
+    left: 0x; /* Más cerca del borde izquierdo */
+    width: calc(100% + 10px); /* Extiende el ancho para cubrir bordes */
+    height: calc(100% + 8px); /* Extiende la altura para cubrir bordes */
+    border-radius: 15px;
+    border: 4px solid transparent; /* Grosor del borde */
+    box-sizing: border-box;
+    animation: drawNeon 5s linear infinite; /* Animación continua */
+    pointer-events: none; /* Evita interferencias con el hover */
 }
 
-@keyframes smoothScroll {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100%);
-  }
+/* Keyframes para animar la línea que "llena" el cuadro */
+@keyframes drawNeon {
+    0% {
+        border-image: linear-gradient(90deg, transparent, #ff0072, transparent);
+        border-image-slice: 1;
+    }
+    25% {
+        border-image: linear-gradient(180deg, transparent, #ff00cc, #ff0072, transparent);
+        border-image-slice: 1;
+    }
+    50% {
+        border-image: linear-gradient(270deg, transparent, #ff0072, #ff00cc, transparent);
+        border-image-slice: 1;
+    }
+    100% {
+        border-image: linear-gradient(360deg, #ff0072, #ff00cc, #ff0072, transparent);
+        border-image-slice: 1;
+    }
 }
 
-.sidebar .logo-container {
-  margin-bottom: 2rem;
+/* Sección Izquierda */
+.admin-left {
+    background-image: url("../img/IngresarUsuarios.jpg");
+    background-size: cover;
+    background-position: center;
+    width: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.sidebar .logo {
-  width: 60px;
-  height: auto;
+/* Sección Derecha */
+.admin-right {
+    width: 65%;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-/* Sidebar Items */
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
+/* Icono encima del título */
+.icon-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: #ff0072;
+    font-size: 4rem;
 }
 
-.sidebar ul li {
-  padding: 1rem 1.5rem;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Espaciado entre icono y texto */
-  transition: background-color 0.3s ease;
+.icon-container i {
+    font-size: 3.5rem;
+    color: #ff0072;
 }
 
-.sidebar ul li i {
-  font-size: 1.2rem; /* Tamaño ajustado del icono */
-  color: #ff0072;
+/* Títulos y Textos */
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ff0072;
+    margin-bottom: 1.5rem;
+    text-align: center;
 }
 
-.sidebar ul li:hover {
-  background-color: rgba(255, 0, 114, 0.1);
+/* Campos de Formulario */
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
 }
 
-.sidebar ul li a {
-  text-decoration: none;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  transition: color 0.3s ease, transform 0.3s ease;
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #110d27;
+    font-size: 1rem;
 }
 
-.sidebar ul li:hover a {
-  color: #ff0072;
+/* Inputs y Select */
+input, select {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
 }
 
-/* Welcome Section */
-.welcome {
-  margin-left: 250px; /* Espacio para el sidebar */
-  position: absolute;
-  top: 1%; /* Ajustado para colocarlo más arriba */
-  left: calc(35%); /* Centrado horizontalmente */
-  transform: translateX(-30%); /* Corrección para centrar completamente */
-  text-align: center;
+input:focus, select:focus {
+    border-color: #ff0072;
+    box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
 }
 
-.welcome h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  color: #ff0072;
-  animation: fadeIn 1.5s ease-out;
+/* Botón de Envío */
+button.btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease; /* Animación suave */
 }
 
-.welcome p {
-  font-size: 1.2rem;
-  color: #fff;
-  animation: fadeIn 1.5s ease-out 0.5s;
+/* Efecto de zoom al pasar el cursor para el botón específico */
+button.btn-submit:hover {
+    transform: scale(1.05); /* Aumenta el tamaño en un 5% */
+    background-color: #e00065; /* Cambia ligeramente el color */
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Efecto de zoom al presionar para el botón específico */
+button.btn-submit:active {
+    transform: scale(1.1); /* Aumenta el tamaño en un 10% */
 }
 
-/* Footer Text */
-.footer-text {
-  position: fixed;
-  bottom: 10px; /* Separación desde el borde inferior */
-  right: 10px; /* Separación desde el borde derecho */
-  font-size: 0.9rem;
-  color: #fff;
-  text-align: right;
-  opacity: 0.8; /* Ligera transparencia */
+/* Botón de salida */
+.logout-button {
+    all: unset; /* Elimina cualquier estilo heredado */
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #ff0072; /* Color del botón */
+    font-size: 1.5rem; /* Tamaño del ícono */
+    cursor: pointer;
+    z-index: 3; /* Asegura que esté sobre otros elementos */
+}
+
+.logout-button:hover {
+    color: #e00065; /* Cambia el color al pasar el cursor */
+    transform: scale(1.1); /* Hace un zoom leve al pasar el cursor */
+    transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
 }
