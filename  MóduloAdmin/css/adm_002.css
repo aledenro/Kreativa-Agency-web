@@ -1,0 +1,177 @@
+/* General Styles */
+body {
+    font-family: 'Century Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #110d27;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* Contenedor de partículas */
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+  }
+  
+  /* Contenedor principal */
+  .login-container {
+    display: flex;
+    max-width: 1200px;
+    width: 90%;
+    height: 700px; /* Más grande */
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 2;
+  }
+  
+  /* Sección izquierda */
+  .login-left {
+    width: 60%; /* Ocupa más espacio */
+    padding: 4rem; /* Más espacio interno */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #ffffff;
+  }
+  
+  .brand-logo h1 {
+    font-size: 3rem;
+    color: #ff0072;
+    margin-bottom: 2rem;
+  }
+  
+  .login-left h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #110d27;
+  }
+  
+  .login-left p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #6c6c6c;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  label {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #110d27;
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  
+  input:focus {
+    border-color: #ff0072;
+    box-shadow: 0 0 5px rgba(255, 0, 114, 0.5);
+  }
+  
+  /* Botón */
+  .btn-login {
+    width: 100%;
+    padding: 1rem;
+    background: #ff0072;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  
+  .btn-login:hover {
+    background: #e00065;
+    transform: scale(1.05);
+  }
+  
+  .btn-login:active {
+    transform: scale(1.1);
+  }
+  
+  /* Texto de registro */
+  .signup-text {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    color: #6c6c6c;
+  }
+  
+  .signup-text a {
+    color: #ff0072;
+    text-decoration: none;
+  }
+  
+  .signup-text a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Sección derecha */
+.login-right {
+    width: 40%; /* Espacio reservado para la imagen */
+    background: linear-gradient(to bottom right, #ff0072, #110d27); /* Degradado rosado */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Contenedor de la imagen */
+.image-container-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Imagen centrada */
+.image-right {
+    width: 80%; /* Ajusta el tamaño de la imagen */
+    height: auto;
+    animation: fadeInRight 2s ease-in-out; /* Animación */
+}
+
+/* Animación de la imagen */
+@keyframes fadeInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(50px); /* Comienza desplazada a la derecha */
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0); /* Vuelve a su posición original */
+    }
+}
+.image-right {
+    width: 80%; /* Ajusta el tamaño */
+    height: auto;
+    margin-left: auto; /* Mueve la imagen hacia la derecha */
+    margin-right: 25px; /* Controla la distancia desde el borde derecho */
+    animation: fadeInRight 2s ease-in-out; /* Animación */
+}
+
