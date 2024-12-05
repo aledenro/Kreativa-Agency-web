@@ -391,7 +391,7 @@ body {
 
 #toggle-modal h2 {
   font-size: 1.8rem;
-  color: #ff0072; /* Rosado Kreativa */
+  color: #ff0072; 
   margin-bottom: 1rem;
 }
 
@@ -408,7 +408,7 @@ body {
 }
 
 #toggle-modal .btn-confirm-toggle {
-  background-color: #ff0072; /* Rosado para confirmar */
+  background-color: #ff0072; 
   color: #fff;
   padding: 0.8rem 1.5rem;
   border: none;
@@ -419,7 +419,7 @@ body {
 }
 
 #toggle-modal .btn-confirm-toggle:hover {
-  background-color: #e00065; /* Rosado más oscuro */
+  background-color: #e00065; 
 }
 
 #toggle-modal .btn-cancel-toggle {
@@ -450,7 +450,7 @@ body {
 
 #toggle-modal .close:hover {
   transform: scale(1.2);
-  color: #ff0072; /* Rosado Kreativa */
+  color: #ff0072; 
 }
 
 /* Estilos para el modal de asignar rol */
@@ -468,7 +468,7 @@ body {
 
 #assign-modal h2 {
   font-size: 1.8rem;
-  color: #ff0072; /* Rosado Kreativa */
+  color: #ff0072; 
   text-align: center;
   margin-bottom: 1.5rem;
 }
@@ -501,7 +501,7 @@ body {
 }
 
 #assign-modal .form-select:focus {
-  border-color: #ff0072; /* Rosado en foco */
+  border-color: #ff0072; 
   outline: none;
   box-shadow: 0 0 5px rgba(255, 0, 114, 0.5);
 }
@@ -513,7 +513,7 @@ body {
 }
 
 #assign-modal .btn-confirm-assign {
-  background-color: #ff0072; /* Rosado para confirmar */
+  background-color: #ff0072; 
   color: #fff;
   padding: 0.8rem 1.5rem;
   border: none;
@@ -524,7 +524,7 @@ body {
 }
 
 #assign-modal .btn-confirm-assign:hover {
-  background-color: #e00065; /* Rosado más oscuro */
+  background-color: #e00065; 
 }
 
 #assign-modal .btn-cancel-assign {
@@ -555,7 +555,7 @@ body {
 
 #assign-modal .close:hover {
   transform: scale(1.2);
-  color: #ff0072; /* Rosado Kreativa */
+  color: #ff0072; 
 }
 
 /* Iconos en botones de acción */
@@ -573,7 +573,7 @@ body {
 /* Iconos en los títulos de los modales */
 .modal-content h2 i {
   margin-right: 0.5rem;
-  color: #ff0072; /* Color rosado de Kreativa */
+  color: #ff0072; 
   vertical-align: middle;
 }
 
@@ -600,29 +600,29 @@ body {
 
 /* Botón de logout (puerta) */
 .logout-button {
-  all: unset; /* Elimina estilos predeterminados */
+  all: unset; 
   position: absolute;
-  top: 1rem; /* Distancia desde la parte superior */
-  right: 1rem; /* Distancia desde la derecha */
-  color: #ff0072; /* Color del ícono */
-  font-size: 1.8rem; /* Tamaño del ícono */
+  top: 1rem; 
+  right: 1rem;
+  color: #ff0072; 
+  font-size: 1.8rem; 
   cursor: pointer;
-  z-index: 10; /* Asegura que esté sobre otros elementos */
+  z-index: 10;
 }
 
 .logout-button:hover {
-  color: #e00065; /* Cambia el color al pasar el cursor */
-  transform: scale(1.1); /* Efecto de zoom */
-  transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
+  color: #e00065; 
+  transform: scale(1.1); 
+  transition: color 0.2s ease, transform 0.2s ease; 
 }
 
 /* Contenedor principal */
 .admin-container {
-  position: relative; /* Necesario para que los hijos (como logout-button) se posicionen de manera absoluta */
-  padding: 2rem; /* Espaciado interno */
-  background-color: #fff; /* Fondo blanco */
-  border-radius: 10px; /* Bordes redondeados */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
-  margin: 2rem auto; /* Centrado */
-  max-width: 80%; /* Ancho máximo del contenedor */
+  position: relative; 
+  padding: 2rem; 
+  background-color: #fff; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  margin: 2rem auto; 
+  max-width: 80%; 
 }

@@ -20,7 +20,7 @@ body {
     left: 0;
     width: 100%;
     height: 100vh;
-    z-index: -1; /* Detrás del contenido */
+    z-index: -1; 
     pointer-events: none;
 }
 
@@ -32,8 +32,8 @@ body {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
     overflow: hidden;
-    position: relative; /* Necesario para el efecto */
-    z-index: 2; /* Asegura que esté sobre las partículas */
+    position: relative; 
+    z-index: 2; 
 }
 
 
@@ -142,36 +142,36 @@ button.btn-submit {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.2s ease; /* Animación suave */
+    transition: transform 0.2s ease, background-color 0.2s ease; 
 }
 
 /* Efecto de zoom al pasar el cursor para el botón específico */
 button.btn-submit:hover {
-    transform: scale(1.05); /* Aumenta el tamaño en un 5% */
-    background-color: #e00065; /* Cambia ligeramente el color */
+    transform: scale(1.05); 
+    background-color: #e00065; 
 }
 
 /* Efecto de zoom al presionar para el botón específico */
 button.btn-submit:active {
-    transform: scale(1.1); /* Aumenta el tamaño en un 10% */
+    transform: scale(1.1); 
 }
 
 /* Botón de salida */
 .logout-button {
-    all: unset; /* Elimina cualquier estilo heredado */
+    all: unset; 
     position: absolute;
     top: 1rem;
     right: 1rem;
-    color: #ff0072; /* Color del botón */
-    font-size: 1.5rem; /* Tamaño del ícono */
+    color: #ff0072; 
+    font-size: 1.5rem; 
     cursor: pointer;
-    z-index: 3; /* Asegura que esté sobre otros elementos */
+    z-index: 3; 
 }
 
 .logout-button:hover {
-    color: #e00065; /* Cambia el color al pasar el cursor */
-    transform: scale(1.1); /* Hace un zoom leve al pasar el cursor */
-    transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
+    color: #e00065; 
+    transform: scale(1.1); 
+    transition: color 0.2s ease, transform 0.2s ease; 
 }
 
 .password-container .toggle-password {
@@ -180,6 +180,6 @@ button.btn-submit:active {
     right: 10px;
     transform: translateY(-50%);
     cursor: pointer;
-    color: grey; /* Ícono en color negro */
+    color: grey; 
     font-size: 1.2em;
   }

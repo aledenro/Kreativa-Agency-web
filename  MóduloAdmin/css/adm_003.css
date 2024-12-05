@@ -150,23 +150,23 @@ input:focus {
 
 /* Botón de salida */
 .logout-button {
-    all: unset; /* Elimina cualquier estilo heredado */
+    all: unset; 
     position: absolute;
     top: 1rem;
     right: 28rem;
-    color: #ff0072; /* Color del ícono */
-    font-size: 1.5rem; /* Tamaño del ícono */
+    color: #ff0072; 
+    font-size: 1.5rem; 
     cursor: pointer;
-    z-index: 3; /* Asegura que esté sobre otros elementos */
+    z-index: 3; 
 }
 
 .logout-button:hover {
-    color: #e00065; /* Cambia el color al pasar el cursor */
-    transform: scale(1.1); /* Efecto de zoom al pasar el cursor */
-    transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
+    color: #e00065; 
+    transform: scale(1.1);
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
 /* Ajuste para el contenedor de recuperación */
 .recover-container {
-    position: relative; /* Necesario para posicionar elementos dentro */
+    position: relative; 
 }

@@ -37,8 +37,8 @@ body {
   
   /* Sección izquierda */
   .login-left {
-    width: 60%; /* Ocupa más espacio */
-    padding: 4rem; /* Más espacio interno */
+    width: 60%; 
+    padding: 4rem; 
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -132,8 +132,8 @@ body {
   
   /* Sección derecha */
 .login-right {
-    width: 40%; /* Espacio reservado para la imagen */
-    background: linear-gradient(to bottom right, #ff0072, #110d27); /* Degradado rosado */
+    width: 40%; 
+    background: linear-gradient(to bottom right, #ff0072, #110d27); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -151,28 +151,28 @@ body {
 
 /* Imagen centrada */
 .image-right {
-    width: 80%; /* Ajusta el tamaño de la imagen */
+    width: 80%; 
     height: auto;
-    animation: fadeInRight 2s ease-in-out; /* Animación */
+    animation: fadeInRight 2s ease-in-out; 
 }
 
 /* Animación de la imagen */
 @keyframes fadeInRight {
     0% {
         opacity: 0;
-        transform: translateX(50px); /* Comienza desplazada a la derecha */
+        transform: translateX(50px); 
     }
     100% {
         opacity: 1;
-        transform: translateX(0); /* Vuelve a su posición original */
+        transform: translateX(0); 
     }
 }
 .image-right {
     width: 80%; /* Ajusta el tamaño */
     height: auto;
-    margin-left: auto; /* Mueve la imagen hacia la derecha */
-    margin-right: 25px; /* Controla la distancia desde el borde derecho */
-    animation: fadeInRight 2s ease-in-out; /* Animación */
+    margin-left: auto; 
+    margin-right: 25px; 
+    animation: fadeInRight 2s ease-in-out; 
 }
 
 /* Contenedor de contraseña con ícono */
@@ -184,7 +184,7 @@ body {
 
 .password-container input {
   width: 100%;
-  padding-right: 2.5rem; /* Espacio para el ícono */
+  padding-right: 2.5rem; 
 }
 
 .toggle-password {
@@ -204,24 +204,24 @@ body {
 
 /* Botón de salida */
 .logout-button {
-  all: unset; /* Elimina cualquier estilo heredado */
+  all: unset; 
   position: absolute;
   top: 1rem;
   right: 1rem;
-  color: #ff0072; /* Color del botón */
-  font-size: 1.5rem; /* Tamaño del ícono */
+  color: #ff0072; 
+  font-size: 1.5rem;
   cursor: pointer;
-  z-index: 3; /* Asegura que esté sobre otros elementos */
+  z-index: 3; 
 }
 
 .logout-button:hover {
-  color: #e00065; /* Cambia el color al pasar el cursor */
-  transform: scale(1.1); /* Hace un zoom leve al pasar el cursor */
-  transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
+  color: #e00065; 
+  transform: scale(1.1); 
+  transition: color 0.2s ease, transform 0.2s ease; 
 }
 
 /* Ajusta el contenedor izquierdo */
 .login-left {
   position: relative;
-  padding: 2rem; /* Para evitar que el botón de logout toque el borde */
+  padding: 2rem; 
 }
