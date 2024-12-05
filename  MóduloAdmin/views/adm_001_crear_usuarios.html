@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ingreso de Usuarios</title>
   <link rel="stylesheet" href="../css/adm_001.css">
-  <!-- Enlace a Font Awesome -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"
+    crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <style>
     .password-container {
@@ -15,7 +17,7 @@
 
     .password-container input {
       width: 100%;
-      padding-right: 40px; /* Espacio para el ícono */
+      padding-right: 40px;
     }
 
     .password-container .toggle-password {
@@ -24,31 +26,24 @@
       right: 10px;
       transform: translateY(-50%);
       cursor: pointer;
-      color: black; /* Ícono en color negro */
+      color: black;
       font-size: 1.2em;
     }
   </style>
 </head>
 <body>
-  <!-- Contenedor de partículas -->
   <div id="particles-js"></div>
 
-  <!-- Contenedor principal -->
   <div class="admin-container">
-    <!-- Botón de salida -->
+
     <button class="logout-button" title="Salir">
-      <i class="fas fa-sign-out-alt"></i> <!-- Ícono de salida -->
+      <i class="fas fa-sign-out-alt"></i>
     </button>
-
-    <!-- Sección izquierda -->
     <div class="admin-left"></div>
-
-    <!-- Sección derecha -->
     <div class="admin-right">
       <div class="form-container">
-        <!-- Ícono encima del título -->
         <div class="icon-container">
-          <i class="fas fa-users"></i> <!-- Ícono de usuarios -->
+          <i class="fas fa-users"></i>
         </div>
         <h1>Registro de Usuarios</h1>
         <form action="#">
@@ -101,7 +96,7 @@
   <!-- Script de partículas -->
   <script src="../js/interacciones.js"></script>
   <script>
-    // Funcionalidad para mostrar/ocultar contraseña
+
     document.addEventListener("DOMContentLoaded", () => {
       const togglePassword = document.querySelector(".toggle-password");
       const passwordInput = document.getElementById("password");
@@ -114,4 +109,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -5,20 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inicio de Sesión</title>
   <link rel="stylesheet" href="../css/adm_002.css">
-  <!-- Enlace a Font Awesome -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <!-- Contenedor de partículas -->
   <div id="particles-js"></div>
-
-  <!-- Contenedor principal -->
   <div class="login-container">
-    <!-- Sección izquierda -->
     <div class="login-left">
-      <!-- Botón de salida -->
       <button class="logout-button" title="Salir">
-        <i class="fas fa-sign-out-alt"></i> <!-- Ícono de salida -->
+        <i class="fas fa-sign-out-alt"></i> 
       </button>
       <div class="brand-logo">
         <h1>Kreativa Agency</h1>
@@ -41,7 +35,6 @@
       </form>
       <p class="signup-text">¿Olvidaste tu contraseña? <a href="/ MóduloAdmin/views/adm_003_recuperar_contrasena.html">Cambiar aquí</a></p>
     </div>
-    <!-- Sección derecha -->
     <div class="login-right">
       <div class="image-container-right">
         <img src="/img/3.png" alt="Imagen decorativa" class="image-right">
@@ -53,7 +46,6 @@
   <script src="../js/interacciones.js"></script>
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script>
-    // Funcionalidad para mostrar/ocultar contraseña
     document.addEventListener("DOMContentLoaded", () => {
       const togglePassword = document.querySelector(".toggle-password");
       const passwordInput = document.getElementById("password");
