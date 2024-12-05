@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solicitar Información</title>
+  <link rel="stylesheet" href="../css/rep_004.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="admin-container">
+    <button class="logout-button" title="Salir">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+    <h1>Solicitar Información</h1>
+    <p class="subtitulo">Gestioná las actualizaciones de tus proyectos con facilidad.</p>
+
+    <div class="report-section">
+      <h2><i class="fas fa-envelope"></i> Solicitar Actualización</h2>
+      <p>Enviá una solicitud para conocer el estado de tu proyecto.</p>
+      <button id="btn-solicitar-actualizacion" class="btn-action">Solicitar Actualización</button>
+    </div>
+    <div class="report-section">
+      <h2><i class="fas fa-history"></i> Historial de Actualizaciones</h2>
+      <p>Consultá las respuestas previas sobre el progreso de tu proyecto.</p>
+      <button id="btn-historial-actualizaciones" class="btn-action">Ver Historial</button>
+    </div>
+
+    <div class="modal" id="modal-solicitar">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><i class="fas fa-envelope"></i> Solicitar Actualización</h2>
+        <form class="styled-form">
+          <div class="form-group">
+            <label for="detalles"><i class="fas fa-info-circle"></i> Detalles de la Solicitud</label>
+            <textarea id="detalles" rows="4" placeholder="Describe tu consulta sobre el progreso del proyecto..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="notificar-correo"> Notificarme vía correo electrónico
+            </label>
+          </div>
+          <button type="button" class="btn-submit" id="enviar-solicitud">Enviar Solicitud</button>
+        </form>
+      </div>
+    </div>
+
+<div class="modal" id="modal-historial">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2><i class="fas fa-history"></i> Historial de Actualizaciones</h2>
+      <ul class="historial-list">
+        <li><strong>12/11/2024:</strong> Administrador: "El proyecto está al 50% completado."</li>
+        <li><strong>20/11/2024:</strong> Empleado: "El equipo está trabajando en la parte de pruebas."</li>
+        <li><strong>01/12/2024:</strong> Administrador: "El proyecto se marcará como completado esta semana."</li>
+      </ul>
+  
+      <div class="export-options">
+        <button class="btn-action">Exportar en PDF</button>
+        <button class="btn-action">Exportar en Excel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/interacciones.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 5
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false,
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "retina_detect": true
+    });
+
+    // Mostrar modales
+    document.getElementById("btn-solicitar-actualizacion").addEventListener("click", () => {
+      document.getElementById("modal-solicitar").style.display = "flex";
+    });
+
+    document.getElementById("btn-historial-actualizaciones").addEventListener("click", () => {
+      document.getElementById("modal-historial").style.display = "flex";
+    });
+
+    // Cerrar modales
+    document.querySelectorAll(".close").forEach(closeButton => {
+      closeButton.addEventListener("click", () => {
+        document.getElementById("modal-solicitar").style.display = "none";
+        document.getElementById("modal-historial").style.display = "none";
+      });
+    });
+
+    // Validar solicitud
+    document.getElementById("enviar-solicitud").addEventListener("click", () => {
+      const detalles = document.getElementById("detalles").value;
+      if (!detalles) {
+        alert("Por favor, completa todos los campos.");
+      } else {
+        alert("Solicitud enviada exitosamente.");
+        document.getElementById("modal-solicitar").style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

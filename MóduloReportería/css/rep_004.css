@@ -1,0 +1,311 @@
+/* General Styles */
+body {
+    font-family: 'Century Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #110d27;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+}
+
+.admin-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 2rem;
+    width: 95%;
+    max-width: 600px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+.admin-container h1 {
+    color: #ff0072;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center; 
+}
+
+.subtitulo {
+    color: #000;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.logout-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.8rem;
+    color: #ff0072;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.logout-button:hover {
+    color: #e00065;
+    transform: scale(1.1);
+}
+
+.report-section {
+    background: #fff;
+    color: #333;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-section h2 {
+    color: #ff0072;
+}
+
+.btn-action {
+    padding: 1rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-action:hover {
+    background-color: #e00065;
+    transform: scale(1.05);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    text-align: left;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h2 {
+    color: #ff0072;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    text-align: center; 
+}
+
+.modal-content p {
+    color: #333; 
+}
+
+.modal-content textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    margin-top: 1.5rem; 
+    display: block;
+    margin-left: -12px;
+    margin-right: auto;
+}
+
+.modal-content textarea:focus {
+    border-color: #ff0072;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.modal-buttons .btn-modal {
+    padding: 1rem 1.5rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Centrar el botón de "Exportar historial en PDF" */
+.modal-buttons .btn-modal {
+    display: block;
+    margin: 1rem auto; 
+}
+
+.modal-buttons .btn-modal:hover {
+    background-color: #e00065;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #ff0072;
+}
+
+.close:hover {
+    color: #e00065;
+    transform: scale(1.2);
+}
+
+/* Formulario */
+.styled-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.styled-form label {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.styled-form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+.styled-form input {
+    padding: 0.8rem;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+.styled-form input[type="checkbox"] {
+    margin-right: 1rem;
+}
+
+.styled-form .btn-submit {
+    padding: 1rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.styled-form .btn-submit:hover {
+    background-color: #e00065;
+    transform: scale(1.05);
+}
+
+.styled-form .btn-submit:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 0, 114, 0.5);
+}
+
+/* PDF/Excel */
+.export-options {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.export-options button {
+    padding: 1rem 1.5rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.export-options button:hover {
+    background-color: #e00065;
+}
+
+/* Estilo para el texto dentro del modal de historial */
+.modal-content .historial-list {
+    color: #333; 
+    font-size: 1rem;
+    list-style-type: none;
+    padding: 0;
+}
+
+.modal-content .historial-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Botón de Exportación */
+.modal-buttons .btn-modal {
+    display: block;
+    margin: 1rem auto; 
+    padding: 1rem 1.5rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Botón exportar en PDF y Excel - Hover */
+.modal-buttons .btn-modal:hover {
+    background-color: #e00065;
+}
+
+/* Asegurarse de que la lista de historial tenga el texto en negro */
+.modal-content .historial-list {
+    color: #333; 
+}
+
+/* Botones centrados para exportar PDF o Excel */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem; 
+}
