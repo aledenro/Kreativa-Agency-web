@@ -1,0 +1,172 @@
+/* General Styles */
+body {
+    font-family: 'Century Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #110d27;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Contenedor de partículas */
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+}
+
+/* Contenedor principal */
+.recover-container {
+    display: flex;
+    max-width: 1200px;
+    width: 90%;
+    height: 700px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 2;
+}
+
+/* Sección izquierda */
+.recover-left {
+    width: 60%;
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #ffffff;
+}
+
+.brand-logo h1 {
+    font-size: 3rem;
+    color: #ff0072;
+    margin-bottom: 2rem;
+}
+
+.recover-left h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #110d27;
+}
+
+.recover-left p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #6c6c6c;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #110d27;
+}
+
+input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #ff0072;
+    box-shadow: 0 0 5px rgba(255, 0, 114, 0.5);
+}
+
+/* Botón */
+.btn-recover {
+    width: 100%;
+    padding: 1rem;
+    background: #ff0072;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-recover:hover {
+    background: #e00065;
+    transform: scale(1.05);
+}
+
+.btn-recover:active {
+    transform: scale(1.1);
+}
+
+/* Texto para volver a login */
+.back-login-text {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    color: #6c6c6c;
+}
+
+.back-login-text a {
+    color: #ff0072;
+    text-decoration: none;
+}
+
+.back-login-text a:hover {
+    text-decoration: underline;
+}
+
+/* Sección derecha */
+.recover-right {
+    width: 40%;
+    background: linear-gradient(to bottom right, #ff0072, #110d27);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Imagen que ocupa todo el contenedor */
+.recover-right .image-right {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+/* Botón de salida */
+.logout-button {
+    all: unset; /* Elimina cualquier estilo heredado */
+    position: absolute;
+    top: 1rem;
+    right: 28rem;
+    color: #ff0072; /* Color del ícono */
+    font-size: 1.5rem; /* Tamaño del ícono */
+    cursor: pointer;
+    z-index: 3; /* Asegura que esté sobre otros elementos */
+}
+
+.logout-button:hover {
+    color: #e00065; /* Cambia el color al pasar el cursor */
+    transform: scale(1.1); /* Efecto de zoom al pasar el cursor */
+    transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
+}
+
+/* Ajuste para el contenedor de recuperación */
+.recover-container {
+    position: relative; /* Necesario para posicionar elementos dentro */
+}

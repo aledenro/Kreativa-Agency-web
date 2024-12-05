@@ -1,0 +1,628 @@
+/* General Styles */
+body {
+  font-family: 'Century Gothic', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #110d27;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+}
+
+/* Contenedor principal */
+.admin-container {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 2rem;
+  width: 95%;
+  max-width: 1300px;
+  box-shadow: 0 400px 400px rgba(0, 0, 0, 0.3);
+}
+
+.admin-container h1 {
+  color: #ff0072;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.admin-container p {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6c6c6c;
+  margin-bottom: 2rem;
+}
+
+/* Tabla */
+.user-table-container {
+  overflow-x: auto;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-table th, .user-table td {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  text-align: left;
+}
+
+.user-table th {
+  background: #ff0072;
+  color: #fff;
+}
+
+.user-table td {
+  background: #fff;
+  color: #333;
+}
+
+/* Botones */
+.btn-action {
+  background: #ff0072;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin: 0.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-action:hover {
+  background: #e00065;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  width: 80%;
+  max-width: 500px;
+  color: #333;
+  position: relative;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  color: #ff0072;
+  font-size: 1.5rem;
+}
+
+.modal-content select {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 1rem 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Corrección de espaciado en la columna de acciones */
+.user-table td .action-buttons {
+  justify-content: flex-start;
+}
+
+/* Detalles del usuario */
+.user-details {
+  display: none;
+  margin-top: 1.5rem;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 600px;
+  color: #333;
+}
+
+.user-details h2 {
+  margin-bottom: 1rem;
+  color: #ff0072;
+}
+
+.user-details p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+/* Botones de acción */
+.action-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.3rem;
+}
+
+.btn-action {
+  background: #ff0072;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 0.9rem;
+}
+
+.btn-action:hover {
+  background: #e00065;
+}
+/* Estilo general para formularios */
+.styled-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.styled-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.styled-form label {
+  font-size: 1.1rem;
+  color: #110d27;
+}
+
+.styled-form .form-input, .styled-form .form-select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.styled-form .form-input:focus, .styled-form .form-select:focus {
+  border-color: #ff0072;
+  box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
+}
+
+/* Botón estilizado */
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background-color: #ff0072;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: #e00065;
+  transform: scale(1.05);
+}
+
+.btn-submit:active {
+  transform: scale(1.1);
+}
+
+/* Íconos de los labels */
+.styled-form label i {
+  margin-right: 0.5rem;
+  color: #ff0072;
+}
+
+/* Modal para formularios */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: left;
+  width: 90%;
+  max-width: 600px;
+  color: #333;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.modal-content h2 {
+  font-size: 1.8rem;
+  color: #ff0072;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  color: #ff0072;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.modal-content .close:hover {
+  transform: scale(1.2);
+}
+
+/* Botones del modal */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.modal-buttons .btn-cancel {
+  background-color: #ccc;
+  color: #333;
+  font-size: 1rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons .btn-cancel:hover {
+  background-color: #bbb;
+}
+
+/* Estilos para el modal de eliminación */
+#modal-delete .modal-content {
+  text-align: center;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  color: #333;
+  position: relative;
+}
+
+#modal-delete h2 {
+  font-size: 1.8rem;
+  color: #ff0072;
+  margin-bottom: 1rem;
+}
+
+#modal-delete p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+#modal-delete .action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#modal-delete .btn-confirm-delete,
+#modal-delete .btn-cancel-delete {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#modal-delete .btn-confirm-delete {
+  background-color: #ff0072;
+  color: #fff;
+}
+
+#modal-delete .btn-confirm-delete:hover {
+  background-color: #e00065;
+}
+
+#modal-delete .btn-cancel-delete {
+  background-color: #ccc;
+  color: #333;
+}
+
+#modal-delete .btn-cancel-delete:hover {
+  background-color: #bbb;
+}
+
+/* Botón de cerrar */
+#modal-delete .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #ff0072;
+}
+
+/* Estilos para el modal de activar/desactivar usuario */
+#toggle-modal .modal-content {
+  text-align: center;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  color: #333;
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+}
+
+#toggle-modal h2 {
+  font-size: 1.8rem;
+  color: #ff0072; /* Rosado Kreativa */
+  margin-bottom: 1rem;
+}
+
+#toggle-modal p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+#toggle-modal .action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#toggle-modal .btn-confirm-toggle {
+  background-color: #ff0072; /* Rosado para confirmar */
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#toggle-modal .btn-confirm-toggle:hover {
+  background-color: #e00065; /* Rosado más oscuro */
+}
+
+#toggle-modal .btn-cancel-toggle {
+  background-color: #ccc;
+  color: #333;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#toggle-modal .btn-cancel-toggle:hover {
+  background-color: #bbb;
+}
+
+/* Botón de cerrar */
+#toggle-modal .close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+#toggle-modal .close:hover {
+  transform: scale(1.2);
+  color: #ff0072; /* Rosado Kreativa */
+}
+
+/* Estilos para el modal de asignar rol */
+#assign-modal .modal-content {
+  text-align: left;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  color: #333;
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+}
+
+#assign-modal h2 {
+  font-size: 1.8rem;
+  color: #ff0072; /* Rosado Kreativa */
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+#assign-modal .modal-text {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+#assign-modal .form-group {
+  margin-bottom: 1.5rem;
+}
+
+#assign-modal .form-group label {
+  font-size: 1rem;
+  color: #333;
+}
+
+#assign-modal .form-select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#assign-modal .form-select:focus {
+  border-color: #ff0072; /* Rosado en foco */
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 0, 114, 0.5);
+}
+
+#assign-modal .action-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+#assign-modal .btn-confirm-assign {
+  background-color: #ff0072; /* Rosado para confirmar */
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#assign-modal .btn-confirm-assign:hover {
+  background-color: #e00065; /* Rosado más oscuro */
+}
+
+#assign-modal .btn-cancel-assign {
+  background-color: #ccc;
+  color: #333;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#assign-modal .btn-cancel-assign:hover {
+  background-color: #bbb;
+}
+
+/* Botón de cerrar */
+#assign-modal .close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+#assign-modal .close:hover {
+  transform: scale(1.2);
+  color: #ff0072; /* Rosado Kreativa */
+}
+
+/* Iconos en botones de acción */
+.btn-action i {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+/* Ajuste para íconos dinámicos */
+.action-buttons .btn-action i {
+  color: #fff;
+}
+
+/* Iconos en los títulos de los modales */
+.modal-content h2 i {
+  margin-right: 0.5rem;
+  color: #ff0072; /* Color rosado de Kreativa */
+  vertical-align: middle;
+}
+
+/* Campo de contraseña en el formulario */
+.styled-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.styled-form .form-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.styled-form .form-input:focus {
+  border-color: #ff0072;
+  box-shadow: 0 0 5px rgba(255, 0, 114, 0.5);
+}
+
+
+/* Botón de logout (puerta) */
+.logout-button {
+  all: unset; /* Elimina estilos predeterminados */
+  position: absolute;
+  top: 1rem; /* Distancia desde la parte superior */
+  right: 1rem; /* Distancia desde la derecha */
+  color: #ff0072; /* Color del ícono */
+  font-size: 1.8rem; /* Tamaño del ícono */
+  cursor: pointer;
+  z-index: 10; /* Asegura que esté sobre otros elementos */
+}
+
+.logout-button:hover {
+  color: #e00065; /* Cambia el color al pasar el cursor */
+  transform: scale(1.1); /* Efecto de zoom */
+  transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
+}
+
+/* Contenedor principal */
+.admin-container {
+  position: relative; /* Necesario para que los hijos (como logout-button) se posicionen de manera absoluta */
+  padding: 2rem; /* Espaciado interno */
+  background-color: #fff; /* Fondo blanco */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+  margin: 2rem auto; /* Centrado */
+  max-width: 80%; /* Ancho máximo del contenedor */
+}

@@ -175,3 +175,53 @@ body {
     animation: fadeInRight 2s ease-in-out; /* Animación */
 }
 
+/* Contenedor de contraseña con ícono */
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 2.5rem; /* Espacio para el ícono */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #6c6c6c;
+  transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+  color: #ff0072;
+}
+
+/* Botón de salida */
+.logout-button {
+  all: unset; /* Elimina cualquier estilo heredado */
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #ff0072; /* Color del botón */
+  font-size: 1.5rem; /* Tamaño del ícono */
+  cursor: pointer;
+  z-index: 3; /* Asegura que esté sobre otros elementos */
+}
+
+.logout-button:hover {
+  color: #e00065; /* Cambia el color al pasar el cursor */
+  transform: scale(1.1); /* Hace un zoom leve al pasar el cursor */
+  transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
+}
+
+/* Ajusta el contenedor izquierdo */
+.login-left {
+  position: relative;
+  padding: 2rem; /* Para evitar que el botón de logout toque el borde */
+}

@@ -36,20 +36,7 @@ body {
     z-index: 2; /* Asegura que esté sobre las partículas */
 }
 
-/* Efecto de línea neón animada */
-.admin-container::before {
-    content: "";
-    position: absolute;
-    top:0px; /* Más cerca del borde superior */
-    left: 0x; /* Más cerca del borde izquierdo */
-    width: calc(100% + 10px); /* Extiende el ancho para cubrir bordes */
-    height: calc(100% + 8px); /* Extiende la altura para cubrir bordes */
-    border-radius: 15px;
-    border: 4px solid transparent; /* Grosor del borde */
-    box-sizing: border-box;
-    animation: drawNeon 5s linear infinite; /* Animación continua */
-    pointer-events: none; /* Evita interferencias con el hover */
-}
+
 
 /* Keyframes para animar la línea que "llena" el cuadro */
 @keyframes drawNeon {
@@ -73,7 +60,7 @@ body {
 
 /* Sección Izquierda */
 .admin-left {
-    background-image: url("../img/IngresarUsuarios.jpg");
+    background-image: url("/img/IngresarUsuarios.jpg");
     background-size: cover;
     background-position: center;
     width: 35%;
@@ -186,3 +173,13 @@ button.btn-submit:active {
     transform: scale(1.1); /* Hace un zoom leve al pasar el cursor */
     transition: color 0.2s ease, transform 0.2s ease; /* Suaviza el efecto */
 }
+
+.password-container .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: grey; /* Ícono en color negro */
+    font-size: 1.2em;
+  }

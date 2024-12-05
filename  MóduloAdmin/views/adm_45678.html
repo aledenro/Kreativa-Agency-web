@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Usuarios</title>
+  <link rel="stylesheet" href="../css/admi_45678.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <!-- Contenedor de partículas -->
+  <div id="particles-js"></div>
+  <!-- Contenedor principal -->
+  <div class="admin-container">
+      <!-- Botón de logout (puerta) -->
+     <!-- Botón de logout (puerta) -->
+     <button class="logout-button" title="Salir">
+      <i class="fas fa-sign-out-alt"></i> <!-- Ícono de salida -->
+    </button>
+    <h1>
+      <i class="fas fa-users"></i> Gestión de Usuarios
+    </h1>
+    <p>Administrá, editá y gestioná los usuarios del sistema.</p>
+
+<!-- Tabla de usuarios -->
+<div class="user-table-container">
+  <table class="user-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Usuario</th>
+        <th>Email</th>
+        <th>Tipo</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Juan Pérez</td>
+        <td>jperez</td>
+        <td>juan@kreativa.com</td>
+        <td>Administrador</td>
+        <td>Activo</td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn-action view" data-user="Juan Pérez">
+              <i class="fas fa-eye"></i> Ver
+            </button>
+            <button class="btn-action edit" data-user="Juan Pérez">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="btn-action delete" data-user="Juan Pérez">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+            <button class="btn-action toggle-role" data-user="Juan Pérez">
+              <i class="fas fa-toggle-off"></i> Desactivar
+            </button>
+            <button class="btn-action assign-role" data-user="Juan Pérez">
+              <i class="fas fa-user-cog"></i> Asignar Rol
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Ana Gómez</td>
+        <td>agomez</td>
+        <td>ana@kreativa.com</td>
+        <td>Colaborador</td>
+        <td>Activo</td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn-action view" data-user="Ana Gómez">
+              <i class="fas fa-eye"></i> Ver
+            </button>
+            <button class="btn-action edit" data-user="Ana Gómez">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="btn-action delete" data-user="Ana Gómez">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+            <button class="btn-action toggle-role" data-user="Ana Gómez">
+              <i class="fas fa-toggle-off"></i> Desactivar
+            </button>
+            <button class="btn-action assign-role" data-user="Ana Gómez">
+              <i class="fas fa-user-cog"></i> Asignar Rol
+            </button>
+          </div>
+        </td>
+      </tr>
+      <!-- Nuevos Usuarios -->
+      <tr>
+        <td>Pedro López</td>
+        <td>plopez</td>
+        <td>pedro@kreativa.com</td>
+        <td>Cliente</td>
+        <td>Activo</td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn-action view" data-user="Pedro López">
+              <i class="fas fa-eye"></i> Ver
+            </button>
+            <button class="btn-action edit" data-user="Pedro López">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="btn-action delete" data-user="Pedro López">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+            <button class="btn-action toggle-role" data-user="Pedro López">
+              <i class="fas fa-toggle-off"></i> Desactivar
+            </button>
+            <button class="btn-action assign-role" data-user="Pedro López">
+              <i class="fas fa-user-cog"></i> Asignar Rol
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Laura García</td>
+        <td>lgarcia</td>
+        <td>laura@kreativa.com</td>
+        <td>Cliente</td>
+        <td>Inactivo</td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn-action view" data-user="Laura García">
+              <i class="fas fa-eye"></i> Ver
+            </button>
+            <button class="btn-action edit" data-user="Laura García">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="btn-action delete" data-user="Laura García">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+            <button class="btn-action toggle-role" data-user="Laura García">
+              <i class="fas fa-toggle-on"></i> Activar
+            </button>
+            <button class="btn-action assign-role" data-user="Laura García">
+              <i class="fas fa-user-cog"></i> Asignar Rol
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+    <!-- Modales -->
+    <!-- Modal para ver detalles -->
+    <div class="modal" id="modal-details">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><i class="fas fa-eye"></i> Detalles del Usuario</h2>
+        <p><strong>Nombre:</strong> <span id="detail-name"></span></p>
+        <p><strong>Usuario:</strong> <span id="detail-username"></span></p>
+        <p><strong>Email:</strong> <span id="detail-email"></span></p>
+        <p><strong>Tipo:</strong> <span id="detail-type"></span></p>
+        <p><strong>Estado:</strong> <span id="detail-status"></span></p>
+      </div>
+
+    </div>
+<!-- Modal para editar -->
+<div class="modal" id="edit-modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2><i class="fas fa-edit"></i> Editar Usuario</h2>
+    <form id="edit-form" class="styled-form">
+      <div class="form-group">
+        <label for="edit-name"><i class="fas fa-user"></i> Nombre</label>
+        <input type="text" id="edit-name" class="form-input" placeholder="Ingrese el nombre completo" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-username"><i class="fas fa-user-circle"></i> Usuario</label>
+        <input type="text" id="edit-username" class="form-input" placeholder="Ingrese el nombre de usuario" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-email"><i class="fas fa-envelope"></i> Email</label>
+        <input type="email" id="edit-email" class="form-input" placeholder="Ingrese el correo electrónico" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-password"><i class="fas fa-lock"></i> Contraseña</label>
+        <input type="password" id="edit-password" class="form-input" placeholder="Ingrese una nueva contraseña" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-role"><i class="fas fa-user-tag"></i> Rol</label>
+        <select id="edit-role" class="form-select">
+          <option value="Administrador">Administrador</option>
+          <option value="Colaborador">Colaborador</option>
+          <option value="Cliente">Cliente</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit-status"><i class="fas fa-toggle-on"></i> Estado</label>
+        <select id="edit-status" class="form-select">
+          <option value="Activo">Activo</option>
+          <option value="Inactivo">Inactivo</option>
+        </select>
+      </div>
+      <button type="button" class="btn-submit">Guardar Cambios</button>
+    </form>
+  </div>
+</div>
+
+    <!-- Modal para eliminar usuario -->
+    <div class="modal" id="modal-delete">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><i class="fas fa-trash"></i> Confirmar Eliminación</h2>
+        <p>¿Estás seguro de que deseas eliminar al usuario <strong id="delete-user-name"></strong>?</p>
+        <div class="action-buttons">
+          <button class="btn-confirm-delete">Sí, eliminar</button>
+          <button class="btn-cancel-delete">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para activar/desactivar usuario -->
+    <div class="modal" id="toggle-modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><i class="fas fa-toggle-on"></i> Confirmar Acción</h2>
+        <p>
+          ¿Estás seguro de que deseas <strong id="toggle-action"></strong> al usuario <strong id="toggle-user-name"></strong>?
+        </p>
+        <div class="modal-buttons">
+          <button class="btn-confirm-toggle btn-primary">Sí, continuar</button>
+          <button class="btn-cancel-toggle btn-secondary">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para asignar rol -->
+    <div class="modal" id="assign-modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><i class="fas fa-user-cog"></i> Asignar Rol</h2>
+        <form class="styled-form">
+          <p>Seleccione un nuevo rol para <strong id="assign-user"></strong>:</p>
+          <div class="form-group">
+            <label for="assign-role-select"><i class="fas fa-user-tag"></i> Rol</label>
+            <select id="assign-role-select" class="form-select">
+              <option value="Administrador">Administrador</option>
+              <option value="Colaborador">Colaborador</option>
+              <option value="Cliente">Cliente</option>
+            </select>
+          </div>
+          <div class="modal-buttons">
+            <button type="button" class="btn-confirm-assign btn-primary">Asignar</button>
+            <button type="button" class="btn-cancel-assign btn-secondary">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/interacciones.js"></script>
+  <!-- Script de inicialización de partículas -->
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 5
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false,
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 400,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 40,
+            "duration": 2,
+            "opacity": 8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 200,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>
