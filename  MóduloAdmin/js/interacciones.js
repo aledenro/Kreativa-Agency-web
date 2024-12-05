@@ -168,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const isActive = btn.textContent.trim().includes("Desactivar");
       const action = isActive ? "Activar" : "Desactivar";
 
-      // Actualizamos el ícono y el texto del botón
       btn.innerHTML = isActive
         ? '<i class="fas fa-toggle-off"></i> Activar'
         : '<i class="fas fa-toggle-on"></i> Desactivar';
