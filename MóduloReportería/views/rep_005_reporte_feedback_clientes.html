@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte de Feedback de Clientes</title>
+  <link rel="stylesheet" href="../css/rep_005.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="admin-container">
+    <button class="logout-button" title="Salir">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+    <h1><i class="fas fa-chart-line"></i> Reporte de Feedback de Clientes</h1>
+    <p class="subtitulo">Generá reportes detallados de los feedbacks de los clientes.</p>
+
+    <form id="feedbackForm" class="styled-form">
+      <div class="form-row">
+        <label for="cliente"><i class="fas fa-user"></i> Cliente:</label>
+        <select id="cliente" required>
+          <option value="">Seleccione un cliente</option>
+          <option value="cliente1">Cliente 1</option>
+          <option value="cliente2">Cliente 2</option>
+          <option value="cliente3">Cliente 3</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="categoria"><i class="fas fa-cogs"></i> Categoría:</label>
+        <select id="categoria" required>
+          <option value="">Seleccione una categoría</option>
+          <option value="servicio">Servicio</option>
+          <option value="atencion">Atención al cliente</option>
+          <option value="soporte">Soporte técnico</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="lapso"><i class="fas fa-calendar-alt"></i> Lapso de tiempo:</label>
+        <select id="lapso" required>
+          <option value="">Seleccione un lapso de tiempo</option>
+          <option value="anual">Anual</option>
+          <option value="mensual">Mensual</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="exportFormat"><i class="fas fa-file-export"></i> Formato de Exportación:</label>
+        <select id="exportFormat" required>
+          <option value="">Seleccione un formato</option>
+          <option value="pdf">PDF</option>
+          <option value="excel">Excel</option>
+        </select>
+      </div>
+
+      <button type="submit" id="generateReportBtn" class="btn-action">
+        Generar Reporte de Feedback
+      </button>
+    </form>
+  </div>
+
+  <script src="../js/interacciones.js"></script>
+  <script>
+    document.getElementById("feedbackForm").addEventListener("submit", function(event) {
+      event.preventDefault(); 
+
+    
+      const cliente = document.getElementById("cliente").value;
+      const categoria = document.getElementById("categoria").value;
+      const lapso = document.getElementById("lapso").value;
+      const exportFormat = document.getElementById("exportFormat").value;
+
+      if (!cliente || !categoria || !lapso || !exportFormat) {
+        alert("Por favor, complete todos los campos.");
+        return;
+      }
+
+      alert("Reporte generado y descargado con éxito en formato " + exportFormat.toUpperCase());
+    });
+  </script>
+    <!-- Scripts -->
+    <script src="../js/interacciones.js"></script>
+    <!-- Script de inicialización de partículas -->
+    <script>
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#ffffff"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            },
+            "polygon": {
+              "nb_sides": 5
+            }
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": false,
+            "anim": {
+              "enable": false,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": false,
+              "speed": 40,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#ffffff",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 6,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": false,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "repulse"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 400,
+              "line_linked": {
+                "opacity": 1
+              }
+            },
+            "bubble": {
+              "distance": 400,
+              "size": 40,
+              "duration": 2,
+              "opacity": 8,
+              "speed": 3
+            },
+            "repulse": {
+              "distance": 200,
+              "duration": 0.4
+            },
+            "push": {
+              "particles_nb": 4
+            },
+            "remove": {
+              "particles_nb": 2
+            }
+          }
+        },
+        "retina_detect": true
+      });
+      document.querySelectorAll(".btn-action").forEach(button => {
+        button.addEventListener("click", () => {
+          document.getElementById("modal-opciones").style.display = "flex";
+        });
+      });
+      document.querySelector(".close").addEventListener("click", () => {
+        document.getElementById("modal-opciones").style.display = "none";
+      });
+      document.getElementById("confirmar-descarga").addEventListener("click", () => {
+        alert("Descargando reporte...");
+        document.getElementById("modal-opciones").style.display = "none";
+      });
+    </script>
+</body>
+</html>
