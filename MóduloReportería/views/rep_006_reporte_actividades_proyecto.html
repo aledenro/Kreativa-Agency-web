@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte de Actividades del Proyecto</title>
+  <link rel="stylesheet" href="../css/rep_006.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="admin-container">
+    <button class="logout-button" title="Salir">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+    <h1><i class="fas fa-tasks"></i> Reporte de Actividades del Proyecto</h1>
+    <p class="subtitulo">Generá reportes detallados de las actividades del proyecto.</p>
+
+    <form id="projectReportForm" class="styled-form">
+      <div class="form-row">
+        <label for="proyecto"><i class="fas fa-project-diagram"></i> Proyecto:</label>
+        <select id="proyecto" required>
+          <option value="">Seleccione un proyecto</option>
+          <option value="proyecto1">Proyecto 1</option>
+          <option value="proyecto2">Proyecto 2</option>
+          <option value="proyecto3">Proyecto 3</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="periodo"><i class="fas fa-calendar-alt"></i> Período:</label>
+        <select id="periodo" required>
+          <option value="">Seleccione un período</option>
+          <option value="semanal">Semanal</option>
+          <option value="mensual">Mensual</option>
+          <option value="anual">Anual</option>
+        </select>
+      </div>
+
+      <button type="submit" id="generateProjectReportBtn" class="btn-action">
+        Generar Reporte de Actividades
+    </button>
+    </form>
+
+    <form id="collaboratorReportForm" class="styled-form">
+      <div class="form-row">
+        <label for="colaborador"><i class="fas fa-user"></i> Colaborador:</label>
+        <select id="colaborador" required>
+          <option value="">Seleccione un colaborador</option>
+          <option value="colaborador1">Colaborador 1</option>
+          <option value="colaborador2">Colaborador 2</option>
+          <option value="colaborador3">Colaborador 3</option>
+        </select>
+      </div>
+
+      <button type="submit" id="generateCollaboratorReportBtn" class="btn-action">
+        Generar Reporte de Tareas
+    </button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/interacciones.js"></script>
+  <script>
+    // Generar reporte de actividades de proyecto
+    document.getElementById("projectReportForm").addEventListener("submit", function(event) {
+      event.preventDefault(); 
+
+      const proyecto = document.getElementById("proyecto").value;
+      const periodo = document.getElementById("periodo").value;
+
+      // Validación de los campos
+      if (!proyecto || !periodo) {
+        alert("Por favor, complete todos los campos.");
+        return;
+      }
+
+      // Simulación de generación del reporte
+      alert("Reporte de actividades generado para el proyecto: " + proyecto + " con el período: " + periodo);
+    });
+
+    // Generar reporte de tareas asignadas al colaborador
+    document.getElementById("collaboratorReportForm").addEventListener("submit", function(event) {
+      event.preventDefault(); 
+
+      const colaborador = document.getElementById("colaborador").value;
+
+      // Validación de los campos
+      if (!colaborador) {
+        alert("Por favor, seleccione un colaborador.");
+        return;
+      }
+
+      // Simulación de generación del reporte de tareas
+      alert("Reporte de tareas generado para el colaborador: " + colaborador);
+    });
+  </script>
+   <!-- Scripts -->
+   <script src="../js/interacciones.js"></script>
+   <!-- Script de inicialización de partículas -->
+   <script>
+     particlesJS('particles-js', {
+       "particles": {
+         "number": {
+           "value": 80,
+           "density": {
+             "enable": true,
+             "value_area": 800
+           }
+         },
+         "color": {
+           "value": "#ffffff"
+         },
+         "shape": {
+           "type": "circle",
+           "stroke": {
+             "width": 0,
+             "color": "#000000"
+           },
+           "polygon": {
+             "nb_sides": 5
+           }
+         },
+         "opacity": {
+           "value": 0.5,
+           "random": false,
+           "anim": {
+             "enable": false,
+             "speed": 1,
+             "opacity_min": 0.1,
+             "sync": false
+           }
+         },
+         "size": {
+           "value": 3,
+           "random": true,
+           "anim": {
+             "enable": false,
+             "speed": 40,
+             "size_min": 0.1,
+             "sync": false
+           }
+         },
+         "line_linked": {
+           "enable": true,
+           "distance": 150,
+           "color": "#ffffff",
+           "opacity": 0.4,
+           "width": 1
+         },
+         "move": {
+           "enable": true,
+           "speed": 6,
+           "direction": "none",
+           "random": false,
+           "straight": false,
+           "out_mode": "out",
+           "bounce": false,
+           "attract": {
+             "enable": false,
+             "rotateX": 600,
+             "rotateY": 1200
+           }
+         }
+       },
+       "interactivity": {
+         "detect_on": "canvas",
+         "events": {
+           "onhover": {
+             "enable": true,
+             "mode": "repulse"
+           },
+           "onclick": {
+             "enable": true,
+             "mode": "push"
+           },
+           "resize": true
+         },
+         "modes": {
+           "grab": {
+             "distance": 400,
+             "line_linked": {
+               "opacity": 1
+             }
+           },
+           "bubble": {
+             "distance": 400,
+             "size": 40,
+             "duration": 2,
+             "opacity": 8,
+             "speed": 3
+           },
+           "repulse": {
+             "distance": 200,
+             "duration": 0.4
+           },
+           "push": {
+             "particles_nb": 4
+           },
+           "remove": {
+             "particles_nb": 2
+           }
+         }
+       },
+       "retina_detect": true
+     });
+     document.querySelectorAll(".btn-action").forEach(button => {
+       button.addEventListener("click", () => {
+         document.getElementById("modal-opciones").style.display = "flex";
+       });
+     });
+     document.querySelector(".close").addEventListener("click", () => {
+       document.getElementById("modal-opciones").style.display = "none";
+     });
+     document.getElementById("confirmar-descarga").addEventListener("click", () => {
+       alert("Descargando reporte...");
+       document.getElementById("modal-opciones").style.display = "none";
+     });
+   </script>
+</body>
+</html>
