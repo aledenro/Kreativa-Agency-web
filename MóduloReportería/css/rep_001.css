@@ -1,0 +1,101 @@
+/* General Styles */
+body {
+    font-family: 'Century Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #110d27;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* Contenedor de partículas */
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+  
+  /* Contenedor principal */
+  .admin-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 2rem;
+    width: 95%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    position: relative;
+  }
+  
+  /* Botón de logout */
+  .logout-button {
+    all: unset;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #ff0072;
+    font-size: 1.8rem;
+    cursor: pointer;
+  }
+  
+  .logout-button:hover {
+    color: #e00065;
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+  }
+  
+  /* Título y descripción */
+  h1 {
+    color: #ff0072;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    color: #6c6c6c;
+    margin-bottom: 2rem;
+  }
+  
+  /* Formulario */
+  .styled-form .form-group {
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+  
+  .styled-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-size: 1rem;
+  }
+  
+  .styled-form select {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+  
+  .btn-submit {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: #ff0072;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  
+  .btn-submit:hover {
+    background: #e00065;
+  }

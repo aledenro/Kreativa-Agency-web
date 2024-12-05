@@ -1,0 +1,213 @@
+/* General Styles */
+body {
+    font-family: 'Century Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #110d27;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+}
+
+.admin-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 2rem;
+    width: 95%;
+    max-width: 600px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+.admin-container h1 {
+    color: #ff0072;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.admin-container p {
+    font-size: 1.2rem;
+    color: #6c6c6c;
+    margin-bottom: 2rem;
+}
+
+.report-section {
+    background: #fff;
+    color: #333;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-section h2 {
+    color: #ff0072;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn-action {
+    padding: 1rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-action:hover {
+    background-color: #e00065;
+    transform: scale(1.05);
+}
+
+.logout-button {
+    all: unset;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #ff0072;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    color: #e00065;
+    transform: scale(1.1);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.modal-content {
+    background: #fff;
+    color: #333;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h2 {
+    color: #ff0072;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.modal-content select, .modal-content input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    margin-bottom: 1rem;
+}
+
+.modal-content select:focus, .modal-content input:focus {
+    border-color: #ff0072;
+    box-shadow: 0 0 5px rgba(255, 0, 114, 0.5);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-buttons .btn-modal {
+    padding: 0.8rem 1.5rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-buttons .btn-modal:hover {
+    background-color: #e00065;
+    transform: scale(1.05);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #ff0072;
+}
+
+.close:hover {
+    color: #e00065;
+    transform: scale(1.2);
+}
+
+/* Alignment Adjustments */
+.modal-content .form-group label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+}
+
+.modal-content .form-group select, 
+.modal-content .form-group input {
+    text-align: left;
+    padding-left: 1rem;
+}
+/* Botón de Descargar dentro del Modal */
+.modal-content .btn-submit {
+    padding: 1rem;
+    background-color: #ff0072;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%; 
+}
+
+.modal-content .btn-submit:hover {
+    background-color: #e00065;
+    transform: scale(1.05);
+}
+
+.modal-content .btn-submit:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 0, 114, 0.5);
+}

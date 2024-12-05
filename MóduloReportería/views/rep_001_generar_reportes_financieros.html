@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generar Reportes Financieros</title>
+  <link rel="stylesheet" href="../css/rep_001.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="admin-container">
+    <button class="logout-button" title="Salir">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+    <h1>
+      <i class="fas fa-chart-line"></i> Generar Reportes Financieros
+    </h1>
+    <p>Administrá, filtrá y generá reportes de ingresos y gastos fácilmente.</p>
+    <form id="financial-report-form" class="styled-form">
+      <div class="form-group">
+        <label for="report-period">
+          <i class="fas fa-calendar-alt"></i> Período
+        </label>
+        <select id="report-period" required>
+          <option value="">Seleccione un período</option>
+          <option value="weekly">Semanal</option>
+          <option value="monthly">Mensual</option>
+          <option value="annual">Anual</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="report-category">
+          <i class="fas fa-folder-open"></i> Categoría
+        </label>
+        <select id="report-category" required>
+          <option value="">Seleccione una categoría</option>
+          <option value="income">Ingresos</option>
+          <option value="expenses">Gastos</option>
+          <option value="both">Ambos</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="export-format">
+          <i class="fas fa-file-export"></i> Formato de Exportación
+        </label>
+        <select id="export-format" required>
+          <option value="">Seleccione un formato</option>
+          <option value="pdf">PDF</option>
+          <option value="excel">Excel</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-submit">Generar Reporte</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/interacciones.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#ffffff" },
+        "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
+        "opacity": { "value": 0.4 },
+        "size": { "value": 3, "random": true },
+        "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.5, "width": 1 },
+        "move": { "enable": true, "speed": 2, "direction": "none" }
+      },
+      "interactivity": {
+        "events": { "onhover": { "enable": true, "mode": "repulse" } },
+        "modes": { "repulse": { "distance": 100 } }
+      },
+      "retina_detect": true
+    });
+  </script>
+</body>
+</html>
