@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte General de Progreso de Proyectos</title>
+  <link rel="stylesheet" href="../css/rep_007.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="admin-container">
+    <button class="logout-button" title="Salir">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+    <h1>Reporte General de Progreso de Proyectos</h1>
+    <p class="subtitulo">Evaluá el estado de múltiples proyectos a la vez.</p>
+
+    <form id="projectProgressForm" class="styled-form">
+      <div class="form-row">
+        <label for="periodo"><i class="fas fa-calendar-alt"></i> Período:</label>
+        <select id="periodo" required>
+          <option value="">Seleccione un período</option>
+          <option value="mensual">Mensual</option>
+          <option value="anual">Anual</option>
+          <option value="semanal">Semanal</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="estado"><i class="fas fa-clipboard-check"></i> Estado del Proyecto:</label>
+        <select id="estado" required>
+          <option value="">Seleccione un estado</option>
+          <option value="en progreso">En Progreso</option>
+          <option value="completado">Completado</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="todos">Todos</option>
+        </select>
+      </div>
+
+      <button type="submit" id="generateProjectReportBtn" class="btn-action">
+        Generar Reporte General
+      </button>
+    </form>
+
+    <div id="projectDelayNotification" class="delay-notification" style="display:none;">
+      <p><strong>Alerta:</strong> Hay proyectos con tareas atrasadas.</p>
+      <p>Revisar los detalles de los proyectos y las tareas pendientes.</p>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/interacciones.js"></script>
+  <script>
+    document.getElementById("projectProgressForm").addEventListener("submit", function(event) {
+      event.preventDefault(); 
+
+      // Obtener los valores de los campos
+      const periodo = document.getElementById("periodo").value;
+      const estado = document.getElementById("estado").value;
+
+      // Validación de los campos
+      if (!periodo || !estado) {
+        alert("Por favor, complete todos los campos.");
+        return;
+      }
+
+      // Simulación de generación del reporte
+      alert("Reporte generado y descargado con éxito.");
+
+      // Mostrar la alerta de proyecto atrasado
+      document.getElementById("projectDelayNotification").style.display = "block";
+      
+      // Ocultar la notificación después de 5 segundos (simulación)
+      setTimeout(function() {
+        document.getElementById("projectDelayNotification").style.display = "none";
+      }, 5000);
+    });
+  </script>
+  <!-- Scripts -->
+  <script src="../js/interacciones.js"></script>
+  <!-- Script de inicialización de partículas -->
+  <script>
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 5
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false,
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 400,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 40,
+            "duration": 2,
+            "opacity": 8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 200,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true
+    });
+    document.querySelectorAll(".btn-action").forEach(button => {
+      button.addEventListener("click", () => {
+        document.getElementById("modal-opciones").style.display = "flex";
+      });
+    });
+    document.querySelector(".close").addEventListener("click", () => {
+      document.getElementById("modal-opciones").style.display = "none";
+    });
+    document.getElementById("confirmar-descarga").addEventListener("click", () => {
+      alert("Descargando reporte...");
+      document.getElementById("modal-opciones").style.display = "none";
+    });
+  </script>
+</body>
+</html>
