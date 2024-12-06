@@ -24,16 +24,52 @@ body {
 }
 
 .cover {
-  background-color: rgba(141, 37, 252, 0.3);
+  background: rgb(255, 0, 114);
+  background: linear-gradient(
+    140deg,
+    rgba(255, 0, 114, 1) 0%,
+    rgba(17, 13, 39, 1) 80%
+  );
   padding: 20px;
   margin-top: 60px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 60px;
+  height: 450px;
+  animation: fadeInRight 2s ease-in-out;
 }
 
-header {
-  background-color: #110d27;
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+p {
+  padding: 0;
+  margin: 0;
+}
+
+h1 {
+  font-weight: 600;
+  color: #ff0072;
+}
+
+h2 {
+  font-size: 3rem;
+  font-weight: 600;
+  color: #ff0072;
+}
+
+h3 {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #8d25fc;
 }
 
 #img-logo {
@@ -84,7 +120,6 @@ header {
   background-color: transparent;
   border: #8d25fc solid 2px;
   color: #8d25fc;
-  font-weight: 700;
 }
 
 .btn-outline-purple:hover {
@@ -92,7 +127,6 @@ header {
   background-color: #983ff8;
   border: #983ff8 solid 2px;
   color: white;
-  font-weight: 700;
 }
 
 .toggle-nav {
@@ -110,4 +144,227 @@ header {
   color: #ff0072;
   box-shadow: none;
   outline: none;
+}
+
+/* Aseguramos el diseño responsivo y alineación */
+.vh-100 {
+  height: 100vh; /* Ocupa toda la altura del viewport */
+}
+.services .row {
+  height: 100%; /* Garantiza que las filas ocupen toda la altura */
+}
+.services .col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra verticalmente */
+  align-items: center; /* Centra horizontalmente */
+}
+
+.services {
+  background-color: #fff;
+  color: #110d27;
+  margin-bottom: 100px;
+  position: relative; /* Asegura que no sea absolute ni fixed */
+  height: auto; /* Ajusta la altura si es necesario */
+  overflow: hidden; /* Evita el contenido fuera de los límites */
+  padding-bottom: 50px;
+}
+
+.blockquote {
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  margin: 20px 0;
+}
+
+.cotizar {
+  margin-bottom: 100px;
+}
+
+.cotizar .row {
+  flex-grow: 1;
+}
+/* Estilo general del contenedor del formulario */
+.container.form {
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  margin: auto;
+}
+
+.form {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 700px; /* Ajusta este valor a tu gusto */
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .form {
+    max-width: 800px; /* Ajusta según tus necesidades */
+  }
+}
+
+.form p {
+  color: #110d27c4;
+}
+
+.styled-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.styled-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.styled-form label {
+  font-size: 1.1rem;
+  color: #110d27;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #ff0072;
+  box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
+}
+
+/* Aplica esta clase a los select en el HTML */
+.form-select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-select:focus {
+  border-color: #ff0072;
+  box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
+}
+
+/* Botón estilizado */
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background-color: #ff0072;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: #e00065;
+  transform: scale(1.05);
+}
+
+.btn-submit:active {
+  transform: scale(1.1);
+}
+
+/* Íconos de los labels */
+.styled-form label i {
+  margin-right: 0.5rem;
+  color: #ff0072;
+}
+.form-check-input {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  margin-right: 0.5rem; /* para que haya espacio entre el checkbox y el label */
+}
+
+.form-check-input:hover {
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
+  border-color: #ff0072;
+}
+
+.form-check-input:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
+  border-color: #ff0072;
+}
+
+.form-check-input:checked {
+  background-color: #ff0072;
+  border-color: #ff0072;
+}
+
+.form-check-input[type="checkbox"][role="switch"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: none;
+
+  width: 2.5rem;
+  height: 1.5rem;
+  background-color: #e0e0e0; /* gris claro para mayor contraste */
+  border-radius: 1.5rem;
+  border: none;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-check-input[type="checkbox"][role="switch"]::before {
+  content: "";
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Estado seleccionado (Activado) */
+.form-check-input[type="checkbox"][role="switch"]:checked {
+  background-color: #ff0072;
+}
+
+.form-check-input[type="checkbox"][role="switch"]:checked::before {
+  transform: translateX(1rem);
+}
+
+/* Enfoque del switch */
+.form-check-input[type="checkbox"][role="switch"]:focus {
+  box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
+}
+
+/* Ajustamos la etiqueta */
+.form-check-label {
+  font-size: 1rem;
+  color: #110d27;
+  margin: 0;
+  line-height: 1.5rem;
+  cursor: pointer;
 }
