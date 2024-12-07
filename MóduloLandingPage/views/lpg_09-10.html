@@ -35,13 +35,13 @@
                             <a class="nav-link active" aria-current="page" href="#">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Servicios</a>
+                            <a class="nav-link" href="#services">Servicios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Cotizar</a>
+                            <a class="nav-link" href="#cotizar">Cotizar</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Postular</a>
+                            <a class="nav-link" href="#postulacion">Postular</a>
                         </li>
                     </ul>
                     <div class="text-end">
@@ -89,57 +89,114 @@
             </svg>
         </div>
 
-        <div class="services">
+
+
+        <div class="services" id="services">
 
             <div class="container text-center">
-                <h2>Nuestros Servicios</h2>
+                <h2 class="my-3" style="color: #8d25fc;">Nuestros Servicios</h2>
+                <div class="d-flex justify-content-end">
+                    <a class="btn servicios btn-action open-modal-btn">Agregar Servicios</a>
+                </div>
                 <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 d-flex justify-content-center">
 
                     <div class="col">
-                        <div class="p-3">
-                            <h3>Desarrollo de Marca</h3>
+                        <div class="p-3 link-div">
+                            <a href="">
+                                <h3>Desarrollo de Marca</h3>
+                                <div><img src="/img/branding.png" alt="" height="100" class="my-3"></div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 link-div">
+                            <a href="">
+                                <h3>Estrategias de Comunicación</h3>
+                                <div><img src="/img/comunicacion.png" alt="" height="100" class="my-3"></div>
+                            </a>
 
                         </div>
                     </div>
                     <div class="col">
-                        <div class="p-3">
-                            <h3>Estrategias de Comunicación</h3>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="p-3">
-                            <h3>Gestión de Redes Sociales</h3>
+                        <div class="p-3  link-div">
+                            <a href="/MóduloLandingPage/views/lpg_235678.html">
+                                <h3>Gestión de Redes Sociales</h3>
+                                <div><img src="/img/redes.png" alt="" height="100" class="my-3"></div>
+                            </a>
+
 
                         </div>
                     </div>
                     <div class="col">
-                        <div class="p-3">
-                            <h3>Diseño Gráfico y Publicitario</h3>
+                        <div class="p-3 link-div">
+                            <a href="">
+                                <h3>Diseño Gráfico y Publicitario</h3>
+                                <div><img src="/img/diseño.png" alt="" height="100" class="my-3"></div>
+                            </a>
+
                         </div>
                     </div>
                     <div class="col">
-                        <div class="p-3">
-                            <h3>Marketing Digital</h3>
+                        <div class="p-3 link-div">
+                            <a href="">
+                                <h3>Marketing Digital</h3>
+                                <div><img src="/img/marketing.png" alt="" height="100" class="my-3"></div>
+                            </a>
+
                         </div>
                     </div>
                     <div class="col">
-                        <div class="p-3">
-                            <h3>Consultoría Creativa</h3>
+                        <div class="p-3 link-div">
+                            <a href="">
+                                <h3>Consultoría Creativa</h3>
+                                <div><img src="/img/consultoria.png" alt="" height="100" class="my-3"></div>
+                            </a>
+
                         </div>
                     </div>
                     <div class="col">
-                        <div class="p-3">
-                            <h3>Creación de Páginas Web</h3>
+                        <div class="p-3 link-div">
+                            <a href="">
+                                <h3>Creación de Páginas Web</h3>
+                                <div><img src="/img/pagina.png" alt="" height="100" class="my-3"></div>
+                            </a>
+
                         </div>
                     </div>
                 </div>
             </div>
 
-
-
         </div>
 
-        <div class="cotizar">
+
+        <div class="modal" id="edit-modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Agregar Nuevo Servicio</h2>
+                <form id="edit-form" class="styled-form">
+                    <div class="form-group">
+                        <label for="edit-name">Nombre</label>
+                        <input type="text" id="edit-name" class="form-input"
+                            placeholder="Ingrese el nombre del servicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-descripcion">Descripción</label>
+                        <textarea type="text" id="edit-descripcion" class="form-input"
+                            placeholder="Ingrese una descripción sobre este servicio" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-categoria">Categoría</label>
+                        <input type="text" id="edit-categoria" class="form-input" placeholder="Categoría del servicio"
+                            required>
+                    </div>
+                    <button type="button" class="btn-submit">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="fade mb-5"></div>
+
+        <div class="cotizar" id="cotizar">
 
             <div class="container text-center d-flex justify-content-center align-items-center">
                 <div class="row w-100">
@@ -305,7 +362,7 @@
             </div>
         </div>
 
-        <div class="postulacion">
+        <div class="postulacion" id="postulacion">
             <div class="container text-center d-flex justify-content-center align-items-center">
 
                 <div class="row w-100">
@@ -371,7 +428,16 @@
         </div>
 
     </main>
-    <footer>
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-4">
+        <div class="container">
+            <div class="col-md-4 d-flex align-items-center">
+                <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+                    <img class="bi" height="30" src="/img/1.png">
+                </a>
+                <span class="mb-3 mb-md-0">© 2024 Kreativa Agency</span>
+            </div>
+
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>

@@ -124,9 +124,33 @@ document.addEventListener("DOMContentLoaded", function () {
       : "Activar formulario";
   }
 
-  // Inicializar el texto del label
   updateSwitchLabel();
 
-  // Cambiar el texto del label cuando se cambia el estado del switch
   switchInput.addEventListener("change", updateSwitchLabel);
+});
+
+const modalEdit = document.getElementById("edit-modal");
+
+const closeModals = () => {
+  document.querySelectorAll(".modal").forEach((modal) => {
+    modal.style.display = "none";
+  });
+};
+
+const modal = document.getElementById("edit-modal");
+const openModalBtn = document.querySelector(".open-modal-btn");
+const closeModalBtn = document.querySelector(".close");
+
+openModalBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+});
+
+closeModalBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+window.addEventListener("click", (event) => {
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
 });

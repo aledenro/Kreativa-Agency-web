@@ -146,28 +146,45 @@ h3 {
   outline: none;
 }
 
-/* Aseguramos el diseño responsivo y alineación */
 .vh-100 {
-  height: 100vh; /* Ocupa toda la altura del viewport */
+  height: 100vh;
 }
+
+.services h3 {
+  color: #110d27;
+}
+
 .services .row {
-  height: 100%; /* Garantiza que las filas ocupen toda la altura */
+  height: 100%;
 }
 .services .col {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centra verticalmente */
-  align-items: center; /* Centra horizontalmente */
+  justify-content: center;
+  align-items: center;
 }
 
 .services {
   background-color: #fff;
   color: #110d27;
-  margin-bottom: 100px;
-  position: relative; /* Asegura que no sea absolute ni fixed */
-  height: auto; /* Ajusta la altura si es necesario */
-  overflow: hidden; /* Evita el contenido fuera de los límites */
+  position: relative;
+  height: auto;
+  overflow: hidden;
   padding-bottom: 50px;
+}
+
+.link-div {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+  margin: 20px 0;
+}
+
+.link-div:hover {
+  transform: scale(1.05);
+}
+
+a {
+  text-decoration: none;
 }
 
 .blockquote {
@@ -185,7 +202,7 @@ h3 {
 .cotizar .row {
   flex-grow: 1;
 }
-/* Estilo general del contenedor del formulario */
+
 .container.form {
   padding: 2rem;
   border-radius: 15px;
@@ -197,14 +214,14 @@ h3 {
   background-color: rgba(255, 255, 255, 0.8);
   padding: 2rem;
   border-radius: 10px;
-  max-width: 700px; /* Ajusta este valor a tu gusto */
+  max-width: 700px;
   margin: 0 auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 @media (min-width: 768px) {
   .form {
-    max-width: 800px; /* Ajusta según tus necesidades */
+    max-width: 800px;
   }
 }
 
@@ -245,7 +262,6 @@ h3 {
   box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
 }
 
-/* Aplica esta clase a los select en el HTML */
 .form-select {
   width: 100%;
   padding: 0.8rem;
@@ -262,7 +278,6 @@ h3 {
   box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
 }
 
-/* Botón estilizado */
 .btn-submit {
   width: 100%;
   padding: 1rem;
@@ -285,8 +300,28 @@ h3 {
   transform: scale(1.1);
 }
 
-/* Íconos de los labels */
-.styled-form label i {
+.btn.servicios {
+  padding: 1rem 3rem;
+  background-color: #ff0072;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn.servicios:hover {
+  background-color: #e00065;
+  transform: scale(1.05);
+}
+
+.btn.servicios:active {
+  transform: scale(1.1);
+}
+
+i {
   margin-right: 0.5rem;
   color: #ff0072;
 }
@@ -298,7 +333,7 @@ h3 {
   background-color: #f9f9f9;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  margin-right: 0.5rem; /* para que haya espacio entre el checkbox y el label */
+  margin-right: 0.5rem;
 }
 
 .form-check-input:hover {
@@ -325,7 +360,7 @@ h3 {
 
   width: 2.5rem;
   height: 1.5rem;
-  background-color: #e0e0e0; /* gris claro para mayor contraste */
+  background-color: #e0e0e0;
   border-radius: 1.5rem;
   border: none;
   position: relative;
@@ -346,7 +381,6 @@ h3 {
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-/* Estado seleccionado (Activado) */
 .form-check-input[type="checkbox"][role="switch"]:checked {
   background-color: #ff0072;
 }
@@ -355,16 +389,181 @@ h3 {
   transform: translateX(1rem);
 }
 
-/* Enfoque del switch */
 .form-check-input[type="checkbox"][role="switch"]:focus {
   box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
 }
 
-/* Ajustamos la etiqueta */
 .form-check-label {
   font-size: 1rem;
   color: #110d27;
   margin: 0;
   line-height: 1.5rem;
   cursor: pointer;
+}
+
+.fade {
+  width: 100%;
+  height: 200px; /* Altura del desenfoque */
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.4),
+    rgba(255, 255, 255, 0)
+  );
+  animation: fadeIn 2s ease-out forwards; /* Animación para la opacidad */
+  opacity: 0; /* Inicialmente invisible */
+}
+
+/* Definimos la animación */
+@keyframes fadeIn {
+  100% {
+    opacity: 1; /* Termina visible */
+  }
+}
+
+footer {
+  background-color: #110d27;
+  color: #fff;
+}
+
+footer ul {
+  color: #fff;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  width: 80%;
+  max-width: 500px;
+  color: #333;
+  position: relative;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  color: #ff0072;
+  font-size: 1.5rem;
+}
+
+.modal-content select {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 1rem 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+/* Modal para formularios */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: left;
+  width: 90%;
+  max-width: 600px;
+  color: #333;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.modal-content h2 {
+  font-size: 1.8rem;
+  color: #ff0072;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  color: #ff0072;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.modal-content .close:hover {
+  transform: scale(1.2);
+}
+
+/* Botones del modal */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.modal-buttons .btn-cancel {
+  background-color: #ccc;
+  color: #333;
+  font-size: 1rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons .btn-cancel:hover {
+  background-color: #bbb;
+}
+
+/* detalle servicio */
+
+.container.servicio {
+  background: #110d27;
+  padding: 40px;
+  border-radius: 10px;
+}
+
+.paquete {
+  color: #110d27;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 5px 5px #ff0072;
+}
+
+.paquete p {
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+}
+
+.badge.precio {
+  font-weight: 600;
+  font-size: 1rem;
+  background-color: #8d25fc;
 }
