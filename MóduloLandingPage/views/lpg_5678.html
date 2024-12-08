@@ -72,6 +72,9 @@
 
                 <div></div>
                 <h3 class="text-center my-5 mb-md-0 fw-bold">Paquetes</h3>
+                <div class="d-flex justify-content-end">
+                    <a class="btn servicios btn-action open-add-btn">Agregar Paquete</a>
+                </div>
                 <div class="container overflow-hidden text-center pb-4">
                     <div class="row gy-5 mt-2">
                         <div class="col-6">
@@ -91,8 +94,17 @@
                                     <li>4 Historias</li>
 
                                 </ul>
+                                <div class="btn-group " role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-action open-edit-btn">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-delete" data-id="1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-6">
                             <div class="p-3 paquete">
                                 <div class="row d-flex justify-content-between align-items-center mb-2">
@@ -108,8 +120,15 @@
                                     <li>12 Artes gráficas mensuales</li>
                                     <li>Publicaciones 3 días a la semana</li>
                                     <li>8 Historias</li>
-
                                 </ul>
+                                <div class="btn-group " role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-action open-edit-btn">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-delete" data-id="1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="col-6">
@@ -130,6 +149,14 @@
                                     <li>4 Reels</li>
 
                                 </ul>
+                                <div class="btn-group " role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-action open-edit-btn">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-delete" data-id="1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="col-6">
@@ -150,6 +177,14 @@
                                     <li>4 Reels</li>
                                     <li>Monitoreo de mensajes de audiencia</li>
                                 </ul>
+                                <div class="btn-group " role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-action open-edit-btn">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-delete" data-id="1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="col-6">
@@ -170,12 +205,96 @@
                                     <li>4 Reels</li>
                                     <li>Monitoreo de mensajes de audiencia</li>
                                 </ul>
+                                <div class="btn-group " role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-action open-edit-btn">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-delete" data-id="1">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="modal" id="edit-modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Editar Paquete</h2>
+                <form id="edit-form" class="styled-form">
+                    <div class="form-group">
+                        <label for="name">Nombre</label>
+                        <input type="text" id="name" class="form-input" placeholder="Ingrese el nombre del servicio"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nivel">Nivel</label>
+                        <input type="text" id="nivel" class="form-input" placeholder="Categoría del servicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duracion">Duración</label>
+                        <input type="text" id="duracion" class="form-input" placeholder="Categoría del servicio"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="precio">Precio</label>
+                        <input type="text" id="precio" class="form-input" placeholder="Categoría del servicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea type="text" id="descripcion" class="form-input"
+                            placeholder="Ingrese una descripción sobre este servicio" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="beneficios">Beneficios</label>
+                        <textarea type="text" id="beneficios" class="form-input"
+                            placeholder="Ingrese una descripción sobre este servicio" required></textarea>
+                    </div>
+                    <button type="button" class="btn-submit">Guardar</button>
+                </form>
+            </div>
+        </div>
+        <div class="modal" id="add-modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Agregar Nuevo Paquete</h2>
+                <form id="add-form" class="styled-form">
+                    <div class="form-group">
+                        <label for="name">Nombre</label>
+                        <input type="text" id="name" class="form-input" placeholder="Ingrese el nombre del servicio"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nivel">Nivel</label>
+                        <input type="text" id="nivel" class="form-input" placeholder="Categoría del servicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duracion">Duración</label>
+                        <input type="text" id="duracion" class="form-input" placeholder="Categoría del servicio"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="precio">Precio</label>
+                        <input type="text" id="precio" class="form-input" placeholder="Categoría del servicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea type="text" id="descripcion" class="form-input"
+                            placeholder="Ingrese una descripción sobre este servicio" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="beneficios">Beneficios</label>
+                        <textarea type="text" id="beneficios" class="form-input"
+                            placeholder="Ingrese una descripción sobre este servicio" required></textarea>
+                    </div>
+                    <button type="button" class="btn-submit">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+
     </main>
 
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-4">

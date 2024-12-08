@@ -567,3 +567,28 @@ footer ul {
   font-size: 1rem;
   background-color: #8d25fc;
 }
+
+.paquete .btn,
+.services .btn {
+  padding: 1rem 1.5rem;
+  background-color: #ff0072;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.paquete .btn:hover,
+.services .btn:hover {
+  background-color: #8d25fc;
+  transform: scale(1.05);
+}
+
+.paquete .btn:active,
+.services .btn:active {
+  transform: scale(1.1);
+  color: white;
+}
