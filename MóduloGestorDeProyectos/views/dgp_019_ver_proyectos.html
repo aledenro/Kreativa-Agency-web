@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Mis Proyectos</title>
+  <link rel="stylesheet" href="../css/gdp_019.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="dashboard-container">
+    <div class="dashboard-sidebar">
+      <div class="brand-logo">
+        <h1>Kreativa Agency</h1>
+      </div>
+      <nav class="menu">
+        <button id="btn-proyectos-produccion" class="menu-btn active">
+          <i class="fas fa-tasks"></i> Proyectos en Producción
+        </button>
+        <!-- <button id="btn-proyectos-finalizados" class="menu-btn">
+          <i class="fas fa-check-circle"></i> Proyectos Finalizados
+        </button> -->
+        <a href="#proyectos-finalizados" id="btn-proyectos-finalizados" class="btn btn-link">Proyectos Finalizados</a>        
+      </nav>
+    </div>
+    <div class="dashboard-content">
+      <header>
+        <h2>Mis Proyectos</h2>
+      </header>
+      <section id="proyectos-produccion" class="tab-content active">
+        <h3>Proyectos en Producción</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre del Proyecto</th>
+              <th>Estado</th>
+              <th>Fecha de Vencimiento</th>
+              <th>Colaborador Encargado</th>
+              <th>Avances</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-produccion">
+            <tr>
+              <td>001</td>
+              <td>Proyecto A</td>
+              <td>En Progreso</td>
+              <td>2024-12-31</td>
+              <td>Juan Pérez</td>
+              <td><a href="gdp_020_gestionar_avances.html" class="btn-gestionar">Gestionar</a></td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td>Proyecto B</td>
+              <td>En Progreso</td>
+              <td>2025-01-15</td>
+              <td>Ana Gómez</td>
+              <td><a href="gdp_020_gestionar_avances.html" class="btn-gestionar">Gestionar</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section id="proyectos-finalizados" class="tab-content">
+        <h3>Proyectos Finalizados</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre del Proyecto</th>
+              <th>Fecha de Finalización</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-finalizados">
+            <tr>
+              <td>Proyecto X</td>
+              <td>2024-10-01</td>
+            </tr>
+            <tr>
+              <td>Proyecto Y</td>
+              <td>2024-09-15</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/interacciones.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</body>
+</html>

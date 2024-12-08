@@ -1,0 +1,123 @@
+/* General Styles */
+body {
+    font-family: 'Century Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #110d27;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+  }
+  
+  /* Contenedor Principal */
+  .dashboard-container {
+    display: flex;
+    width: 90%;
+    height: 90%;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  /* Sidebar */
+  .dashboard-sidebar {
+    width: 25%;
+    background: linear-gradient(to bottom right, #ff0072, #110d27);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+  }
+  
+  .brand-logo h1 {
+    color: #fff;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .menu {
+    width: 100%;
+  }
+  
+  .menu-btn {
+    width: 100%;
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    text-align: left;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .menu-btn.active, .menu-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Content Area */
+  .dashboard-content {
+    width: 75%;
+    padding: 2rem;
+    background: #f9f9f9;
+    color: #110d27;
+  }
+  
+  header h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .tab-content {
+    display: none;
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  thead {
+    background: #110d27;
+    color: #fff;
+  }
+  
+  thead th, tbody td {
+    padding: 1rem;
+    text-align: left;
+  }
+  
+  tbody tr:nth-child(even) {
+    background: #f2f2f2;
+  }
+  
+  .btn-gestionar {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-gestionar:hover {
+    background-color: #0056b3;
+  }
+  

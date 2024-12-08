@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Avances</title>
+  <link rel="stylesheet" href="../css/gdp_019.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="dashboard-container">
+    <div class="dashboard-sidebar">
+      <div class="brand-logo">
+        <h1>Kreativa Agency</h1>
+      </div>
+      <nav class="menu">
+        <button class="menu-btn active">
+          <i class="fas fa-tasks"></i> Gestionar Proyecto
+        </button>
+        <button class="menu-btn">
+          <i class="fas fa-arrow-left"></i> Regresar a mis proyectos
+        </button>
+      </nav>      
+    </div>
+    <div class="dashboard-content">
+      <header>
+        <h2>Gestión de Avances</h2>
+      </header>
+      <section class="gestionar-avances">
+        <!-- Hacer sugerencia -->
+        <div class="form-container">
+          <h3>Hacer Sugerencia</h3>
+          <form id="form-sugerencia">
+            <textarea id="sugerencia-text" placeholder="Escribe tu sugerencia aquí..." required></textarea>
+            <input type="file" id="sugerencia-archivo">
+            <button type="submit" id="btn-sugerencia">Enviar Sugerencia</button>
+          </form>
+        </div>
+
+        <!-- Informar avance -->
+        <div class="form-container">
+          <h3>Informar Avance</h3>
+          <form id="form-avance">
+            <textarea id="avance-text" placeholder="Escribe el avance del proyecto aquí..." required></textarea>
+            <input type="file" id="avance-archivo">
+            <button type="submit" id="btn-avance">Informar Avance</button>
+          </form>
+        </div>
+
+        <!-- Ver avances -->
+        <div class="ver-avances">
+            <h3>Avances del Proyecto</h3>
+            <table id="tabla-avances">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Avance</th>
+                  <th>Archivo</th>
+                  <th>Aprobar</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-avances-body">
+                <!-- Avance 1 -->
+                <tr>
+                    <td>2024-12-01</td>
+                    <td>Avance 1 del proyecto: Se completó la fase inicial de diseño y planificación.</td>
+                    <td><a href="avance1.pdf" target="_blank">Ver archivo</a></td>
+                    <td><button class="btn-aprobar">Aprobar</button></td>
+                  </tr>                  
+                <!-- Avance 2 -->
+                <tr>
+                  <td>2024-12-05</td>
+                  <td>Avance 2 del proyecto: Se realizó la integración del sistema con el servidor.</td>
+                  <td><a href="avance2.pdf" target="_blank">Ver archivo</a></td>
+                  <td><button class="btn-aprobar">Aprobar</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+      </section>
+    </div>
+  </div>
+
+  <script src="../js/interacciones.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</body>
+</html>
