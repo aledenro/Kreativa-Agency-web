@@ -129,28 +129,33 @@ document.addEventListener("DOMContentLoaded", function () {
   switchInput.addEventListener("change", updateSwitchLabel);
 });
 
-const modalEdit = document.getElementById("edit-modal");
-
+// cerrar todos los .modal
 const closeModals = () => {
   document.querySelectorAll(".modal").forEach((modal) => {
     modal.style.display = "none";
   });
 };
 
-const modal = document.getElementById("edit-modal");
-const openModalBtn = document.querySelector(".open-modal-btn");
-const closeModalBtn = document.querySelector(".close");
+// abrir modales
+const setupModal = (modalId, openButtonClass, closeButtonClass) => {
+  const modal = document.getElementById(modalId);
+  const openModalBtn = document.querySelector(`.${openButtonClass}`);
+  const closeModalBtn = modal.querySelector(`.${closeButtonClass}`);
 
-openModalBtn.addEventListener("click", () => {
-  modal.style.display = "flex";
-});
+  openModalBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+  });
 
-closeModalBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-window.addEventListener("click", (event) => {
-  if (event.target === modal) {
+  closeModalBtn.addEventListener("click", () => {
     modal.style.display = "none";
-  }
-});
+  });
+
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+};
+
+setupModal("edit-modal", "open-edit-btn", "close");
+setupModal("add-modal", "open-add-btn", "close");

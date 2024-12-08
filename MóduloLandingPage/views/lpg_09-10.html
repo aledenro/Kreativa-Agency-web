@@ -96,7 +96,7 @@
             <div class="container text-center">
                 <h2 class="my-3" style="color: #8d25fc;">Nuestros Servicios</h2>
                 <div class="d-flex justify-content-end">
-                    <a class="btn servicios btn-action open-modal-btn">Agregar Servicios</a>
+                    <a class="btn servicios btn-action open-add-btn">Agregar Servicios</a>
                 </div>
                 <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 d-flex justify-content-center">
 
@@ -106,6 +106,14 @@
                                 <h3>Desarrollo de Marca</h3>
                                 <div><img src="/img/branding.png" alt="" height="100" class="my-3"></div>
                             </a>
+                            <div class="btn-group " role="group">
+                                <button type="button" class="btn btn-action open-edit-btn" data-modal="editModal1">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn btn-delete" data-id="1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
@@ -114,7 +122,14 @@
                                 <h3>Estrategias de Comunicación</h3>
                                 <div><img src="/img/comunicacion.png" alt="" height="100" class="my-3"></div>
                             </a>
-
+                            <div class="btn-group " role="group">
+                                <button type="button" class="btn btn-action open-edit-btn" data-modal="editModal1">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn btn-delete" data-id="1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
@@ -123,7 +138,14 @@
                                 <h3>Gestión de Redes Sociales</h3>
                                 <div><img src="/img/redes.png" alt="" height="100" class="my-3"></div>
                             </a>
-
+                            <div class="btn-group " role="group">
+                                <button type="button" class="btn btn-action open-edit-btn" data-modal="editModal1">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn btn-delete" data-id="1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
 
                         </div>
                     </div>
@@ -133,7 +155,14 @@
                                 <h3>Diseño Gráfico y Publicitario</h3>
                                 <div><img src="/img/diseño.png" alt="" height="100" class="my-3"></div>
                             </a>
-
+                            <div class="btn-group " role="group">
+                                <button type="button" class="btn btn-action open-edit-btn" data-modal="editModal1">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn btn-delete" data-id="1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
@@ -142,7 +171,14 @@
                                 <h3>Marketing Digital</h3>
                                 <div><img src="/img/marketing.png" alt="" height="100" class="my-3"></div>
                             </a>
-
+                            <div class="btn-group " role="group">
+                                <button type="button" class="btn btn-action open-edit-btn" data-modal="editModal1">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn btn-delete" data-id="1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
@@ -151,7 +187,14 @@
                                 <h3>Consultoría Creativa</h3>
                                 <div><img src="/img/consultoria.png" alt="" height="100" class="my-3"></div>
                             </a>
-
+                            <div class="btn-group " role="group">
+                                <button type="button" class="btn btn-action open-edit-btn" data-modal="editModal1">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn btn-delete" data-id="1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
@@ -160,7 +203,14 @@
                                 <h3>Creación de Páginas Web</h3>
                                 <div><img src="/img/pagina.png" alt="" height="100" class="my-3"></div>
                             </a>
-
+                            <div class="btn-group " role="group">
+                                <button type="button" class="btn btn-action open-edit-btn" data-modal="editModal1">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button type="button" class="btn btn-delete" data-id="1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -169,24 +219,49 @@
         </div>
 
 
-        <div class="modal" id="edit-modal">
+        <div class="modal" id="add-modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Agregar Nuevo Servicio</h2>
-                <form id="edit-form" class="styled-form">
+                <form id="add-form" class="styled-form">
                     <div class="form-group">
-                        <label for="edit-name">Nombre</label>
-                        <input type="text" id="edit-name" class="form-input"
-                            placeholder="Ingrese el nombre del servicio" required>
+                        <label for="add-name">Nombre</label>
+                        <input type="text" id="add-name" class="form-input" placeholder="Ingrese el nombre del servicio"
+                            required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-descripcion">Descripción</label>
-                        <textarea type="text" id="edit-descripcion" class="form-input"
+                        <label for="add-descripcion">Descripción</label>
+                        <textarea type="text" id="add-descripcion" class="form-input"
                             placeholder="Ingrese una descripción sobre este servicio" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="edit-categoria">Categoría</label>
+                        <label for="add-categoria">Categoría</label>
                         <input type="text" id="edit-categoria" class="form-input" placeholder="Categoría del servicio"
+                            required>
+                    </div>
+                    <button type="button" class="btn-submit">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal" id="edit-modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Editar Servicio</h2>
+                <form id="edit-form" class="styled-form">
+                    <div class="form-group">
+                        <label for="name">Nombre</label>
+                        <input type="text" id="name" class="form-input" placeholder="Ingrese el nombre del servicio"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea type="text" id="descripcion" class="form-input"
+                            placeholder="Ingrese una descripción sobre este servicio" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoría</label>
+                        <input type="text" id="categoria" class="form-input" placeholder="Categoría del servicio"
                             required>
                     </div>
                     <button type="button" class="btn-submit">Guardar</button>
@@ -313,6 +388,7 @@
                                         <label class="form-check-label" for="flexCheckDefault">
                                             Desarrollo de marca
                                         </label>
+
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
