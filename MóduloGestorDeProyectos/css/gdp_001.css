@@ -1,0 +1,202 @@
+/* General Styling */
+body {
+  font-family: 'Century Gothic', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #110d27;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+}
+
+/* Dashboard Styling */
+.dashboard-container {
+  display: flex;
+  width: 90%;
+  height: 90%;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+  width: 25%;
+  background: linear-gradient(to bottom right, #ff0072, #110d27);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.brand-logo h1 {
+  color: #fff;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  background: transparent;
+  color: #fff;
+  border: none;
+  padding: 1rem;
+  text-align: left;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s ease, padding-left 0.3s ease;
+}
+
+.menu-btn i {
+  margin-right: 10px; /* Espacio entre el icono y el texto */
+  font-size: 1.5rem; /* Tamaño del ícono */
+}
+
+.menu-btn span {
+  font-size: 1.1rem; /* Tamaño del texto */
+  font-weight: 500;
+}
+
+.menu-btn.active, .menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  padding-left: 1.5rem; /* Espacio extra en la izquierda al hacer hover o al estar activo */
+}
+
+.menu-btn.active i, .menu-btn:hover i {
+  color: #ff0072; /* Color del ícono al pasar el ratón o estar activo */
+}
+
+.menu-btn span {
+  color: #fff; /* Color del texto */
+}
+
+.menu-btn.active span, .menu-btn:hover span {
+  color: #ff0072; /* Cambia el color del texto cuando está activo o en hover */
+}
+
+/* Content */
+.dashboard-content {
+  width: 75%;
+  padding: 2rem;
+  background: #f9f9f9;
+  color: #110d27;
+}
+
+header h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Form Styles */
+.solicitud-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.solicitud-form label {
+  font-size: 1.2rem;
+  color: #110d27;
+}
+
+.solicitud-form textarea, .solicitud-form input[type="file"] {
+  padding: 1rem;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: border 0.3s ease;
+}
+
+.solicitud-form textarea:focus, .solicitud-form input[type="file"]:focus {
+  border-color: #ff0072;
+  outline: none;
+}
+
+.solicitud-form button {
+  padding: 1rem;
+  background-color: #ff0072;
+  color: white;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.solicitud-form button:hover {
+  background-color: #e60066;
+}
+
+/* Hover and Focus effects */
+.solicitud-form input[type="file"]:hover,
+.solicitud-form textarea:hover {
+  border-color: #ff0072;
+}
+  /* General page setup */
+  html, body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Dashboard container setup */
+  .dashboard-container {
+    display: flex;
+    flex: 1;
+  }
+  
+  .dashboard-sidebar {
+    width: 250px; /* Ajusta según el ancho deseado */
+  }
+  
+  .dashboard-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  /* Footer styles */
+  .footer {
+    text-align: center;
+    padding: 15px 0;
+    width: 100%; /* Ocupa todo el ancho */
+  }
+  
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .footer-logo {
+    height: 30px;
+    margin-bottom: 5px; /* Espacio entre logo y texto */
+  }
+  
+  .footer span {
+    font-size: 14px;
+    color: #6c757d;
+  }

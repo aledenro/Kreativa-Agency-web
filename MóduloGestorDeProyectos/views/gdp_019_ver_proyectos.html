@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Mis Proyectos</title>
+  <title>Mis Proyectos</title>
   <link rel="stylesheet" href="../css/gdp_019.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
 </head>
@@ -15,13 +15,17 @@
         <h1>Kreativa Agency</h1>
       </div>
       <nav class="menu">
+        <!-- Nueva solicitud -->
+        <a href="gdp_001_nueva_solicitud.html" id="btn-nueva-solicitud" class="menu-btn">
+          <i class="fas fa-plus-circle"></i> Nueva Solicitud
+        </a>
         <button id="btn-proyectos-produccion" class="menu-btn active">
           <i class="fas fa-tasks"></i> Proyectos en Producción
         </button>
-        <!-- <button id="btn-proyectos-finalizados" class="menu-btn">
+        <button id="btn-proyectos-finalizados" class="menu-btn">
           <i class="fas fa-check-circle"></i> Proyectos Finalizados
-        </button> -->
-        <a href="#proyectos-finalizados" id="btn-proyectos-finalizados" class="btn btn-link">Proyectos Finalizados</a>        
+        </button>
+        <!-- <a href="#proyectos-finalizados" id="btn-proyectos-finalizados" class="btn btn-link">Proyectos Finalizados</a>         -->
       </nav>
     </div>
     <div class="dashboard-content">
@@ -88,4 +92,16 @@
   <script src="../js/interacciones.js"></script>
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </body>
+
+<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-4">
+  <div class="container">
+      <div class="col-md-4 d-flex align-items-center">
+          <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+              <img class="bi" height="30" src="/img/1.png">
+          </a>
+          <span class="mb-3 mb-md-0">© 2024 Kreativa Agency</span>
+      </div>
+
+  </div>
+</footer>
 </html>

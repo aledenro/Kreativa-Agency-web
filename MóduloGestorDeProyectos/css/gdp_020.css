@@ -8,7 +8,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: auto;
+  overflow-y: auto; /* Habilita scroll vertical */
 }
 
 #particles-js {
@@ -273,4 +274,156 @@ textarea {
 
 .proyecto-seccion.active {
   display: block;
+}
+
+/* Contenedor de los formularios */
+.form-container {
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+}
+
+/* Títulos */
+.form-container h3 {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #333;
+}
+
+/* Recuadro de texto */
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+  resize: none;
+  background-color: #fff;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
+
+/* Botones */
+button {
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:active {
+  background-color: #004085;
+}
+
+/* Botón de archivo */
+input[type="file"] {
+  display: block;
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+input[type="file"]::before {
+  content: "Seleccionar archivo";
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+input[type="file"]:hover::before {
+  background: #0056b3;
+}
+
+input[type="file"]:active::before {
+  background: #004085;
+}
+
+body, html {
+  overflow: auto; /* Permitir scroll */
+}
+
+.container {
+  overflow-y: auto; /* Permitir scroll vertical */
+}
+
+/* General page setup */
+html, body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dashboard container setup */
+.dashboard-container {
+  display: flex;
+  flex: 1;
+}
+
+.dashboard-sidebar {
+  width: 250px; /* Ajusta según el ancho deseado */
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Footer styles */
+.footer {
+  text-align: center;
+  padding: 15px 0;
+  width: 100%; /* Ocupa todo el ancho */
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-logo {
+  height: 30px;
+  margin-bottom: 5px; /* Espacio entre logo y texto */
+}
+
+.footer span {
+  font-size: 14px;
+  color: #6c757d;
 }

@@ -121,3 +121,48 @@ body {
     background-color: #0056b3;
   }
   
+  /* General page setup */
+html, body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dashboard container setup */
+.dashboard-container {
+  display: flex;
+  flex: 1;
+}
+
+.dashboard-sidebar {
+  width: 250px; /* Ajusta según el ancho deseado */
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Footer styles */
+.footer {
+  text-align: center;
+  padding: 15px 0;
+  width: 100%; /* Ocupa todo el ancho */
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-logo {
+  height: 30px;
+  margin-bottom: 5px; /* Espacio entre logo y texto */
+}
+
+.footer span {
+  font-size: 14px;
+  color: #6c757d;
+}

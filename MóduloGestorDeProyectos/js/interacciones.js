@@ -1,3 +1,131 @@
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof particlesJS !== "undefined") {
+      particlesJS("particles-js", {
+        particles: {
+          number: {
+            value: 100,
+            density: {
+              enable: true,
+              value_area: 800,
+            },
+          },
+          color: {
+            value: "#ffffff",
+          },
+          shape: {
+            type: "circle",
+            stroke: {
+              width: 0,
+              color: "#000000",
+            },
+            polygon: {
+              nb_sides: 5,
+            },
+          },
+          opacity: {
+            value: 0.5,
+            random: false,
+            anim: {
+              enable: false,
+              speed: 1,
+              opacity_min: 0.1,
+              sync: false,
+            },
+          },
+          size: {
+            value: 3,
+            random: true,
+            anim: {
+              enable: false,
+              speed: 40,
+              size_min: 0.1,
+              sync: false,
+            },
+          },
+          line_linked: {
+            enable: true,
+            distance: 150,
+            color: "#ffffff",
+            opacity: 0.4,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 6,
+            direction: "none",
+            random: false,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+            attract: {
+              enable: false,
+              rotateX: 600,
+              rotateY: 1200,
+            },
+          },
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: {
+              enable: true,
+              mode: "repulse",
+            },
+            onclick: {
+              enable: true,
+              mode: "push",
+            },
+            resize: true,
+          },
+          modes: {
+            grab: {
+              distance: 400,
+              line_linked: {
+                opacity: 1,
+              },
+            },
+            bubble: {
+              distance: 400,
+              size: 40,
+              duration: 2,
+              opacity: 8,
+              speed: 3,
+            },
+            repulse: {
+              distance: 200,
+              duration: 0.4,
+            },
+            push: {
+              particles_nb: 4,
+            },
+            remove: {
+              particles_nb: 2,
+            },
+          },
+        },
+        retina_detect: true,
+      });
+    } else {
+      console.error(
+        "particles.js no está definido. Verifique si se cargó correctamente."
+      );
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const solicitudForm = document.getElementById("nueva-solicitud-form");
+  
+    solicitudForm.addEventListener("submit", (e) => {
+      e.preventDefault(); // Prevenir el envío estándar del formulario
+  
+      // Simular una confirmación (puedes integrar aquí un request al servidor si es necesario)
+      alert("¡Solicitud enviada exitosamente!");
+  
+      // Redirigir al usuario a la página de proyectos
+      window.location.href = "../views/gdp_019_ver_proyectos.html";
+    });
+  });  
+
 document.addEventListener("DOMContentLoaded", function () {
     // Obtener los botones
     const btnProyectosProduccion = document.getElementById('btn-proyectos-produccion');
@@ -139,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //Regresar a mis proyectos
 document.querySelector('.menu-btn:last-child').addEventListener('click', () => {
-    window.location.href = 'dgp_019_ver_proyectos.html';
+    window.location.href = 'gdp_019_ver_proyectos.html';
 });
 
 // Seleccionar todos los botones de aprobar

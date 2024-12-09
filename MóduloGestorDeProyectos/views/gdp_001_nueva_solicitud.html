@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Solicitud</title>
+  <link rel="stylesheet" href="../css/gdp_001.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+      <div class="brand-logo">
+        <h1>Kreativa Agency</h1>
+      </div>
+      <!-- <nav class="menu">
+        <a href="gdp_001_nueva_solicitud.html" id="btn-nueva-solicitud" class="menu-btn active">
+          <i class="fas fa-plus-circle"></i>
+          <span>Nueva Solicitud</span>
+        </a>
+        <a href="../views/dgp_019_ver_proyectos.html" id="btn-proyectos-produccion" class="menu-btn">
+          <i class="fas fa-tasks"></i>
+          <span>Proyectos en Producción</span>
+        </a>
+        <a href="#proyectos-finalizados" id="btn-proyectos-finalizados" class="menu-btn">
+          <i class="fas fa-check-circle"></i>
+          <span>Proyectos Finalizados</span>
+        </a> -->
+        <nav class="menu">
+            <button class="menu-btn active">
+              <i class="fas fa-tasks"></i> Nueva Solicitud
+            </button>
+            <button class="menu-btn">
+              <i class="fas fa-arrow-left"></i> Regresar a mis proyectos
+            </button>
+          </nav>
+      </nav>      
+    </div>
+
+    <!-- Content -->
+    <div class="dashboard-content">
+      <header>
+        <h2>Nueva Solicitud</h2>
+      </header>
+      <main>
+        <form id="nueva-solicitud-form" class="solicitud-form">
+          <label for="solicitud-texto">Descripción de la solicitud:</label>
+          <textarea id="solicitud-texto" placeholder="Escribe los detalles de tu solicitud..." required></textarea>
+
+          <label for="solicitud-archivo">Adjuntar archivo (opcional):</label>
+          <input type="file" id="solicitud-archivo" accept=".docx,.pdf,.jpg,.png,.mp3,.mp4,.zip,.rar">
+
+          <button type="submit" class="btn-enviar">Enviar Solicitud</button>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/interacciones.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</body>
+
+<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-4">
+  <div class="container">
+      <div class="col-md-4 d-flex align-items-center">
+          <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+              <img class="bi" height="30" src="/img/1.png">
+          </a>
+          <span class="mb-3 mb-md-0">© 2024 Kreativa Agency</span>
+      </div>
+  </div>
+</footer>
+</html>
