@@ -1,0 +1,459 @@
+* {
+  font-family: "Century Gothic", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #110d27;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.container {
+  padding: 0;
+  margin: 0;
+  height: 90%;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.dashboard {
+  width: 250px;
+  background: rgb(255, 0, 114);
+  background: linear-gradient(
+    140deg,
+    rgba(17, 13, 39, 1) 0%,
+    rgba(255, 0, 114, 1) 100%
+  );
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.dashboard a {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.sidebar.dashboard a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar.dashboard a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: white;
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar.dashboard {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    background: rgb(255, 0, 114);
+    background: linear-gradient(
+      140deg,
+      rgba(17, 13, 39, 1) 0%,
+      rgba(255, 0, 114, 1) 100%
+    );
+    padding: 10px 0;
+  }
+
+  .sidebar.dashboard a {
+    margin: 0;
+    padding: 5px 10px;
+    text-align: center;
+  }
+
+  .sidebar.dashboard {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .sidebar.dashboard a {
+    display: inline-block;
+    text-align: center;
+  }
+
+  .sidebar.dashboard a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  border-radius: 8px;
+  table-layout: auto;
+}
+.table-clientes {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background: #110d27;
+  color: #fff;
+}
+
+thead th,
+tbody td {
+  padding: 1rem;
+  text-align: left;
+}
+
+table th,
+table td {
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+h1 {
+  color: #8d25fc;
+  font-weight: 800;
+}
+
+.btn-icon {
+  padding: 0.5rem 1rem;
+  background-color: #8d25fc;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-icon:hover {
+  background-color: #ff0072;
+  transform: scale(1.05);
+  color: #fff;
+}
+
+.btn-icon:active {
+  transform: scale(1.1);
+  color: white;
+}
+
+.btn-action {
+  padding: 1rem 3rem;
+  background-color: #ff0072;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-action:hover {
+  background-color: #e00065;
+  transform: scale(1.05);
+  color: #fff;
+}
+
+.btn-action:active {
+  background-color: #e00065;
+  transform: scale(1.1);
+  color: #fff;
+}
+
+.container.form {
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  margin: auto;
+}
+
+.form {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 700px;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .form {
+    max-width: 800px;
+  }
+}
+
+.form p {
+  color: #110d27c4;
+}
+
+.styled-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.styled-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.styled-form label {
+  font-size: 1.1rem;
+  color: #110d27;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #ff0072;
+  box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-select:focus {
+  border-color: #ff0072;
+  box-shadow: 0 0 10px rgba(255, 0, 114, 0.5);
+}
+
+.custom-container {
+  gap: 1rem;
+}
+
+.btn.add {
+  flex-shrink: 0; /* El botón no cambiará de tamaño */
+  padding: 0.5rem 1rem;
+  background-color: #ff0072;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn.add:hover {
+  background-color: #c41765;
+}
+
+.form-select.year {
+  flex-grow: 1; /* El select ocupa el espacio restante */
+  max-width: 300px; /* Limitar ancho máximo */
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background-color: #ff0072;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit:hover {
+  background-color: #e00065;
+  transform: scale(1.05);
+}
+
+.btn-submit:active {
+  background-color: #e00065;
+  transform: scale(1.1);
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  color: #ff0072;
+  font-size: 1.5rem;
+}
+
+.modal-content select {
+  width: 100%;
+  padding: 0.5rem;
+  margin: 1rem 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+/* Modal para formularios */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: left;
+  width: 90%;
+  max-width: 600px;
+  color: #333;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.modal-content h2 {
+  font-size: 1.8rem;
+  color: #ff0072;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1.5rem;
+  color: #ff0072;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.modal-content .close:hover {
+  transform: scale(1.2);
+}
+
+/* Botones del modal */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.modal-buttons .btn-cancel {
+  background-color: #ccc;
+  color: #333;
+  font-size: 1rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons .btn-cancel:hover {
+  background-color: #bbb;
+}
+
+.user-table td .action-buttons {
+  justify-content: flex-start;
+}
+
+canvas {
+  display: block;
+  width: 100%; /* Ajustar al tamaño del contenedor */
+  max-width: 600px; /* Tamaño máximo */
+  height: 400px;
+  margin: 0 auto; /* Centrar */
+}
