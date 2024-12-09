@@ -120,6 +120,14 @@ table {
   border-collapse: collapse;
   margin-top: 1rem;
   border-radius: 8px;
+  table-layout: auto;
+}
+.table-clientes {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 thead {
@@ -133,17 +141,15 @@ tbody td {
   text-align: left;
 }
 
-table {
-  display: block;
-  width: 100%;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
 table th,
 table td {
-  word-wrap: break-word; /* Para cortar palabras largas */
+  word-wrap: break-word;
   white-space: normal;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
 }
 
 h1 {
@@ -438,4 +444,12 @@ h1 {
 
 .modal-buttons .btn-cancel:hover {
   background-color: #bbb;
+}
+
+canvas {
+  display: block;
+  width: 100%; /* Ajustar al tamaño del contenedor */
+  max-width: 600px; /* Tamaño máximo */
+  height: 400px;
+  margin: 0 auto; /* Centrar */
 }

@@ -21,15 +21,14 @@
         <nav class="dashboard sidebar">
             <a href=""><img src="/img/1.png" alt="" height="45"></a>
             <a href="/ModuloContabilidad/views/cnt_4569.html">Ingresos</a>
-            <a href="/ModuloContabilidad/views/cnt_1237.html" class="active">Egresos</a>
+            <a href="/ModuloContabilidad/views/cnt_1237.html">Egresos</a>
             <a href="/ModuloContabilidad/views/cnt_810.html">Finanzas</a>
-            <a href="/ModuloContabilidad/views/cnt_11.html">Historial</a>
+            <a href="/ModuloContabilidad/views/cnt_11.html" class="active">Historial</a>
             <a href="/ModuloContabilidad/views/cnt_12.html">Clientes</a>
         </nav>
         <div class="main-content">
-            <h1>Egreso</h1>
-            <div class="d-flex align-items-center justify-content-between custom-container">
-                <a class="btn btn-action open-add-btn add">Agregar Egreso</a>
+            <h1>Historial de movimientos</h1>
+            <div class="d-flex align-items-center justify-content-end custom-container">
                 <div class="d-flex align-items-center gap-2">
                     <select name="Año" id="year-select" class="form-select year">
                         <option value="">2014</option>
@@ -49,27 +48,25 @@
             <table class="table-responsive">
                 <thead>
                     <tr>
-                        <th class="fecha">Fecha</th>
+                        <th>Movimiento</th>
+                        <th>Fecha</th>
                         <th>Descripción</th>
                         <th>Monto</th>
-                        <th>Categoria</th>
-                        <th>Proveedor</th>
-                        <th>Estado</th>
-                        <th>Nota</th>
+                        <th>Usuario</th>
+                        <th>Última Acción</th>
+                        <th>Fecha acción</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <td>Ingreso</td>
                         <td>2024-12-01</td>
-                        <td>Pago de suscipcion Canva Pro</td>
-                        <td>$6.99</td>
-                        <td>Software y Herramientas</td>
-                        <td>Canva</td>
-                        <td>Pago</td>
-
-                        <td>Suscripción mensual</td>
-
+                        <td>Pago mes de noviembre</td>
+                        <td>$375</td>
+                        <td>agomez</td>
+                        <td>Eliminado</td>
+                        <td>2024-12-04</td>
                         <td>
                             <div class="btn-group">
                                 <a href="" class="btn btn-icon open-edit-btn"><i
@@ -79,14 +76,13 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>2024-11-29</td>
-                        <td>Compra de Equipo Nuevo</td>
-                        <td>$1500</td>
-                        <td>Infraestructura y Tecnología</td>
-                        <td>Intelec</td>
-                        <td>Pago</td>
-
-                        <td>Equipo para nuevo coolaborador</td>
+                        <td>Ingreso</td>
+                        <td>2024-12-01</td>
+                        <td>Pago mes de noviembre</td>
+                        <td>$375</td>
+                        <td>agomez</td>
+                        <td>Agregado</td>
+                        <td>2024-12-04</td>
                         <td>
                             <div class="btn-group">
                                 <a href="" class="btn btn-icon open-edit-btn"><i
@@ -94,7 +90,86 @@
                                 <a href="" class="btn btn-icon"><i class="fa-solid fa-trash"></i></a>
                             </div>
                         </td>
-
+                    </tr>
+                    <tr>
+                        <td>Ingreso</td>
+                        <td>2024-12-01</td>
+                        <td>Pago mes de diciembre</td>
+                        <td>$500</td>
+                        <td>agomez</td>
+                        <td>Editado</td>
+                        <td>2024-12-04</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="" class="btn btn-icon open-edit-btn"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="" class="btn btn-icon"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ingreso</td>
+                        <td>2024-12-01</td>
+                        <td>Pago mes de diciembre</td>
+                        <td>$500</td>
+                        <td>agomez</td>
+                        <td>Agregado</td>
+                        <td>2024-12-04</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="" class="btn btn-icon open-edit-btn"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="" class="btn btn-icon"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Egreso</td>
+                        <td>2024-12-01</td>
+                        <td>Pago de suscipcion Canva Pro</td>
+                        <td>$6.99</td>
+                        <td>agomez</td>
+                        <td>Editado</td>
+                        <td>2024-12-02</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="" class="btn btn-icon open-edit-btn"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="" class="btn btn-icon"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Egreso</td>
+                        <td>2024-12-01</td>
+                        <td>Pago de suscipcion Canva Pro</td>
+                        <td>$6.99</td>
+                        <td>agomez</td>
+                        <td>Agregado</td>
+                        <td>2024-12-02</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="" class="btn btn-icon open-edit-btn"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="" class="btn btn-icon"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Egreso</td>
+                        <td>2024-11-29</td>
+                        <td>Compra de Equipo Nuevo</td>
+                        <td>$1500</td>
+                        <td>jperez</td>
+                        <td>Agregado</td>
+                        <td>2024-11-30</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="" class="btn btn-icon open-edit-btn"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="" class="btn btn-icon"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>

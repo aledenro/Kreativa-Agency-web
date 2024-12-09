@@ -154,15 +154,42 @@ const setupModal = (modalId, openButtonClass, closeButtonClass) => {
 setupModal("edit-modal", "open-edit-btn", "close");
 setupModal("add-modal", "open-add-btn", "close");
 
-document.getElementById("filterBtn").addEventListener("click", function () {
-  const year = document.getElementById("yearPicker").value;
-  if (year) {
-    document.getElementById(
-      "result"
-    ).innerHTML = `<p class="text-success">Filtrando datos del año: <strong>${year}</strong></p>`;
-  } else {
-    document.getElementById(
-      "result"
-    ).innerHTML = `<p class="text-danger">Por favor, ingrese un año válido.</p>`;
-  }
-});
+const data = {
+  labels: ["Noviembre", "Diciembre"],
+  datasets: [
+    {
+      label: "Ingresos",
+      data: [375, 500],
+      backgroundColor: "rgba(244, 102, 71, 0.6)",
+      borderColor: "rgba(244, 102, 71, 1)",
+      borderWidth: 1,
+    },
+    {
+      label: "Egresos",
+      data: [-1500, -6.99],
+      backgroundColor: "rgba(24, 30, 219, 0.6)",
+      borderColor: "rgba(24, 30, 219, 1)",
+      borderWidth: 1,
+    },
+  ],
+};
+
+const config = {
+  type: "bar",
+  data: data,
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function (value) {
+            return "$" + value;
+          },
+        },
+      },
+    },
+  },
+};
+
+const ctx = document.getElementById("movimientosChart").getContext("2d");
+const movimientosChart = new Chart(ctx, config);

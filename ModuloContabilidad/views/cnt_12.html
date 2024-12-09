@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <link rel="icon" type="image/x-icon" href="/img/1.png">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/ModuloContabilidad/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+    <div id="particles-js"></div>
+
+    <div class="container">
+        <nav class="dashboard sidebar">
+            <a href=""><img src="/img/1.png" alt="" height="45"></a>
+            <a href="/ModuloContabilidad/views/cnt_4569.html">Ingresos</a>
+            <a href="/ModuloContabilidad/views/cnt_1237.html">Egresos</a>
+            <a href="/ModuloContabilidad/views/cnt_810.html" class="active">Finanzas</a>
+            <a href="/ModuloContabilidad/views/cnt_11.html">Historial</a>
+            <a href="/ModuloContabilidad/views/cnt_12.html">Clientes</a>
+        </nav>
+        <div class="main-content">
+
+            <h1>Pagos de Clientes</h1>
+            <div class="d-flex align-items-center justify-content-end custom-container">
+                <div class="d-flex align-items-center gap-2">
+                    <select class="form-select year">
+                        <option value="" selected>Estado</option>
+                        <option value="">Pago</option>
+                        <option value="">Pendiente</option>
+                    </select>
+                    <a class="btn btn-action add">Filtrar</a>
+                </div>
+            </div>
+
+            <table class="table-clientes table-responsive">
+                <thead>
+                    <th>Cédula</th>
+                    <th>Nombre</th>
+                    <th>Mes</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1-1111-1111</td>
+                        <td>Juan Perez</td>
+                        <td>Noviembre</td>
+                        <td>Pago</td>
+                        <td>
+                            <a href="" class="btn btn-icon open-edit-btn">Notificar</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1-1111-1112</td>
+                        <td>Silvia Lopez</td>
+                        <td>Noviembre</td>
+                        <td>Pago</td>
+                        <td>
+                            <a href="" class="btn btn-icon open-edit-btn">Notificar</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1-1111-1113</td>
+                        <td>Carlos Torres</td>
+                        <td>Noviembre</td>
+                        <td>Pendiente</td>
+                        <td>
+                            <a href="" class="btn btn-icon open-edit-btn">Notificar</a>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+    <footer>
+        <!-- place footer here -->
+    </footer>
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="/ModuloContabilidad/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+
+</html>
