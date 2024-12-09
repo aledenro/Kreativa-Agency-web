@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <link rel="icon" type="image/x-icon" href="/img/1.png">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/ModuloContabilidad/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div id="particles-js"></div>
+
+    <div class="container">
+        <nav class="dashboard sidebar">
+            <a href=""><img src="/img/1.png" alt="" height="45"></a>
+            <a href="/ModuloContabilidad/views/cnt_4569.html" class="active">Ingresos</a>
+            <a href="/ModuloContabilidad/views/cnt_1237.html">Egresos</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
+        </nav>
+        <div class="main-content">
+            <h1>Ingresos</h1>
+            <div class="d-flex align-items-center justify-content-between custom-container">
+                <a class="btn btn-action open-add-btn add">Agregar Ingreso</a>
+                <div class="d-flex align-items-center gap-2">
+                    <select name="Año" id="year-select" class="form-select year">
+                        <option value="">2014</option>
+                        <option value="">2015</option>
+                        <option value="">2016</option>
+                        <option value="">2017</option>
+                        <option value="">2018</option>
+                        <option value="">2019</option>
+                        <option value="">2020</option>
+                        <option value="">2022</option>
+                        <option value="">2023</option>
+                        <option value="">2024</option>
+                    </select>
+                    <a class="btn btn-action add">Filtrar</a>
+                </div>
+            </div>
+            <table class="table-responsive">
+                <thead>
+                    <tr>
+                        <th class="fecha">Fecha</th>
+                        <th>Descripción</th>
+                        <th>Monto</th>
+                        <th>Cliente</th>
+                        <th>Servicio</th>
+                        <th>Paquete</th>
+                        <th>Nota</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-12-01</td>
+                        <td>Pago mes de noviembre</td>
+                        <td>$375</td>
+                        <td>Juan Perez</td>
+                        <td>Gestión de Redes Sociales</td>
+                        <td>Gold</td>
+                        <td>Sin observaciones</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="" class="btn btn-icon open-edit-btn"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="" class="btn btn-icon"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2024-12-01</td>
+                        <td>Pago mes de diciembre</td>
+                        <td>$500</td>
+                        <td>Silvia Lopez</td>
+                        <td>Estrategias de Comunicación</td>
+                        <td>Especializado</td>
+                        <td>Pago por adelantado</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="" class="btn btn-icon open-edit-btn"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="" class="btn btn-icon"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="add-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Agregar Nuevo Ingreso</h2>
+            <form id="add-form" class="styled-form">
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" class="form-input" placeholder="Ingrese el nombre del servicio"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea type="text" id="descripcion" class="form-input" placeholder="Descripción del ingreso"
+                        required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="monto">Monto</label>
+                    <input type="text" id="monto" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="cliente">Cliente</label>
+                    <input type="text" id="cliente" class="form-input" required>
+                </div>
+                <div class="form-group">
+
+                    <label for="servicio" id="my-input">Servicio</label>
+                    <select class="form-select" id="multiple-checkboxes" multiple="multiple" size="3">
+                        <option value="">Desarrollo de Marca</option>
+                        <option value="">Estrategias de Comunicación</option>
+                        <option value="">Gestión de Redes Sociales</option>
+                        <option value="">Diseño Gráfico y Publicitario</option>
+                        <option value="">Marketing Digital</option>
+                        <option value="">Consultoría Creativa</option>
+                        <option value="">Creación de Páginas Web</option>
+                        <option value="">Especializado</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+
+                    <label for="paquete" id="my-input">Paquete</label>
+                    <select class="form-select" id="multiple-checkboxes" multiple="multiple" size="3">
+                        <option value="">Standard</option>
+                        <option value="">Premium</option>
+                        <option value="">Gold</option>
+                        <option value="">Diamond</option>
+                        <option value="">Diamond Plus</option>
+                        <option value="">No aplica</option>
+                    </select>
+                    <input type="text" id="servicio" class="form-input" placeholder="Categoría del servicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="nota">Nota</label>
+                    <textarea type="text" id="nota" class="form-input" placeholder="Nota extra..." required></textarea>
+                </div>
+                <button type="button" class="btn-submit">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Ingreso</h2>
+            <form id="edit-form" class="styled-form">
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" class="form-input" placeholder="Ingrese el nombre del servicio"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea type="text" id="descripcion" class="form-input" placeholder="Descripción del ingreso"
+                        required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="monto">Monto</label>
+                    <input type="text" id="monto" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="cliente">Cliente</label>
+                    <input type="text" id="cliente" class="form-input" required>
+                </div>
+                <div class="form-group">
+
+                    <label for="servicio" id="my-input">Servicio</label>
+                    <select class="form-select" id="multiple-checkboxes" multiple="multiple" size="3">
+                        <option value="">Desarrollo de Marca</option>
+                        <option value="">Estrategias de Comunicación</option>
+                        <option value="">Gestión de Redes Sociales</option>
+                        <option value="">Diseño Gráfico y Publicitario</option>
+                        <option value="">Marketing Digital</option>
+                        <option value="">Consultoría Creativa</option>
+                        <option value="">Creación de Páginas Web</option>
+                        <option value="">Especializado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+
+                    <label for="paquete" id="my-input">Paquete</label>
+                    <select class="form-select" id="multiple-checkboxes" multiple="multiple" size="3">
+                        <option value="">Standard</option>
+                        <option value="">Premium</option>
+                        <option value="">Gold</option>
+                        <option value="">Diamond</option>
+                        <option value="">Diamond Plus</option>
+                        <option value="">No aplica</option>
+                    </select>
+                    <input type="text" id="servicio" class="form-input" placeholder="Categoría del servicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="nota">Nota</label>
+                    <textarea type="text" id="nota" class="form-input" placeholder="Nota extra..." required></textarea>
+                </div>
+                <button type="button" class="btn-submit">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <!-- place footer here -->
+    </footer>
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="/ModuloContabilidad/script.js"></script>
+</body>
+
+</html>
