@@ -1,0 +1,23 @@
+{
+  "name": "proyecto-grad",
+  "version": "1.0.0",
+  "description": "**Proyecto Final Grupo 3** <br>\r **Integrantes:**<br>\r María José Valverde Peña <br>\r Daniela de los Ángeles Camacho Pereira <br>\r Valeria de los Ángeles Solano Vargas <br>\r Alejandro Denver Romero <br>",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
