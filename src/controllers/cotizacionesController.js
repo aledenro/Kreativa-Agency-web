@@ -1,7 +1,7 @@
 const CotizacionesService = require("../services/cotizacionesService");
 const lodash = require("lodash");
 
-class CotizacionesControllers {
+class CotizacionesController {
     async crearCotizacion(req, res) {
         try {
             const cotizacion = await CotizacionesService.crearCotizacion(
@@ -15,3 +15,5 @@ class CotizacionesControllers {
         }
     }
 }
+
+module.exports = new CotizacionesController();
