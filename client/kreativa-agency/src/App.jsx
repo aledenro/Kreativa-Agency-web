@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Header from "./components/Navbar/Header";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
+import AgregarCotizacion from "./pages/AgregarCotizacion";
 
 function App() {
     return (
-        <>
-            <Header></Header>
-        </>
+        <Router>
+            <Routes>
+                <Route
+                    path="/cotizacion/agregar"
+                    element={<AgregarCotizacion />}
+                ></Route>
+            </Routes>
+        </Router>
     );
 }
 
