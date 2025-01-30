@@ -3,11 +3,19 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT;
 const connectDB = require("./config/dbConnection");
+const cors = require("cors");
 
 const serviciosRoutes = require("./routes/serviciosRoutes");
 const cotizacionesRoutes = require("./routes/cotizacionesRoutes");
 
 connectDB();
+
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
 
 app.use(express.json());
 
