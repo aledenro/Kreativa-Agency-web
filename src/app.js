@@ -7,6 +7,7 @@ const cors = require("cors");
 
 const serviciosRoutes = require("./routes/serviciosRoutes");
 const cotizacionesRoutes = require("./routes/cotizacionesRoutes");
+const usuarioRoutes = require('./routes/usuarioRoutes');
 
 connectDB();
 
@@ -26,3 +27,4 @@ app.use("/api/servicios", serviciosRoutes);
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+app.use('/api', usuarioRoutes);
