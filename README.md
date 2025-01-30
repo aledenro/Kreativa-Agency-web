@@ -18,3 +18,18 @@ npm install --save-dev nodemon
 npm run dev
 
 NOTA: CREAR un .env en la carpeta general del proyecto
+
+# COMANDOS DE INICIO FRONT END
+
+cd client
+npm create vite@latest
+Poner como nombre kreativa-agency
+selecionar react con las flechas
+seleccionar javascript con las flechas
+cd kreativa-agency
+npm install
+npm install --save bootstrap
+npm install bootstrap @popperjs/core
+npm install react-router-dom
+npm install axios
+npm run dev
