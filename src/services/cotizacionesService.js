@@ -19,6 +19,32 @@ class CotizacionesService {
         }
     }
 
+    async getCotizacionByUserId(user_id) {
+        try {
+            return Cotizaciones.find({ cliente_id: user_id });
+        } catch (error) {
+            throw new Error(
+                `Error al obtener las cotizaciones del cliente ${user_id}  ` +
+                    error.message
+            );
+        }
+    }
+
+    async getAllCotizaciones() {
+        try {
+            const cotizaciones = Cotizaciones.find().populate(
+                "cliente_id",
+                "nombre"
+            );
+            return cotizaciones;
+        } catch (error) {
+            console.error(error.message);
+            throw new Error(
+                `Error al obtener las cotizaciones  ` + error.message
+            );
+        }
+    }
+
     async addRespuestaCotizacion(id, respuesta) {
         try {
             const cotizacion = await Cotizaciones.findById(id);

@@ -10,5 +10,7 @@ router.put(
 router.put("/cambiarEstado/:id", CotizacionesController.changeEstadoCotizacion);
 router.post("/crear", CotizacionesController.crearCotizacion);
 router.get("/id/:id", CotizacionesController.getCotizacionById);
+router.get("/getByUser/:user_id", CotizacionesController.getCotizacionByUserId);
+router.get("/", CotizacionesController.getAllCotizaciones);
 
 module.exports = router;
