@@ -4,6 +4,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import AgregarCotizacion from "./pages/AgregarCotizacion";
+import VerCotizaciones from "./pages/verCotizaciones";
 
 function App() {
     return (
@@ -12,6 +13,10 @@ function App() {
                 <Route
                     path="/cotizacion/agregar"
                     element={<AgregarCotizacion />}
+                ></Route>
+                <Route
+                    path="/cotizacion/"
+                    element={<VerCotizaciones />}
                 ></Route>
             </Routes>
         </Router>

@@ -48,7 +48,6 @@ class CotizacionesService {
     async addRespuestaCotizacion(id, respuesta) {
         try {
             const cotizacion = await Cotizaciones.findById(id);
-            console.log(cotizacion);
 
             cotizacion["historial_respuestas"].push(respuesta);
             await cotizacion.save();
