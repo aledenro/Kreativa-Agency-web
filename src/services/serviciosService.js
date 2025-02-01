@@ -53,6 +53,19 @@ class ServiciosService {
       );
     }
   }
+
+  async agregarPaquete(id, paquete) {
+    try {
+      const servicio = await Servicios.findById(id);
+
+      servicio["paquetes"].push(paquete);
+      await servicio.save();
+
+      return servicio;
+    } catch (error) {
+      throw new Error("Error al agregar el paquete: " + error.message);
+    }
+  }
 }
 
 module.exports = new ServiciosService();
