@@ -11,7 +11,7 @@ Alejandro Denver Romero <br>
 
 npm init -y
 
-npm install express mongoose dotenv lodash
+npm install express mongoose dotenv lodash cors
 
 npm install --save-dev nodemon
 
