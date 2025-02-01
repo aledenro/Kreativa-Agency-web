@@ -1,76 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Card, Button, Alert } from "react-bootstrap";
 
 const VerUsuario = () => {
-  const { id } = useParams();
-  const [usuario, setUsuario] = useState(null);
-  const [error, setError] = useState("");
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [usuario, setUsuario] = useState(null);
+    const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchUsuario = async () => {
-      try {
-        const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`);
-        setUsuario(data);
-      } catch (error) {
-        console.error("Error al cargar el usuario:", error);
-        setError("No se pudo cargar el usuario.");
-      }
-    };
-    fetchUsuario();
-  }, [id]);
+    useEffect(() => {
+        const fetchUsuario = async () => {
+            try {
+                const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`);
+                setUsuario(data);
+            } catch (error) {
+                setError("Error al cargar el usuario");
+            }
+        };
+        fetchUsuario();
+    }, [id]);
 
-  if (error) {
     return (
-      <div className="container mt-4">
-        <Alert variant="danger">{error}</Alert>
-        <Link to="/usuarios" className="btn btn-primary">
-          Volver a Usuarios
-        </Link>
-      </div>
+        <div className="container mt-5">
+            <h1>Detalles del Usuario</h1>
+            {error && <div className="alert alert-danger">{error}</div>}
+            {usuario ? (
+                <div>
+                    <p><strong>Nombre:</strong> {usuario.nombre}</p>
+                    <p><strong>Usuario:</strong> {usuario.usuario}</p>
+                    <p><strong>Email:</strong> {usuario.email}</p>
+                    <p><strong>Tipo de Usuario:</strong> {usuario.tipo_usuario}</p>
+                    <p><strong>Estado:</strong> {usuario.estado}</p>
+                    <div className="d-flex gap-3">
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => navigate("/usuarios")}
+                        >
+                            Volver
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <p>Cargando...</p>
+            )}
+        </div>
     );
-  }
-
-  if (!usuario) {
-    return (
-      <div className="container mt-4">
-        <p>Cargando...</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="container mt-4">
-      <h2>Detalles del Usuario</h2>
-      <Card className="mt-3">
-        <Card.Body>
-          <Card.Title>{usuario.nombre}</Card.Title>
-          <Card.Text>
-            <strong>Usuario:</strong> {usuario.usuario}
-          </Card.Text>
-          <Card.Text>
-            <strong>Email:</strong> {usuario.email}
-          </Card.Text>
-          <Card.Text>
-            <strong>Tipo de Usuario:</strong> {usuario.tipo_usuario}
-          </Card.Text>
-          <Card.Text>
-            <strong>Estado:</strong> {usuario.estado}
-          </Card.Text>
-          <Card.Text>
-            <strong>Creado el:</strong> {new Date(usuario.fecha_creacion).toLocaleDateString()}
-          </Card.Text>
-          <Link to="/usuarios" className="btn btn-primary me-2">
-            Volver
-          </Link>
-          <Link to={`/usuario/editar/${usuario._id}`} className="btn btn-warning">
-            Editar
-          </Link>
-        </Card.Body>
-      </Card>
-    </div>
-  );
 };
 
 export default VerUsuario;

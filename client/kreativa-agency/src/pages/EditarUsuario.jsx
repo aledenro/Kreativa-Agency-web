@@ -1,117 +1,128 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Form, Button, Alert } from "react-bootstrap";
 
 const EditarUsuario = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    nombre: "",
-    usuario: "",
-    email: "",
-    tipo_usuario: "",
-    estado: "Activo",
-  });
-  const [error, setError] = useState("");
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        nombre: "",
+        usuario: "",
+        email: "",
+        tipo_usuario: "",
+    });
+    const [error, setError] = useState("");
 
-  useEffect(() => {
-    // Obtener datos del usuario actual
-    const fetchUsuario = async () => {
-      try {
-        const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`);
-        setFormData(data);
-      } catch (error) {
-        console.error("Error al obtener el usuario:", error);
-        setError("No se pudo cargar el usuario.");
-      }
+    // Cargar datos del usuario existente
+    useEffect(() => {
+        const fetchUsuario = async () => {
+            try {
+                const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`);
+                setFormData({
+                    nombre: data.nombre,
+                    usuario: data.usuario,
+                    email: data.email,
+                    tipo_usuario: data.tipo_usuario,
+                });
+            } catch (error) {
+                setError("Error al cargar los datos del usuario.");
+            }
+        };
+        fetchUsuario();
+    }, [id]);
+
+    // Manejar cambios en el formulario
+    const handleInputChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
     };
-    fetchUsuario();
-  }, [id]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    // Manejar la edición del usuario
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+        try {
+            await axios.put(`http://localhost:4000/api/usuarios/${id}`, formData);
+            navigate("/usuarios"); // Redirigir a la página principal de usuarios
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                setError(error.response.data.mensaje); // Mostrar errores de validación
+            } else {
+                setError("Error al actualizar el usuario.");
+            }
+        }
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validaciones
-    if (!formData.nombre || !formData.usuario || !formData.email || !formData.tipo_usuario) {
-      setError("Todos los campos son obligatorios.");
-      return;
-    }
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setError("Por favor, ingresa un correo válido.");
-      return;
-    }
-
-    try {
-      await axios.put(`http://localhost:4000/api/usuarios/${id}`, formData);
-      navigate("/usuarios");
-    } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
-      setError("No se pudo actualizar el usuario.");
-    }
-  };
-
-  return (
-    <div className="container mt-4">
-      <h2>Editar Usuario</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Nombre</Form.Label>
-          <Form.Control
-            type="text"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            placeholder="Ingresa el nombre completo"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Usuario</Form.Label>
-          <Form.Control
-            type="text"
-            name="usuario"
-            value={formData.usuario}
-            onChange={handleChange}
-            placeholder="Ingresa el nombre de usuario"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="usuario@email.com"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Tipo de Usuario</Form.Label>
-          <Form.Select name="tipo_usuario" value={formData.tipo_usuario} onChange={handleChange}>
-            <option value="">Seleccione un tipo</option>
-            <option value="Administrador">Administrador</option>
-            <option value="Colaborador">Colaborador</option>
-            <option value="Cliente">Cliente</option>
-          </Form.Select>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Estado</Form.Label>
-          <Form.Select name="estado" value={formData.estado} onChange={handleChange}>
-            <option value="Activo">Activo</option>
-            <option value="Inactivo">Inactivo</option>
-          </Form.Select>
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Guardar Cambios
-        </Button>
-      </Form>
-    </div>
-  );
+    return (
+        <div className="container mt-5">
+            <h1>Editar Usuario</h1>
+            {error && <div className="alert alert-danger">{error}</div>}
+            <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label className="form-label">Nombre</label>
+                    <input
+                        type="text"
+                        name="nombre"
+                        className="form-control"
+                        value={formData.nombre}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Usuario</label>
+                    <input
+                        type="text"
+                        name="usuario"
+                        className="form-control"
+                        value={formData.usuario}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        className="form-control"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Tipo de Usuario</label>
+                    <select
+                        name="tipo_usuario"
+                        className="form-control"
+                        value={formData.tipo_usuario}
+                        onChange={handleInputChange}
+                        required
+                    >
+                        <option value="">Seleccione...</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Colaborador">Colaborador</option>
+                        <option value="Cliente">Cliente</option>
+                    </select>
+                </div>
+                <div className="d-flex gap-3">
+                    <button type="submit" className="btn btn-primary">
+                        Guardar Cambios
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => navigate("/usuarios")}
+                    >
+                        Volver
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
 };
 
 export default EditarUsuario;
