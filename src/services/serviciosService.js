@@ -30,6 +30,29 @@ class ServiciosService {
       throw new Error(`No se pudo obtener el servicio ${id}: ` + error.message);
     }
   }
+
+  async modificarServicioById(id, datosActualizados) {
+    try {
+      const servicioActualizado = await Servicios.findByIdAndUpdate(
+        id,
+        datosActualizados,
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+
+      if (!servicioActualizado) {
+        throw new Error(`Servicio ${id} no encontrado`);
+      }
+
+      return servicioActualizado;
+    } catch (error) {
+      throw new Error(
+        `No se pudo modificar el servicio ${id}: ` + error.message
+      );
+    }
+  }
 }
 
 module.exports = new ServiciosService();
