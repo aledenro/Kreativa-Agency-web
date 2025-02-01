@@ -1,11 +1,9 @@
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
-function construirJsonRequest(descripcion, urgente) {
+function construirJsonRequest(titulo, descripcion, urgente) {
     return {
         cliente_id: "679834de23a11c303cf6c6b5",
+        titulo: titulo,
         detalles: descripcion,
         urgente: urgente,
         historial_respuestas: [],
@@ -16,19 +14,35 @@ function construirJsonRequest(descripcion, urgente) {
 const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const descripcion = event.target.descripcion.value;
-    const urgente = event.target.urgente.checked;
+    const enviar = confirm("¿Desea enviar su cotización?");
 
-    const data = construirJsonRequest(descripcion, urgente);
+    if (!enviar) {
+        return;
+    }
+
+    const formData = new FormData(event.target);
+
+    const titulo = formData.get("titulo");
+    const descripcion = formData.get("descripcion");
+    const urgente = formData.get("urgente") === "on";
+
+    const data = construirJsonRequest(titulo, descripcion, urgente);
 
     try {
         const res = await axios.post(
             "http://localhost:4000/api/cotizaciones/crear",
             data
         );
-        console.log(res.data);
+
+        if (res.status == 201) {
+            alert("Cotización enviada correctamente.");
+            event.target.reset();
+        }
     } catch (error) {
         console.error(error.message);
+        alert(
+            "Error al enviar su cotización, por favor trate nuevamente o comuniquese con el soporte técnico."
+        );
     }
 };
 
@@ -36,34 +50,50 @@ const AgregarCotizacion = () => {
     return (
         <div className="container d-flex align-items-center justify-content-center">
             <div className="card p-4 shadow-lg w-50">
-                <h3 className="text-center mb-4">Agregar Cotización</h3>
-                <Form onSubmit={handleSubmit} className="cotizacion_form">
-                    <Form.Control
-                        as="textarea"
-                        placeholder="Describa su solicitud"
-                        style={{ height: "200px" }}
-                        required
-                        name="descripcion"
-                        className="cotizacion_input_box"
-                    />
-                    <br />
-                    <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check
-                            type="checkbox"
-                            label="Urgente"
-                            name="urgente"
-                            className="cotizacion_check_box"
+                <h3 className="text-center section-title">
+                    Agregar Cotización
+                </h3>
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label htmlFor="titulo" className="form-label">
+                            Titulo
+                        </label>
+                        <input
+                            type="text"
+                            className="form_input"
+                            id="titulo"
+                            name="titulo"
+                            required
                         />
-                    </Form.Group>
-
-                    <Button
-                        variant="primary"
-                        type="submit"
-                        className="w-100 btn-light"
-                    >
-                        Submit
-                    </Button>
-                </Form>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="descripcion" className="form-label">
+                            Descripción
+                        </label>
+                        <textarea
+                            name="descripcion"
+                            className="form_input"
+                            id="descripcion"
+                            rows={5}
+                            placeholder="Describa su solicitud"
+                            required
+                        ></textarea>
+                    </div>
+                    <div className="mb-3 form-check">
+                        <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="urgente"
+                            name="urgente"
+                        />
+                        <label className="form-check-label" htmlFor="urgente">
+                            Urgente
+                        </label>
+                    </div>
+                    <button type="submit" className="thm-btn">
+                        Enviar
+                    </button>
+                </form>
             </div>
         </div>
     );

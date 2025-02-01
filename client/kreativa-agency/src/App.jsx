@@ -8,6 +8,7 @@ import CrearUsuario from "./pages/CrearUsuario";
 import Usuarios from "./pages/Usuarios";
 import VerUsuario from "./pages/VerUsuario";
 import EditarUsuario from "./pages/EditarUsuario";
+import AgregarServicio from "./pages/AgregarServicio";
 
 function App() {
     return (
@@ -30,9 +31,14 @@ function App() {
                     path="/cotizacion/agregar"
                     element={<AgregarCotizacion />}
                 ></Route>
-            </Routes>
-        </Router>
-    );
+        <Route
+          path="/cotizacion/agregar"
+          element={<AgregarCotizacion />}
+        ></Route>
+        <Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
