@@ -7,15 +7,15 @@ const cors = require("cors");
 
 const serviciosRoutes = require("./routes/serviciosRoutes");
 const cotizacionesRoutes = require("./routes/cotizacionesRoutes");
-const usuarioRoutes = require('./routes/usuarioRoutes');
+const usuarioRoutes = require("./routes/usuarioRoutes");
 
 connectDB();
 
 app.use(
-    cors({
-        origin: "http://localhost:5173",
-        credentials: true,
-    })
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
 );
 
 app.use(express.json());
@@ -25,6 +25,6 @@ app.use("/api/cotizaciones", cotizacionesRoutes);
 app.use("/api/servicios", serviciosRoutes);
 
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
-app.use('/api', usuarioRoutes);
+app.use("/api", usuarioRoutes);
