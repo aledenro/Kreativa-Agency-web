@@ -12,6 +12,28 @@ class ServiciosController {
       return res.status(500).json({ error: error.message });
     }
   }
+
+  async getServicios(req, res) {
+    try {
+      const servicios = await ServiciosService.getAllServicios();
+      return res.status(200).json(servicios);
+    } catch (error) {
+      console.error("Error al obtener los servicios: " + error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  async getServicioById(req, res) {
+    try {
+      const { id } = req.params;
+      const servicio = await ServiciosService.getServicioById(id);
+
+      return res.status(200).json(servicio);
+    } catch (error) {
+      console.error("Error al obtener el servicio: " + error.message);
+      return res.status(404).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new ServiciosController();

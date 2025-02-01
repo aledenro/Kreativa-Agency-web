@@ -10,6 +10,26 @@ class ServiciosService {
       throw new Error("No se pudo agregar el servicio: " + error.message);
     }
   }
+
+  async getServicios() {
+    try {
+      return await Servicios.find();
+    } catch (error) {
+      throw new Error("No se pudieron obtener los servicios: " + error.message);
+    }
+  }
+
+  async getServicioById(id) {
+    try {
+      const servicio = await Servicios.findById(id);
+      if (!servicio) {
+        throw new Error(`Servicio ${id} no encontrado`);
+      }
+      return servicio;
+    } catch (error) {
+      throw new Error(`No se pudo obtener el servicio ${id}: ` + error.message);
+    }
+  }
 }
 
 module.exports = new ServiciosService();
