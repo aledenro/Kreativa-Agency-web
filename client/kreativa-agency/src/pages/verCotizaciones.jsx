@@ -35,6 +35,7 @@ const VerCotizaciones = () => {
             <table className="table table-striped">
                 <thead>
                     <tr>
+                        <th scope="col">Titulo</th>
                         <th scope="col">Cliente</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Fecha</th>
@@ -45,6 +46,7 @@ const VerCotizaciones = () => {
                 <tbody>
                     {cotizaciones.map((cotizacion) => (
                         <tr key={cotizacion._id}>
+                            <td>{cotizacion.titulo}</td>
                             <td>{cotizacion.cliente_id.nombre}</td>
                             <td>{cotizacion.estado}</td>
                             <td>{cotizacion.fecha_solicitud}</td>
