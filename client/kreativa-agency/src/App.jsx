@@ -5,8 +5,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import AgregarCotizacion from "./pages/AgregarCotizacion";
 import AgregarEgreso from "./pages/AgregarEgreso";
+import ObtenerEgresos from "./pages/ObtenerEgresos";
+import EditarEgreso from "./pages/EditarEgreso";
 import VerCotizaciones from "./pages/verCotizaciones";
-// import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
+import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
 import CrearUsuario from "./pages/CrearUsuario";
 import Usuarios from "./pages/Usuarios";
 import VerUsuario from "./pages/VerUsuario";
@@ -14,8 +16,7 @@ import EditarUsuario from "./pages/EditarUsuario";
 import AgregarServicio from "./pages/AgregarServicio";
 import ModificarServicio from "./pages/ModificarServicio";
 
-
-
+function App() {
     return (
         <Router>
             <Routes>
@@ -36,10 +37,7 @@ import ModificarServicio from "./pages/ModificarServicio";
                     path="/cotizacion/agregar"
                     element={<AgregarCotizacion />}
                 ></Route>
-                <Route
-                    path="/egreso/agregar"
-                    element={<AgregarEgreso />}
-                ></Route>
+                <Route 
                     path="/cotizacion/"
                     element={<VerCotizaciones />}
                 ></Route>
@@ -48,12 +46,24 @@ import ModificarServicio from "./pages/ModificarServicio";
                     element={<VerDetalleCotizacion />}
                 ></Route>
                 <Route
+                    path="/egreso/agregar"
+                    element={<AgregarEgreso />}
+                ></Route>
+                <Route
+                    path="/egresos"
+                    element={<ObtenerEgresos />}
+                ></Route>
+                <Route 
+                    path="/egreso/editar/:id"
+                    element={<EditarEgreso />}
+                ></Route>
+                <Route
                     path="/servicio/agregar"
                     element={<AgregarServicio />}></Route>
-        <Route
-          path="/servicio/modificar/:id"
-          element={<ModificarServicio />}
-        ></Route>
+                <Route
+                    path="/servicio/modificar/:id"
+                    element={<ModificarServicio />}
+                ></Route>
       </Routes>
     </Router>
   );

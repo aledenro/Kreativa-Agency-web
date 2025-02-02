@@ -34,6 +34,23 @@ class EgresosController {
         }
     }
 
+    // Función para obtener un egreso por ID
+    async obtenerEgresoPorId(req, res) {
+        try {
+            const { id } = req.params; // Obtener el ID de la URL
+            const egreso = await EgresosService.obtenerEgresoPorId(id); // Usar el servicio para obtener el egreso
+
+            if (!egreso) {
+                return res.status(404).json({ error: "Egreso no encontrado" });
+            }
+
+            return res.status(200).json(egreso);
+        } catch (error) {
+            console.error("Error al obtener el egreso por ID: " + error.message);
+            return res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
     async editarEgreso(req, res) {
         try {
             const { id } = req.params; // Obtener el ID del egreso a editar
