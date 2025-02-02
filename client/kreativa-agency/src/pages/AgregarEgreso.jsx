@@ -3,11 +3,10 @@ import Form from "react-bootstrap/Form";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useState } from "react";
-import { Modal } from "react-bootstrap";
 
 const AgregarEgreso = () => {
 
-    const [mensaje, setMensaje] = useState(""); 
+    const [mensaje, setMensaje] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -33,10 +32,10 @@ const AgregarEgreso = () => {
         try {
             const res = await axios.post("http://localhost:4000/api/egresos", data);
             console.log(res.data);
-            setMensaje("¡Egreso agregado exitosamente! 🎉"); // Muestra mensaje de éxito
+            setMensaje("¡Egreso agregado exitosamente!");
         } catch (error) {
             console.error(error.message);
-            setMensaje("Error al agregar el egreso. 😞"); // Muestra mensaje de error
+            setMensaje("Error al agregar el egreso.");
         }
     };
 
@@ -115,7 +114,7 @@ const AgregarEgreso = () => {
                     </Button>
                 </Form>
 
-                {/* Asegúrate de que el mensaje se muestre correctamente */}
+                {/* Asegurarse de que el mensaje se muestre correctamente */}
                 {mensaje && (
                     <div className="alert alert-info mt-4">{mensaje}</div>
                 )}

@@ -2,18 +2,29 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Button, Form } from "react-bootstrap";
+import { NumericFormat } from "react-number-format";
+
+const formatearFecha = (fecha) => {
+    if (!fecha) return "";
+    const date = new Date(fecha);
+    return date.toISOString().split('T')[0];
+};
 
 const EditarEgreso = () => {
-    const { id } = useParams(); // Obtener el ID del egreso desde la URL
+    const { id } = useParams(); // Obtener el ID del egreso
+    console.log("ID recibido en EditarEgreso:", id);
+
     const [egreso, setEgreso] = useState(null);
-    const [error, setError] = useState(null); // Para manejar errores
+    const [error, setError] = useState(null); // Para errores
+    const [monto, setMonto] = useState(0); // Para que el monto
 
     // Obtener el egreso por ID
     useEffect(() => {
         const obtenerEgreso = async () => {
             try {
-                const res = await axios.put(`http://localhost:4000/api/egresos/${id}`, datos);
+                const res = await axios.get(`http://localhost:4000/api/egresos/${id}`);
                 setEgreso(res.data); // Guardar el egreso en el estado
+                setMonto(res.data?.monto || 0);
             } catch (error) {
                 setError("No se pudo obtener el egreso");
             }
@@ -36,14 +47,24 @@ const EditarEgreso = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const fecha = event.target.fecha.value;
+        const fechaActual = new Date().toISOString().split('T')[0];  // Obtener la fecha actual en formato YYYY-MM-DD
+
+        // Validar que la fecha no sea posterior
+        if (fecha > fechaActual) {
+            alert("No puedes seleccionar una fecha futura.");
+            return;
+        }
+
         const data = {
-            fecha: event.target.fecha.value,
-            monto: event.target.monto.value,
+            fecha: fecha,
+            monto: monto,
             categoria: event.target.categoria.value,
             descripcion: event.target.descripcion.value,
             proveedor: event.target.proveedor.value,
             estado: event.target.estado.value,
             nota: event.target.nota.value,
+            ultima_modificacion: new Date().toISOString(),
         };
 
         try {
@@ -60,18 +81,24 @@ const EditarEgreso = () => {
             <Form onSubmit={handleSubmit}>
                 <Form.Control
                     type="date"
-                    defaultValue={egreso.fecha}
+                    defaultValue={egreso.fecha ? formatearFecha(egreso.fecha) : ""}
                     name="fecha"
                     required
+                    max={new Date().toISOString().split('T')[0]} // Fecha máxima: hoy
                     className="egreso_input_box"
                 />
                 <br />
-                <Form.Control
-                    type="number"
-                    defaultValue={egreso.monto}
+                <NumericFormat
+                    thousandSeparator
+                    prefix="₡"
+                    value={monto}
                     name="monto"
                     required
                     className="egreso_input_box"
+                    allowNegative={false}
+                    decimalScale={2}
+                    fixedDecimalScale
+                    onValueChange={(values) => setMonto(values.floatValue || 0)}
                 />
                 <br />
                 <Form.Control

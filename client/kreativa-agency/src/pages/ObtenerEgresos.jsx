@@ -22,11 +22,10 @@ const ObtenerEgresos = () => {
 
     return (
         <div className="container mt-5">
-            <h2>Listado de Egresos</h2>
+            <h2>Todos los egresos</h2>
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Fecha</th>
                         <th>Monto</th>
                         <th>Categoría</th>
@@ -39,7 +38,6 @@ const ObtenerEgresos = () => {
                 <tbody>
                     {egresos.map((egreso) => (
                         <tr key={egreso._id}>
-                            <td>{egreso._id}</td>
                             <td>{new Date(egreso.fecha).toLocaleDateString()}</td>
                             <td>{egreso.monto}</td>
                             <td>{egreso.categoria}</td>
