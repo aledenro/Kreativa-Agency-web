@@ -6,11 +6,29 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import AgregarCotizacion from "./pages/AgregarCotizacion";
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
+import CrearUsuario from "./pages/CrearUsuario";
+import Usuarios from "./pages/Usuarios";
+import VerUsuario from "./pages/VerUsuario";
+import EditarUsuario from "./pages/EditarUsuario";
+import AgregarServicio from "./pages/AgregarServicio";
 
 function App() {
     return (
         <Router>
             <Routes>
+                {/* Ruta para gestionar usuarios */}
+                <Route path="/usuarios" element={<Usuarios />} />
+
+                {/* Ruta para crear un nuevo usuario */}
+                <Route path="/usuario/crear" element={<CrearUsuario />} />
+
+                {/* Ruta para ver detalles de un usuario */}
+                <Route path="/usuario/:id" element={<VerUsuario />} />
+
+                {/* Ruta para editar un usuario */}
+                <Route path="/usuario/editar/:id" element={<EditarUsuario />} />
+
+                {/* Ruta existente para agregar cotización */}
                 <Route
                     path="/cotizacion/agregar"
                     element={<AgregarCotizacion />}
@@ -23,9 +41,12 @@ function App() {
                     path="/cotizacion/:id"
                     element={<VerDetalleCotizacion />}
                 ></Route>
+
+        <Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
             </Routes>
         </Router>
     );
+
 }
 
 export default App;
