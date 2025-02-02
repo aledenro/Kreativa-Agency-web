@@ -7,14 +7,43 @@ import AgregarCotizacion from "./pages/AgregarCotizacion";
 import AgregarEgreso from "./pages/AgregarEgreso";
 import ObtenerEgresos from "./pages/ObtenerEgresos";
 import EditarEgreso from "./pages/EditarEgreso";
+import VerCotizaciones from "./pages/verCotizaciones";
+import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
+import CrearUsuario from "./pages/CrearUsuario";
+import Usuarios from "./pages/Usuarios";
+import VerUsuario from "./pages/VerUsuario";
+import EditarUsuario from "./pages/EditarUsuario";
+import AgregarServicio from "./pages/AgregarServicio";
+import ModificarServicio from "./pages/ModificarServicio";
 
 function App() {
     return (
         <Router>
             <Routes>
+                {/* Ruta para gestionar usuarios */}
+                <Route path="/usuarios" element={<Usuarios />} />
+
+                {/* Ruta para crear un nuevo usuario */}
+                <Route path="/usuario/crear" element={<CrearUsuario />} />
+
+                {/* Ruta para ver detalles de un usuario */}
+                <Route path="/usuario/:id" element={<VerUsuario />} />
+
+                {/* Ruta para editar un usuario */}
+                <Route path="/usuario/editar/:id" element={<EditarUsuario />} />
+
+                {/* Ruta existente para agregar cotización */}
                 <Route
                     path="/cotizacion/agregar"
                     element={<AgregarCotizacion />}
+                ></Route>
+                <Route 
+                    path="/cotizacion/"
+                    element={<VerCotizaciones />}
+                ></Route>
+                <Route
+                    path="/cotizacion/:id"
+                    element={<VerDetalleCotizacion />}
                 ></Route>
                 <Route
                     path="/egreso/agregar"
@@ -24,12 +53,20 @@ function App() {
                     path="/egresos"
                     element={<ObtenerEgresos />}
                 ></Route>
-                <Route path="/egreso/editar/:id"
-                element={<EditarEgreso />}
+                <Route 
+                    path="/egreso/editar/:id"
+                    element={<EditarEgreso />}
                 ></Route>
-            </Routes>
-        </Router>
-    );
+                <Route
+                    path="/servicio/agregar"
+                    element={<AgregarServicio />}></Route>
+                <Route
+                    path="/servicio/modificar/:id"
+                    element={<ModificarServicio />}
+                ></Route>
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
