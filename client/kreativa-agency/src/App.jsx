@@ -4,6 +4,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import AgregarCotizacion from "./pages/AgregarCotizacion";
+import AgregarEgreso from "./pages/AgregarEgreso";
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
 import CrearUsuario from "./pages/CrearUsuario";
@@ -11,6 +12,7 @@ import Usuarios from "./pages/Usuarios";
 import VerUsuario from "./pages/VerUsuario";
 import EditarUsuario from "./pages/EditarUsuario";
 import AgregarServicio from "./pages/AgregarServicio";
+
 
 function App() {
     return (
@@ -34,6 +36,9 @@ function App() {
                     element={<AgregarCotizacion />}
                 ></Route>
                 <Route
+                    path="/egreso/agregar"
+                    element={<AgregarEgreso />}
+                ></Route>
                     path="/cotizacion/"
                     element={<VerCotizaciones />}
                 ></Route>

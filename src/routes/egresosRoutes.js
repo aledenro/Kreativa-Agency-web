@@ -1,10 +1,10 @@
 const express = require("express");
-const egresosController = require("../controllers/egresosController");
+const EgresosController = require("../controllers/egresosController");
 
 const router = express.Router();
 
-router.post("/", egresosController.agregarEgreso);
-router.get("/", egresosController.obtenerEgresos);
-router.put("/:id", egresosController.editarEgreso);
+router.post("/", EgresosController.agregarEgreso);
+router.get("/", EgresosController.obtenerEgresos);
+router.put("/:id", EgresosController.editarEgreso);
 
 module.exports = router;
