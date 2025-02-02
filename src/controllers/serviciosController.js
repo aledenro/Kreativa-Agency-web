@@ -49,6 +49,22 @@ class ServiciosController {
       return res.status(404).json({ error: error.message });
     }
   }
+
+  async agregarPaquete(req, res) {
+    try {
+      const { id } = req.params;
+      const paquete = req.body;
+
+      const servicioActualizado = await ServiciosService.agregarPaquete(
+        id,
+        paquete
+      );
+      return res.status(200).json(servicioActualizado);
+    } catch (error) {
+      console.error("Error al agregar el paquete: " + error.message);
+      return res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new ServiciosController();
