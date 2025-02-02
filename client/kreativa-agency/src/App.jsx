@@ -15,22 +15,35 @@ import VerUsuario from "./pages/VerUsuario";
 import EditarUsuario from "./pages/EditarUsuario";
 import AgregarServicio from "./pages/AgregarServicio";
 import ModificarServicio from "./pages/ModificarServicio";
+import AgregarPaquete from "./pages/AgregarPaquete";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                {/* Ruta para gestionar usuarios */}
-                <Route path="/usuarios" element={<Usuarios />} />
 
-                {/* Ruta para crear un nuevo usuario */}
-                <Route path="/usuario/crear" element={<CrearUsuario />} />
+  return (
+    <Router>
+      <Routes>
+        {/* Ruta para gestionar usuarios */}
+        <Route path="/usuarios" element={<Usuarios />} />
 
-                {/* Ruta para ver detalles de un usuario */}
-                <Route path="/usuario/:id" element={<VerUsuario />} />
+        {/* Ruta para crear un nuevo usuario */}
+        <Route path="/usuario/crear" element={<CrearUsuario />} />
 
-                {/* Ruta para editar un usuario */}
-                <Route path="/usuario/editar/:id" element={<EditarUsuario />} />
+        {/* Ruta para ver detalles de un usuario */}
+        <Route path="/usuario/:id" element={<VerUsuario />} />
+
+        {/* Ruta para editar un usuario */}
+        <Route path="/usuario/editar/:id" element={<EditarUsuario />} />
+
+        {/* Rutas servicio */}
+        <Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
+        <Route
+          path="/servicio/modificar/:id"
+          element={<ModificarServicio />}
+        ></Route>
+        <Route
+          path="/servicio/agregarPaquete/:id"
+          element={<AgregarPaquete />}
+        ></Route>
 
                 {/* Ruta existente para agregar cotización */}
                 <Route
