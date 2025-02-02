@@ -4,6 +4,8 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import AgregarCotizacion from "./pages/AgregarCotizacion";
+import VerCotizaciones from "./pages/verCotizaciones";
+import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
 import CrearUsuario from "./pages/CrearUsuario";
 import Usuarios from "./pages/Usuarios";
 import VerUsuario from "./pages/VerUsuario";
@@ -31,14 +33,20 @@ function App() {
                     path="/cotizacion/agregar"
                     element={<AgregarCotizacion />}
                 ></Route>
-        <Route
-          path="/cotizacion/agregar"
-          element={<AgregarCotizacion />}
-        ></Route>
+                <Route
+                    path="/cotizacion/"
+                    element={<VerCotizaciones />}
+                ></Route>
+                <Route
+                    path="/cotizacion/:id"
+                    element={<VerDetalleCotizacion />}
+                ></Route>
+
         <Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
-      </Routes>
-    </Router>
-  );
+            </Routes>
+        </Router>
+    );
+
 }
 
 export default App;

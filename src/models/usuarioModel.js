@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
 
 const usuarioSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
@@ -14,6 +15,8 @@ const usuarioSchema = new mongoose.Schema({
   estado: { type: String, default: 'Activo' },
   must_change: { type: Boolean, default: false },
   fecha_creacion: { type: Date, default: Date.now },
-});
+},
+                                         { collection: "usuarios" });
 
-module.exports = mongoose.model('Usuario', usuarioSchema);
+
+module.exports = mongoose.model("usuarios", usuarioSchema);
