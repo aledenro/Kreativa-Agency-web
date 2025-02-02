@@ -42,11 +42,13 @@ function App() {
                     element={<VerDetalleCotizacion />}
                 ></Route>
 
-        <Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
+                <Route
+                    path="/servicio/agregar"
+                    element={<AgregarServicio />}
+                ></Route>
             </Routes>
         </Router>
     );
-
 }
 
 export default App;
