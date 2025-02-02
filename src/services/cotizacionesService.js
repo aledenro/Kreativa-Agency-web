@@ -13,7 +13,9 @@ class CotizacionesService {
 
     async getCotizacionById(id) {
         try {
-            return Cotizaciones.findById(id);
+            return Cotizaciones.findById(id)
+                .populate("cliente_id", "nombre")
+                .populate("historial_respuestas.usuario_id", "nombre");
         } catch (error) {
             throw new Error("Error al obtener la cotizacion " + error.message);
         }

@@ -27,8 +27,6 @@ const VerCotizaciones = () => {
         navigate(`/cotizacion/${id}`);
     }
 
-    console.log(cotizaciones);
-
     return (
         <div>
             <Navbar></Navbar>
@@ -49,7 +47,11 @@ const VerCotizaciones = () => {
                             <td>{cotizacion.titulo}</td>
                             <td>{cotizacion.cliente_id.nombre}</td>
                             <td>{cotizacion.estado}</td>
-                            <td>{cotizacion.fecha_solicitud}</td>
+                            <td>
+                                {new Date(
+                                    cotizacion.fecha_solicitud
+                                ).toLocaleDateString()}
+                            </td>
                             <td>{cotizacion.urgente ? "Si" : "No"}</td>
                             <td>
                                 <button

@@ -47,8 +47,9 @@ import ModificarServicio from "./pages/ModificarServicio";
                     path="/cotizacion/:id"
                     element={<VerDetalleCotizacion />}
                 ></Route>
-
-        <Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
+                <Route
+                    path="/servicio/agregar"
+                    element={<AgregarServicio />}></Route>
         <Route
           path="/servicio/modificar/:id"
           element={<ModificarServicio />}
