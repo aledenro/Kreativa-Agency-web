@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCallback } from "react";
+import Navbar from "../components/Navbar/Navbar";
 
 const VerDetalleCotizacion = () => {
     const { id } = useParams();
@@ -97,68 +98,78 @@ const VerDetalleCotizacion = () => {
     }
 
     return (
-        <div className="container d-flex align-items-center justify-content-center">
-            <div className="card p-4 shadow-lg w-50">
-                <div className="row">
-                    <h3 className="section-title text-center">
-                        {cotizacion.titulo}
-                    </h3>
+        <div>
+            <Navbar></Navbar>
+            <div className="container d-flex align-items-center justify-content-center">
+                <div className="card p-4 shadow-lg w-50">
                     <div className="row">
-                        <div className="col mx-3">
-                            Fecha de Solicitud:{" "}
-                            <small>
-                                {new Date(
-                                    cotizacion.fecha_solicitud
-                                ).toLocaleDateString()}
-                            </small>
-                        </div>
-                        <div className="col mx-3">
-                            <select
-                                className="form-select"
-                                onChange={handleChangeEstado}
-                            >
-                                {opciones.map((opcion) =>
-                                    renderOpciones(opcion, cotizacion.estado)
-                                )}
-                            </select>
-                        </div>
-                    </div>
-                    <p className="detalles-text  my-3">{cotizacion.detalles}</p>
-                </div>
-                {cotizacion.historial_respuestas.map((respuesta) => (
-                    <div className="" key={respuesta._id}>
-                        <hr />
-                        <div className="respuesta">
-                            <div className="contenido-respuesta">
-                                <h3 className="titulo-respuesta">
-                                    {respuesta.usuario_id.nombre}
-                                </h3>
-                                <p>{respuesta.contenido}</p>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-
-                <div className="comment-form">
-                    <h3 className="section-title text-center">Responder:</h3>
-                    <form onSubmit={handleSubmit} method="post">
+                        <h3 className="section-title text-center">
+                            {cotizacion.titulo}
+                        </h3>
                         <div className="row">
-                            <div className="mb-3">
-                                <textarea
-                                    name="message"
-                                    placeholder="Por favor escriba su respuesta"
-                                    className="form_input"
-                                    required
-                                ></textarea>
-                                <button
-                                    type="submit"
-                                    className="thm-btn form_btn"
+                            <div className="col mx-3">
+                                Fecha de Solicitud:{" "}
+                                <small>
+                                    {new Date(
+                                        cotizacion.fecha_solicitud
+                                    ).toLocaleDateString()}
+                                </small>
+                            </div>
+                            <div className="col mx-3">
+                                <select
+                                    className="form-select"
+                                    onChange={handleChangeEstado}
                                 >
-                                    Enviar
-                                </button>
+                                    {opciones.map((opcion) =>
+                                        renderOpciones(
+                                            opcion,
+                                            cotizacion.estado
+                                        )
+                                    )}
+                                </select>
                             </div>
                         </div>
-                    </form>
+                        <p className="detalles-text  my-3">
+                            {cotizacion.detalles}
+                        </p>
+                    </div>
+                    {cotizacion.historial_respuestas.map((respuesta) => (
+                        <div className="" key={respuesta._id}>
+                            <hr />
+                            <div className="respuesta">
+                                <div className="contenido-respuesta">
+                                    <h3 className="titulo-respuesta">
+                                        {respuesta.usuario_id.nombre}
+                                    </h3>
+                                    <p>{respuesta.contenido}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+
+                    <div className="comment-form">
+                        <h3 className="section-title text-center">
+                            Responder:
+                        </h3>
+                        <form onSubmit={handleSubmit} method="post">
+                            <div className="row">
+                                <div className="mb-3">
+                                    <textarea
+                                        name="message"
+                                        placeholder="Por favor escriba su respuesta"
+                                        className="form_input"
+                                        required
+                                    ></textarea>
+                                    <button
+                                        type="submit"
+                                        className="thm-btn form_btn"
+                                    >
+                                        Enviar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

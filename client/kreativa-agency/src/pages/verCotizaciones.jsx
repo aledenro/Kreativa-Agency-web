@@ -28,7 +28,7 @@ const VerCotizaciones = () => {
     }
 
     return (
-        <div>
+        <div className="container">
             <Navbar></Navbar>
             <table className="table table-striped">
                 <thead>

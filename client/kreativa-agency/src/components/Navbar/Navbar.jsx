@@ -59,6 +59,19 @@ export default function Navbar() {
                 </li>
                 <li className="dropdown">
                     <a href="#" className="dropdown-toggle">
+                        Proyectos
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <a href="/cotizacion/">Ver Cotizaciones</a>
+                        </li>
+                        <li>
+                            <a href="/proyecto/agregar">Agregar Proyecto</a>
+                        </li>
+                    </ul>
+                </li>
+                <li className="dropdown">
+                    <a href="#" className="dropdown-toggle">
                         Contabilidad
                     </a>
                     <ul className="dropdown-menu">
