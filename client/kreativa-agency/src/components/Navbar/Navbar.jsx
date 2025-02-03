@@ -63,7 +63,9 @@ export default function Navbar() {
                     </a>
                     <ul className="dropdown-menu">
                         <li>
-                            <a href="/cotizacion/">Ver Cotizaciones</a>
+                            <a href="/proyecto/editar/editar">
+                                Editar Proyecto
+                            </a>
                         </li>
                         <li>
                             <a href="/proyecto/agregar">Agregar Proyecto</a>
