@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar/Navbar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Button, Form } from "react-bootstrap";
@@ -76,81 +77,108 @@ const EditarEgreso = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h2>Editar Egreso</h2>
-            <Form onSubmit={handleSubmit}>
-                <Form.Control
-                    type="date"
-                    defaultValue={egreso.fecha ? formatearFecha(egreso.fecha) : ""}
-                    name="fecha"
-                    required
-                    max={new Date().toISOString().split('T')[0]} // Fecha máxima: hoy
-                    className="egreso_input_box"
-                />
-                <br />
-                <NumericFormat
-                    thousandSeparator
-                    prefix="₡"
-                    value={monto}
-                    name="monto"
-                    required
-                    className="egreso_input_box"
-                    allowNegative={false}
-                    decimalScale={2}
-                    fixedDecimalScale
-                    onValueChange={(values) => setMonto(values.floatValue || 0)}
-                />
-                <br />
-                <Form.Control
-                    type="text"
-                    defaultValue={egreso.categoria}
-                    name="categoria"
-                    required
-                    className="egreso_input_box"
-                />
-                <br />
-                <Form.Control
-                    as="textarea"
-                    defaultValue={egreso.descripcion}
-                    name="descripcion"
-                    required
-                    className="egreso_input_box"
-                    style={{ height: "100px" }}
-                />
-                <br />
-                <Form.Control
-                    type="text"
-                    defaultValue={egreso.proveedor}
-                    name="proveedor"
-                    required
-                    className="egreso_input_box"
-                />
-                <br />
-                <Form.Select
-                    required
-                    name="estado"
-                    defaultValue={egreso.estado}
-                    className="egreso_input_box"
-                >
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Aprobado">Aprobado</option>
-                    <option value="Rechazado">Rechazado</option>
-                </Form.Select>
-                <br />
-                <Form.Control
-                    type="text"
-                    defaultValue={egreso.nota}
-                    name="nota"
-                    required
-                    className="egreso_input_box"
-                />
-                <br />
-                <Button variant="primary" type="submit" className="w-100 btn-light">
-                    Actualizar Egreso
-                </Button>
-            </Form>
+        <div>
+            <Navbar></Navbar>
+            <div className="container">
+                <div className="section-title text-center">
+                    <h2>Editar agreso</h2>
+                </div>
+                <div className="mx-auto align-items-center justify-content-center d-flex">
+                    <div className="col-xl-8">
+                        <Form onSubmit={handleSubmit}>
+                            <div className="row">
+                                <div className="">
+                                    <input
+                                        type="date"
+                                        defaultValue={egreso.fecha ? formatearFecha(egreso.fecha) : ""}
+                                        name="fecha"
+                                        required
+                                        max={new Date().toISOString().split('T')[0]} // Fecha máxima: hoy
+                                        className="form_input"
+                                    />
+                                </div>
+                                <div className="col">
+                                    <NumericFormat
+                                        thousandSeparator
+                                        prefix="₡"
+                                        value={monto}
+                                        name="monto"
+                                        required
+                                        className="form_input"
+                                        allowNegative={false}
+                                        decimalScale={2}
+                                        fixedDecimalScale
+                                        onValueChange={(values) => setMonto(values.floatValue || 0)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="">
+                                    <input
+                                        type="text"
+                                        defaultValue={egreso.categoria}
+                                        name="categoria"
+                                        required
+                                        className="form_input"
+                                    />
+                                </div>
+                                <div className="col">
+                                    <input
+                                        as="textarea"
+                                        defaultValue={egreso.descripcion}
+                                        name="descripcion"
+                                        required
+                                        className="form_input"
+                                        style={{ height: "100px" }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="">
+                                    <input
+                                        type="text"
+                                        defaultValue={egreso.proveedor}
+                                        name="proveedor"
+                                        required
+                                        className="form_input"
+                                    />
+                                </div>
+                                <div className="col">
+                                    <Form.Select
+                                        required
+                                        name="estado"
+                                        defaultValue={egreso.estado}
+                                        className="form_input"
+                                    >
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Aprobado">Aprobado</option>
+                                        <option value="Rechazado">Rechazado</option>
+                                    </Form.Select>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        defaultValue={egreso.nota}
+                                        name="nota"
+                                        required
+                                        className="form_input"
+                                    />
+                                    <button type="submit" className="thm-btn form-btn">
+                                        confirmar
+                                    </button>
+                                </div>
+                            </div>
+
+                        </Form>
+                    </div>
+                </div>
+            </div>
         </div>
     );
+
 };
 
 export default EditarEgreso;

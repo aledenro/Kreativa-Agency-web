@@ -1,5 +1,6 @@
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Navbar from "../components/Navbar/Navbar";
+import Alert from "react-bootstrap/Alert";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useState } from "react";
@@ -40,84 +41,106 @@ const AgregarEgreso = () => {
     };
 
     return (
-        <div className="container d-flex align-items-center justify-content-center">
-            <div className="card p-4 shadow-lg w-50">
-                <h3 className="text-center mb-4">Agregar Egreso</h3>
-                <Form onSubmit={handleSubmit} className="egreso_form">
-                    <Form.Control
-                        type="date"
-                        placeholder="Fecha"
-                        required
-                        name="fecha"
-                        className="egreso_input_box"
-                    />
-                    <br />
-                    <Form.Control
-                        type="number"
-                        placeholder="Monto"
-                        required
-                        name="monto"
-                        className="egreso_input_box"
-                    />
-                    <br />
-                    <Form.Control
-                        type="text"
-                        placeholder="Categoría"
-                        required
-                        name="categoria"
-                        className="egreso_input_box"
-                    />
-                    <br />
-                    <Form.Control
-                        as="textarea"
-                        placeholder="Descripción"
-                        style={{ height: "100px" }}
-                        required
-                        name="descripcion"
-                        className="egreso_input_box"
-                    />
-                    <br />
-                    <Form.Control
-                        type="text"
-                        placeholder="Proveedor"
-                        required
-                        name="proveedor"
-                        className="egreso_input_box"
-                    />
-                    <br />
-                    <Form.Select
-                        required
-                        name="estado"
-                        className="egreso_input_box"
-                        defaultValue="Pendiente"
-                    >
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Aprobado">Aprobado</option>
-                        <option value="Rechazado">Rechazado</option>
-                    </Form.Select>
-                    <br />
-                    <Form.Control
-                        type="text"
-                        placeholder="Nota"
-                        required
-                        name="nota"
-                        className="egreso_input_box"
-                    />
-                    <br />
+        <div>
+            <Navbar></Navbar>
+            <div className="container">
+                <div className="section-title text-center">
+                    <h2>Agregar nuevo agreso</h2>
+                </div>
+                <div className="mx-auto align-items-center justify-content-center d-flex">
+                    <div className="col-xl-8">
+                        <Form onSubmit={handleSubmit} className="egreso_form">
+                            <div className="row">
+                                <div className="">
+                                    <input
+                                        type="date"
+                                        placeholder="Fecha"
+                                        required
+                                        name="fecha"
+                                        className="form_input"
+                                    />
+                                </div>
+                                <div className="col">
+                                    <input
+                                        type="number"
+                                        placeholder="Monto"
+                                        required
+                                        name="monto"
+                                        className="form_input"
+                                    />
+                                </div>
+                            </div>
 
-                    <Button
-                        variant="primary"
-                        type="submit"
-                        className="w-100 btn-light"
-                    >
-                        Agregar Egreso
-                    </Button>
-                </Form>
+                            <div className="row">
+                                <div className="">
+                                    <input
+                                        type="text"
+                                        placeholder="Categoría"
+                                        required
+                                        name="categoria"
+                                        className="form_input"
+                                    />
+                                </div>
+                                <div className="col">
+                                    <input
+                                        as="textarea"
+                                        placeholder="Descripción"
+                                        style={{ height: "100px" }}
+                                        required
+                                        name="descripcion"
+                                        className="form_input"
+                                    />
+                                </div>
+                            </div>
 
-                {/* Asegurarse de que el mensaje se muestre correctamente */}
-                {mensaje && (
-                    <div className="alert alert-info mt-4">{mensaje}</div>
-                )}
+                            <div className="row">
+                                <div className="">
+                                    <input
+                                        type="text"
+                                        placeholder="Proveedor"
+                                        required
+                                        name="proveedor"
+                                        className="form_input"
+                                    />
+                                </div>
+                                <div className="col">
+                                    <Form.Select
+                                        required
+                                        name="estado"
+                                        className="form_input"
+                                        defaultValue="Pendiente"
+                                    >
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Aprobado">Aprobado</option>
+                                        <option value="Rechazado">Rechazado</option>
+                                    </Form.Select>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        placeholder="Nota"
+                                        required
+                                        name="nota"
+                                        className="form_input"
+                                    />
+                                    <button type="submit" className="thm-btn form-btn">
+                                        Agregar
+                                    </button>
+                                </div>
+                            </div>
+
+                        </Form>
+
+                        {/* Asegurarse de que el mensaje se muestre correctamente */}
+                        {mensaje && (
+                            <div className="alert alert-info mt-4">{mensaje}</div>
+                        )}
+
+                    </div>
+                </div>
             </div>
         </div>
     );
