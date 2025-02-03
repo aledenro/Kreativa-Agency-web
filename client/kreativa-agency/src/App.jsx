@@ -18,39 +18,38 @@ import ModificarServicio from "./pages/ModificarServicio";
 import AgregarPaquete from "./pages/AgregarPaquete";
 
 function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/usuarios" element={<Usuarios />}></Route>
 
-  return (
-    <Router>
-      <Routes>
-        {/* Ruta para gestionar usuarios */}
-        <Route path="/usuarios" element={<Usuarios />} />
+                <Route path="/usuario/crear" element={<CrearUsuario />}></Route>
 
-        {/* Ruta para crear un nuevo usuario */}
-        <Route path="/usuario/crear" element={<CrearUsuario />} />
+                <Route path="/usuario/:id" element={<VerUsuario />}></Route>
 
-        {/* Ruta para ver detalles de un usuario */}
-        <Route path="/usuario/:id" element={<VerUsuario />} />
+                <Route
+                    path="/usuario/editar/:id"
+                    element={<EditarUsuario />}
+                ></Route>
 
-        {/* Ruta para editar un usuario */}
-        <Route path="/usuario/editar/:id" element={<EditarUsuario />} />
+                <Route
+                    path="/servicio/agregar"
+                    element={<AgregarServicio />}
+                ></Route>
+                <Route
+                    path="/servicio/modificar/:id"
+                    element={<ModificarServicio />}
+                ></Route>
+                <Route
+                    path="/servicio/agregarPaquete/:id"
+                    element={<AgregarPaquete />}
+                ></Route>
 
-        {/* Rutas servicio */}
-        <Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
-        <Route
-          path="/servicio/modificar/:id"
-          element={<ModificarServicio />}
-        ></Route>
-        <Route
-          path="/servicio/agregarPaquete/:id"
-          element={<AgregarPaquete />}
-        ></Route>
-
-                {/* Ruta existente para agregar cotización */}
                 <Route
                     path="/cotizacion/agregar"
                     element={<AgregarCotizacion />}
                 ></Route>
-                <Route 
+                <Route
                     path="/cotizacion/"
                     element={<VerCotizaciones />}
                 ></Route>
@@ -62,24 +61,22 @@ function App() {
                     path="/egreso/agregar"
                     element={<AgregarEgreso />}
                 ></Route>
+                <Route path="/egresos" element={<ObtenerEgresos />}></Route>
                 <Route
-                    path="/egresos"
-                    element={<ObtenerEgresos />}
-                ></Route>
-                <Route 
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
                 ></Route>
                 <Route
                     path="/servicio/agregar"
-                    element={<AgregarServicio />}></Route>
+                    element={<AgregarServicio />}
+                ></Route>
                 <Route
                     path="/servicio/modificar/:id"
                     element={<ModificarServicio />}
                 ></Route>
-      </Routes>
-    </Router>
-  );
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
