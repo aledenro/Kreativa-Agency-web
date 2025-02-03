@@ -15,14 +15,59 @@ export default function Navbar() {
                 <div></div>
             </div>
             <div className="logo">
-                <img src="\src\assets\img\logo.png" alt="Logo" />
+                <img src="/src/assets/img/logo.png" alt="Logo" />
             </div>
-            <div className={`menu ${menuOpen ? "active" : ""}`}>
-                <a href="#">Inicio</a>
-                <a href="#">Servicios</a>
-                <a href="#">Estamos contratando</a>
-                <a href="#">Conózcanos</a>
-            </div>
+            <ul className={`menu ${menuOpen ? "active" : ""}`}>
+                <li>
+                    <a href="/">Inicio</a>
+                </li>
+                <li>
+                    <a href="/usuarios">Usuarios</a>
+                </li>
+                <li className="dropdown">
+                    <a href="#" className="dropdown-toggle">
+                        Servicios
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <a href="/servicio/agregar">Agregar Servicio</a>
+                        </li>
+                        <li>
+                            <a href="/servicio/modificar/679e997dc509472dd326b37e">
+                                Modificar Servicio
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/servicio/agregarPaquete/679e7b6d4fb1f2469e878ee8">
+                                Agregar Paquete
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li className="dropdown">
+                    <a href="#" className="dropdown-toggle">
+                        Cotizaciones
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <a href="/cotizacion/">Ver Cotizaciones</a>
+                        </li>
+                        <li>
+                            <a href="/cotizacion/agregar">Agregar Cotización</a>
+                        </li>
+                    </ul>
+                </li>
+                <li className="dropdown">
+                    <a href="#" className="dropdown-toggle">
+                        Contabilidad
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <a href="/egresos">Ver Egresos</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
             <button className="login-button">Iniciar Sesión</button>
         </nav>
     );
