@@ -535,3 +535,23 @@ textarea {
         align-items: center;
     }
 }
+
+/* Botones pequeños */
+.thm-btn-small {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: var(--kreativa-bdr-radius);
+    min-width: 80px; 
+    text-align: center;
+    margin-left: 10px; 
+}
+
+/* Contenedor de los botones */
+.botones-grupo {
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+    gap: 5px; 
+    margin-left: -10px; 
+}
+
