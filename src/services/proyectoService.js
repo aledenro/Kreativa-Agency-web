@@ -9,6 +9,17 @@ class ProyectoService {
             throw new Error(`Error al crear el proyecto: ${error.message}`);
         }
     }
+
+    async getProyectoById(id) {
+        try {
+            return await ProyectoModel.findById(id).populate(
+                "cliente_id",
+                "nombre"
+            );
+        } catch (error) {
+            throw new Error(`Error al obtener el proyecto: ${error.message}`);
+        }
+    }
 }
 
 module.exports = new ProyectoService();
