@@ -36,6 +36,22 @@ class ProyectoController {
             });
         }
     }
+
+    async editProyecto(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+
+            const proyecto = await ProyectoService.editProyecto(id, data);
+
+            return res.json(proyecto);
+        } catch (error) {
+            console.error(`Error al editar el proyecto: ${error.message}`);
+            return res.status(500).json({
+                error: `Error al editar el proyecto: ${error.message}`,
+            });
+        }
+    }
 }
 
 module.exports = new ProyectoController();
