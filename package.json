@@ -18,8 +18,8 @@
     "express": "^4.21.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.9.5",
-    "react-bootstrap": "^2.10.9"
-
+    "react-bootstrap": "^2.10.9",
+    "react-number-format": "^5.4.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
