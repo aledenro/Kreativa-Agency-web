@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar/Navbar";
 import axios from "axios";
 import { Table, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -21,30 +22,31 @@ const ObtenerEgresos = () => {
     }, []);
 
     return (
-        <div className="container mt-5">
-            <h2>Todos los egresos</h2>
-            <Table striped bordered hover>
+        <div>
+            <Navbar></Navbar>
+            <h2>Egresos</h2>
+            <table className="kreativa-table">
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Monto</th>
-                        <th>Categoría</th>
-                        <th>Descripción</th>
-                        <th>Proveedor</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Monto</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Proveedor</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {egresos.map((egreso) => (
                         <tr key={egreso._id}>
-                            <td>{new Date(egreso.fecha).toLocaleDateString()}</td>
-                            <td>{egreso.monto}</td>
-                            <td>{egreso.categoria}</td>
-                            <td>{egreso.descripcion}</td>
-                            <td>{egreso.proveedor}</td>
-                            <td>{egreso.estado}</td>
-                            <td>
+                            <td data-label>{new Date(egreso.fecha).toLocaleDateString()}</td>
+                            <td data-label>{egreso.monto}</td>
+                            <td data-label>{egreso.categoria}</td>
+                            <td data-label>{egreso.descripcion}</td>
+                            <td data-label>{egreso.proveedor}</td>
+                            <td data-label>{egreso.estado}</td>
+                            <td data-label>
                                 {/* Enlace para editar el egreso */}
                                 <Link to={`/egreso/editar/${egreso._id}`}>
                                     <Button variant="warning">Editar</Button>
@@ -53,7 +55,7 @@ const ObtenerEgresos = () => {
                         </tr>
                     ))}
                 </tbody>
-            </Table>
+            </table>
         </div>
     );
 };
