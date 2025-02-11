@@ -11,7 +11,7 @@ Alejandro Denver Romero <br>
 
 npm init -y
 
-npm install express mongoose dotenv lodash
+npm install express mongoose dotenv lodash cors
 
 npm install --save-dev nodemon
 
@@ -25,8 +25,11 @@ cd client
 npm create vite@latest
 Poner como nombre kreativa-agency
 selecionar react con las flechas
-seleccionar javasscript con las flechas
+seleccionar javascript con las flechas
 cd kreativa-agency
 npm install
-npm install react-bootstrap bootstrap
+npm install --save bootstrap
+npm install bootstrap @popperjs/core
+npm install react-router-dom
+npm install axios
 npm run dev

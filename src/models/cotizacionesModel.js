@@ -13,6 +13,10 @@ const CotizacionesModel = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "usuarios",
         },
+        titulo: {
+            type: String,
+            required: true,
+        },
         detalles: {
             type: String,
             required: true,
