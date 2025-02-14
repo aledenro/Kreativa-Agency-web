@@ -81,7 +81,7 @@ h3 {
 .form_input {
     position: relative;
     display: block;
-    height: 68px;
+    height: 50px;
     width: 100%;
     border: none;
     background-color: var(--kreativa-base-clear);
@@ -96,6 +96,15 @@ h3 {
     font-family: var(--kreativa-font);
 }
 
+textarea {
+    padding-top: 15px;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: bolder;
+}
+
 .thm-btn {
     position: relative;
     display: inline-block;
@@ -106,7 +115,7 @@ h3 {
     font-size: 16px;
     font-weight: 600;
     text-transform: uppercase;
-    padding: 17px 60px 17px;
+    padding: 14px 30px 14px;
     transition: all 0.3s linear;
     overflow: hidden;
     z-index: 1;
@@ -156,30 +165,13 @@ h3 {
     margin-bottom: 50px;
 }
 
-.form_input {
+.icon-btn {
+    height: 50px;
+    width: 50px;
     position: relative;
     display: block;
-    height: 68px;
-    width: 100%;
-    border: none;
-    background-color: var(--kreativa-base-clear);
-    padding-left: 30px;
-    padding-right: 30px;
-    margin-bottom: 10px;
-    border-radius: var(--kreativa-bdr-radius);
-    outline: none;
-    font-size: 16px;
-    color: var(--kreativa-black);
-    font-family: var(--kreativa-font);
-}
-
-.add-btn {
-    height: 68px;
-    width: 68px;
-    position: relative;
-    display: block;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 19px;
+    padding-right: 20px;
     margin-bottom: 10px;
     margin-left: 10px;
     border-radius: var(--kreativa-bdr-radius);
@@ -187,65 +179,6 @@ h3 {
     border: none;
     background-color: var(--kreativa-base);
     color: var(--kreativa-white);
-}
-
-textarea {
-    padding-top: 20px;
-}
-
-.thm-btn {
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    outline: none !important;
-    background-color: var(--kreativa-base);
-    color: var(--kreativa-white);
-    font-size: 16px;
-    font-weight: 600;
-    text-transform: uppercase;
-    padding: 17px 60px 17px;
-    transition: all 0.3s linear;
-    overflow: hidden;
-    z-index: 1;
-    font-family: var(--kreativa-font);
-    letter-spacing: 0.1em;
-    border-radius: var(--kreativa-bdr-radius);
-    border: none;
-    margin: 0;
-}
-
-.thm-btn:hover {
-    color: var(--kreativa-white);
-}
-
-.thm-btn:after {
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--kreativa-black);
-    transform: scale(0);
-    -webkit-transition: all 0.2s linear;
-    -o-transition: all 0.2s linear;
-    transition: all 0.2s linear;
-    border-radius: var(--kreativa-bdr-radius);
-    opacity: 1;
-    z-index: -1;
-}
-
-.thm-btn:hover:after {
-    opacity: 1;
-    transform: scale(1);
-    -webkit-transition: all 0.4s linear;
-    -o-transition: all 0.4s linear;
-    transition: all 0.4s linear;
-}
-
-.form_btn {
-    display: block;
-    margin: 0 auto;
 }
 
 .section-title {
@@ -541,17 +474,16 @@ textarea {
     padding: 5px 10px;
     font-size: 12px;
     border-radius: var(--kreativa-bdr-radius);
-    min-width: 80px; 
+    min-width: 80px;
     text-align: center;
-    margin-left: 10px; 
+    margin-left: 10px;
 }
 
 /* Contenedor de los botones */
 .botones-grupo {
     display: flex;
-    justify-content: flex-start; 
-    align-items: center; 
-    gap: 5px; 
-    margin-left: -10px; 
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    margin-left: -10px;
 }
-
