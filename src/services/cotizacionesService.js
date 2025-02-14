@@ -23,7 +23,9 @@ class CotizacionesService {
 
     async getCotizacionByUserId(user_id) {
         try {
-            return Cotizaciones.find({ cliente_id: user_id });
+            return Cotizaciones.find({ cliente_id: user_id })
+                .populate("cliente_id", "nombre")
+                .sort({ fecha_solicitud: -1 });
         } catch (error) {
             throw new Error(
                 `Error al obtener las cotizaciones del cliente ${user_id}  ` +
@@ -34,10 +36,9 @@ class CotizacionesService {
 
     async getAllCotizaciones() {
         try {
-            const cotizaciones = Cotizaciones.find().populate(
-                "cliente_id",
-                "nombre"
-            );
+            const cotizaciones = Cotizaciones.find()
+                .populate("cliente_id", "nombre")
+                .sort({ fecha_solicitud: -1 });
             return cotizaciones;
         } catch (error) {
             console.error(error.message);
