@@ -139,17 +139,17 @@ const VerDetalleCotizacion = () => {
                             <div className="respuesta">
                                 <div className="contenido-respuesta">
                                     <div className="row">
-                                        <div className="col">
+                                        <div className="col me-5">
                                             <h3 className="titulo-respuesta">
                                                 {respuesta.usuario_id.nombre}
                                             </h3>
                                         </div>
-                                        <div className="col">
-                                            <p>
+                                        <div className="col ms-5">
+                                            <small>
                                                 {new Date(
                                                     respuesta.fecha_envio
                                                 ).toLocaleDateString()}
-                                            </p>
+                                            </small>
                                         </div>
                                     </div>
                                     <p>{respuesta.contenido}</p>
