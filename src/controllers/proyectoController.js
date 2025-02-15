@@ -52,6 +52,24 @@ class ProyectoController {
             });
         }
     }
+
+    async editEstado(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+
+            const proyecto = await ProyectoService.editEstado(id, data);
+
+            return res.json(proyecto);
+        } catch (error) {
+            console.error(
+                `Error al cambiar el estado del proyecto: ${error.message}`
+            );
+            return res.status(500).json({
+                error: `Error al cambiar el estado del proyecto: ${error.message}`,
+            });
+        }
+    }
 }
 
 module.exports = new ProyectoController();

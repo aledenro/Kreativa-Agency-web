@@ -32,6 +32,18 @@ class ProyectoService {
             throw new Error(`Error al editar el proyecto: ${error.message}`);
         }
     }
+
+    async editEstado(id, estado) {
+        try {
+            const proyecto = await ProyectoModel.findByIdAndUpdate(id, estado, {
+                new: true,
+            });
+
+            return proyecto;
+        } catch (error) {
+            throw new Error(`Error al editar el proyecto: ${error.message}`);
+        }
+    }
 }
 
 module.exports = new ProyectoService();
