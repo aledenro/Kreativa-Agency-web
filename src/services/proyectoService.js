@@ -44,6 +44,14 @@ class ProyectoService {
             throw new Error(`Error al editar el proyecto: ${error.message}`);
         }
     }
+
+    async getAllProyectosLimitedData() {
+        try {
+            return ProyectoModel.find().select("nombre");
+        } catch (error) {
+            throw new Error(`Error al buscar todos los proyectos`);
+        }
+    }
 }
 
 module.exports = new ProyectoService();
