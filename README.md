@@ -1,6 +1,6 @@
 # Herramienta de Gestión Integral para la empresa Kreativa Agency
 
-**Proyecto Final Grupo 3** <br>
+**Proyecto Final Grupo 4** <br>
 **Integrantes:**<br>
 María José Valverde Peña <br>
 Daniela de los Ángeles Camacho Pereira <br>
@@ -30,6 +30,10 @@ cd kreativa-agency
 npm install
 npm install --save bootstrap
 npm install bootstrap @popperjs/core
+npm i --save @fortawesome/fontawesome-svg-core
+npm install --save @fortawesome/free-solid-svg-icons
+npm install @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-brands-svg-icons @fortawesome/react-fontawesome
+
 npm install react-router-dom
 npm install axios
 npm run dev
