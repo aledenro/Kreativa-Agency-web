@@ -41,6 +41,11 @@ const CotizacionesModel = new mongoose.Schema(
                     type: String,
                     required: true,
                 },
+                fecha_envio: {
+                    type: Date,
+                    required: true,
+                    default: Date.now(),
+                },
             },
         ],
         estado: {
