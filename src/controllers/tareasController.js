@@ -22,16 +22,28 @@ class TareasController {
             const tarea = await TareasService.getTareaById(id);
 
             if (!tarea || lodash.isEmpty(tarea)) {
-                return res
-                    .status(404)
-                    .json({
-                        error: `Error al obtener la tarea con el id ${id}`,
-                    });
+                return res.status(404).json({
+                    error: `Error al obtener la tarea con el id ${id}`,
+                });
             }
 
             return res.json(tarea);
         } catch (error) {
             console.error(`Error al obtener la tarea: ${error.message}`);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async editTarea(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+
+            const tarea = await TareasService.editTarea(id, data);
+
+            return res.json(tarea);
+        } catch (error) {
+            console.error(`Error al editar la tarea: ${error.message}`);
             return res.status(500).json({ error: error.message });
         }
     }
