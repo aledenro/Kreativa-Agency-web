@@ -20,6 +20,7 @@ import ModificarServicio from "./pages/ModificarServicio";
 import AgregarPaquete from "./pages/AgregarPaquete";
 import AgregarProyecto from "./pages/AgregarProyecto";
 import EditarProyecto from "./pages/EditarProyecto";
+import EditarTarea from "./pages/EditarTarea";
 
 function App() {
     return (
@@ -87,6 +88,10 @@ function App() {
                 <Route
                     path="/proyecto/editar/:id"
                     element={<EditarProyecto />}
+                ></Route>
+                <Route
+                    path="/tarea/editar/:id"
+                    element={<EditarTarea />}
                 ></Route>
             </Routes>
         </Router>
