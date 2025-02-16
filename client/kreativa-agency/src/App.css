@@ -13,7 +13,7 @@
     --kreativa-base-rgb: 255, 0, 114;
     --kreativa-secondary: #8d25fc;
     --kreativa-secondary-rgb: 141, 37, 252;
-    --kreativa-bdr-radius: 8px;
+    --kreativa-bdr-radius: 10px;
 }
 
 * {
@@ -21,13 +21,6 @@
 }
 
 a {
-    color: var(--kreativa-secondary);
-}
-
-a,
-a:hover,
-a:focus,
-a:visited {
     text-decoration: none;
 }
 
@@ -183,7 +176,6 @@ textarea {
 
 .section-title {
     margin-top: 50px;
-    margin-bottom: 50px;
 }
 
 .detalles-text {
@@ -220,7 +212,6 @@ textarea {
     background-color: var(--kreativa-base-clear);
     border-radius: var(--kreativa-bdr-radius);
     overflow: hidden;
-    /* Para que los bordes redondeados se mantengan */
     font-family: var(--kreativa-font);
     color: var(--kreativa-black);
 }
@@ -486,4 +477,36 @@ textarea {
     align-items: center;
     gap: 5px;
     margin-left: -10px;
+}
+
+/* ---------- Servicios -------------*/
+.services-title a {
+    color: var(--kreativa-black);
+    font-weight: 600;
+}
+
+.services-title a:hover {
+    color: var(--kreativa-base);
+    font-weight: 600;
+    transition: color 0.3s ease-in-out;
+}
+
+.services-arrow {
+    color: gray;
+    text-decoration: none;
+}
+
+.services-arrow:hover {
+    color: var(--kreativa-base);
+    transition: color 0.3s ease-in-out;
+}
+
+.services-card {
+    background-color: var(--kreativa-white);
+    border-radius: var(--kreativa-bdr-radius);
+}
+
+.services-card:hover {
+    background-color: var(--kreativa-base-clear);
+    transition: background-color 0.3s ease-in-out;
 }

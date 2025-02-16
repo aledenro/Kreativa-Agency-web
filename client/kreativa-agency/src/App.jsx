@@ -14,6 +14,7 @@ import CrearUsuario from "./pages/CrearUsuario";
 import Usuarios from "./pages/Usuarios";
 import VerUsuario from "./pages/VerUsuario";
 import EditarUsuario from "./pages/EditarUsuario";
+import ListadoServicios from "./pages/ListadoServicios";
 import AgregarServicio from "./pages/AgregarServicio";
 import ModificarServicio from "./pages/ModificarServicio";
 import AgregarPaquete from "./pages/AgregarPaquete";
@@ -69,6 +70,8 @@ function App() {
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
                 ></Route>
+                <Route path="/servicios" element={<ListadoServicios />}></Route>
+
                 <Route
                     path="/servicio/agregar"
                     element={<AgregarServicio />}
