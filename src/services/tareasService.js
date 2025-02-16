@@ -12,6 +12,26 @@ class TareasService {
             throw new Error(`Error al crear la tarea: ${error.message}`);
         }
     }
+
+    async getTareaById(id) {
+        try {
+            return TareasModel.findById(id);
+        } catch (error) {
+            throw new Error(`Error al obtener la tarea: ${error.message}`);
+        }
+    }
+
+    async editTarea(id, data) {
+        try {
+            const tarea = await TareasModel.findByIdAndUpdate(id, data, {
+                new: true,
+            });
+
+            return tarea;
+        } catch (error) {
+            throw new Error(`Error al editar la tarea: ${error.message}`);
+        }
+    }
 }
 
 module.exports = new TareasService();
