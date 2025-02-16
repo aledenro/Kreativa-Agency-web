@@ -3,6 +3,13 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 
 const id = "67a043437b55c4040e008b3b";
+const estados = [
+    "Por Hacer",
+    "En Progreso",
+    "Cancelado",
+    "Finalizado",
+    "En Revisión",
+];
 
 function construirJsonRequest(
     nombre,
@@ -20,48 +27,6 @@ function construirJsonRequest(
     };
 }
 
-const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const enviar = confirm("¿Desea editar el proyecto?");
-
-    if (!enviar) {
-        return;
-    }
-
-    const formData = new FormData(event.target);
-
-    const nombre = formData.get("nombre");
-    const descripcion = formData.get("descripcion");
-    const cliente = formData.get("cliente");
-    const urgente = formData.get("urgente") === "on";
-    const fechaEntrega = formData.get("fecha_entrega");
-
-    const data = construirJsonRequest(
-        nombre,
-        descripcion,
-        cliente,
-        urgente,
-        fechaEntrega
-    );
-
-    try {
-        const res = await axios.put(
-            `http://localhost:4000/api/proyectos/editar/67a043437b55c4040e008b3b`,
-            data
-        );
-
-        if (res.status == 200) {
-            alert("Proyecto editado correctamente.");
-        }
-    } catch (error) {
-        console.error(error.message);
-        alert(
-            "Error al editar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
-        );
-    }
-};
-
 function renderOptionsClientes(cliente, clienteProyecto) {
     if (cliente._id === clienteProyecto._id) {
         return (
@@ -78,9 +43,26 @@ function renderOptionsClientes(cliente, clienteProyecto) {
     }
 }
 
+function renderOptionsEstados(opcion, estadoProyecto) {
+    if (opcion === estadoProyecto) {
+        return (
+            <option key={estadoProyecto} value={estadoProyecto} selected>
+                {estadoProyecto}
+            </option>
+        );
+    } else {
+        return (
+            <option key={opcion} value={opcion}>
+                {opcion}
+            </option>
+        );
+    }
+}
+
 const AgregarProyecto = () => {
     const [clientes, setClientes] = useState([]);
     const [proyecto, setProyecto] = useState(null);
+    const [estado, setEstado] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -90,6 +72,70 @@ const AgregarProyecto = () => {
     const handleChangeCheckBox = (e) => {
         const { name, checked } = e.target;
         setProyecto((prevProyecto) => ({ ...prevProyecto, [name]: checked }));
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const enviar = confirm("¿Desea editar el proyecto?");
+
+        if (!enviar) {
+            return;
+        }
+
+        const formData = new FormData(event.target);
+
+        const nombre = formData.get("nombre");
+        const descripcion = formData.get("descripcion");
+        const cliente = formData.get("cliente");
+        const urgente = formData.get("urgente") === "on";
+        const fechaEntrega = formData.get("fecha_entrega");
+
+        const data = construirJsonRequest(
+            nombre,
+            descripcion,
+            cliente,
+            urgente,
+            fechaEntrega
+        );
+
+        try {
+            const res = await axios.put(
+                `http://localhost:4000/api/proyectos/editar/67a043437b55c4040e008b3b`,
+                data
+            );
+
+            if (res.status == 200) {
+                alert("Proyecto editado correctamente.");
+            }
+        } catch (error) {
+            console.error(error.message);
+            alert(
+                "Error al editar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
+            );
+        }
+    };
+
+    const handleChangeEstado = async (event) => {
+        event.preventDefault();
+        const estadoEdit = event.target.value;
+
+        try {
+            const response = await axios.put(
+                `http://localhost:4000/api/proyectos/editar/${id}`,
+                { estado: estadoEdit }
+            );
+
+            if (response.status === 200) {
+                alert("Estado cambiado  correctamente");
+                setEstado(estadoEdit);
+            }
+        } catch (error) {
+            console.error(error.message);
+            alert(
+                "Error al editar el estado de su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
+            );
+        }
     };
 
     useEffect(() => {
@@ -115,13 +161,15 @@ const AgregarProyecto = () => {
 
                 if (response.status === 200) {
                     setProyecto(response.data);
+                    setEstado(response.data.estado);
                 }
+
+                fetchClientes();
             } catch (error) {
                 console.error(`Error al obtener el proyecto: ${error.message}`);
             }
         }
 
-        fetchClientes();
         fetchProyecto();
     }, []);
 
@@ -141,6 +189,32 @@ const AgregarProyecto = () => {
                     <h3 className="text-center section-title">
                         Editar Proyecto
                     </h3>
+                    <div className="row mb-3">
+                        <div className="col mx-3">
+                            Fecha de Solicitud:{" "}
+                            <small>
+                                {new Date(
+                                    proyecto.fecha_creacion
+                                ).toLocaleDateString()}
+                            </small>
+                        </div>
+                        <div className="col mx-3">
+                            <label htmlFor="estado">Estado</label>
+                            <select
+                                className="form-select"
+                                name="estado"
+                                id="estado"
+                                onChange={handleChangeEstado}
+                            >
+                                {estados.map((opcion) =>
+                                    renderOptionsEstados(
+                                        opcion,
+                                        proyecto.estado
+                                    )
+                                )}
+                            </select>
+                        </div>
+                    </div>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="nombre" className="form-label">
@@ -154,6 +228,10 @@ const AgregarProyecto = () => {
                                 required
                                 value={proyecto.nombre}
                                 onChange={handleChange}
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             />
                         </div>
                         <div className="mb-3">
@@ -162,13 +240,17 @@ const AgregarProyecto = () => {
                             </label>
                             <textarea
                                 name="descripcion"
-                                className="form_input"
+                                className="form_text_area"
                                 id="descripcion"
-                                rows={5}
+                                rows={7}
                                 placeholder="Describa su solicitud"
                                 required
                                 value={proyecto.descripcion}
                                 onChange={handleChange}
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             ></textarea>
                         </div>
                         <div className="mb-3">
@@ -180,6 +262,10 @@ const AgregarProyecto = () => {
                                 name="cliente"
                                 id="cliente"
                                 onChange={handleChange}
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             >
                                 {clientes.map((cliente) =>
                                     renderOptionsClientes(
@@ -199,6 +285,10 @@ const AgregarProyecto = () => {
                                         name="urgente"
                                         checked={proyecto.urgente}
                                         onChange={handleChangeCheckBox}
+                                        disabled={
+                                            estado === "Cancelado" ||
+                                            estado === "Finalizado"
+                                        }
                                     />
                                     <label
                                         className="form-check-label"
@@ -228,11 +318,22 @@ const AgregarProyecto = () => {
                                                 .toISOString()
                                                 .split("T")[0]
                                         }
+                                        disabled={
+                                            estado === "Cancelado" ||
+                                            estado === "Finalizado"
+                                        }
                                     />
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" className="thm-btn">
+                        <button
+                            type="submit"
+                            className="thm-btn"
+                            disabled={
+                                estado === "Cancelado" ||
+                                estado === "Finalizado"
+                            }
+                        >
                             Enviar
                         </button>
                     </form>
