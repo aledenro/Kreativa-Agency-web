@@ -41,6 +41,19 @@ const getUsuariosClientes = async () => {
     }
 };
 
+const getUsuariosColabAdmins = async () => {
+    try {
+        return await Usuario.find()
+            .or([
+                { tipo_usuario: "Administrador" },
+                { tipo_usuario: "Colaborador" },
+            ])
+            .select("nombre");
+    } catch (error) {
+        throw new Error(`Error al obtener los empleados: ${error.message}`);
+    }
+};
+
 module.exports = {
     verificarUsuarioExistente,
     crearNuevoUsuario,
@@ -49,4 +62,5 @@ module.exports = {
     actualizarUsuario,
     eliminarUsuario,
     getUsuariosClientes,
+    getUsuariosColabAdmins,
 };

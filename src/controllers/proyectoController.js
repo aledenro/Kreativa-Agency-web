@@ -70,6 +70,25 @@ class ProyectoController {
             });
         }
     }
+
+    async getAllProyectosLimitedData(req, res) {
+        try {
+            const proyectos =
+                await ProyectoService.getAllProyectosLimitedData();
+
+            if (!proyectos || lodash.isEmpty(proyectos)) {
+                return res.status(404).json({
+                    error: `No se pudo obtener ningun proyecto`,
+                });
+            }
+
+            return res.json({ proyectos: proyectos });
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error al obtener los proyectos: ${error.message}`,
+            });
+        }
+    }
 }
 
 module.exports = new ProyectoController();

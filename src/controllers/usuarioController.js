@@ -6,6 +6,7 @@ const {
     actualizarUsuario,
     eliminarUsuario,
     getUsuariosClientes,
+    getUsuariosColabAdmins,
 } = require("../services/usuarioService");
 
 const lodash = require("lodash");
@@ -130,6 +131,25 @@ const getClientes = async (req, res) => {
     }
 };
 
+const getEmpleados = async (req, res) => {
+    try {
+        const usuarios = await getUsuariosColabAdmins();
+
+        if (!usuarios || lodash.isEmpty(usuarios)) {
+            return res
+                .status(404)
+                .json({ error: "No se pudo encontrar los empleados." });
+        }
+
+        res.status(200).json(usuarios);
+    } catch (error) {
+        res.status(500).json({
+            mensaje: "Error al obtener los empleados",
+            error,
+        });
+    }
+};
+
 module.exports = {
     crearUsuario,
     obtenerTodosLosUsuarios,
@@ -137,4 +157,5 @@ module.exports = {
     actualizarUsuarioPorId,
     eliminarUsuarioPorId,
     getClientes,
+    getEmpleados,
 };
