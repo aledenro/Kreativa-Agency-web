@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
+import Alert from "react-bootstrap/Alert";
 
 const id = "67a043437b55c4040e008b3b";
 const estados = [
@@ -63,6 +64,9 @@ const AgregarProyecto = () => {
     const [clientes, setClientes] = useState([]);
     const [proyecto, setProyecto] = useState(null);
     const [estado, setEstado] = useState("");
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertVariant, setAlertVariant] = useState("danger");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -106,13 +110,17 @@ const AgregarProyecto = () => {
             );
 
             if (res.status == 200) {
-                alert("Proyecto editado correctamente.");
+                setAlertMessage("Proyecto editado correctamente.");
+                setAlertVariant("success");
+                setShowAlert(true);
             }
         } catch (error) {
             console.error(error.message);
-            alert(
+            setAlertMessage(
                 "Error al editar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
             );
+            setAlertVariant("danger");
+            setShowAlert(true);
         }
     };
 
@@ -127,14 +135,18 @@ const AgregarProyecto = () => {
             );
 
             if (response.status === 200) {
-                alert("Estado cambiado  correctamente");
+                setAlertMessage("Estado cambiado  correctamente.");
+                setAlertVariant("success");
+                setShowAlert(true);
                 setEstado(estadoEdit);
             }
         } catch (error) {
             console.error(error.message);
-            alert(
+            setAlertMessage(
                 "Error al editar el estado de su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
             );
+            setAlertVariant("danger");
+            setShowAlert(true);
         }
     };
 
@@ -189,6 +201,15 @@ const AgregarProyecto = () => {
                     <h3 className="text-center section-title">
                         Editar Proyecto
                     </h3>
+                    {showAlert && (
+                        <Alert
+                            variant={alertVariant}
+                            onClose={() => setShowAlert(false)}
+                            dismissible
+                        >
+                            {alertMessage}
+                        </Alert>
+                    )}
                     <div className="row mb-3">
                         <div className="col mx-3">
                             Fecha de Solicitud:{" "}
