@@ -32,6 +32,24 @@ class TareasService {
             throw new Error(`Error al editar la tarea: ${error.message}`);
         }
     }
+
+    async editEstadoTarea(id, estado) {
+        try {
+            const tarea = await TareasModel.findByIdAndUpdate(
+                id,
+                { estado: estado },
+                {
+                    new: true,
+                }
+            );
+
+            return tarea;
+        } catch (error) {
+            throw new Error(
+                `Error al editar el estado de la tarea: ${error.message}`
+            );
+        }
+    }
 }
 
 module.exports = new TareasService();
