@@ -47,22 +47,6 @@ class TareasController {
             return res.status(500).json({ error: error.message });
         }
     }
-
-    async editEstadoTarea(req, res) {
-        try {
-            const id = req.params.id;
-            const data = req.body.estado;
-
-            const tarea = await TareasService.editEstadoTarea(id, data);
-
-            return res.json(tarea);
-        } catch (error) {
-            console.error(
-                `Error al editar el estado de la tarea: ${error.message}`
-            );
-            return res.status(500).json({ error: error.message });
-        }
-    }
 }
 
 module.exports = new TareasController();
