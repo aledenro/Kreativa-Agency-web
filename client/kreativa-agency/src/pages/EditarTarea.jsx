@@ -125,6 +125,9 @@ const AgregarTarea = () => {
                 setAlertVariant("success");
                 setShowAlert(true);
                 setEstado(estadoEdit);
+                await addActionLog(
+                    `Cambió el estado de la tarea a: ${estadoEdit}.`
+                );
             }
         } catch (error) {
             console.error(error.message);
@@ -173,6 +176,7 @@ const AgregarTarea = () => {
                 setAlertMessage("Tarea editada correctamente.");
                 setAlertVariant("success");
                 setShowAlert(true);
+                await addActionLog("Editó la tarea.");
             }
         } catch (error) {
             console.error(error.message);
@@ -182,6 +186,20 @@ const AgregarTarea = () => {
             );
             setAlertVariant("danger");
             setShowAlert(true);
+        }
+    };
+
+    const addActionLog = async (accion) => {
+        try {
+            await axios.put(
+                `http://localhost:4000/api/tareas/actualizarLog/${id}`,
+                {
+                    usuario_id: "679834de23a11c303cf6c6b5",
+                    accion: accion,
+                }
+            );
+        } catch (error) {
+            console.error(error.message);
         }
     };
 
