@@ -11,5 +11,6 @@ router.get(
     "/getAllProyectosLimitedData",
     ProyectoController.getAllProyectosLimitedData
 );
+router.put("/actualizarLog/:id", ProyectoController.actualizarLog);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const ProyectoModel = require("../models/proyectoModel");
+const lodash = require("lodash");
 
 class ProyectoService {
     async createProyecto(data) {
@@ -50,6 +51,24 @@ class ProyectoService {
             return ProyectoModel.find().select("nombre");
         } catch (error) {
             throw new Error(`Error al buscar todos los proyectos`);
+        }
+    }
+
+    async actualizarLog(id, data) {
+        try {
+            const proyecto = await ProyectoModel.findById(id);
+
+            if (proyecto && !lodash.isEmpty(proyecto)) {
+                proyecto.log.push(data);
+
+                await proyecto.save();
+            }
+
+            return proyecto;
+        } catch (error) {
+            throw new Error(
+                `Error al actualizar el  log del proyecto con el id: ${id}`
+            );
         }
     }
 }

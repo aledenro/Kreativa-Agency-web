@@ -89,6 +89,26 @@ class ProyectoController {
             });
         }
     }
+
+    async actualizarLog(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+            const proyecto = await ProyectoService.actualizarLog(id, data);
+
+            if (!proyecto || lodash.isEmpty(proyecto)) {
+                return res.status(404).json({
+                    error: `No se encontro el proyecto.`,
+                });
+            }
+
+            return res.json(proyecto);
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error al actualizar el log del proyecto: ${error.message}`,
+            });
+        }
+    }
 }
 
 module.exports = new ProyectoController();
