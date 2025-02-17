@@ -70,6 +70,22 @@ function renderPrioridades(prioridad, tareaPrioridad) {
     }
 }
 
+function renderOptionsEstados(opcion, estadoTarea) {
+    if (opcion === estadoTarea) {
+        return (
+            <option key={estadoTarea} value={estadoTarea} selected>
+                {estadoTarea}
+            </option>
+        );
+    } else {
+        return (
+            <option key={opcion} value={opcion}>
+                {opcion}
+            </option>
+        );
+    }
+}
+
 const AgregarTarea = () => {
     const { id } = useParams();
     const [empleados, setEmpleados] = useState([]);
@@ -77,12 +93,47 @@ const AgregarTarea = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
-    const prioridades = ["Baja", "Media", "Alta"];
     const [tarea, setTarea] = useState(null);
+    const [estado, setEstado] = useState("");
+
+    const prioridades = ["Baja", "Media", "Alta"];
+    const estados = [
+        "Por Hacer",
+        "En Progreso",
+        "Cancelado",
+        "Finalizado",
+        "En Revisión",
+    ];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setTarea((prevTarea) => ({ ...prevTarea, [name]: value }));
+    };
+
+    const handleChangeEstado = async (event) => {
+        event.preventDefault();
+        const estadoEdit = event.target.value;
+
+        try {
+            const response = await axios.put(
+                `http://localhost:4000/api/tareas/editar/${id}`,
+                { estado: estadoEdit }
+            );
+
+            if (response.status === 200) {
+                setAlertMessage("Estado cambiado  correctamente.");
+                setAlertVariant("success");
+                setShowAlert(true);
+                setEstado(estadoEdit);
+            }
+        } catch (error) {
+            console.error(error.message);
+            setAlertMessage(
+                "Error al editar el estado de su tarea, por favor trate nuevamente o comuniquese con el soporte técnico."
+            );
+            setAlertVariant("danger");
+            setShowAlert(true);
+        }
     };
 
     const handleSubmit = async (event) => {
@@ -170,6 +221,7 @@ const AgregarTarea = () => {
                 );
 
                 setTarea(response.data);
+                setEstado(response.data.estado);
             } catch (error) {
                 console.error(`Error al obtener la tarea: ${error.message}`);
             }
@@ -194,6 +246,29 @@ const AgregarTarea = () => {
             <div className="container d-flex align-items-center justify-content-center">
                 <div className="card p-4 shadow-lg w-50">
                     <h3 className="text-center section-title">Editar Tarea</h3>
+                    <div className="row mb-3">
+                        <div className="col mx-3">
+                            Fecha de Solicitud:{" "}
+                            <small>
+                                {new Date(
+                                    tarea.fecha_creacion
+                                ).toLocaleDateString()}
+                            </small>
+                        </div>
+                        <div className="col mx-3">
+                            <label htmlFor="estado">Estado</label>
+                            <select
+                                className="form-select"
+                                name="estado"
+                                id="estado"
+                                onChange={handleChangeEstado}
+                            >
+                                {estados.map((opcion) =>
+                                    renderOptionsEstados(opcion, tarea.estado)
+                                )}
+                            </select>
+                        </div>
+                    </div>
                     <form onSubmit={handleSubmit}>
                         {showAlert && (
                             <Alert
@@ -212,6 +287,10 @@ const AgregarTarea = () => {
                                 className="form-select"
                                 name="proyecto"
                                 id="proyecto"
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             >
                                 {proyectos.map((proyecto) =>
                                     renderProyectos(proyecto, tarea.proyecto_id)
@@ -230,6 +309,10 @@ const AgregarTarea = () => {
                                 required
                                 value={tarea.nombre}
                                 onChange={handleChange}
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             />
                         </div>
                         <div className="mb-3">
@@ -245,6 +328,10 @@ const AgregarTarea = () => {
                                 required
                                 value={tarea.descripcion}
                                 onChange={handleChange}
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             ></textarea>
                         </div>
                         <div className="mb-3">
@@ -255,6 +342,10 @@ const AgregarTarea = () => {
                                 className="form-select"
                                 name="colab"
                                 id="colab"
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             >
                                 {empleados.map((colab) =>
                                     renderColab(colab, tarea.colaborador_id)
@@ -274,6 +365,10 @@ const AgregarTarea = () => {
                                         className="form-select"
                                         name="prioridad"
                                         id="prioridad"
+                                        disabled={
+                                            estado === "Cancelado" ||
+                                            estado === "Finalizado"
+                                        }
                                     >
                                         {prioridades.map((prioridad) =>
                                             renderPrioridades(
@@ -304,11 +399,22 @@ const AgregarTarea = () => {
                                                 .split("T")[0]
                                         }
                                         onChange={handleChange}
+                                        disabled={
+                                            estado === "Cancelado" ||
+                                            estado === "Finalizado"
+                                        }
                                     />
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" className="thm-btn">
+                        <button
+                            type="submit"
+                            className="thm-btn"
+                            disabled={
+                                estado === "Cancelado" ||
+                                estado === "Finalizado"
+                            }
+                        >
                             Guardar
                         </button>
                     </form>
