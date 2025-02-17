@@ -113,6 +113,7 @@ const AgregarProyecto = () => {
                 setAlertMessage("Proyecto editado correctamente.");
                 setAlertVariant("success");
                 setShowAlert(true);
+                await addActionLog("Editó el proyecto.");
             }
         } catch (error) {
             console.error(error.message);
@@ -139,6 +140,9 @@ const AgregarProyecto = () => {
                 setAlertVariant("success");
                 setShowAlert(true);
                 setEstado(estadoEdit);
+                await addActionLog(
+                    `Cambió el estado del proyecto a: ${estadoEdit}.`
+                );
             }
         } catch (error) {
             console.error(error.message);
@@ -147,6 +151,20 @@ const AgregarProyecto = () => {
             );
             setAlertVariant("danger");
             setShowAlert(true);
+        }
+    };
+
+    const addActionLog = async (accion) => {
+        try {
+            await axios.put(
+                `http://localhost:4000/api/proyectos/actualizarLog/${id}`,
+                {
+                    usuario_id: "679834de23a11c303cf6c6b5",
+                    accion: accion,
+                }
+            );
+        } catch (error) {
+            console.error(error.message);
         }
     };
 
