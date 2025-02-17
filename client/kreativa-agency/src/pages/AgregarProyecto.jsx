@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
+import Alert from "react-bootstrap/Alert";
 
 function construirJsonRequest(
     nombre,
@@ -26,51 +27,59 @@ function construirJsonRequest(
     };
 }
 
-const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const enviar = confirm("¿Desea enviar su proyecto?");
-
-    if (!enviar) {
-        return;
-    }
-
-    const formData = new FormData(event.target);
-
-    const nombre = formData.get("nombre");
-    const descripcion = formData.get("descripcion");
-    const cliente = formData.get("cliente");
-    const urgente = formData.get("urgente") === "on";
-    const fechaEntrega = formData.get("fecha_entrega");
-
-    const data = construirJsonRequest(
-        nombre,
-        descripcion,
-        cliente,
-        urgente,
-        fechaEntrega
-    );
-
-    try {
-        const res = await axios.post(
-            "http://localhost:4000/api/proyectos/crear",
-            data
-        );
-
-        if (res.status == 201) {
-            alert("Proyecto enviado correctamente.");
-            event.target.reset();
-        }
-    } catch (error) {
-        console.error(error.message);
-        alert(
-            "Error al enviar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
-        );
-    }
-};
-
 const AgregarProyecto = () => {
     const [clientes, setClientes] = useState([]);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertVariant, setAlertVariant] = useState("danger");
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const enviar = confirm("¿Desea enviar su proyecto?");
+
+        if (!enviar) {
+            return;
+        }
+
+        const formData = new FormData(event.target);
+
+        const nombre = formData.get("nombre");
+        const descripcion = formData.get("descripcion");
+        const cliente = formData.get("cliente");
+        const urgente = formData.get("urgente") === "on";
+        const fechaEntrega = formData.get("fecha_entrega");
+
+        const data = construirJsonRequest(
+            nombre,
+            descripcion,
+            cliente,
+            urgente,
+            fechaEntrega
+        );
+
+        try {
+            const res = await axios.post(
+                "http://localhost:4000/api/proyectos/crear",
+                data
+            );
+
+            if (res.status == 201) {
+                setAlertMessage("Proyecto enviado correctamente.");
+                setAlertVariant("success");
+                setShowAlert(true);
+                event.target.reset();
+            }
+        } catch (error) {
+            console.error(error.message);
+
+            setAlertMessage(
+                "Error al enviar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
+            );
+            setAlertVariant("danger");
+            setShowAlert(true);
+        }
+    };
 
     useEffect(() => {
         async function fetchClientes() {
@@ -101,6 +110,15 @@ const AgregarProyecto = () => {
                         Agregar Proyecto
                     </h3>
                     <form onSubmit={handleSubmit}>
+                        {showAlert && (
+                            <Alert
+                                variant={alertVariant}
+                                onClose={() => setShowAlert(false)}
+                                dismissible
+                            >
+                                {alertMessage}
+                            </Alert>
+                        )}
                         <div className="mb-3">
                             <label htmlFor="nombre" className="form-label">
                                 Nombre
@@ -119,7 +137,7 @@ const AgregarProyecto = () => {
                             </label>
                             <textarea
                                 name="descripcion"
-                                className="form_input"
+                                className="form_text_area"
                                 id="descripcion"
                                 rows={5}
                                 placeholder="Describa su solicitud"
