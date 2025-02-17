@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCallback } from "react";
 import Navbar from "../components/Navbar/Navbar";
+import Alert from "react-bootstrap/Alert";
 
 const VerDetalleCotizacion = () => {
     const { id } = useParams();
     const [cotizacion, setCotizacion] = useState(null);
     const opciones = ["Nuevo", "Aceptado", "Cancelado"];
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertVariant, setAlertVariant] = useState("danger");
 
     const fetchCotizacion = useCallback(async () => {
         try {
@@ -25,7 +29,7 @@ const VerDetalleCotizacion = () => {
         fetchCotizacion(id);
     }, [id, fetchCotizacion]);
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         const enviar = confirm("¿Desea enviar su respuesta?");
@@ -43,19 +47,23 @@ const VerDetalleCotizacion = () => {
         };
 
         try {
-            axios.put(
+            await axios.put(
                 `http://localhost:4000/api/cotizaciones/agregarRespuesta/${id}`,
                 data
             );
 
-            alert("Respuesta enviada correctamente.");
+            setAlertMessage("Respuesta enviada correctamente.");
+            setAlertVariant("success");
+            setShowAlert(true);
             event.target.reset();
             fetchCotizacion(id);
         } catch (error) {
             console.error(`Error al enviar la respuesta: ${error.message}`);
-            alert(
+            setAlertMessage(
                 "Error al enviar su respuesta, por favor intente de nuevo o contacte al soporte tecnico."
             );
+            setAlertVariant("danger");
+            setShowAlert(true);
         }
     }
 
@@ -79,13 +87,19 @@ const VerDetalleCotizacion = () => {
                 `http://localhost:4000/api/cotizaciones/cambiarEstado/${id}`,
                 { estado: estado }
             );
+
+            setAlertMessage("Estado cambiado  correctamente.");
+            setAlertVariant("success");
+            setShowAlert(true);
         } catch (error) {
             console.error(
                 `Error al cambiar el estado de la cotizacion: ${error.message}`
             );
-            alert(
+            setAlertMessage(
                 "Error al cambiar el estado de la cotizacion, por favor intente de nuevo o contacte al soporte tecnico."
             );
+            setAlertVariant("danger");
+            setShowAlert(true);
         }
     }
 
@@ -102,6 +116,15 @@ const VerDetalleCotizacion = () => {
             <Navbar></Navbar>
             <div className="container d-flex align-items-center justify-content-center">
                 <div className="card p-4 shadow-lg w-50">
+                    {showAlert && (
+                        <Alert
+                            variant={alertVariant}
+                            onClose={() => setShowAlert(false)}
+                            dismissible
+                        >
+                            {alertMessage}
+                        </Alert>
+                    )}
                     <div className="row">
                         <h3 className="section-title text-center">
                             {cotizacion.titulo}
@@ -168,7 +191,7 @@ const VerDetalleCotizacion = () => {
                                     <textarea
                                         name="message"
                                         placeholder="Por favor escriba su respuesta"
-                                        className="form_input"
+                                        className="form_text_area"
                                         required
                                     ></textarea>
                                     <button
