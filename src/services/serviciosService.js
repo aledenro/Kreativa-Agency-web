@@ -1,71 +1,111 @@
 const Servicios = require("../models/serviciosModel");
 
 class ServiciosService {
-  async agregarServicio(data) {
-    try {
-      const servicio = new Servicios(data);
+    async agregarServicio(data) {
+        try {
+            const servicio = new Servicios(data);
 
-      return await servicio.save();
-    } catch (error) {
-      throw new Error("No se pudo agregar el servicio: " + error.message);
-    }
-  }
-
-  async getServicios() {
-    try {
-      return await Servicios.find();
-    } catch (error) {
-      throw new Error("No se pudieron obtener los servicios: " + error.message);
-    }
-  }
-
-  async getServicioById(id) {
-    try {
-      const servicio = await Servicios.findById(id);
-      if (!servicio) {
-        throw new Error(`Servicio ${id} no encontrado`);
-      }
-      return servicio;
-    } catch (error) {
-      throw new Error(`No se pudo obtener el servicio ${id}: ` + error.message);
-    }
-  }
-
-  async modificarServicioById(id, datosActualizados) {
-    try {
-      const servicioActualizado = await Servicios.findByIdAndUpdate(
-        id,
-        datosActualizados,
-        {
-          new: true,
-          runValidators: true,
+            return await servicio.save();
+        } catch (error) {
+            throw new Error("No se pudo agregar el servicio: " + error.message);
         }
-      );
-
-      if (!servicioActualizado) {
-        throw new Error(`Servicio ${id} no encontrado`);
-      }
-
-      return servicioActualizado;
-    } catch (error) {
-      throw new Error(
-        `No se pudo modificar el servicio ${id}: ` + error.message
-      );
     }
-  }
 
-  async agregarPaquete(id, paquete) {
-    try {
-      const servicio = await Servicios.findById(id);
-
-      servicio["paquetes"].push(paquete);
-      await servicio.save();
-
-      return servicio;
-    } catch (error) {
-      throw new Error("Error al agregar el paquete: " + error.message);
+    async getServicios() {
+        try {
+            return await Servicios.find();
+        } catch (error) {
+            throw new Error(
+                "No se pudieron obtener los servicios: " + error.message
+            );
+        }
     }
-  }
+
+    async getServicioById(id) {
+        try {
+            const servicio = await Servicios.findById(id);
+            if (!servicio) {
+                throw new Error(`Servicio ${id} no encontrado`);
+            }
+            return servicio;
+        } catch (error) {
+            throw new Error(
+                `No se pudo obtener el servicio ${id}: ` + error.message
+            );
+        }
+    }
+
+    async modificarServicioById(id, datosActualizados) {
+        try {
+            const servicioActualizado = await Servicios.findByIdAndUpdate(
+                id,
+                { datosActualizados, ultima_modificacion: Date.now() },
+                {
+                    new: true,
+                    runValidators: true,
+                }
+            );
+
+            if (!servicioActualizado) {
+                throw new Error(`Servicio ${id} no encontrado`);
+            }
+
+            return servicioActualizado;
+        } catch (error) {
+            throw new Error(
+                `No se pudo modificar el servicio ${id}: ` + error.message
+            );
+        }
+    }
+
+    async agregarPaquete(id, paquete) {
+        try {
+            const servicio = await Servicios.findById(id);
+
+            servicio["paquetes"].push(paquete);
+            await servicio.save();
+
+            return servicio;
+        } catch (error) {
+            throw new Error("Error al agregar el paquete: " + error.message);
+        }
+    }
+
+    async desactivarServicioById(id) {
+        try {
+            const servicioDesactivado = await Servicios.findByIdAndUpdate(
+                id,
+                { activo: false, ultima_modificacion: Date.now() },
+                { new: true }
+            );
+            if (!servicioDesactivado) {
+                throw new Error(`Servicio ${id} no encontrado`);
+            }
+            return servicioDesactivado;
+        } catch (error) {
+            throw new Error(
+                `No se pudo desactivar el servicio ${id}: ` + error.message
+            );
+        }
+    }
+
+    async activarServicioById(id) {
+        try {
+            const servicioActivado = await Servicios.findByIdAndUpdate(
+                id,
+                { activo: true, ultima_modificacion: Date.now() },
+                { new: true }
+            );
+            if (!servicioActivado) {
+                throw new Error(`Servicio ${id} no encontrado`);
+            }
+            return servicioActivado;
+        } catch (error) {
+            throw new Error(
+                `No se pudo activar el servicio ${id}: ` + error.message
+            );
+        }
+    }
 }
 
 module.exports = new ServiciosService();
