@@ -3,9 +3,13 @@ import Navbar from "../components/Navbar/Navbar";
 import axios from "axios";
 import { Table, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+
 
 const ObtenerEgresos = () => {
     const [egresos, setEgresos] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [egresoIdEliminar, setEgresoIdEliminar] = useState(null);
 
     // Obtener todos los egresos
     useEffect(() => {
@@ -20,6 +24,23 @@ const ObtenerEgresos = () => {
 
         obtenerEgresos();
     }, []);
+
+    // Función para abrir el modal de confirmación
+    const confirmarEliminar = (id) => {
+        setEgresoIdEliminar(id);
+        setShowModal(true);
+    };
+
+    // Función para eliminar el egreso
+    const eliminarEgreso = async () => {
+        try {
+            await axios.delete(`http://localhost:4000/api/egresos/${egresoIdEliminar}`);
+            setEgresos(egresos.filter((egreso) => egreso._id !== egresoIdEliminar));
+            setShowModal(false); // Cerrar el modal después de eliminar
+        } catch (error) {
+            console.error("Error al eliminar el egreso:", error.message);
+        }
+    };
 
     return (
         <div>
@@ -51,11 +72,32 @@ const ObtenerEgresos = () => {
                                 <Link to={`/egreso/editar/${egreso._id}`}>
                                     <Button variant="warning">Editar</Button>
                                 </Link>
+                                {/* Botón Eliminar */}
+                                <Button variant="danger" onClick={() => confirmarEliminar(egreso._id)}>
+                                    Eliminar
+                                </Button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            {/* Modal de Confirmación */}
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar Eliminación</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>¿Estás seguro de que deseas eliminar este egreso?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Cancelar
+                    </Button>
+                    <Button variant="danger" onClick={eliminarEgreso}>
+                        Eliminar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
         </div>
     );
 };

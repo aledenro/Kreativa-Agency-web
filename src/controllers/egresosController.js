@@ -2,6 +2,8 @@ const EgresosService = require("../services/egresosService");
 const lodash = require("lodash");
 
 class EgresosController {
+
+    //Agregar egreso
     async agregarEgreso(req, res) {
         try {
             // Validar que están todos los datos
@@ -24,6 +26,7 @@ class EgresosController {
         }
     }
 
+    //Ver egresos
     async obtenerEgresos(req, res) {
         try {
             const egresos = await EgresosService.obtenerEgresos();
@@ -34,7 +37,7 @@ class EgresosController {
         }
     }
 
-    // Función para obtener un egreso por ID
+    // Obtener un egreso por ID
     async obtenerEgresoPorId(req, res) {
         try {
             const { id } = req.params; // Obtener el ID de la URL
@@ -51,6 +54,7 @@ class EgresosController {
         }
     }
 
+    // Editar egreso
     async editarEgreso(req, res) {
         try {
             const { id } = req.params; // Obtener el ID del egreso a editar
@@ -87,6 +91,24 @@ class EgresosController {
             return res.status(500).json({ error: "Error interno del servidor" });
         }
     }
+
+    //Eliminar egreso
+    async eliminarEgreso(req, res) {
+        try {
+            const { id } = req.params;
+    
+            const egresoEliminado = await EgresosService.eliminarEgreso(id);
+    
+            if (!egresoEliminado) {
+                return res.status(404).json({ error: "Egreso no encontrado" });
+            }
+    
+            return res.status(200).json({ message: "Egreso eliminado correctamente", egresoEliminado });
+        } catch (error) {
+            console.error("Error al intentar eliminar el egreso: " + error.message);
+            return res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }    
 }
 
 module.exports = new EgresosController();
