@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar"; // Importar el Navbar
+import Navbar from "../components/Navbar/Navbar";
 
 const ListadoServicios = () => {
-    const [servicios, setServicios] = useState([]); // Estado inicializado como array vacío
+    const [servicios, setServicios] = useState([]);
     const navigate = useNavigate();
 
-    // Obtener los servicios de la API
     useEffect(() => {
         async function getServicios() {
             try {
@@ -17,23 +16,21 @@ const ListadoServicios = () => {
                     "http://localhost:4000/api/servicios/"
                 );
 
-                console.log("Respuesta de la API:", response.data); // Verifica la estructura de la API
+                console.log("response: ", response.data);
 
                 if (Array.isArray(response.data)) {
-                    setServicios(response.data); // ✅ Usar directamente la respuesta si es un array
+                    setServicios(response.data);
                 } else {
-                    console.error("Error: La API no devolvió un array válido.");
-                    setServicios([]); // Previene fallos en el map()
+                    setServicios([]);
                 }
             } catch (error) {
                 console.error("Error al obtener servicios:", error.message);
-                setServicios([]); // Evita errores en la interfaz
+                setServicios([]);
             }
         }
         getServicios();
     }, []);
 
-    // Función para redirigir a la página del servicio
     function handleListadoServicios(id) {
         navigate(`/servicio/${id}`);
     }
@@ -56,7 +53,7 @@ const ListadoServicios = () => {
                                             <div className="services-img">
                                                 <img
                                                     src={
-                                                        servicio.imagen ||
+                                                        // servicio.imagen ||
                                                         "https://placehold.co/370x260"
                                                     }
                                                     alt={servicio.nombre}
