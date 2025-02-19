@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar"; // Importar el Navbar
+import Navbar from "../components/Navbar/Navbar";
 
 const EditarUsuario = () => {
     const { id } = useParams();
@@ -11,10 +11,10 @@ const EditarUsuario = () => {
         usuario: "",
         email: "",
         tipo_usuario: "",
+        cedula: "", 
     });
     const [error, setError] = useState("");
 
-    // Cargar datos del usuario existente
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
@@ -24,6 +24,7 @@ const EditarUsuario = () => {
                     usuario: data.usuario,
                     email: data.email,
                     tipo_usuario: data.tipo_usuario,
+                    cedula: data.cedula,  
                 });
             } catch (error) {
                 setError("Error al cargar los datos del usuario.");
@@ -32,7 +33,6 @@ const EditarUsuario = () => {
         fetchUsuario();
     }, [id]);
 
-    // Manejar cambios en el formulario
     const handleInputChange = (e) => {
         setFormData({
             ...formData,
@@ -40,42 +40,31 @@ const EditarUsuario = () => {
         });
     };
 
-    // Manejar la edición del usuario
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         try {
             await axios.put(`http://localhost:4000/api/usuarios/${id}`, formData);
-            navigate("/usuarios"); // Redirigir a la página principal de usuarios
+            alert("Usuario actualizado correctamente");
+            navigate("/usuarios");
         } catch (error) {
-            if (error.response && error.response.status === 400) {
-                setError(error.response.data.mensaje); // Mostrar errores de validación
-            } else {
-                setError("Error al actualizar el usuario.");
-            }
+            setError("Error al actualizar el usuario.");
         }
     };
 
     return (
         <div>
-            {/* Navbar */}
             <Navbar />
-
-            {/* Contenido principal */}
             <div className="container mt-5">
-                <div className="section-title text-center">
-                    <h1>Editar Usuario</h1>
-                </div>
-                {error && (
-                    <div className="alert alert-danger kreativa-alert">{error}</div>
-                )}
-                <form onSubmit={handleSubmit} className="form-box mx-auto p-4">
+                <h1>Editar Usuario</h1>
+                {error && <div className="alert alert-danger">{error}</div>}
+                <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Nombre</label>
                         <input
                             type="text"
                             name="nombre"
-                            className="form_input"
+                            className="form-control"
                             value={formData.nombre}
                             onChange={handleInputChange}
                             required
@@ -86,7 +75,7 @@ const EditarUsuario = () => {
                         <input
                             type="text"
                             name="usuario"
-                            className="form_input"
+                            className="form-control"
                             value={formData.usuario}
                             onChange={handleInputChange}
                             required
@@ -97,17 +86,27 @@ const EditarUsuario = () => {
                         <input
                             type="email"
                             name="email"
-                            className="form_input"
+                            className="form-control"
                             value={formData.email}
                             onChange={handleInputChange}
                             required
                         />
                     </div>
                     <div className="mb-3">
+                        <label className="form-label">Cédula</label>
+                        <input
+                            type="text"
+                            name="cedula"
+                            className="form-control"
+                            value={formData.cedula}
+                            disabled
+                        />
+                    </div>
+                    <div className="mb-3">
                         <label className="form-label">Tipo de Usuario</label>
                         <select
                             name="tipo_usuario"
-                            className="form_input"
+                            className="form-control"
                             value={formData.tipo_usuario}
                             onChange={handleInputChange}
                             required
@@ -118,17 +117,9 @@ const EditarUsuario = () => {
                             <option value="Cliente">Cliente</option>
                         </select>
                     </div>
-                    <div className="d-flex gap-3 mt-4">
-                        <button type="submit" className="thm-btn">
-                            Guardar Cambios
-                        </button>
-                        <button
-                            type="button"
-                            className="thm-btn thm-btn-secondary"
-                            onClick={() => navigate("/usuarios")}
-                        >
-                            Volver
-                        </button>
+                    <div className="d-flex gap-3">
+                        <button type="submit" className="thm-btn btn-editar">Guardar Cambios</button>
+                        <button type="button" className="thm-btn btn-volver" onClick={() => navigate("/usuarios")}>Volver</button>
                     </div>
                 </form>
             </div>

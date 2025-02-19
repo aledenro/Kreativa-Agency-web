@@ -626,3 +626,67 @@ textarea {
     background-color: var(--kreativa-base-clear);
     transition: background-color 0.3s ease-in-out;
 }
+
+/* Estandard Botones */
+
+/* Botón para CREAR (verde) */
+.btn-crear {
+    background-color: #28a745;
+    color: var(--kreativa-white);
+}
+
+.btn-crear:hover {
+    background-color: #218838;
+}
+
+/* Botón para EDITAR (azul) */
+.btn-editar {
+    background-color: #007bff;
+    color: var(--kreativa-white);
+}
+
+.btn-editar:hover {
+    background-color: #0056b3;
+}
+
+/* Botón para ELIMINAR (rojo) */
+.btn-eliminar,
+.btn-desactivar {
+    background-color: #dc3545;
+    color: var(--kreativa-white);
+}
+
+.btn-eliminar:hover,
+.btn-desactivar:hover {
+    background-color: #a71d2a;
+}
+
+/* Botón para VER (amarillo) */
+.btn-ver {
+    background-color: #ffc107;
+    color: var(--kreativa-black);
+}
+
+.btn-ver:hover {
+    background-color: #e0a800;
+}
+
+/* Botón para ACTIVAR (verde oscuro) */
+.btn-activar {
+    background-color: #218838;
+    color: var(--kreativa-white);
+}
+
+.btn-activar:hover {
+    background-color: #1e7e34;
+}
+
+/* Botón para VOLVER (gris) */
+.btn-volver {
+    background-color: #6c757d;
+    color: var(--kreativa-white);
+}
+
+.btn-volver:hover {
+    background-color: #5a6268;
+}

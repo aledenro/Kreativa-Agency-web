@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar"; // Importar el Navbar
+import Navbar from "../components/Navbar/Navbar";
 
 const VerUsuario = () => {
     const { id } = useParams();
@@ -23,46 +23,24 @@ const VerUsuario = () => {
 
     return (
         <div>
-            {/* Navbar */}
             <Navbar />
-
-            {/* Contenido principal */}
             <div className="container mt-5">
-                <div className="section-title text-center">
-                    <h1>Detalles del Usuario</h1>
-                </div>
-                {error && (
-                    <div className="alert alert-danger kreativa-alert">{error}</div>
-                )}
+                <h1>Detalles del Usuario</h1>
+                {error && <div className="alert alert-danger">{error}</div>}
                 {usuario ? (
-                    <div className="details-box p-4 mx-auto">
-                        <p className="detalles-text">
-                            <strong>Nombre:</strong> {usuario.nombre}
-                        </p>
-                        <p className="detalles-text">
-                            <strong>Usuario:</strong> {usuario.usuario}
-                        </p>
-                        <p className="detalles-text">
-                            <strong>Email:</strong> {usuario.email}
-                        </p>
-                        <p className="detalles-text">
-                            <strong>Tipo de Usuario:</strong> {usuario.tipo_usuario}
-                        </p>
-                        <p className="detalles-text">
-                            <strong>Estado:</strong> {usuario.estado}
-                        </p>
-                        <div className="d-flex justify-content-start mt-4">
-                            <button
-                                type="button"
-                                className="thm-btn thm-btn-secondary"
-                                onClick={() => navigate("/usuarios")}
-                            >
-                                Volver
-                            </button>
+                    <div className="detalle-usuario">
+                        <p><strong>Nombre:</strong> {usuario.nombre}</p>
+                        <p><strong>Usuario:</strong> {usuario.usuario}</p>
+                        <p><strong>Email:</strong> {usuario.email}</p>
+                        <p><strong>Tipo de Usuario:</strong> {usuario.tipo_usuario}</p>
+                        <p><strong>Cédula:</strong> {usuario.cedula}</p>
+                        <p><strong>Estado:</strong> {usuario.estado}</p>
+                        <div className="d-flex gap-3">
+                            <button type="button" className="thm-btn btn-volver" onClick={() => navigate("/usuarios")}>Volver</button>
                         </div>
                     </div>
                 ) : (
-                    <p className="text-center mt-4">Cargando...</p>
+                    <p>Cargando...</p>
                 )}
             </div>
         </div>

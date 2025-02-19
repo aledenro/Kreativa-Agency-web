@@ -7,7 +7,16 @@ const verificarUsuarioExistente = async (usuario) => {
 
 // Crear un nuevo usuario
 const crearNuevoUsuario = async (datosUsuario) => {
-    const nuevoUsuario = new Usuario(datosUsuario);
+    const nuevoUsuario = new Usuario({
+        nombre: datosUsuario.nombre,
+        usuario: datosUsuario.usuario,
+        cedula: datosUsuario.cedula,
+        email: datosUsuario.email,
+        contraseña: datosUsuario.contraseña,
+        tipo_usuario: datosUsuario.tipo_usuario,
+        estado: datosUsuario.estado || "Activo",
+    });
+
     return await nuevoUsuario.save();
 };
 

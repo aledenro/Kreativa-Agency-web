@@ -1,3 +1,5 @@
+const Usuario = require("../models/usuarioModel"); // Importación corregida
+
 const {
     verificarUsuarioExistente,
     crearNuevoUsuario,
@@ -13,35 +15,40 @@ const lodash = require("lodash");
 
 // Crear un usuario
 const crearUsuario = async (req, res) => {
-    const { nombre, usuario, email, contraseña, tipo_usuario } = req.body;
-
-    if (!nombre || !usuario || !email || !contraseña || !tipo_usuario) {
-        return res
-            .status(400)
-            .json({ mensaje: "Todos los campos son obligatorios" });
+    const { nombre, usuario, cedula, email, contraseña, tipo_usuario, estado } = req.body;
+    
+    if (!nombre || !usuario || !cedula || !email || !contraseña || !tipo_usuario || !estado) {
+        return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
     }
 
     try {
         const usuarioExistente = await verificarUsuarioExistente(usuario);
+        const cedulaExistente = await Usuario.findOne({ cedula });
+
         if (usuarioExistente) {
-            return res
-                .status(400)
-                .json({ mensaje: "El nombre de usuario ya está en uso" });
+            return res.status(400).json({ mensaje: "El nombre de usuario ya está en uso" });
+        }
+
+        if (cedulaExistente) {
+            return res.status(400).json({ mensaje: "La cédula ya está en uso" });
         }
 
         const usuarioCreado = await crearNuevoUsuario({
             nombre,
             usuario,
+            cedula,
             email,
             contraseña,
             tipo_usuario,
+            estado
         });
+
         res.status(201).json({
             mensaje: "Usuario creado exitosamente",
             usuario: usuarioCreado,
         });
     } catch (error) {
-        res.status(500).json({ mensaje: "Error al crear el usuario", error });
+        res.status(500).json({ mensaje: "Error al crear el usuario", error: error.message });
     }
 };
 
