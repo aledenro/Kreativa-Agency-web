@@ -45,6 +45,7 @@ const AgregarServicio = () => {
             setAlertMessage("Servicio agregado exitosamente.");
             setAlertVariant("success");
             setShowAlert(true);
+            event.target.reset();
         } catch (error) {
             console.error(error.message);
             setAlertMessage("Hubo un error al agregar el servicio.");
@@ -111,7 +112,7 @@ const AgregarServicio = () => {
                                     <textarea
                                         placeholder="Describa la información del paquete aquí..."
                                         name="descripcion"
-                                        className="form_input"
+                                        className="form_input form-textarea"
                                     />
                                     <div className="d-flex justify-content-center mt-3">
                                         <button

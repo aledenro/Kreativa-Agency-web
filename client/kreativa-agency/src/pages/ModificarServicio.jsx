@@ -128,10 +128,10 @@ const ModificarServicio = () => {
                                     </label>
                                     <textarea
                                         name="descripcion"
-                                        className="form_input"
+                                        className="form_input form-textarea"
                                         value={servicio.descripcion}
                                         onChange={handleChange}
-                                    />
+                                    ></textarea>
                                     <div className="d-flex justify-content-center mt-3">
                                         <button
                                             type="submit"
