@@ -71,6 +71,22 @@ const getUsuariosColabAdmins = async () => {
     }
 };
 
+// Verificar credenciales de usuario
+const verificarCredenciales = async (usuario, contraseña) => {
+    const user = await Usuario.findOne({ usuario });
+
+    if (!user) {
+        return { error: "Usuario no encontrado" };
+    }
+
+    const isMatch = await bcrypt.compare(contraseña, user.contraseña);
+    if (!isMatch) {
+        return { error: "Contraseña incorrecta" };
+    }
+
+    return user;
+};
+
 module.exports = {
     verificarUsuarioExistente,
     crearNuevoUsuario,
@@ -80,4 +96,5 @@ module.exports = {
     eliminarUsuario,
     getUsuariosClientes,
     getUsuariosColabAdmins,
+    verificarCredenciales,
 };

@@ -7,6 +7,7 @@ const {
     eliminarUsuarioPorId,
     getClientes,
     getEmpleados,
+    iniciarSesion,
 } = require("../controllers/usuarioController");
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.get("/usuarios/empleados", getEmpleados);
 router.get("/usuarios/:id", obtenerUsuario);
 router.put("/usuarios/:id", actualizarUsuarioPorId);
 router.delete("/usuarios/:id", eliminarUsuarioPorId);
+router.post("/login", iniciarSesion);
 
 module.exports = router;

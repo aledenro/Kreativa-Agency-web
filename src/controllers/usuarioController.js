@@ -1,4 +1,5 @@
-const Usuario = require("../models/usuarioModel"); // Importación corregida
+const bcrypt = require("bcryptjs");
+const Usuario = require("../models/usuarioModel");
 
 const {
     verificarUsuarioExistente,
@@ -9,6 +10,7 @@ const {
     eliminarUsuario,
     getUsuariosClientes,
     getUsuariosColabAdmins,
+    verificarCredenciales,
 } = require("../services/usuarioService");
 
 const lodash = require("lodash");
@@ -157,6 +159,25 @@ const getEmpleados = async (req, res) => {
     }
 };
 
+//Iniciar Sesión
+
+const iniciarSesion = async (req, res) => {
+    const { usuario, contraseña } = req.body;
+
+    try {
+        const user = await verificarCredenciales(usuario, contraseña); 
+
+        if (user.error) {
+            return res.status(400).json({ mensaje: user.error });
+        }
+
+        res.json({ mensaje: "Inicio de sesión exitoso", usuario: user });
+
+    } catch (error) {
+        res.status(500).json({ mensaje: "Error en el inicio de sesión", error });
+    }
+};
+
 module.exports = {
     crearUsuario,
     obtenerTodosLosUsuarios,
@@ -165,4 +186,6 @@ module.exports = {
     eliminarUsuarioPorId,
     getClientes,
     getEmpleados,
+    iniciarSesion,
 };
+
