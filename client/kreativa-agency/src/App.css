@@ -769,3 +769,56 @@ textarea {
     stroke: #121923;
 }
 
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--kreativa-base-clear);
+}
+
+.login-card {
+    width: 550px; 
+    padding: 40px; 
+    background-color: var(--kreativa-white);
+    border-radius: var(--kreativa-bdr-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.login-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--kreativa-black);
+}
+
+.login-header p {
+    font-size: 16px;
+    color: var(--kreativa-gray);
+}
+
+.login-form .form-group {
+    margin-bottom: 20px;
+}
+
+.form-input {
+    width: 100%;
+    height: 55px; 
+    padding: 10px;
+    border: 2px solid var(--kreativa-gray);
+    border-radius: var(--kreativa-bdr-radius);
+    font-size: 16px;
+}
+
+.login-btn {
+    width: 35%;
+    padding: 1px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.login-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}

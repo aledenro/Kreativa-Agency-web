@@ -8,7 +8,6 @@ const Login = () => {
         usuario: "",
         contraseña: "",
     });
-
     const [error, setError] = useState("");
 
     const handleChange = (e) => {
@@ -24,44 +23,65 @@ const Login = () => {
             const response = await axios.post("http://localhost:4000/api/login", formData);
             localStorage.setItem("token", response.data.token);
             alert("Inicio de sesión exitoso");
-            navigate("/dashboard"); // Redirigir a una página temporal 
+            navigate("/dashboard"); 
         } catch (error) {
-            setError(error.response?.data?.mensaje || "Error al iniciar sesión");
+            setError("Usuario o contraseña incorrectos");
         }
     };
 
     return (
-        <div className="container mt-5">
-            <h1 className="text-center">Iniciar Sesión</h1>
-            {error && <div className="alert alert-danger">{error}</div>}
-            
-            <form onSubmit={handleSubmit} className="col-lg-4 mx-auto">
-                <div className="form-group mb-3">
-                    <label className="form-label">Usuario</label>
-                    <input
-                        type="text"
-                        name="usuario"
-                        className="form-control"
-                        value={formData.usuario}
-                        onChange={handleChange}
-                        required
-                    />
+        <div className="login-container">
+            <div className="login-card">
+                <div className="login-header">
+                    <h2>Bienvenido a Kreativa</h2>
+                    <p>Accede con tus credenciales</p>
                 </div>
+                {error && <div className="alert alert-danger">{error}</div>}
+                <form onSubmit={handleSubmit} className="login-form">
+                    <div className="form-group">
+                        <label>Usuario</label>
+                        <input
+                            type="text"
+                            name="usuario"
+                            placeholder="Ingresa tu usuario"
+                            value={formData.usuario}
+                            onChange={handleChange}
+                            className="form-input"
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Contraseña</label>
+                        <input
+                            type="password"
+                            name="contraseña"
+                            placeholder="Ingresa tu contraseña"
+                            value={formData.contraseña}
+                            onChange={handleChange}
+                            className="form-input"
+                            required
+                        />
+                    </div>
+                    
+        
+                    <div className="login-buttons">
+                        <button 
+                            type="button" 
+                            className="thm-btn thm-btn-secondary" 
+                            onClick={() => navigate("/")}
+                        >
+                            Volver
+                        </button>
+                        <button 
+                            type="submit" 
+                            className="thm-btn login-btn"
+                        >
+                            Iniciar Sesión
+                        </button>
+                    </div>
 
-                <div className="form-group mb-3">
-                    <label className="form-label">Contraseña</label>
-                    <input
-                        type="password"
-                        name="contraseña"
-                        className="form-control"
-                        value={formData.contraseña}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <button type="submit" className="btn btn-primary w-100">Iniciar Sesión</button>
-            </form>
+                </form>
+            </div>
         </div>
     );
 };
