@@ -626,3 +626,146 @@ textarea {
     background-color: var(--kreativa-base-clear);
     transition: background-color 0.3s ease-in-out;
 }
+
+/* Estandard Botones */
+
+/* Botón para CREAR (verde) */
+.btn-crear {
+    background-color: #28a745;
+    color: var(--kreativa-white);
+}
+
+.btn-crear:hover {
+    background-color: #218838;
+}
+
+/* Botón para EDITAR (azul) */
+.btn-editar {
+    background-color: #007bff;
+    color: var(--kreativa-white);
+}
+
+.btn-editar:hover {
+    background-color: #0056b3;
+}
+
+/* Botón para ELIMINAR (rojo) */
+.btn-eliminar {
+    background-color: #dc3545;
+    color: var(--kreativa-white);
+}
+
+.btn-eliminar:hover {
+    background-color: #a71d2a;
+}
+
+/* Botón para VER (amarillo) */
+.btn-ver {
+    background-color: #ffc107;
+    color: var(--kreativa-black);
+}
+
+.btn-ver:hover {
+    background-color: #e0a800;
+}
+
+/* Botón para ACTIVAR (verde oscuro) */
+.btn-activar {
+    background-color: #28a745; /* Verde */
+    color: var(--kreativa-white);
+}
+
+.btn-activar:hover {
+    background-color: #218838;
+}
+
+/* Botón para DESACTIVAR (anaranjado) */
+.btn-desactivar {
+    background-color: #ff8c00; /* Anaranjado */
+    color: var(--kreativa-white);
+}
+
+.btn-desactivar:hover {
+    background-color: #e07b00;
+}
+
+/* Botón para VOLVER (rosado Kreativa) */
+.btn-volver {
+    background-color: #ff0072;
+    color: var(--kreativa-white);
+}
+
+.btn-volver:hover {
+    background-color: #5a6268;
+}
+
+/* Botones pequeños */
+.thm-btn-small {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: var(--kreativa-bdr-radius);
+    min-width: 80px;
+    text-align: center;
+    margin-left: 10px;
+}
+
+/* Contenedor de los botones */
+.botones-grupo {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    margin-left: -10px;
+}
+
+/* Botón para GUARDAR CAMBIOS */
+.btn-guardar {
+    background-color: #ff0072;
+    color: var(--kreativa-white);
+}
+
+.btn-guardar:hover {
+    background-color: #d6005f;
+}
+
+.search-container, .select-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 250px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 8px 8px 35px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.icon-search {
+    position: absolute;
+    left: 10px;
+    width: 18px;
+    height: 18px;
+    stroke: #323232;
+}
+
+
+.select-input {
+    width: 100%;
+    padding: 8px 35px 8px 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    appearance: none;
+}
+
+
+.icon-arrow {
+    position: absolute;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    stroke: #121923;
+}
+
