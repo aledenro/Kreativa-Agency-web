@@ -22,6 +22,7 @@ import AgregarProyecto from "./pages/AgregarProyecto";
 import EditarProyecto from "./pages/EditarProyecto";
 import AgregarTarea from "./pages/AgregarTarea";
 import EditarTarea from "./pages/EditarTarea";
+import Login from "./pages/Login";
 
 function App() {
     return (
@@ -94,6 +95,10 @@ function App() {
                 <Route
                     path="/tarea/editar/:id"
                     element={<EditarTarea />}
+                ></Route>
+                <Route
+                    path="/login"
+                    element={<Login />}
                 ></Route>
             </Routes>
         </Router>
