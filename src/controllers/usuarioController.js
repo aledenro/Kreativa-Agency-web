@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../models/usuarioModel");
 
@@ -165,13 +166,32 @@ const iniciarSesion = async (req, res) => {
     const { usuario, contraseña } = req.body;
 
     try {
-        const user = await verificarCredenciales(usuario, contraseña); 
+        const user = await Usuario.findOne({ usuario });
 
-        if (user.error) {
-            return res.status(400).json({ mensaje: user.error });
+        if (!user) {
+            return res.status(400).json({ mensaje: "Usuario no encontrado" });
         }
 
-        res.json({ mensaje: "Inicio de sesión exitoso", usuario: user });
+        const isMatch = await bcrypt.compare(contraseña, user.contraseña);
+        if (!isMatch) {
+            return res.status(400).json({ mensaje: "Contraseña incorrecta" });
+        }
+
+        const token = jwt.sign(
+            {
+                id: user._id,
+                usuario: user.usuario,
+                tipo_usuario: user.tipo_usuario,
+            },
+            process.env.JWT_SECRET, 
+            { expiresIn: "2h" } 
+        );
+
+        res.json({ 
+            mensaje: "Inicio de sesión exitoso", 
+            token, 
+            usuario: user 
+        });
 
     } catch (error) {
         res.status(500).json({ mensaje: "Error en el inicio de sesión", error });
