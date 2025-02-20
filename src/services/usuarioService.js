@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const Usuario = require("../models/usuarioModel");
 
 // Verificar si un usuario ya existe
@@ -7,17 +8,24 @@ const verificarUsuarioExistente = async (usuario) => {
 
 // Crear un nuevo usuario
 const crearNuevoUsuario = async (datosUsuario) => {
-    const nuevoUsuario = new Usuario({
-        nombre: datosUsuario.nombre,
-        usuario: datosUsuario.usuario,
-        cedula: datosUsuario.cedula,
-        email: datosUsuario.email,
-        contraseña: datosUsuario.contraseña,
-        tipo_usuario: datosUsuario.tipo_usuario,
-        estado: datosUsuario.estado || "Activo",
-    });
+    try {
+        const salt = await bcrypt.genSalt(10); 
+        const hashedPassword = await bcrypt.hash(datosUsuario.contraseña, salt); 
 
-    return await nuevoUsuario.save();
+        const nuevoUsuario = new Usuario({
+            nombre: datosUsuario.nombre,
+            usuario: datosUsuario.usuario,
+            cedula: datosUsuario.cedula,
+            email: datosUsuario.email,
+            contraseña: hashedPassword,  
+            tipo_usuario: datosUsuario.tipo_usuario,
+            estado: datosUsuario.estado || "Activo",
+        });
+
+        return await nuevoUsuario.save();
+    } catch (error) {
+        throw new Error(`Error al crear el usuario: ${error.message}`);
+    }
 };
 
 // Obtener todos los usuarios
