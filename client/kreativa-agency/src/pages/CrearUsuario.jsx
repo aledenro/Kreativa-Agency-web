@@ -15,7 +15,7 @@ const CrearUsuario = () => {
         estado: "Activo",
     });
 
-    const [errors, setErrors] = useState({}); // Almacena los errores
+    const [errors, setErrors] = useState({}); 
     const [errorServidor, setErrorServidor] = useState("");
 
     const handleChange = async (e) => {
@@ -30,7 +30,7 @@ const CrearUsuario = () => {
 
     const validarCampo = async (name, value) => {
         let errorMsg = "";
-
+    
         if (!value) {
             errorMsg = "Este campo es obligatorio";
         } else {
@@ -43,24 +43,26 @@ const CrearUsuario = () => {
             if (name === "contraseña" && value.length < 6) {
                 errorMsg = "La contraseña debe tener al menos 6 caracteres";
             }
-
-            // Verificar si el usuario o el email ya existen
-            if (name === "usuario" || name === "email") {
+    
+          
+            if (name === "usuario" || name === "email" || name === "cedula") {
                 try {
                     const response = await axios.get(`http://localhost:4000/api/usuarios`);
                     const existe = response.data.some((user) => user[name] === value);
-
+    
                     if (existe) {
-                        errorMsg = name === "usuario" 
-                            ? "Este usuario ya está en uso" 
-                            : "Este correo ya está registrado";
+                        errorMsg = name === "usuario"
+                            ? "Este usuario ya está en uso"
+                            : name === "email"
+                            ? "Este correo ya está registrado"
+                            : "Esta cédula ya está registrada";
                     }
                 } catch (error) {
                     console.error("Error al verificar disponibilidad:", error);
                 }
             }
         }
-
+    
         setErrors({ ...errors, [name]: errorMsg });
     };
 
