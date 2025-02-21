@@ -12,6 +12,7 @@ const egresosRoutes = require("./routes/egresosRoutes");
 const proyectosRoutes = require("./routes/proyectoRoutes");
 const tareasRoutes = require("./routes/tareasRoutes");
 
+
 connectDB();
 
 app.use(
@@ -29,9 +30,10 @@ app.use("/api/servicios", serviciosRoutes);
 app.use("/api/egresos", egresosRoutes);
 app.use("/api/proyectos", proyectosRoutes);
 app.use("/api/tareas", tareasRoutes);
+app.use("/api", usuarioRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
-app.use("/api", usuarioRoutes);
+
 

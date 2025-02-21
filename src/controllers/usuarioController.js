@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../models/usuarioModel");
+const { enviarCorreoRecuperacion } = require("../services/emailService");
 
 const {
     verificarUsuarioExistente,
@@ -202,7 +203,32 @@ const iniciarSesion = async (req, res) => {
     }
 };
 
+//Recuperar Contraseña 
 
+const recuperarContraseña = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const usuario = await Usuario.findOne({ email });
+
+        if (!usuario) {
+            return res.status(404).json({ mensaje: "Usuario no registrado" });
+        }
+
+        const token = jwt.sign(
+            { id: usuario._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" } // El token expira en 15 minutos
+        );
+
+        await enviarCorreoRecuperacion(email, token);
+
+        res.json({ mensaje: "Correo de recuperación enviado con éxito" });
+    } catch (error) {
+        console.error("Error en la recuperación de contraseña:", error);
+        res.status(500).json({ mensaje: "Error al enviar el correo" });
+    }
+};
 
 
 module.exports = {
@@ -214,5 +240,6 @@ module.exports = {
     getClientes,
     getEmpleados,
     iniciarSesion,
+    recuperarContraseña,
 };
 
