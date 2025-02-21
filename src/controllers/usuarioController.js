@@ -11,7 +11,6 @@ const {
     eliminarUsuario,
     getUsuariosClientes,
     getUsuariosColabAdmins,
-    verificarCredenciales,
 } = require("../services/usuarioService");
 
 const lodash = require("lodash");
@@ -172,6 +171,11 @@ const iniciarSesion = async (req, res) => {
             return res.status(400).json({ mensaje: "Usuario no encontrado" });
         }
 
+ 
+        if (user.estado && user.estado.toLowerCase() === "inactivo") {
+            return res.status(403).json({ mensaje: "Tu cuenta está inactiva. Contacta al administrador." });
+        }
+
         const isMatch = await bcrypt.compare(contraseña, user.contraseña);
         if (!isMatch) {
             return res.status(400).json({ mensaje: "Contraseña incorrecta" });
@@ -197,6 +201,9 @@ const iniciarSesion = async (req, res) => {
         res.status(500).json({ mensaje: "Error en el inicio de sesión", error });
     }
 };
+
+
+
 
 module.exports = {
     crearUsuario,
