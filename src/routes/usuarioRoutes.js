@@ -11,6 +11,7 @@ const {
     getEmpleados,
     iniciarSesion,
     recuperarContraseña,
+    restablecerContraseña,
 } = require("../controllers/usuarioController");
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.get("/usuarios/:id", verificarToken, obtenerUsuario);
 router.put("/usuarios/:id", verificarToken, actualizarUsuarioPorId);
 router.delete("/usuarios/:id", verificarToken, eliminarUsuarioPorId);
 router.post("/recuperar", recuperarContraseña);
+router.post("/restablecer", restablecerContraseña);
 
 module.exports = router;
