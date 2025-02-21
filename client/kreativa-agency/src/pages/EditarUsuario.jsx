@@ -20,7 +20,16 @@ const EditarUsuario = () => {
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`);
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    setErrorServidor("No hay token disponible");
+                    return;
+                }
+
+                const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
                 setFormData({
                     nombre: data.nombre,
                     usuario: data.usuario,
@@ -29,6 +38,7 @@ const EditarUsuario = () => {
                     cedula: data.cedula,
                 });
             } catch (error) {
+                console.error("Error al obtener usuario:", error.response?.data || error);
                 setErrorServidor("Error al cargar los datos del usuario.");
             }
         };
@@ -62,7 +72,16 @@ const EditarUsuario = () => {
             }
             if (name === "usuario" || name === "email" || name === "cedula") {
                 try {
-                    const response = await axios.get(`http://localhost:4000/api/usuarios`);
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                        setErrorServidor("No hay token disponible");
+                        return;
+                    }
+
+                    const response = await axios.get(`http://localhost:4000/api/usuarios`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+
                     const existe = response.data.some((user) => user[name] === value && user._id !== id);
 
                     if (existe) {
@@ -70,8 +89,8 @@ const EditarUsuario = () => {
                             name === "usuario"
                                 ? "Este usuario ya está en uso"
                                 : name === "email"
-                                    ? "Este correo ya está registrado"
-                                    : "Esta cédula ya está registrada";
+                                ? "Este correo ya está registrado"
+                                : "Esta cédula ya está registrada";
                     }
                 } catch (error) {
                     console.error("Error al verificar disponibilidad:", error);
@@ -93,10 +112,20 @@ const EditarUsuario = () => {
         }
 
         try {
-            await axios.put(`http://localhost:4000/api/usuarios/${id}`, formData);
+            const token = localStorage.getItem("token");
+            if (!token) {
+                setErrorServidor("No hay token disponible");
+                return;
+            }
+
+            await axios.put(`http://localhost:4000/api/usuarios/${id}`, formData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
             alert("Usuario actualizado correctamente");
             navigate("/usuarios");
         } catch (error) {
+            console.error("Error al actualizar usuario:", error.response?.data || error);
             setErrorServidor("Error al actualizar el usuario.");
         }
     };
@@ -106,7 +135,6 @@ const EditarUsuario = () => {
             <Navbar />
             <div className="container mt-5">
                 <div className="section-title text-center">
-
                     <h1>Editar Usuario</h1>
                 </div>
                 {errorServidor && <div className="alert alert-danger kreativa-alert">{errorServidor}</div>}

@@ -43,13 +43,20 @@ const CrearUsuario = () => {
             if (name === "contraseña" && value.length < 6) {
                 errorMsg = "La contraseña debe tener al menos 6 caracteres";
             }
-    
-          
             if (name === "usuario" || name === "email" || name === "cedula") {
                 try {
-                    const response = await axios.get(`http://localhost:4000/api/usuarios`);
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                        console.error("No hay token disponible");
+                        return;
+                    }
+            
+                    const response = await axios.get(`http://localhost:4000/api/usuarios`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+            
                     const existe = response.data.some((user) => user[name] === value);
-    
+            
                     if (existe) {
                         errorMsg = name === "usuario"
                             ? "Este usuario ya está en uso"
@@ -58,7 +65,7 @@ const CrearUsuario = () => {
                             : "Esta cédula ya está registrada";
                     }
                 } catch (error) {
-                    console.error("Error al verificar disponibilidad:", error);
+                    console.error("Error al verificar disponibilidad:", error.response?.data || error);
                 }
             }
         }
@@ -69,18 +76,28 @@ const CrearUsuario = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorServidor("");
-
+    
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setErrorServidor("No hay token disponible");
+            return;
+        }
+    
         const camposConError = Object.values(errors).some((error) => error !== "");
         if (camposConError) {
             alert("Por favor, corrige los errores antes de continuar.");
             return;
         }
-
+    
         try {
-            await axios.post("http://localhost:4000/api/usuarios", formData);
+            await axios.post("http://localhost:4000/api/usuarios", formData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+    
             alert("Usuario creado exitosamente");
             navigate("/usuarios");
         } catch (error) {
+            console.error("Error al crear usuario:", error.response?.data || error);
             setErrorServidor("Error al crear el usuario. Asegúrate de que los datos sean válidos.");
         }
     };

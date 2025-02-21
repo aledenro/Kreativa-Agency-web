@@ -14,11 +14,12 @@ const {
 
 const router = express.Router();
 
-router.post("/usuarios", crearUsuario);
+//Ruta no protegida
 router.post("/login", iniciarSesion);
 
 
 //Rutas protegidas
+router.post("/usuarios", verificarToken, crearUsuario);
 router.get("/usuarios", verificarToken, obtenerTodosLosUsuarios);
 router.get("/usuarios/clientes", verificarToken, getClientes);
 router.get("/usuarios/empleados", verificarToken, getEmpleados);

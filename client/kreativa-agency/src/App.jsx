@@ -23,6 +23,8 @@ import EditarProyecto from "./pages/EditarProyecto";
 import AgregarTarea from "./pages/AgregarTarea";
 import EditarTarea from "./pages/EditarTarea";
 import Login from "./pages/Login";
+import VistaClientes from "./pages/VistaClientes";
+import VistaColaborador from "./pages/VistaColaborador";
 
 function App() {
     return (
@@ -99,6 +101,14 @@ function App() {
                 <Route
                     path="/login"
                     element={<Login />}
+                ></Route>
+                <Route
+                    path="/vista-clientes"
+                    element={<VistaClientes />}
+                ></Route>
+                <Route
+                    path="/vista-colaborador"
+                    element={<VistaColaborador />}
                 ></Route>
             </Routes>
         </Router>
