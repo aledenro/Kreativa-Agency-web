@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../models/usuarioModel");
+const { enviarCorreoRecuperacion } = require("../services/emailService");
 
 const {
     verificarUsuarioExistente,
@@ -202,8 +203,59 @@ const iniciarSesion = async (req, res) => {
     }
 };
 
+//Recuperar Contraseña 
 
+const recuperarContraseña = async (req, res) => {
+    const { email } = req.body;
 
+    try {
+        const usuario = await Usuario.findOne({ email });
+
+        if (!usuario) {
+            return res.status(404).json({ mensaje: "Usuario o correo no registrado" });
+        }
+
+        const token = jwt.sign(
+            { id: usuario._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        await enviarCorreoRecuperacion(email, token);
+
+        res.json({ mensaje: "Correo de recuperación enviado con éxito" });
+    } catch (error) {
+        console.error("Error en la recuperación de contraseña:", error);
+        res.status(500).json({ mensaje: "Error al enviar el correo" });
+    }
+};
+
+//Restablecer Contraseña 
+
+const restablecerContraseña = async (req, res) => {
+    const { token, nuevaContraseña } = req.body;
+
+    try {
+     
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const usuario = await Usuario.findById(decoded.id);
+
+        if (!usuario) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(nuevaContraseña, salt);
+
+        usuario.contraseña = hashedPassword;
+        await usuario.save();
+
+        res.json({ mensaje: "Contraseña restablecida exitosamente" });
+
+    } catch (error) {
+        console.error("Error al restablecer la contraseña:", error);
+        res.status(500).json({ mensaje: "Error al restablecer la contraseña" });
+    }
+};
 
 module.exports = {
     crearUsuario,
@@ -214,5 +266,7 @@ module.exports = {
     getClientes,
     getEmpleados,
     iniciarSesion,
+    recuperarContraseña,
+    restablecerContraseña,
 };
 

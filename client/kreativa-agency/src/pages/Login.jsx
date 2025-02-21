@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";  
+import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 
 const Login = () => {
@@ -20,13 +20,13 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-    
+
         try {
             const response = await axios.post("http://localhost:4000/api/login", formData);
             console.log("Respuesta del servidor:", response.data);
-    
+
             const { token } = response.data;
-    
+
             if (!token) {
                 Swal.fire({
                     icon: "error",
@@ -36,21 +36,21 @@ const Login = () => {
                 });
                 return;
             }
-    
+
             localStorage.setItem("token", token);
-    
+
             const decodedToken = jwtDecode(token);
             console.log("Token decodificado:", decodedToken);
-    
+
             localStorage.setItem("tipo_usuario", decodedToken.tipo_usuario);
-    
+
             Swal.fire({
                 icon: "success",
                 title: "Inicio de sesión exitoso",
                 showConfirmButton: false,
                 timer: 1500,
             });
-    
+
             setTimeout(() => {
                 if (decodedToken.tipo_usuario === "Administrador") {
                     navigate("/usuarios");
@@ -69,13 +69,13 @@ const Login = () => {
                     localStorage.removeItem("tipo_usuario");
                 }
             }, 1500);
-    
+
         } catch (error) {
             console.error("Error al iniciar sesión:", error.response?.data || error);
-    
+
             if (error.response) {
                 const mensajeError = error.response.data.mensaje;
-    
+
                 if (mensajeError === "Tu cuenta está inactiva. Contacta al administrador.") {
                     Swal.fire({
                         icon: "warning",
@@ -135,23 +135,29 @@ const Login = () => {
                             required
                         />
                     </div>
-                    
-        
+
+
                     <div className="login-buttons">
-                        <button 
-                            type="button" 
-                            className="thm-btn thm-btn-secondary" 
+                        <button
+                            type="button"
+                            className="thm-btn thm-btn-secondary"
                             onClick={() => navigate("/")}
                         >
                             Volver
                         </button>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="thm-btn login-btn"
                         >
                             Iniciar Sesión
                         </button>
                     </div>
+                    <span style={{ display: "inline-block", width: "20px" }}></span>
+                    <p style={{ textAlign: "left", marginTop: "10px" }}>
+                        <a href="/recuperar" style={{ color: "#ff4081", textDecoration: "none", fontWeight: "bold" }}>
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </p>
 
                 </form>
             </div>

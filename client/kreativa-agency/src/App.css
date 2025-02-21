@@ -832,3 +832,14 @@ h3 {
     justify-content: space-between;
     margin-top: 20px;
 }
+
+.swal-button-kreativa {
+    background-color: #E91E63 !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: var(--kreativa-bdr-radius);
+}
+
+.swal-button-kreativa:hover {
+    background-color: #C2185B !important;
+}
