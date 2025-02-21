@@ -1,4 +1,6 @@
-const Usuario = require("../models/usuarioModel"); // Importación corregida
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const Usuario = require("../models/usuarioModel");
 
 const {
     verificarUsuarioExistente,
@@ -157,6 +159,52 @@ const getEmpleados = async (req, res) => {
     }
 };
 
+//Iniciar Sesión
+
+const iniciarSesion = async (req, res) => {
+    const { usuario, contraseña } = req.body;
+
+    try {
+        const user = await Usuario.findOne({ usuario });
+
+        if (!user) {
+            return res.status(400).json({ mensaje: "Usuario no encontrado" });
+        }
+
+ 
+        if (user.estado && user.estado.toLowerCase() === "inactivo") {
+            return res.status(403).json({ mensaje: "Tu cuenta está inactiva. Contacta al administrador." });
+        }
+
+        const isMatch = await bcrypt.compare(contraseña, user.contraseña);
+        if (!isMatch) {
+            return res.status(400).json({ mensaje: "Contraseña incorrecta" });
+        }
+
+        const token = jwt.sign(
+            {
+                id: user._id,
+                usuario: user.usuario,
+                tipo_usuario: user.tipo_usuario,
+            },
+            process.env.JWT_SECRET, 
+            { expiresIn: "2h" } 
+        );
+
+        res.json({ 
+            mensaje: "Inicio de sesión exitoso", 
+            token, 
+            usuario: user 
+        });
+
+    } catch (error) {
+        res.status(500).json({ mensaje: "Error en el inicio de sesión", error });
+    }
+};
+
+
+
+
 module.exports = {
     crearUsuario,
     obtenerTodosLosUsuarios,
@@ -165,4 +213,6 @@ module.exports = {
     eliminarUsuarioPorId,
     getClientes,
     getEmpleados,
+    iniciarSesion,
 };
+

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
+import { jwtDecode } from "jwt-decode";  
 
 const Usuarios = () => {
     const navigate = useNavigate();
@@ -15,30 +16,64 @@ const Usuarios = () => {
     useEffect(() => {
         const fetchUsuarios = async () => {
             try {
-                const { data } = await axios.get("http://localhost:4000/api/usuarios");
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    setError("No hay token disponible");
+                    return;
+                }
+    
+                const decodedToken = jwtDecode(token);
+                console.log("Token decodificado:", decodedToken);
+    
+                const { data } = await axios.get("http://localhost:4000/api/usuarios", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
                 setUsuarios(data.sort((a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)));
             } catch (error) {
+                console.error("Error al cargar los usuarios:", error.response?.data || error);
                 setError("Error al cargar los usuarios");
             }
         };
         fetchUsuarios();
     }, []);
 
-    const handleEliminar = async (id) => {
-        if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) return;
+    // 📌 Obtener detalles de un usuario
+    const handleVerUsuario = async (id) => {
         try {
-            await axios.delete(`http://localhost:4000/api/usuarios/${id}`);
-            setUsuarios(usuarios.filter((usuario) => usuario._id !== id));
+            const token = localStorage.getItem("token");
+            if (!token) {
+                setError("No hay token disponible");
+                return;
+            }
+
+            const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            console.log("Detalles del usuario:", data);
+            navigate(`/usuario/${id}`);
         } catch (error) {
-            setError("Error al eliminar el usuario permanentemente");
+            setError("Error al obtener los detalles del usuario.");
+            console.error("Error al obtener usuario:", error.response?.data || error);
         }
     };
 
+    // 📌 Redirigir a la edición de un usuario
+    const handleEditarUsuario = (id) => {
+        navigate(`/usuario/editar/${id}`);
+    };
+
+    // 📌 Activar/Desactivar usuario
     const handleActivarDesactivar = async (id, estadoActual) => {
         const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
         if (!window.confirm(`¿Seguro que deseas ${nuevoEstado.toLowerCase()} este usuario?`)) return;
         try {
-            await axios.put(`http://localhost:4000/api/usuarios/${id}`, { estado: nuevoEstado });
+            const token = localStorage.getItem("token");
+            await axios.put(`http://localhost:4000/api/usuarios/${id}`, { estado: nuevoEstado }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
             setUsuarios(usuarios.map(usuario =>
                 usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
             ));
@@ -47,15 +82,32 @@ const Usuarios = () => {
         }
     };
 
-    // Filtrar usuarios por CÉDULA 
+    // 📌 Eliminar usuario
+    const handleEliminar = async (id) => {
+        if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) return;
+        try {
+            const token = localStorage.getItem("token");
+            await axios.delete(`http://localhost:4000/api/usuarios/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setUsuarios(usuarios.filter((usuario) => usuario._id !== id));
+        } catch (error) {
+            setError("Error al eliminar el usuario permanentemente");
+        }
+    };
+
+    // 📌 Filtrar usuarios por CÉDULA 
     const usuariosFiltrados = usuarios
         .filter(usuario => usuario.cedula.includes(search)) 
         .filter(usuario => (estadoFiltro ? usuario.estado === estadoFiltro : true));
 
-    // Paginación
+    // 📌 Paginación
     const indexOfLastUser = paginaActual * usuariosPorPagina;
     const indexOfFirstUser = indexOfLastUser - usuariosPorPagina;
     const usuariosPaginados = usuariosFiltrados.slice(indexOfFirstUser, indexOfLastUser);
+
+    const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
 
     return (
         <div>
@@ -117,12 +169,9 @@ const Usuarios = () => {
                                 <td>{usuario.estado}</td>
                                 <td className="acciones">
                                     <div className="botones-grupo">
-                                        <button className="thm-btn thm-btn-small btn-ver" onClick={() => navigate(`/usuario/${usuario._id}`)}>Ver</button>
-                                        <button className="thm-btn thm-btn-small btn-editar" onClick={() => navigate(`/usuario/editar/${usuario._id}`)}>Editar</button>
-                                        <button
-                                            className={`thm-btn thm-btn-small ${usuario.estado === "Activo" ? "btn-desactivar" : "btn-activar"}`}
-                                            onClick={() => handleActivarDesactivar(usuario._id, usuario.estado)}
-                                        >
+                                        <button className="thm-btn thm-btn-small btn-ver" onClick={() => handleVerUsuario(usuario._id)}>Ver</button>
+                                        <button className="thm-btn thm-btn-small btn-editar" onClick={() => handleEditarUsuario(usuario._id)}>Editar</button>
+                                        <button className={`thm-btn thm-btn-small ${usuario.estado === "Activo" ? "btn-desactivar" : "btn-activar"}`} onClick={() => handleActivarDesactivar(usuario._id, usuario.estado)}>
                                             {usuario.estado === "Activo" ? "Desactivar" : "Activar"}
                                         </button>
                                         <button className="thm-btn thm-btn-small btn-eliminar" onClick={() => handleEliminar(usuario._id)}>Eliminar</button>
@@ -133,10 +182,14 @@ const Usuarios = () => {
                     </tbody>
                 </table>
 
-              
-                <div className="d-flex justify-content-center">
-                    {Array.from({ length: Math.ceil(usuariosFiltrados.length / usuariosPorPagina) }, (_, i) => (
-                        <button key={i} className="thm-btn btn-volver me-2" onClick={() => setPaginaActual(i + 1)}>
+                {/* PAGINACIÓN */}
+                <div className="d-flex justify-content-center mt-4">
+                    {Array.from({ length: totalPaginas }, (_, i) => (
+                        <button
+                            key={i}
+                            className={`thm-btn btn-volver me-2 ${paginaActual === i + 1 ? "active" : ""}`}
+                            onClick={() => setPaginaActual(i + 1)}
+                        >
                             {i + 1}
                         </button>
                     ))}
