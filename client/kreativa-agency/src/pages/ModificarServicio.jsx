@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Form, Alert } from "react-bootstrap";
+import { Form, Alert, Modal, Button } from "react-bootstrap";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 
 const ModificarServicio = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [servicio, setServicio] = useState({
         nombre: "",
         descripcion: "",
@@ -14,6 +15,7 @@ const ModificarServicio = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchServicio = async () => {
@@ -25,7 +27,7 @@ const ModificarServicio = () => {
             } catch (error) {
                 console.error("Error al obtener el servicio: ", error.message);
                 setAlertMessage(
-                    "No se pudo cargar la informacion del servicio"
+                    "No se pudo cargar la información del servicio"
                 );
                 setAlertVariant("danger");
                 setShowAlert(true);
@@ -40,30 +42,34 @@ const ModificarServicio = () => {
         setServicio((prevServicio) => ({ ...prevServicio, [name]: value }));
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
-
         if (!servicio.nombre || !servicio.descripcion || !servicio.categoria) {
             setAlertMessage("Todos los campos son obligatorios");
             setAlertVariant("danger");
             setShowAlert(true);
             return;
         }
+        setShowModal(true);
+    };
 
+    const handleConfirm = async () => {
         try {
-            const res = await axios.put(
+            await axios.put(
                 `http://localhost:4000/api/servicios/modificar/${id}`,
                 servicio
             );
-            console.log(res.data);
             setAlertMessage("Servicio modificado exitosamente");
             setAlertVariant("success");
             setShowAlert(true);
+            setShowModal(false);
+            setTimeout(() => navigate("/servicios"), 2000);
         } catch (error) {
             console.error("Error al modificar el servicio: ", error.message);
             setAlertMessage("Hubo un error al modificar el servicio");
             setAlertVariant("danger");
             setShowAlert(true);
+            setShowModal(false);
         }
     };
 
@@ -100,11 +106,12 @@ const ModificarServicio = () => {
                                         className="form_input"
                                         value={servicio.nombre}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                                 <div className="col">
                                     <label
-                                        htmlFor="nombre"
+                                        htmlFor="categoria"
                                         className="form-label"
                                     >
                                         Categoría
@@ -115,13 +122,14 @@ const ModificarServicio = () => {
                                         className="form_input"
                                         value={servicio.categoria}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
                                     <label
-                                        htmlFor="nombre"
+                                        htmlFor="descripcion"
                                         className="form-label"
                                     >
                                         Descripción
@@ -131,6 +139,7 @@ const ModificarServicio = () => {
                                         className="form_input form-textarea"
                                         value={servicio.descripcion}
                                         onChange={handleChange}
+                                        required
                                     ></textarea>
                                     <div className="d-flex justify-content-center mt-3">
                                         <button
@@ -146,6 +155,29 @@ const ModificarServicio = () => {
                     </div>
                 </div>
             </div>
+
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmación</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    ¿Está seguro que desea modificar este servicio?
+                </Modal.Body>
+                <Modal.Footer>
+                    <button
+                        className="thm-btn-2 thm-btn-small"
+                        onClick={() => setShowModal(false)}
+                    >
+                        No
+                    </button>
+                    <button
+                        className="thm-btn thm-btn-small"
+                        onClick={handleConfirm}
+                    >
+                        Sí
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

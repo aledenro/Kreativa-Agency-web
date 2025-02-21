@@ -31,6 +31,9 @@ const AgregarServicio = () => {
             setAlertMessage("Todos los campos son obligatorios");
             setAlertVariant("danger");
             setShowAlert(true);
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 3000);
             return;
         }
 
@@ -45,12 +48,19 @@ const AgregarServicio = () => {
             setAlertMessage("Servicio agregado exitosamente.");
             setAlertVariant("success");
             setShowAlert(true);
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 3000);
+
             event.target.reset();
         } catch (error) {
             console.error(error.message);
             setAlertMessage("Hubo un error al agregar el servicio.");
             setAlertVariant("danger");
             setShowAlert(true);
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 3000);
         }
     };
 
@@ -85,6 +95,7 @@ const AgregarServicio = () => {
                                         type="text"
                                         name="nombre"
                                         className="form_input"
+                                        required
                                     />
                                 </div>
                                 <div className="col">
@@ -98,6 +109,7 @@ const AgregarServicio = () => {
                                         type="text"
                                         name="categoria"
                                         className="form_input"
+                                        required
                                     />
                                 </div>
                             </div>
@@ -113,6 +125,7 @@ const AgregarServicio = () => {
                                         placeholder="Describa la información del paquete aquí..."
                                         name="descripcion"
                                         className="form_input form-textarea"
+                                        required
                                     />
                                     <div className="d-flex justify-content-center mt-3">
                                         <button
