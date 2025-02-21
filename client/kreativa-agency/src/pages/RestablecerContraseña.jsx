@@ -1,35 +1,30 @@
 import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useParams, useNavigate } from "react-router-dom";
 import "../App.css"; 
 
-const Restablecer = () => {
+const RestablecerContraseña = () => {
     const { token } = useParams();
+    const navigate = useNavigate();
     const [nuevaContraseña, setNuevaContraseña] = useState("");
     const [confirmarContraseña, setConfirmarContraseña] = useState("");
-    const navigate = useNavigate();
+    const [error, setError] = useState(""); 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (nuevaContraseña !== confirmarContraseña) {
-            Swal.fire({
-                title: "Error",
-                text: "Las contraseñas no coinciden",
-                icon: "error",
-                confirmButtonText: "Intentar de nuevo",
-                customClass: {
-                    confirmButton: "swal-button-kreativa",
-                }
-            });
+            setError("Las contraseñas no coinciden");
             return;
+        } else {
+            setError(""); 
         }
 
         try {
             const response = await axios.post("http://localhost:4000/api/restablecer", {
                 token,
-                nuevaContraseña
+                nuevaContraseña,
             });
 
             Swal.fire({
@@ -62,7 +57,7 @@ const Restablecer = () => {
             <div className="login-card">
                 <div className="login-header">
                     <h2>Restablecer Contraseña</h2>
-                    <p>Ingresa tu nueva contraseña.</p>
+                    <p>Ingresa y confirma tu nueva contraseña.</p>
                 </div>
                 <form className="login-form" onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -80,12 +75,13 @@ const Restablecer = () => {
                         <label className="form-label">Confirmar Contraseña</label>
                         <input
                             type="password"
-                            className="form-input"
+                            className={`form-input ${error ? "input-error" : ""}`}
                             placeholder="Confirmar contraseña"
                             value={confirmarContraseña}
                             onChange={(e) => setConfirmarContraseña(e.target.value)}
                             required
                         />
+                        {error && <p className="error-message">{error}</p>}
                     </div>
                     <button type="submit" className="thm-btn">Restablecer</button>
                 </form>
@@ -94,4 +90,4 @@ const Restablecer = () => {
     );
 };
 
-export default Restablecer;
+export default RestablecerContraseña;

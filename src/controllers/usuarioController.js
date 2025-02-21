@@ -212,13 +212,13 @@ const recuperarContraseña = async (req, res) => {
         const usuario = await Usuario.findOne({ email });
 
         if (!usuario) {
-            return res.status(404).json({ mensaje: "Usuario no registrado" });
+            return res.status(404).json({ mensaje: "Usuario o correo no registrado" });
         }
 
         const token = jwt.sign(
             { id: usuario._id },
             process.env.JWT_SECRET,
-            { expiresIn: "15m" } // El token expira en 15 minutos
+            { expiresIn: "15m" }
         );
 
         await enviarCorreoRecuperacion(email, token);
