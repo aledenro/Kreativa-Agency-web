@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Form, Alert } from "react-bootstrap";
+import React, { useState } from "react";
+import { Form, Alert, Modal, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 
 const AgregarPaquete = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [paquete, setPaquete] = useState({
         nombre: "",
         descripcion: "",
@@ -19,6 +20,7 @@ const AgregarPaquete = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const [showModal, setShowModal] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -51,22 +53,7 @@ const AgregarPaquete = () => {
         }));
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (
-            !paquete.nombre ||
-            !paquete.descripcion ||
-            !paquete.nivel ||
-            !paquete.duracion ||
-            !paquete.precio
-        ) {
-            setAlertMessage("Todos los campos son obligatorios");
-            setAlertVariant("danger");
-            setShowAlert(true);
-            return;
-        }
-
+    const handleSubmit = async () => {
         const paqueteData = {
             ...paquete,
             precio: parseFloat(paquete.precio),
@@ -81,11 +68,17 @@ const AgregarPaquete = () => {
             setAlertMessage("Paquete agregado exitosamente");
             setAlertVariant("success");
             setShowAlert(true);
+            setShowModal(false);
+
+            setTimeout(() => {
+                navigate("/servicios");
+            }, 2000);
         } catch (error) {
             console.error("Error al agregar el paquete: ", error.message);
             setAlertMessage("Hubo un error al agregar el paquete");
             setAlertVariant("danger");
             setShowAlert(true);
+            setShowModal(false);
         }
     };
 
@@ -107,13 +100,16 @@ const AgregarPaquete = () => {
                                 {alertMessage}
                             </Alert>
                         )}
-                        <Form onSubmit={handleSubmit} className="paquete_form">
+                        <Form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                setShowModal(true);
+                            }}
+                            className="paquete_form"
+                        >
                             <div className="row">
                                 <div className="col">
-                                    <label
-                                        htmlFor="descripcion"
-                                        className="form-label"
-                                    >
+                                    <label className="form-label">
                                         Nombre del paquete
                                     </label>
                                     <input
@@ -122,79 +118,65 @@ const AgregarPaquete = () => {
                                         className="form_input"
                                         value={paquete.nombre}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                                 <div className="col">
-                                    <label
-                                        htmlFor="descripcion"
-                                        className="form-label"
-                                    >
-                                        Nivel
-                                    </label>
+                                    <label className="form-label">Nivel</label>
                                     <input
                                         type="text"
                                         name="nivel"
                                         className="form_input"
                                         value={paquete.nivel}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    <label
-                                        htmlFor="descripcion"
-                                        className="form-label"
-                                    >
+                                    <label className="form-label">
                                         Duración
                                     </label>
                                     <input
                                         type="text"
-                                        placeholder="1 mes, 15 días..."
                                         name="duracion"
                                         className="form_input"
                                         value={paquete.duracion}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                                 <div className="col">
-                                    <label
-                                        htmlFor="descripcion"
-                                        className="form-label"
-                                    >
-                                        Precio
-                                    </label>
+                                    <label className="form-label">Precio</label>
                                     <input
                                         type="number"
-                                        placeholder="$"
                                         name="precio"
                                         className="form_input"
                                         value={paquete.precio}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    <label
-                                        htmlFor="descripcion"
-                                        className="form-label"
-                                    >
+                                    <label className="form-label">
                                         Descripción
                                     </label>
                                     <textarea
-                                        placeholder="Describa la información del paquete aquí..."
                                         name="descripcion"
-                                        className="form_input"
+                                        className="form_input form_textarea"
                                         rows="3"
                                         value={paquete.descripcion}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    <label htmlFor="" className="form-label">
+                                    <label className="form-label">
                                         Beneficios
                                     </label>
                                     {paquete.beneficios.map(
@@ -205,28 +187,14 @@ const AgregarPaquete = () => {
                                             >
                                                 <input
                                                     type="text"
-                                                    placeholder={`Beneficio ${
-                                                        index + 1
-                                                    }`}
                                                     className="form_input"
                                                     value={beneficio}
-                                                    onChange={(e) => {
+                                                    onChange={(e) =>
                                                         handleBeneficioChange(
                                                             index,
                                                             e.target.value
-                                                        );
-                                                        if (
-                                                            index ===
-                                                                paquete
-                                                                    .beneficios
-                                                                    .length -
-                                                                    1 &&
-                                                            e.target.value !==
-                                                                ""
-                                                        ) {
-                                                            agregarBeneficio();
-                                                        }
-                                                    }}
+                                                        )
+                                                    }
                                                 />
                                                 <button
                                                     type="button"
@@ -256,6 +224,27 @@ const AgregarPaquete = () => {
                     </div>
                 </div>
             </div>
+
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar Agregado</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>¿Seguro que desea agregar este paquete?</Modal.Body>
+                <Modal.Footer>
+                    <button
+                        className="thm-btn-2 thm-btn-small"
+                        onClick={() => setShowModal(false)}
+                    >
+                        No
+                    </button>
+                    <button
+                        className="thm-btn thm-btn-small"
+                        onClick={handleSubmit}
+                    >
+                        Sí
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

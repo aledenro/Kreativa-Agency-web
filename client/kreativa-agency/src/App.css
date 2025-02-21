@@ -89,13 +89,27 @@ h3 {
     font-family: var(--kreativa-font);
 }
 
-textarea {
-    padding-top: 15px;
-}
-
 .form-label {
     font-size: 14px;
     font-weight: bolder;
+}
+
+.icon-btn {
+    height: 50px;
+    width: 50px;
+    margin-left: 10px;
+    position: relative;
+    display: block;
+    padding-left: 19px;
+    padding-right: 20px;
+    border: none;
+    background-color: var(--kreativa-base);
+    margin-bottom: 10px;
+    border-radius: var(--kreativa-bdr-radius);
+    outline: none;
+    font-size: 16px;
+    color: var(--kreativa-white);
+    font-family: var(--kreativa-font);
 }
 
 .thm-btn {
@@ -108,7 +122,7 @@ textarea {
     font-size: 16px;
     font-weight: 600;
     text-transform: uppercase;
-    padding: 14px 30px 14px;
+    padding: 12px 40px 12px;
     transition: all 0.3s linear;
     overflow: hidden;
     z-index: 1;
@@ -119,8 +133,25 @@ textarea {
     margin: 0;
 }
 
-.thm-btn:hover {
+.thm-btn-2 {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    outline: none !important;
+    background-color: var(--kreativa-black);
     color: var(--kreativa-white);
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 12px 40px 12px;
+    transition: all 0.3s linear;
+    overflow: hidden;
+    z-index: 1;
+    font-family: var(--kreativa-font);
+    letter-spacing: 0.1em;
+    border-radius: var(--kreativa-bdr-radius);
+    border: none;
+    margin: 0;
 }
 
 .thm-btn:after {
@@ -140,12 +171,77 @@ textarea {
     z-index: -1;
 }
 
+.thm-btn-2:after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--kreativa-base);
+    transform: scale(0);
+    -webkit-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+    border-radius: var(--kreativa-bdr-radius);
+    opacity: 1;
+    z-index: -1;
+}
+
+.thm-btn-2:hover:after {
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transition: all 0.4s linear;
+    -o-transition: all 0.4s linear;
+    transition: all 0.4s linear;
+}
+
+.thm-btn-2:disabled {
+    opacity: 0.5;
+}
+
 .thm-btn:hover:after {
     opacity: 1;
     transform: scale(1);
     -webkit-transition: all 0.4s linear;
     -o-transition: all 0.4s linear;
     transition: all 0.4s linear;
+}
+
+.thm-btn:disabled {
+    opacity: 0.5;
+}
+
+.thm-btn:disabled:after {
+    background-color: var(--kreativa-base);
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+}
+
+.thm-btn:disabled:hover:after {
+    background-color: var(--kreativa-base);
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+}
+
+.thm-btn-2:disabled:after {
+    background-color: var(--kreativa-black);
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+}
+
+.thm-btn-2:disabled:hover:after {
+    background-color: var(--kreativa-black);
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
 }
 
 .form_btn {
@@ -156,27 +252,6 @@ textarea {
 .section-title {
     margin-top: 50px;
     margin-bottom: 50px;
-}
-
-.icon-btn {
-    height: 50px;
-    width: 50px;
-    position: relative;
-    display: block;
-    padding-left: 19px;
-    padding-right: 20px;
-    height: 68px;
-    width: 100%;
-    border: none;
-    background-color: var(--kreativa-base-clear);
-    padding-left: 30px;
-    padding-right: 30px;
-    margin-bottom: 10px;
-    border-radius: var(--kreativa-bdr-radius);
-    outline: none;
-    font-size: 16px;
-    color: var(--kreativa-black);
-    font-family: var(--kreativa-font);
 }
 
 .form_text_area {
@@ -211,83 +286,9 @@ textarea {
     color: var(--kreativa-white);
 }
 
-textarea {
-    padding-top: 20px;
-}
-
-.thm-btn {
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    outline: none !important;
-    background-color: var(--kreativa-base);
-    color: var(--kreativa-white);
-    font-size: 16px;
-    font-weight: 600;
-    text-transform: uppercase;
-    padding: 17px 60px 17px;
-    transition: all 0.3s linear;
-    overflow: hidden;
-    z-index: 1;
-    font-family: var(--kreativa-font);
-    letter-spacing: 0.1em;
-    border-radius: var(--kreativa-bdr-radius);
-    border: none;
-    margin: 0;
-}
-
-.thm-btn:hover {
-    color: var(--kreativa-white);
-}
-
-.thm-btn:after {
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--kreativa-black);
-    transform: scale(0);
-    -webkit-transition: all 0.2s linear;
-    -o-transition: all 0.2s linear;
-    transition: all 0.2s linear;
-    border-radius: var(--kreativa-bdr-radius);
-    opacity: 1;
-    z-index: -1;
-}
-
-.thm-btn:hover:after {
-    opacity: 1;
-    transform: scale(1);
-    -webkit-transition: all 0.4s linear;
-    -o-transition: all 0.4s linear;
-    transition: all 0.4s linear;
-}
-
-.thm-btn:disabled {
-    opacity: 0.5;
-}
-
-.thm-btn:disabled:after {
-    background-color: var(--kreativa-base);
-    -webkit-transition: none !important;
-    -moz-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-}
-
-.thm-btn:disabled:hover:after {
-    background-color: var(--kreativa-base);
-    -webkit-transition: none !important;
-    -moz-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-}
-
-.form_btn {
-    display: block;
-    margin: 0 auto;
+.form-textarea {
+    padding-top: 15px;
+    height: 120px;
 }
 
 .section-title {
@@ -578,6 +579,15 @@ textarea {
 
 /* Botones pequeños */
 .thm-btn-small {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: var(--kreativa-bdr-radius);
+    min-width: 80px;
+    text-align: center;
+    margin-left: 10px;
+}
+
+.thm-btn-small-2 {
     padding: 5px 10px;
     font-size: 12px;
     border-radius: var(--kreativa-bdr-radius);
