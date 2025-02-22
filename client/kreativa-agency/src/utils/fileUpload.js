@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const uploadFile = async (files, folder, parent) => {
+const uploadFile = async (files, folder, parent, parent_id) => {
     const formData = new FormData();
 
     const path = JSON.stringify({
         folder: folder,
         parent: parent,
+        parent_id: parent_id,
     });
 
     formData.append("path", path);

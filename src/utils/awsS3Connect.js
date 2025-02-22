@@ -1,4 +1,9 @@
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const {
+    S3Client,
+    PutObjectCommand,
+    ListObjectsV2Command,
+    GetObjectCommand,
+} = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const s3Client = new S3Client({
@@ -10,9 +15,9 @@ const s3Client = new S3Client({
 });
 
 const uploadFile = async (file, path) => {
-    const key = `${path.folder}/${path.parent}/${Date.now().toString()}-${
-        file.originalname
-    }`;
+    const key = `${path.folder}/${path.parent}/${
+        path.parent_id
+    }/${Date.now().toString()}-${file.originalname}`;
 
     const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -30,4 +35,40 @@ const uploadFile = async (file, path) => {
     }
 };
 
-module.exports = { uploadFile };
+const getFilesByParent = async (path) => {
+    const prefix = `${path.folder}/${path.parent}/${path.parent_id}/`;
+
+    const command = new ListObjectsV2Command({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Prefix: prefix,
+    });
+
+    const { Contents = [] } = await s3Client.send(command);
+
+    return Contents.map((file) => file.Key);
+};
+
+const generateUrls = async (path) => {
+    try {
+        const keys = await getFilesByParent(path);
+
+        const urls = Promise.all(
+            keys.map(async (key) => {
+                const command = new GetObjectCommand({
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    Key: key,
+                });
+
+                return await getSignedUrl(s3Client, command, {
+                    expiresIn: 1800,
+                });
+            })
+        );
+
+        return urls;
+    } catch (error) {
+        throw new Error(`Error al  generar  los URLs: ${error.message}`);
+    }
+};
+
+module.exports = { uploadFile, generateUrls };

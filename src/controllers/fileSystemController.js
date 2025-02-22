@@ -5,13 +5,29 @@ class fileSystemController {
         const files = req.files["files"];
         const pathData = req.body.path ? JSON.parse(req.body.path) : {};
 
-        const ids = await Promise.all(
-            files.map(async (file) => {
-                return await awsS3Connect.uploadFile(file, pathData);
-            })
-        );
+        try {
+            const ids = await Promise.all(
+                files.map(async (file) => {
+                    return await awsS3Connect.uploadFile(file, pathData);
+                })
+            );
 
-        return res.status(201).json({ files_ids: ids });
+            return res.status(201).json({ files_ids: ids });
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async generateUrls(req, res) {
+        const path = req.body;
+
+        try {
+            const urls = await awsS3Connect.generateUrls(path);
+
+            return res.json({ urls: urls });
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
     }
 }
 

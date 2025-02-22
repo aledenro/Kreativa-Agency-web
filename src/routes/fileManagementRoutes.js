@@ -10,5 +10,6 @@ const upload = multer({ storage });
 const uploadMiddleware = upload.fields([{ name: "files" }]);
 
 router.post("/", uploadMiddleware, fileSystemController.uploadFile);
+router.get("/", fileSystemController.generateUrls);
 
 module.exports = router;
