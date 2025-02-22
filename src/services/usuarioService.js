@@ -87,6 +87,30 @@ const verificarCredenciales = async (usuario, contraseña) => {
     return user;
 };
 
+//Obtener Jerarquía 
+const obtenerJerarquiaUsuarios = async () => {
+    try {
+        const usuarios = await Usuario.find({}, "nombre email tipo_usuario estado");
+
+        if (!usuarios.length) {
+            return { mensaje: "No hay empleados o clientes registrados." };
+        }
+
+        // Agrupar por tipo de usuario
+        const jerarquia = usuarios.reduce((acc, usuario) => {
+            if (!acc[usuario.tipo_usuario]) {
+                acc[usuario.tipo_usuario] = [];
+            }
+            acc[usuario.tipo_usuario].push(usuario);
+            return acc;
+        }, {});
+
+        return jerarquia;
+    } catch (error) {
+        throw new Error("Error al obtener la jerarquía de usuarios");
+    }
+};
+
 module.exports = {
     verificarUsuarioExistente,
     crearNuevoUsuario,
@@ -97,4 +121,5 @@ module.exports = {
     getUsuariosClientes,
     getUsuariosColabAdmins,
     verificarCredenciales,
+    obtenerJerarquiaUsuarios,
 };
