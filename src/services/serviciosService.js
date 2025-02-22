@@ -129,10 +129,16 @@ class ServiciosService {
                 throw new Error("La categoría ya existe");
             }
 
-            await mongoose.connection.db
+            const resultado = await mongoose.connection.db
                 .collection("categorias_servicio")
                 .insertOne({ nombre });
-            return { mensaje: "Categoría agregada correctamente" };
+
+            // devolver id de una
+            return {
+                _id: resultado.insertedId,
+                nombre: nombre,
+                mensaje: "Categoría agregada correctamente",
+            };
         } catch (error) {
             throw new Error("Error al agregar la categoría: " + error.message);
         }

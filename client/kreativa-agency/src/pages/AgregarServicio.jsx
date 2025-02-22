@@ -19,18 +19,23 @@ const AgregarServicio = () => {
     const [showModal, setShowModal] = useState(false);
     const [nuevaCategoria, setNuevaCategoria] = useState("");
 
-    // para validar si se completo y avisar que se agrego
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
 
-    useEffect(() => {
-        axios
-            .get("http://localhost:4000/api/servicios/categorias")
-            .then((res) => setCategorias(res.data))
-            .catch((error) =>
-                console.error("Error cargando categorias:", error)
+    const fetchCategorias = async () => {
+        try {
+            const res = await axios.get(
+                "http://localhost:4000/api/servicios/categorias"
             );
+            setCategorias(res.data);
+        } catch (error) {
+            console.error("Error cargando categorias:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCategorias();
     }, []);
 
     const handleSubmit = async (event) => {
@@ -43,46 +48,29 @@ const AgregarServicio = () => {
             setAlertMessage("Debes completar todos los campos.");
             setAlertVariant("danger");
             setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-            }, 3000);
+            setTimeout(() => setShowAlert(false), 3000);
             return;
         }
 
-        const categoriaSeleccionada = categorias.find(
-            (cat) => cat._id === selectedCategoria
-        );
-
-        if (!categoriaSeleccionada) {
-            setAlertMessage("La categoría seleccionada no es válida.");
-            setAlertVariant("danger");
-            setShowAlert(true);
-            return;
-        }
         const data = jsonRequests(nombre, descripcion, selectedCategoria);
 
         try {
-            const res = await axios.post(
+            await axios.post(
                 "http://localhost:4000/api/servicios/agregar",
                 data
             );
-            console.log(res.data);
             setAlertMessage("Servicio agregado exitosamente.");
             setAlertVariant("success");
             setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-            }, 3000);
-
             event.target.reset();
+            setSelectedCategoria("");
         } catch (error) {
-            console.error(error.message);
+            console.error(error);
             setAlertMessage("Hubo un error al agregar el servicio.");
             setAlertVariant("danger");
             setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-            }, 3000);
+        } finally {
+            setTimeout(() => setShowAlert(false), 3000);
         }
     };
 
@@ -93,22 +81,37 @@ const AgregarServicio = () => {
         }
 
         try {
-            await axios.post("http://localhost:4000/api/servicios/categorias", {
-                nombre: nuevaCategoria,
-            });
-            setCategorias([...categorias, { nombre: nuevaCategoria }]);
-            setSelectedCategoria(nuevaCategoria);
+            const response = await axios.post(
+                "http://localhost:4000/api/servicios/categorias",
+                {
+                    nombre: nuevaCategoria,
+                }
+            );
+
+            await fetchCategorias();
+
+            setSelectedCategoria(response.data._id);
             setShowModal(false);
             setNuevaCategoria("");
         } catch (error) {
-            console.error("Error al agregar la categoria: ", error);
-            alert("Hubo un error al agregar la categoría.");
+            console.error("Error al agragar la categoria:", error);
+            if (error.response) {
+                console.error("Detalles del error:", error.response.data);
+                alert(
+                    `Error del servidor: ${
+                        error.response.data.message ||
+                        "No se pudo agregar la categoría"
+                    }`
+                );
+            } else {
+                alert("Error de conexión con el servidor.");
+            }
         }
     };
 
     return (
         <div>
-            <Navbar></Navbar>
+            <Navbar />
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Agregar nuevo servicio</h2>
@@ -141,52 +144,55 @@ const AgregarServicio = () => {
                                     />
                                 </div>
                                 <div className="col">
-                                    <label
-                                        htmlFor="categoria"
-                                        className="form-label"
-                                    >
-                                        Categoría del servicio
-                                    </label>
-                                    <Form.Select
-                                        name="categoria"
-                                        className="form_input"
-                                        value={selectedCategoria}
-                                        onChange={(e) => {
-                                            if (e.target.value === "nueva") {
-                                                setShowModal(true);
-                                            } else {
-                                                setSelectedCategoria(
-                                                    e.target.value
-                                                );
-                                            }
-                                        }}
-                                        required
-                                    >
-                                        <option value="">
-                                            Seleccione una categoría
-                                        </option>
-                                        {categorias.map((cat) => (
-                                            <option
-                                                key={cat._id}
-                                                value={cat._id}
+                                    <div className="flex-grow-1">
+                                        <label
+                                            htmlFor="categoria"
+                                            className="form-label"
+                                        >
+                                            Categoría del servicio
+                                        </label>
+                                        <div className="d-flex align-items-center gap-2">
+                                            <Form.Select
+                                                name="categoria"
+                                                className="form_input"
+                                                value={selectedCategoria}
+                                                onChange={(e) =>
+                                                    setSelectedCategoria(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                required
                                             >
-                                                {cat.nombre}
-                                            </option>
-                                        ))}
-                                        <option disabled>
-                                            ───────────────
-                                        </option>
-                                        <option value="nueva">
-                                            Crear nueva categoría
-                                        </option>
-                                    </Form.Select>
+                                                <option value="">
+                                                    Seleccione una categoría
+                                                </option>
+                                                {categorias.map((cat) => (
+                                                    <option
+                                                        key={cat._id}
+                                                        value={cat._id}
+                                                    >
+                                                        {cat.nombre}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
+                                            <button
+                                                type="button"
+                                                className="inline-btn"
+                                                onClick={() =>
+                                                    setShowModal(true)
+                                                }
+                                            >
+                                                Nueva
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
                                     <label
                                         className="form-label"
-                                        htmlFor="nombre"
+                                        htmlFor="descripcion"
                                     >
                                         Descripción
                                     </label>
