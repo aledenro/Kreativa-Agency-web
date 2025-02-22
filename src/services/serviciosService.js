@@ -1,4 +1,5 @@
 const Servicios = require("../models/serviciosModel");
+const mongoose = require("mongoose");
 
 class ServiciosService {
     async agregarServicio(data) {
@@ -104,6 +105,36 @@ class ServiciosService {
             throw new Error(
                 `No se pudo activar el servicio ${id}: ` + error.message
             );
+        }
+    }
+
+    async getCategorias() {
+        try {
+            const categorias = await mongoose.connection.db
+                .collection("categorias_servicio")
+                .find()
+                .toArray();
+            return categorias;
+        } catch (error) {
+            throw new Error("Error al obtener categorías: " + error.message);
+        }
+    }
+
+    async agregarCategoria(nombre) {
+        try {
+            const existe = await mongoose.connection.db
+                .collection("categorias_servicio")
+                .findOne({ nombre });
+            if (existe) {
+                throw new Error("La categoría ya existe");
+            }
+
+            await mongoose.connection.db
+                .collection("categorias_servicio")
+                .insertOne({ nombre });
+            return { mensaje: "Categoría agregada correctamente" };
+        } catch (error) {
+            throw new Error("Error al agregar la categoría: " + error.message);
         }
     }
 }

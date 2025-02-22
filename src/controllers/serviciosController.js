@@ -89,6 +89,30 @@ class ServiciosController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    async getCategorias(req, res) {
+        try {
+            const categorias = await ServiciosService.getCategorias();
+            return res.status(200).json(categorias);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async agregarCategoria(req, res) {
+        try {
+            const { nombre } = req.body;
+            if (!nombre) {
+                return res
+                    .status(400)
+                    .json({ error: "El nombre es obligatorio" });
+            }
+            const respuesta = await ServiciosService.agregarCategoria(nombre);
+            return res.status(201).json(respuesta);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new ServiciosController();

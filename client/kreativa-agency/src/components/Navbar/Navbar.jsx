@@ -30,6 +30,9 @@ export default function Navbar() {
                     </a>
                     <ul className="dropdown-menu">
                         <li>
+                            <a href="/servicios">Servicios</a>
+                        </li>
+                        <li>
                             <a href="/servicio/agregar">Agregar Servicio</a>
                         </li>
                         <li>
