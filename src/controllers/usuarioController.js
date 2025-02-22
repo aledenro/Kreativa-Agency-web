@@ -12,6 +12,7 @@ const {
     eliminarUsuario,
     getUsuariosClientes,
     getUsuariosColabAdmins,
+    obtenerJerarquiaUsuarios,
 } = require("../services/usuarioService");
 
 const lodash = require("lodash");
@@ -257,6 +258,16 @@ const restablecerContraseña = async (req, res) => {
     }
 };
 
+//Obtener Jerarquía
+const getJerarquiaUsuarios = async (req, res) => {
+    try {
+        const jerarquia = await obtenerJerarquiaUsuarios();
+        res.status(200).json(jerarquia);
+    } catch (error) {
+        res.status(500).json({ mensaje: "Error al obtener la jerarquía de usuarios" });
+    }
+};
+
 module.exports = {
     crearUsuario,
     obtenerTodosLosUsuarios,
@@ -268,5 +279,6 @@ module.exports = {
     iniciarSesion,
     recuperarContraseña,
     restablecerContraseña,
+    getJerarquiaUsuarios,
 };
 
