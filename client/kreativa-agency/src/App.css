@@ -598,6 +598,11 @@ h3 {
     }
 }
 
+.pink-icon {
+    color: var(--kreativa-base);
+    padding-right: 10px;
+}
+
 /* Botones pequeños */
 .thm-btn-small {
     padding: 5px 10px;
@@ -808,8 +813,8 @@ h3 {
 }
 
 .login-card {
-    width: 550px; 
-    padding: 40px; 
+    width: 550px;
+    padding: 40px;
     background-color: var(--kreativa-white);
     border-radius: var(--kreativa-bdr-radius);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -833,7 +838,7 @@ h3 {
 
 .form-input {
     width: 100%;
-    height: 55px; 
+    height: 55px;
     padding: 10px;
     border: 2px solid var(--kreativa-gray);
     border-radius: var(--kreativa-bdr-radius);
@@ -854,13 +859,12 @@ h3 {
 }
 
 .swal-button-kreativa {
-    background-color: #E91E63 !important;
+    background-color: #e91e63 !important;
     color: white !important;
     font-weight: bold;
     border-radius: var(--kreativa-bdr-radius);
 }
 
 .swal-button-kreativa:hover {
-    background-color: #C2185B !important;
+    background-color: #c2185b !important;
 }
-
