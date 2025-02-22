@@ -12,6 +12,7 @@ const {
     iniciarSesion,
     recuperarContraseña,
     restablecerContraseña,
+    getJerarquiaUsuarios,
 } = require("../controllers/usuarioController");
 
 const router = express.Router();
@@ -30,5 +31,6 @@ router.put("/usuarios/:id", verificarToken, actualizarUsuarioPorId);
 router.delete("/usuarios/:id", verificarToken, eliminarUsuarioPorId);
 router.post("/recuperar", recuperarContraseña);
 router.post("/restablecer", restablecerContraseña);
+router.get("/usuarios/jerarquia", getJerarquiaUsuarios);
 
 module.exports = router;
