@@ -11,5 +11,6 @@ const uploadMiddleware = upload.fields([{ name: "files" }]);
 
 router.post("/", uploadMiddleware, fileSystemController.uploadFile);
 router.get("/", fileSystemController.generateUrls);
+router.delete("/", fileSystemController.deleteFile);
 
 module.exports = router;

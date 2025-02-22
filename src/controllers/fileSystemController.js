@@ -29,6 +29,18 @@ class fileSystemController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    async deleteFile(req, res) {
+        const key = req.body.key;
+
+        try {
+            await awsS3Connect.deleteFile(key);
+
+            return res.sendStatus(204);
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new fileSystemController();

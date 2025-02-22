@@ -3,6 +3,7 @@ const {
     PutObjectCommand,
     ListObjectsV2Command,
     GetObjectCommand,
+    DeleteObjectCommand,
 } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
@@ -71,4 +72,19 @@ const generateUrls = async (path) => {
     }
 };
 
-module.exports = { uploadFile, generateUrls };
+const deleteFile = async (key) => {
+    try {
+        const command = new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: key,
+        });
+
+        await s3Client.send(command);
+
+        return;
+    } catch (error) {
+        throw new Error(`Error al  eliminar el archivo: ${error.message}`);
+    }
+};
+
+module.exports = { uploadFile, generateUrls, deleteFile };
