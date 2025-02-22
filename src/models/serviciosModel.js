@@ -10,9 +10,10 @@ const ServiciosModel = new mongoose.Schema(
             type: String,
             required: true,
         },
-        categoria: {
-            type: String,
+        categoria_id: {
             required: true,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "categorias_servicio",
         },
         paquetes: [
             {
