@@ -291,6 +291,27 @@ h3 {
     height: 120px;
 }
 
+.inline-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 8px 16px;
+    font-size: 14px;
+    line-height: 1;
+    white-space: nowrap;
+    background-color: var(--kreativa-base);
+    color: var(--kreativa-white);
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s linear;
+    border-radius: var(--kreativa-bdr-radius);
+    border: none;
+    outline: none !important;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
 .section-title {
     margin-top: 50px;
 }
@@ -577,6 +598,11 @@ h3 {
     }
 }
 
+.pink-icon {
+    color: var(--kreativa-base);
+    padding-right: 10px;
+}
+
 /* Botones pequeños */
 .thm-btn-small {
     padding: 5px 10px;
@@ -738,7 +764,8 @@ h3 {
     background-color: #d6005f;
 }
 
-.search-container, .select-container {
+.search-container,
+.select-container {
     position: relative;
     display: flex;
     align-items: center;
@@ -761,7 +788,6 @@ h3 {
     stroke: #323232;
 }
 
-
 .select-input {
     width: 100%;
     padding: 8px 35px 8px 8px;
@@ -769,7 +795,6 @@ h3 {
     border-radius: 5px;
     appearance: none;
 }
-
 
 .icon-arrow {
     position: absolute;
@@ -788,8 +813,8 @@ h3 {
 }
 
 .login-card {
-    width: 550px; 
-    padding: 40px; 
+    width: 550px;
+    padding: 40px;
     background-color: var(--kreativa-white);
     border-radius: var(--kreativa-bdr-radius);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -813,7 +838,7 @@ h3 {
 
 .form-input {
     width: 100%;
-    height: 55px; 
+    height: 55px;
     padding: 10px;
     border: 2px solid var(--kreativa-gray);
     border-radius: var(--kreativa-bdr-radius);
@@ -834,12 +859,12 @@ h3 {
 }
 
 .swal-button-kreativa {
-    background-color: #E91E63 !important;
+    background-color: #e91e63 !important;
     color: white !important;
     font-weight: bold;
     border-radius: var(--kreativa-bdr-radius);
 }
 
 .swal-button-kreativa:hover {
-    background-color: #C2185B !important;
+    background-color: #c2185b !important;
 }

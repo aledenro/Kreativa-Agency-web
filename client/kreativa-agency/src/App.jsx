@@ -18,6 +18,7 @@ import ListadoServicios from "./pages/ListadoServicios";
 import AgregarServicio from "./pages/AgregarServicio";
 import ModificarServicio from "./pages/ModificarServicio";
 import AgregarPaquete from "./pages/AgregarPaquete";
+import DetalleServicio from "./pages/DetalleServicio";
 import AgregarProyecto from "./pages/AgregarProyecto";
 import EditarProyecto from "./pages/EditarProyecto";
 import AgregarTarea from "./pages/AgregarTarea";
@@ -89,6 +90,10 @@ function App() {
                     element={<ModificarServicio />}
                 ></Route>
                 <Route
+                    path="/servicio/:id"
+                    element={<DetalleServicio />}
+                ></Route>
+                <Route
                     path="/proyecto/agregar"
                     element={<AgregarProyecto />}
                 ></Route>
@@ -101,10 +106,7 @@ function App() {
                     path="/tarea/editar/:id"
                     element={<EditarTarea />}
                 ></Route>
-                <Route
-                    path="/login"
-                    element={<Login />}
-                ></Route>
+                <Route path="/login" element={<Login />}></Route>
                 <Route
                     path="/vista-clientes"
                     element={<VistaClientes />}
@@ -113,15 +115,13 @@ function App() {
                     path="/vista-colaborador"
                     element={<VistaColaborador />}
                 ></Route>
-                <Route
-                    path="/recuperar"
-                    element={<Recuperar />}
-                ></Route>
+                <Route path="/recuperar" element={<Recuperar />}></Route>
                 <Route
                     path="/restablecer/:token"
                     element={<Restablecer />}
                 ></Route>
-                <Route path="/restablecer/:token"
+                <Route
+                    path="/restablecer/:token"
                     element={<RestablecerContraseña />}
                 ></Route>
             </Routes>
