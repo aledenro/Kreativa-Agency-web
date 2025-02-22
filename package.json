@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.750.0",
+    "@aws-sdk/s3-request-presigner": "^3.750.0",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
@@ -26,6 +28,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^8.9.5",
     "nodemailer": "^6.10.0",
+    "multer": "^1.4.5-lts.1",
     "react-bootstrap": "^2.10.9",
     "react-number-format": "^5.4.3",
     "react-select": "^5.10.0"
