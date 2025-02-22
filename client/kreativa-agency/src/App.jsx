@@ -22,6 +22,12 @@ import AgregarProyecto from "./pages/AgregarProyecto";
 import EditarProyecto from "./pages/EditarProyecto";
 import AgregarTarea from "./pages/AgregarTarea";
 import EditarTarea from "./pages/EditarTarea";
+import Login from "./pages/Login";
+import VistaClientes from "./pages/VistaClientes";
+import VistaColaborador from "./pages/VistaColaborador";
+import Recuperar from "./pages/Recuperar";
+import Restablecer from "./pages/Restablecer";
+import RestablecerContraseña from "./pages/RestablecerContraseña";
 
 function App() {
     return (
@@ -94,6 +100,29 @@ function App() {
                 <Route
                     path="/tarea/editar/:id"
                     element={<EditarTarea />}
+                ></Route>
+                <Route
+                    path="/login"
+                    element={<Login />}
+                ></Route>
+                <Route
+                    path="/vista-clientes"
+                    element={<VistaClientes />}
+                ></Route>
+                <Route
+                    path="/vista-colaborador"
+                    element={<VistaColaborador />}
+                ></Route>
+                <Route
+                    path="/recuperar"
+                    element={<Recuperar />}
+                ></Route>
+                <Route
+                    path="/restablecer/:token"
+                    element={<Restablecer />}
+                ></Route>
+                <Route path="/restablecer/:token"
+                    element={<RestablecerContraseña />}
                 ></Route>
             </Routes>
         </Router>
