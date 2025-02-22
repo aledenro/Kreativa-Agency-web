@@ -16,15 +16,13 @@ const ListadoServicios = () => {
                     "http://localhost:4000/api/servicios/"
                 );
 
-                console.log("response: ", response.data);
-
                 if (Array.isArray(response.data)) {
                     setServicios(response.data);
                 } else {
                     setServicios([]);
                 }
             } catch (error) {
-                console.error("Error al obtener servicios:", error.message);
+                console.error(error.message);
                 setServicios([]);
             }
         }
@@ -63,10 +61,9 @@ const ListadoServicios = () => {
                                             <div className="services-content mt-3 flex-grow-1">
                                                 <h5 className="services-title">
                                                     <a
-                                                        href="#"
                                                         onClick={() =>
-                                                            onServiceClick(
-                                                                servicio.id
+                                                            handleListadoServicios(
+                                                                servicio._id
                                                             )
                                                         }
                                                         className="text-decoration-none"
@@ -87,10 +84,9 @@ const ListadoServicios = () => {
                                             <div className="mt-auto">
                                                 <a
                                                     className="services-arrow"
-                                                    href="#"
                                                     onClick={() =>
                                                         handleListadoServicios(
-                                                            servicio.id
+                                                            servicio._id
                                                         )
                                                     }
                                                 >
