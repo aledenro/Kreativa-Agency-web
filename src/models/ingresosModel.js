@@ -29,7 +29,7 @@ const IngresosModel = new mongoose.Schema(
                 },
                 message: "La cédula ingresada no pertenece a un usuario registrado.",
             },
-        },        
+        },
         servicio: {
             type: String,
             required: true,
@@ -52,7 +52,7 @@ const IngresosModel = new mongoose.Schema(
             required: true,
             default: Date.now,
         },
-        activo: { 
+        activo: {
             type: Boolean,
             default: true,
             required: true

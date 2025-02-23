@@ -61,19 +61,40 @@ const ingresosService = {
         return ingreso;
     },
 
-    async activarDesactivarIngreso(id, activo) {
-        const ingreso = await IngresosModel.findByIdAndUpdate(
-            id,
-            { activo, ultima_modificacion: Date.now() },
-            { new: true }
-        );
-
-        if (!ingreso) {
-            throw new Error("Ingreso no encontrado.");
+    // Desactivar un ingreso
+    async desactivarIngresoById(id) {
+        try {
+            const ingresoDesactivado = await IngresosModel.findByIdAndUpdate(
+                id,
+                { activo: false, ultima_modificacion: Date.now() },
+                { new: true }
+            );
+            if (!ingresoDesactivado) {
+                throw new Error(`Ingreso ${id} no encontrado`);
+            }
+            return ingresoDesactivado;
+        } catch (error) {
+            throw new Error(`No se pudo desactivar el ingreso ${id}: ` + error.message);
         }
-
-        return ingreso;
     },
+
+    // Activar un ingreso
+    async activarIngresoById(id) {
+        try {
+            const ingresoActivado = await IngresosModel.findByIdAndUpdate(
+                id,
+                { activo: true, ultima_modificacion: Date.now() },
+                { new: true }
+            );
+            if (!ingresoActivado) {
+                throw new Error(`Ingreso ${id} no encontrado`);
+            }
+            return ingresoActivado;
+        } catch (error) {
+            throw new Error(`No se pudo activar el ingreso ${id}: ` + error.message);
+        }
+    }
+
 };
 
 module.exports = ingresosService;

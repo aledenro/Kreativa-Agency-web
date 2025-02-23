@@ -43,22 +43,30 @@ const ingresosController = {
         }
     },
 
-    async activarDesactivarIngreso(req, res) {
+    // Función para activar un ingreso
+    async activarIngreso(req, res) {
         try {
-            const { activo } = req.body;
-            if (typeof activo !== "boolean") {
-                return res.status(400).json({ message: "El valor de 'activo' debe ser true o false." });
-            }
-    
-            const ingresoModificado = await ingresosService.activarDesactivarIngreso(req.params.id, activo);
-            res.status(200).json({
-                message: `Ingreso ${activo ? "activado" : "desactivado"} con éxito.`,
-                ingreso: ingresoModificado,
-            });
+            const { id } = req.params;
+            const ingreso = await ingresosService.activarIngresoById(id);
+            return res.status(200).json({ mensaje: "Ingreso activado", ingreso });
         } catch (error) {
-            res.status(404).json({ message: error.message });
+            console.error("Error al activar el ingreso: " + error.message);
+            return res.status(500).json({ error: error.message });
         }
-    },    
+    },
+
+    // Función para desactivar un ingreso
+    async desactivarIngreso(req, res) {
+        try {
+            const { id } = req.params;
+            const ingreso = await ingresosService.desactivarIngresoById(id);
+            return res.status(200).json({ mensaje: "Ingreso desactivado", ingreso });
+        } catch (error) {
+            console.error("Error al desactivar el ingreso: " + error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
 };
 
 module.exports = ingresosController;

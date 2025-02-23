@@ -1,113 +1,112 @@
-import React, { useState, useEffect } from "react";
+import Form from "react-bootstrap/Form";
 import Navbar from "../components/Navbar/Navbar";
-import { useParams } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
+import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import { Button, Form } from "react-bootstrap";
-import { NumericFormat } from "react-number-format";
-
-const formatearFecha = (fecha) => {
-    if (!fecha) return "";
-    const date = new Date(fecha);
-    return date.toISOString().split('T')[0];
-};
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom"; // Usa useNavigate en lugar de useHistory
 
 const EditarIngreso = () => {
-    const { id } = useParams(); // Obtener el ID del ingreso
-    console.log("ID recibido en EditarIngreso:", id);
-
+    const [mensaje, setMensaje] = useState("");
     const [ingreso, setIngreso] = useState(null);
-    const [error, setError] = useState(null); // Para errores
-    const [monto, setMonto] = useState(0); // Para manejar el monto
+    const { id } = useParams(); // Obtener el ID del ingreso desde la URL
+    const navigate = useNavigate(); // Usa useNavigate en lugar de useHistory
 
-    // Obtener el ingreso por ID
+    // Obtener los detalles del ingreso cuando el componente se monta
     useEffect(() => {
         const obtenerIngreso = async () => {
             try {
                 const res = await axios.get(`http://localhost:4000/api/ingresos/${id}`);
-                setIngreso(res.data); // Guardar el ingreso en el estado
-                setMonto(res.data?.monto || 0);
+                setIngreso(res.data);
             } catch (error) {
-                setError("No se pudo obtener el ingreso");
+                console.error(error.message);
+                setMensaje("Error al obtener el ingreso.");
             }
         };
 
         obtenerIngreso();
     }, [id]);
 
-    // Si hay error, mostrar el mensaje de error
-    if (error) {
-        return <div>{error}</div>;
-    }
-
-    // Si el ingreso aún no ha sido cargado, no mostrar el formulario
-    if (!ingreso) {
-        return <div>Loading...</div>; // Poner algo visual
-    }
-
-    // Función para manejar el submit y editar el ingreso
+    // Manejar la edición del ingreso
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         const fecha = event.target.fecha.value;
-        const fechaActual = new Date().toISOString().split('T')[0];  // Obtener la fecha actual en formato YYYY-MM-DD
-
-        // Validar que la fecha no sea posterior
-        if (fecha > fechaActual) {
-            alert("No puedes seleccionar una fecha futura.");
-            return;
-        }
+        const monto = event.target.monto.value;
+        const descripcion = event.target.descripcion.value;
+        const cedula = event.target.cedula.value;
+        const servicio = event.target.servicio.value;
+        const estado = event.target.estado.value;
+        const nota = event.target.nota.value;
 
         const data = {
-            fecha: fecha,
-            monto: monto,
-            cliente: event.target.cliente.value, // Cambiado a cliente
-            servicio: event.target.servicio.value, // Cambiado a servicio
-            estado: event.target.estado.value,
-            nota: event.target.nota.value,
-            ultima_modificacion: new Date().toISOString(),
+            fecha,
+            monto,
+            descripcion,
+            cedula,
+            servicio,
+            estado,
+            nota,
+            activo: true, // Si no estás cambiando el estado, se puede dejar por defecto como true
         };
 
         try {
-            await axios.put(`http://localhost:4000/api/ingresos/${id}`, data); // Realizar la actualización
-            alert("Ingreso actualizado exitosamente!");
+            const res = await axios.put(`http://localhost:4000/api/ingresos/${id}`, data);
+            console.log(res.data);
+            setMensaje("¡Ingreso actualizado exitosamente!");
+            // Redirigir a otra página (por ejemplo, la lista de ingresos) después de la edición
+            navigate("/ingresos"); // Usa navigate para redirigir
         } catch (error) {
-            console.error("Error al actualizar el ingreso:", error.message);
+            console.error(error.message);
+            setMensaje("Error al actualizar el ingreso.");
         }
     };
 
+    if (!ingreso) {
+        return <div>Cargando...</div>; // Muestra un mensaje mientras se cargan los datos del ingreso
+    }
+
     return (
         <div>
-            <Navbar></Navbar>
+            <Navbar />
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Editar ingreso</h2>
                 </div>
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
-                        <Form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit} className="ingreso_form">
                             <div className="row">
                                 <div className="col">
                                     <input
                                         type="date"
-                                        defaultValue={ingreso.fecha ? formatearFecha(ingreso.fecha) : ""}
-                                        name="fecha"
+                                        placeholder="Fecha"
                                         required
-                                        max={new Date().toISOString().split('T')[0]} // Fecha máxima: hoy
+                                        name="fecha"
                                         className="form_input"
+                                        defaultValue={ingreso.fecha.split("T")[0]} // Valor por defecto desde los datos cargados
                                     />
                                 </div>
                                 <div className="col">
-                                    <NumericFormat
-                                        thousandSeparator
-                                        prefix="₡"
-                                        value={monto}
-                                        name="monto"
+                                    <input
+                                        type="number"
+                                        placeholder="Monto"
                                         required
+                                        name="monto"
                                         className="form_input"
-                                        allowNegative={false}
-                                        decimalScale={2}
-                                        fixedDecimalScale
-                                        onValueChange={(values) => setMonto(values.floatValue || 0)}
+                                        defaultValue={ingreso.monto}
+                                    />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        placeholder="Descripción"
+                                        required
+                                        name="descripcion"
+                                        className="form_input"
+                                        defaultValue={ingreso.descripcion}
                                     />
                                 </div>
                             </div>
@@ -116,19 +115,21 @@ const EditarIngreso = () => {
                                 <div className="col">
                                     <input
                                         type="text"
-                                        defaultValue={ingreso.cliente} // Cambiado a cliente
-                                        name="cliente"
+                                        placeholder="Cédula"
                                         required
+                                        name="cedula"
                                         className="form_input"
+                                        defaultValue={ingreso.cedula}
                                     />
                                 </div>
                                 <div className="col">
                                     <input
                                         type="text"
-                                        defaultValue={ingreso.servicio} // Cambiado a servicio
-                                        name="servicio"
+                                        placeholder="Servicio"
                                         required
+                                        name="servicio"
                                         className="form_input"
+                                        defaultValue={ingreso.servicio}
                                     />
                                 </div>
                             </div>
@@ -138,21 +139,21 @@ const EditarIngreso = () => {
                                     <Form.Select
                                         required
                                         name="estado"
-                                        defaultValue={ingreso.estado}
                                         className="form_input"
+                                        defaultValue={ingreso.estado}
                                     >
-                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Pendiente de pago">Pendiente de pago</option>
                                         <option value="Aprobado">Aprobado</option>
-                                        <option value="Rechazado">Rechazado</option>
                                     </Form.Select>
                                 </div>
                                 <div className="col">
                                     <input
                                         type="text"
-                                        defaultValue={ingreso.nota}
-                                        name="nota"
+                                        placeholder="Nota"
                                         required
+                                        name="nota"
                                         className="form_input"
+                                        defaultValue={ingreso.nota}
                                     />
                                 </div>
                             </div>
@@ -160,12 +161,17 @@ const EditarIngreso = () => {
                             <div className="row">
                                 <div className="col text-center">
                                     <button type="submit" className="thm-btn form-btn">
-                                        Confirmar
+                                        Editar
                                     </button>
                                 </div>
                             </div>
-
                         </Form>
+
+                        {mensaje && (
+                            <Alert variant="info" className="mt-4">
+                                {mensaje}
+                            </Alert>
+                        )}
                     </div>
                 </div>
             </div>
