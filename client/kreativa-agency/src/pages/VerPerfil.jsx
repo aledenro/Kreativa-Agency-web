@@ -51,31 +51,33 @@ const VerPerfil = () => {
     return (
         <div>
             <Navbar />
-            <div className="container mt-5">
+            <div className="perfil-container">
                 <div className="section-title text-center">
                     <h1 className="kreativa-title">Mi Perfil</h1>
                 </div>
 
                 {loading ? (
-                    <p className="text-center">Cargando...</p>
+                    <p className="loading-text">Cargando...</p>
                 ) : error ? (
-                    <p className="text-danger text-center">{error}</p>
+                    <p className="error-text">{error}</p>
                 ) : (
-                    <div className="perfil-container mx-auto">
-                        <div className="perfil-card">
+                    <div className="perfil-card">
+                        <div className="perfil-header">
                             <h2>{usuario.nombre}</h2>
+                        </div>
+                        <div className="perfil-info">
+                            <p><strong>Rol:</strong> {usuario.tipo_usuario}</p> 
                             <p><strong>Usuario:</strong> {usuario.usuario}</p>
                             <p><strong>Email:</strong> {usuario.email}</p>
                             <p><strong>Cédula:</strong> {usuario.cedula}</p>
-                            <p><strong>Rol:</strong> {usuario.tipo_usuario}</p>
                             <p><strong>Estado:</strong> {usuario.estado}</p>
-                            <p><strong>Fecha de Registro:</strong> {new Date(usuario.fechaRegistro).toLocaleDateString()}</p>
+                            <p><strong>Fecha de Registro:</strong> {new Date(usuario.fecha_creacion).toLocaleDateString()}</p>
                         </div>
                     </div>
                 )}
 
                 <div className="text-center mt-4">
-                    <button className="thm-btn" onClick={() => navigate("/dashboard")}>Volver</button>
+                    <button className="thm-btn btn-volver" onClick={() => navigate("/dashboard")}>Volver</button>
                 </div>
             </div>
         </div>
