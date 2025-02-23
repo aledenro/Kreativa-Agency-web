@@ -11,27 +11,27 @@ const formatearFecha = (fecha) => {
     return date.toISOString().split('T')[0];
 };
 
-const EditarEgreso = () => {
-    const { id } = useParams(); // Obtener el ID del egreso
-    console.log("ID recibido en EditarEgreso:", id);
+const EditarIngreso = () => {
+    const { id } = useParams(); // Obtener el ID del ingreso
+    console.log("ID recibido en EditarIngreso:", id);
 
-    const [egreso, setEgreso] = useState(null);
+    const [ingreso, setIngreso] = useState(null);
     const [error, setError] = useState(null); // Para errores
-    const [monto, setMonto] = useState(0); // Para que el monto
+    const [monto, setMonto] = useState(0); // Para manejar el monto
 
-    // Obtener el egreso por ID
+    // Obtener el ingreso por ID
     useEffect(() => {
-        const obtenerEgreso = async () => {
+        const obtenerIngreso = async () => {
             try {
-                const res = await axios.get(`http://localhost:4000/api/egresos/${id}`);
-                setEgreso(res.data); // Guardar el egreso en el estado
+                const res = await axios.get(`http://localhost:4000/api/ingresos/${id}`);
+                setIngreso(res.data); // Guardar el ingreso en el estado
                 setMonto(res.data?.monto || 0);
             } catch (error) {
-                setError("No se pudo obtener el egreso");
+                setError("No se pudo obtener el ingreso");
             }
         };
 
-        obtenerEgreso();
+        obtenerIngreso();
     }, [id]);
 
     // Si hay error, mostrar el mensaje de error
@@ -39,12 +39,12 @@ const EditarEgreso = () => {
         return <div>{error}</div>;
     }
 
-    // Si el egreso aún no ha sido cargado, no mostrar el formulario
-    if (!egreso) {
+    // Si el ingreso aún no ha sido cargado, no mostrar el formulario
+    if (!ingreso) {
         return <div>Loading...</div>; // Poner algo visual
     }
 
-    // Función para manejar el submit y editar el egreso
+    // Función para manejar el submit y editar el ingreso
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -60,19 +60,18 @@ const EditarEgreso = () => {
         const data = {
             fecha: fecha,
             monto: monto,
-            categoria: event.target.categoria.value,
-            descripcion: event.target.descripcion.value,
-            proveedor: event.target.proveedor.value,
+            cliente: event.target.cliente.value, // Cambiado a cliente
+            servicio: event.target.servicio.value, // Cambiado a servicio
             estado: event.target.estado.value,
             nota: event.target.nota.value,
             ultima_modificacion: new Date().toISOString(),
         };
 
         try {
-            await axios.put(`http://localhost:4000/api/egresos/${id}`, data); // Realizar la actualización
-            alert("Egreso actualizado exitosamente!");
+            await axios.put(`http://localhost:4000/api/ingresos/${id}`, data); // Realizar la actualización
+            alert("Ingreso actualizado exitosamente!");
         } catch (error) {
-            console.error("Error al actualizar el egreso:", error.message);
+            console.error("Error al actualizar el ingreso:", error.message);
         }
     };
 
@@ -81,16 +80,16 @@ const EditarEgreso = () => {
             <Navbar></Navbar>
             <div className="container">
                 <div className="section-title text-center">
-                    <h2>Editar agreso</h2>
+                    <h2>Editar ingreso</h2>
                 </div>
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
                         <Form onSubmit={handleSubmit}>
                             <div className="row">
-                                <div className="">
+                                <div className="col">
                                     <input
                                         type="date"
-                                        defaultValue={egreso.fecha ? formatearFecha(egreso.fecha) : ""}
+                                        defaultValue={ingreso.fecha ? formatearFecha(ingreso.fecha) : ""}
                                         name="fecha"
                                         required
                                         max={new Date().toISOString().split('T')[0]} // Fecha máxima: hoy
@@ -114,59 +113,54 @@ const EditarEgreso = () => {
                             </div>
 
                             <div className="row">
-                                <div className="">
+                                <div className="col">
                                     <input
                                         type="text"
-                                        defaultValue={egreso.categoria}
-                                        name="categoria"
+                                        defaultValue={ingreso.cliente} // Cambiado a cliente
+                                        name="cliente"
                                         required
                                         className="form_input"
                                     />
                                 </div>
                                 <div className="col">
                                     <input
-                                        as="textarea"
-                                        defaultValue={egreso.descripcion}
-                                        name="descripcion"
+                                        type="text"
+                                        defaultValue={ingreso.servicio} // Cambiado a servicio
+                                        name="servicio"
                                         required
                                         className="form_input"
-                                        style={{ height: "100px" }}
                                     />
                                 </div>
                             </div>
+
                             <div className="row">
-                                <div className="">
-                                    <input
-                                        type="text"
-                                        defaultValue={egreso.proveedor}
-                                        name="proveedor"
-                                        required
-                                        className="form_input"
-                                    />
-                                </div>
                                 <div className="col">
                                     <Form.Select
                                         required
                                         name="estado"
-                                        defaultValue={egreso.estado}
+                                        defaultValue={ingreso.estado}
                                         className="form_input"
                                     >
-                                        <option value="Pendiente de pago">Pendiente de pago</option>
+                                        <option value="Pendiente">Pendiente</option>
                                         <option value="Aprobado">Aprobado</option>
+                                        <option value="Rechazado">Rechazado</option>
                                     </Form.Select>
                                 </div>
-                            </div>
-                            <div className="row">
                                 <div className="col">
                                     <input
                                         type="text"
-                                        defaultValue={egreso.nota}
+                                        defaultValue={ingreso.nota}
                                         name="nota"
                                         required
                                         className="form_input"
                                     />
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col text-center">
                                     <button type="submit" className="thm-btn form-btn">
-                                        confirmar
+                                        Confirmar
                                     </button>
                                 </div>
                             </div>
@@ -177,7 +171,6 @@ const EditarEgreso = () => {
             </div>
         </div>
     );
-
 };
 
-export default EditarEgreso;
+export default EditarIngreso;
