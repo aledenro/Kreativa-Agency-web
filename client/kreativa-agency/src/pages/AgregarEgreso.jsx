@@ -73,13 +73,13 @@ const AgregarEgreso = () => {
 
                             <div className="row">
                                 <div className="">
-                                    <input
-                                        type="text"
-                                        placeholder="Categoría"
-                                        required
-                                        name="categoria"
-                                        className="form_input"
-                                    />
+                                    <Form.Select required name="categoria" className="form_input">
+                                        <option value="">Selecciona una categoría</option>
+                                        <option value="Salarios">Salarios</option>
+                                        <option value="Software">Software</option>
+                                        <option value="Servicios de contabilidad">Servicios de contabilidad</option>
+                                        <option value="Servicios">Servicios</option>
+                                    </Form.Select>
                                 </div>
                                 <div className="col">
                                     <input
