@@ -1,4 +1,6 @@
-const PTO = require("../models/PTO");
+const PTO = require("../models/PTOModel");
+const mongoose = require("mongoose");
+const Usuario = require("../models/usuarioModel");
 
 const crearPTO = async (data) => {
     const nuevoPTO = new PTO(data);
@@ -10,7 +12,7 @@ const obtenerTodosPTO = async () => {
 };
 
 const obtenerPTOPorEmpleado = async (empleado_id) => {
-    return await PTO.find({ empleado_id }).populate("empleado_id", "nombre email");
+    return await PTO.find({ empleado_id }).populate({ path: "empleado_id", model: Usuario, select: "nombre email" });
 };
 
 const actualizarEstadoPTO = async (id, estado) => {

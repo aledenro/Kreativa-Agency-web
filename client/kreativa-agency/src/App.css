@@ -934,4 +934,8 @@ h3 {
     font-size: 16px;
     color: var(--kreativa-black);
 }
-
+/* Evitar el cambio de color en hover */
+.no-hover tbody tr:hover {
+    background-color: transparent !important;
+    color: inherit !important;
+}
