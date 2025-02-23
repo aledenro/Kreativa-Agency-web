@@ -866,5 +866,72 @@ h3 {
 }
 
 .swal-button-kreativa:hover {
-    background-color: #c2185b !important;
+    background-color: #C2185B !important;
 }
+
+
+/* Jerarquía de Usuarios */
+.jerarquia-section {
+    margin-top: 20px;
+}
+
+.jerarquia-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--kreativa-black);
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.jerarquia-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.jerarquia-card {
+    background-color: var(--kreativa-white);
+    border-radius: var(--kreativa-bdr-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 250px;
+    text-align: center;
+}
+
+.jerarquia-card h4 {
+    color: var(--kreativa-black);
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.jerarquia-card p {
+    font-size: 14px;
+    color: var(--kreativa-gray);
+}
+
+.estado-activo {
+    background-color: #28a745;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.estado-inactivo {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.loading-text,
+.error-text {
+    text-align: center;
+    font-size: 16px;
+    color: var(--kreativa-black);
+}
+

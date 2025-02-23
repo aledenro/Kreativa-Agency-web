@@ -29,6 +29,7 @@ import VistaColaborador from "./pages/VistaColaborador";
 import Recuperar from "./pages/Recuperar";
 import Restablecer from "./pages/Restablecer";
 import RestablecerContraseña from "./pages/RestablecerContraseña";
+import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
 
 function App() {
     return (
@@ -123,6 +124,10 @@ function App() {
                 <Route
                     path="/restablecer/:token"
                     element={<RestablecerContraseña />}
+                ></Route>
+                <Route
+                    path="/jerarquia"
+                    element={<JerarquiaUsuarios />}
                 ></Route>
             </Routes>
         </Router>
