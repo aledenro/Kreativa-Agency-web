@@ -56,49 +56,6 @@ class ServiciosService {
         }
     }
 
-    async agregarPaquete(id, paquete) {
-        try {
-            const servicioActualizado = await Servicios.findByIdAndUpdate(
-                id,
-                { $push: { paquetes: paquete } },
-                { new: true }
-            );
-
-            if (!servicioActualizado) {
-                throw new Error(`Servicio ${id} no encontrado`);
-            }
-
-            return servicioActualizado;
-        } catch (error) {
-            throw new Error("Error al agregar el paquete: " + error.message);
-        }
-    }
-
-    async modificarPaquete(id, paqueteId, paqueteActualizado) {
-        try {
-            const servicio = await Servicios.findOneAndUpdate(
-                { _id: id, "paquetes._id": paqueteId },
-                {
-                    $set: {
-                        "paquetes.$": paqueteActualizado,
-                        ultima_modificacion: Date.now(),
-                    },
-                },
-                { new: true }
-            );
-
-            if (!servicio) {
-                throw new Error(
-                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
-                );
-            }
-
-            return servicio;
-        } catch (error) {
-            throw new Error("Error al modificar el paquete: " + error.message);
-        }
-    }
-
     async desactivarServicioById(id) {
         try {
             const servicioDesactivado = await Servicios.findByIdAndUpdate(
@@ -168,6 +125,102 @@ class ServiciosService {
             };
         } catch (error) {
             throw new Error("Error al agregar la categoría: " + error.message);
+        }
+    }
+
+    async agregarPaquete(id, paquete) {
+        try {
+            const servicioActualizado = await Servicios.findByIdAndUpdate(
+                id,
+                { $push: { paquetes: paquete } },
+                { new: true }
+            );
+
+            if (!servicioActualizado) {
+                throw new Error(`Servicio ${id} no encontrado`);
+            }
+
+            return servicioActualizado;
+        } catch (error) {
+            throw new Error("Error al agregar el paquete: " + error.message);
+        }
+    }
+
+    async modificarPaquete(id, paqueteId, paqueteActualizado) {
+        try {
+            const servicio = await Servicios.findOneAndUpdate(
+                { _id: id, "paquetes._id": paqueteId },
+                {
+                    $set: {
+                        "paquetes.$": paqueteActualizado,
+                        ultima_modificacion: Date.now(),
+                    },
+                },
+                { new: true }
+            );
+
+            if (!servicio) {
+                throw new Error(
+                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
+                );
+            }
+
+            return servicio;
+        } catch (error) {
+            throw new Error("Error al modificar el paquete: " + error.message);
+        }
+    }
+
+    async desactivarPaquete(id, paqueteId) {
+        try {
+            const servicioActualizado = await Servicios.findOneAndUpdate(
+                { _id: id, "paquetes._id": paqueteId },
+                {
+                    $set: {
+                        "paquetes.$.activo": false,
+                    },
+                },
+                { new: true }
+            );
+
+            if (!servicioActualizado) {
+                throw new Error(
+                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
+                );
+            }
+
+            return servicioActualizado;
+        } catch (error) {
+            throw new Error(
+                `No se pudo desactivar el paquete ${paqueteId}: ` +
+                    error.message
+            );
+        }
+    }
+
+    async activarPaquete(id, paqueteId) {
+        try {
+            const servicioActualizado = await Servicios.findOneAndUpdate(
+                { _id: id, "paquetes._id": paqueteId },
+                {
+                    $set: {
+                        "paquetes.$.activo": true,
+                    },
+                },
+                { new: true }
+            );
+
+            if (!servicioActualizado) {
+                throw new Error(
+                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
+                );
+            }
+
+            return servicioActualizado;
+        } catch (error) {
+            throw new Error(
+                `No se pudo activar el paquete ${paqueteId}: ` + error.message
+            );
         }
     }
 }

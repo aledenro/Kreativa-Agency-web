@@ -50,40 +50,6 @@ class ServiciosController {
         }
     }
 
-    async agregarPaquete(req, res) {
-        try {
-            const { id } = req.params;
-            const paquete = req.body;
-
-            const servicioActualizado = await ServiciosService.agregarPaquete(
-                id,
-                paquete
-            );
-            return res.status(200).json(servicioActualizado);
-        } catch (error) {
-            console.error("Error al agregar el paquete: " + error.message);
-            return res.status(500).json({ error: error.message });
-        }
-    }
-
-    async modificarPaquete(req, res) {
-        try {
-            const { id, paqueteId } = req.params;
-            const paqueteActualizado = req.body;
-
-            const servicioActualizado = await ServiciosService.modificarPaquete(
-                id,
-                paqueteId,
-                paqueteActualizado
-            );
-
-            return res.status(200).json(servicioActualizado);
-        } catch (error) {
-            console.error("Error al modificar el paquete: " + error.message);
-            return res.status(500).json({ error: error.message });
-        }
-    }
-
     async desactivarServicio(req, res) {
         try {
             const { id } = req.params;
@@ -130,6 +96,70 @@ class ServiciosController {
             const respuesta = await ServiciosService.agregarCategoria(nombre);
             return res.status(201).json(respuesta);
         } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async agregarPaquete(req, res) {
+        try {
+            const { id } = req.params;
+            const paquete = req.body;
+
+            const servicioActualizado = await ServiciosService.agregarPaquete(
+                id,
+                paquete
+            );
+            return res.status(200).json(servicioActualizado);
+        } catch (error) {
+            console.error("Error al agregar el paquete: " + error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async modificarPaquete(req, res) {
+        try {
+            const { id, paqueteId } = req.params;
+            const paqueteActualizado = req.body;
+
+            const servicioActualizado = await ServiciosService.modificarPaquete(
+                id,
+                paqueteId,
+                paqueteActualizado
+            );
+
+            return res.status(200).json(servicioActualizado);
+        } catch (error) {
+            console.error("Error al modificar el paquete: " + error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async desactivarPaquete(req, res) {
+        try {
+            const { id, paqueteId } = req.params;
+
+            const servicioActualizado =
+                await ServiciosService.desactivarPaquete(id, paqueteId);
+
+            return res.status(200).json(servicioActualizado);
+        } catch (error) {
+            console.error("Error al desactivar el paquete: " + error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async activarPaquete(req, res) {
+        try {
+            const { id, paqueteId } = req.params;
+
+            const servicioActualizado = await ServiciosService.activarPaquete(
+                id,
+                paqueteId
+            );
+
+            return res.status(200).json(servicioActualizado);
+        } catch (error) {
+            console.error("Error al activar el paquete: " + error.message);
             return res.status(500).json({ error: error.message });
         }
     }
