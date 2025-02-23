@@ -11,7 +11,9 @@ router.post("/agregar", ServiciosController.agregarServicio);
 router.get("/:id", ServiciosController.getServicioById);
 router.put("/modificar/:id", ServiciosController.modificarServicioById);
 router.put("/:id/nuevoPaquete", ServiciosController.agregarPaquete);
-router.put("/:id/desactivar", ServiciosController.desactivarServicio);
+router.put("/:id/paquetes/:paqueteId", ServiciosController.modificarPaquete);
+
 router.put("/:id/activar", ServiciosController.activarServicio);
+router.put("/:id/desactivar", ServiciosController.desactivarServicio);
 
 module.exports = router;
