@@ -31,6 +31,7 @@ import Restablecer from "./pages/Restablecer";
 import RestablecerContraseña from "./pages/RestablecerContraseña";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
 import AgregarPTO from "./pages/AgregarPTO";
+import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 
 function App() {
     return (
@@ -130,9 +131,13 @@ function App() {
                     path="/jerarquia"
                     element={<JerarquiaUsuarios />}
                 ></Route>
-                <Route 
-                path="/agregar-pto" 
-                element={<AgregarPTO />}
+                <Route
+                    path="/agregar-pto"
+                    element={<AgregarPTO />}
+                ></Route>
+                <Route
+                    path="/ver-pto-empleados"
+                    element={<VerPTOEmpleados />}
                 ></Route>
             </Routes>
         </Router>

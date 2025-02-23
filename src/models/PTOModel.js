@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
+const Usuario = require("../models/usuarioModel"); 
 
 const PTOSchema = new mongoose.Schema({
-    empleado_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    empleado_id: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true }, 
     fecha_inicio: { type: Date, required: true },
     fecha_fin: { type: Date, required: true },
     comentario: { type: String, default: "" },
