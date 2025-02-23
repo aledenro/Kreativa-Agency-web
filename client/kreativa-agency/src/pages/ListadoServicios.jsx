@@ -16,15 +16,16 @@ const ListadoServicios = () => {
                     "http://localhost:4000/api/servicios/"
                 );
 
-                console.log("response: ", response.data);
-
                 if (Array.isArray(response.data)) {
-                    setServicios(response.data);
+                    const serviciosActivos = response.data.filter(
+                        (servicio) => servicio.activo
+                    );
+                    setServicios(serviciosActivos);
                 } else {
                     setServicios([]);
                 }
             } catch (error) {
-                console.error("Error al obtener servicios:", error.message);
+                console.error(error.message);
                 setServicios([]);
             }
         }
@@ -45,8 +46,7 @@ const ListadoServicios = () => {
                 <section className="services">
                     <div className="container">
                         <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
-                            {Array.isArray(servicios) &&
-                            servicios.length > 0 ? (
+                            {servicios.length > 0 ? (
                                 servicios.map((servicio, index) => (
                                     <div key={index} className="col">
                                         <div className="services-card p-3 shadow-sm d-flex flex-column h-100">
@@ -63,10 +63,9 @@ const ListadoServicios = () => {
                                             <div className="services-content mt-3 flex-grow-1">
                                                 <h5 className="services-title">
                                                     <a
-                                                        href="#"
                                                         onClick={() =>
-                                                            onServiceClick(
-                                                                servicio.id
+                                                            handleListadoServicios(
+                                                                servicio._id
                                                             )
                                                         }
                                                         className="text-decoration-none"
@@ -87,10 +86,9 @@ const ListadoServicios = () => {
                                             <div className="mt-auto">
                                                 <a
                                                     className="services-arrow"
-                                                    href="#"
                                                     onClick={() =>
                                                         handleListadoServicios(
-                                                            servicio.id
+                                                            servicio._id
                                                         )
                                                     }
                                                 >
