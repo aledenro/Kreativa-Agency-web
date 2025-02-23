@@ -10,8 +10,10 @@ import {
     faCaretLeft,
     faBackward,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const ListadoTareas = () => {
+    const navigate = useNavigate();
     const [tareas, setTareas] = useState([]);
     const [empleados, setEmpleados] = useState([]);
     const [itemsPag, setItemsPag] = useState(5);
@@ -58,6 +60,10 @@ const ListadoTareas = () => {
     const handleChangeCantItems = (event) => {
         setItemsPag(event.target.value);
         setPagActual(1);
+    };
+
+    const handleEditar = (id) => {
+        navigate(`/tarea/editar/${id}`);
     };
 
     const renderOptionsColabs = () => {
@@ -115,15 +121,29 @@ const ListadoTareas = () => {
             <h3 className="section-title text-center">Listado de Tareas</h3>
 
             <div className="container pt-3  table-responsive">
-                <label htmlFor="filterColab">Filtrar por Colaborador:</label>
-                <select
-                    className="form-select form-select-sm w-25 mb-4"
-                    onChange={(e) => setFilterColab(e.target.value)}
-                    id="filterColab"
-                >
-                    <option defaultValue={""}></option>
-                    {renderOptionsColabs()}
-                </select>
+                <div className="row">
+                    <div className="col">
+                        <label htmlFor="filterColab">
+                            Filtrar por Colaborador:
+                        </label>
+                        <select
+                            className="form-select form-select-sm w-25 mb-4"
+                            onChange={(e) => setFilterColab(e.target.value)}
+                            id="filterColab"
+                        >
+                            <option defaultValue={""}></option>
+                            {renderOptionsColabs()}
+                        </select>
+                    </div>
+                    <div className="col text-end">
+                        <button
+                            className="thm-btn btn-crear"
+                            onClick={() => navigate("/tarea/agregar")}
+                        >
+                            Crear Tarea
+                        </button>
+                    </div>
+                </div>
                 <table className="table kreativa-table">
                     <thead>
                         <tr>
@@ -247,11 +267,13 @@ const ListadoTareas = () => {
                                             <button className="thm-btn thm-btn-small btn-ver">
                                                 Ver
                                             </button>
-                                            <button className="thm-btn thm-btn-small btn-editar">
+                                            <button
+                                                className="thm-btn thm-btn-small btn-editar"
+                                                onClick={() =>
+                                                    handleEditar(tarea._id)
+                                                }
+                                            >
                                                 Editar
-                                            </button>
-                                            <button className="thm-btn thm-btn-small btn-eliminar">
-                                                Eliminar
                                             </button>
                                         </div>
                                     </td>

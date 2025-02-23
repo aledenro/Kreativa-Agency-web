@@ -86,7 +86,7 @@ function renderOptionsEstados(opcion, estadoTarea) {
     }
 }
 
-const AgregarTarea = () => {
+const EditarTarea = () => {
     const { id } = useParams();
     const [empleados, setEmpleados] = useState([]);
     const [proyectos, setProyectos] = useState([]);
@@ -442,4 +442,4 @@ const AgregarTarea = () => {
     );
 };
 
-export default AgregarTarea;
+export default EditarTarea;
