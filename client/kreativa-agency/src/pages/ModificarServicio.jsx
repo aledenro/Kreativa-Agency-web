@@ -10,8 +10,9 @@ const ModificarServicio = () => {
     const [servicio, setServicio] = useState({
         nombre: "",
         descripcion: "",
-        categoria: "",
+        categoria_id: "",
     });
+    const [categorias, setCategorias] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
@@ -34,7 +35,19 @@ const ModificarServicio = () => {
             }
         };
 
+        const fetchCategorias = async () => {
+            try {
+                const res = await axios.get(
+                    "http://localhost:4000/api/servicios/categorias"
+                );
+                setCategorias(res.data);
+            } catch (error) {
+                console.error("Error cargando categorias:", error);
+            }
+        };
+
         fetchServicio();
+        fetchCategorias();
     }, [id]);
 
     const handleChange = (e) => {
@@ -44,7 +57,11 @@ const ModificarServicio = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!servicio.nombre || !servicio.descripcion || !servicio.categoria) {
+        if (
+            !servicio.nombre ||
+            !servicio.descripcion ||
+            !servicio.categoria_id
+        ) {
             setAlertMessage("Todos los campos son obligatorios");
             setAlertVariant("danger");
             setShowAlert(true);
@@ -116,14 +133,25 @@ const ModificarServicio = () => {
                                     >
                                         Categoría
                                     </label>
-                                    <input
-                                        type="text"
-                                        name="categoria"
+                                    <Form.Select
+                                        name="categoria_id"
                                         className="form_input"
-                                        value={servicio.categoria}
+                                        value={servicio.categoria_id}
                                         onChange={handleChange}
                                         required
-                                    />
+                                    >
+                                        <option value="">
+                                            Seleccione una categoría
+                                        </option>
+                                        {categorias.map((cat) => (
+                                            <option
+                                                key={cat._id}
+                                                value={cat._id}
+                                            >
+                                                {cat.nombre}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
                                 </div>
                             </div>
                             <div className="row">
