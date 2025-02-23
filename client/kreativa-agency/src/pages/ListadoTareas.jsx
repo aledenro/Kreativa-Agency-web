@@ -13,10 +13,12 @@ import {
 
 const ListadoTareas = () => {
     const [tareas, setTareas] = useState([]);
+    const [empleados, setEmpleados] = useState([]);
     const [itemsPag, setItemsPag] = useState(5);
     const [pagActual, setPagActual] = useState(1);
     const [sortField, setsortField] = useState("fecha_creacion");
     const [sortOrder, setsortOrder] = useState("desc");
+    const [filterColab, setFilterColab] = useState("");
 
     useEffect(() => {
         const fetchTareas = async () => {
@@ -30,29 +32,60 @@ const ListadoTareas = () => {
             }
         };
 
+        const fetchColabs = async () => {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await axios.get(
+                    "http://localhost:4000/api/usuarios/empleados",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
+                setEmpleados(response.data);
+            } catch (error) {
+                console.error(
+                    `Error al obtener los empleados: ${error.message}`
+                );
+            }
+        };
+
         fetchTareas();
+        fetchColabs();
     }, []);
 
     const handleChangeCantItems = (event) => {
         setItemsPag(event.target.value);
+        setPagActual(1);
     };
 
-    if (!tareas) {
-        return (
-            <div className="container d-flex align-items-center justify-content-center">
-                <p>Cargando tareas...</p>
-            </div>
-        );
-    }
+    const renderOptionsColabs = () => {
+        return empleados.map((empleado) => (
+            <option key={empleado._id} value={empleado._id}>
+                {empleado.nombre}
+            </option>
+        ));
+    };
+
+    const tareasFiltradas =
+        filterColab !== ""
+            ? tareas.filter(
+                  (tarea) =>
+                      lodash
+                          .get(tarea, "colaborador_id._id")
+                          .localeCompare(filterColab) === 0
+              )
+            : tareas;
 
     const tareasOrdenadas =
         sortOrder === "asc"
-            ? tareas.sort((a, b) =>
+            ? tareasFiltradas.sort((a, b) =>
                   lodash
                       .get(a, sortField)
                       .localeCompare(lodash.get(b, sortField))
               )
-            : tareas.sort((a, b) =>
+            : tareasFiltradas.sort((a, b) =>
                   lodash
                       .get(b, sortField)
                       .localeCompare(lodash.get(a, sortField))
@@ -66,13 +99,31 @@ const ListadoTareas = () => {
               )
             : tareasOrdenadas;
 
-    const totalPags = Math.ceil(tareas.length / itemsPag);
+    const totalPags = Math.ceil(tareasFiltradas.length / itemsPag);
+
+    if (!tareas) {
+        return (
+            <div className="container d-flex align-items-center justify-content-center">
+                <p>Cargando tareas...</p>
+            </div>
+        );
+    }
 
     return (
         <div>
             <Navbar></Navbar>
             <h3 className="section-title text-center">Listado de Tareas</h3>
+
             <div className="container pt-3  table-responsive">
+                <label htmlFor="filterColab">Filtrar por Colaborador:</label>
+                <select
+                    className="form-select form-select-sm w-25 mb-4"
+                    onChange={(e) => setFilterColab(e.target.value)}
+                    id="filterColab"
+                >
+                    <option defaultValue={""}></option>
+                    {renderOptionsColabs()}
+                </select>
                 <table className="table kreativa-table">
                     <thead>
                         <tr>
@@ -177,34 +228,40 @@ const ListadoTareas = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {tareasPags.map((tarea) => (
-                            <tr key={tarea._id}>
-                                <td>{tarea.nombre}</td>
-                                <td>{tarea.proyecto_id.nombre}</td>
-                                <td>{tarea.colaborador_id.nombre}</td>
-                                <td>{tarea.estado}</td>
-                                <td>{tarea.prioridad}</td>
-                                <td>
-                                    {new Date(
-                                        tarea.fecha_vencimiento
-                                    ).toLocaleDateString()}
-                                </td>
+                        {tareasOrdenadas.length !== 0 ? (
+                            tareasPags.map((tarea) => (
+                                <tr key={tarea._id}>
+                                    <td>{tarea.nombre}</td>
+                                    <td>{tarea.proyecto_id.nombre}</td>
+                                    <td>{tarea.colaborador_id.nombre}</td>
+                                    <td>{tarea.estado}</td>
+                                    <td>{tarea.prioridad}</td>
+                                    <td>
+                                        {new Date(
+                                            tarea.fecha_vencimiento
+                                        ).toLocaleDateString()}
+                                    </td>
 
-                                <td className="acciones">
-                                    <div className="botones-grupo">
-                                        <button className="thm-btn thm-btn-small btn-ver">
-                                            Ver
-                                        </button>
-                                        <button className="thm-btn thm-btn-small btn-editar">
-                                            Editar
-                                        </button>
-                                        <button className="thm-btn thm-btn-small btn-eliminar">
-                                            Eliminar
-                                        </button>
-                                    </div>
-                                </td>
+                                    <td className="acciones">
+                                        <div className="botones-grupo">
+                                            <button className="thm-btn thm-btn-small btn-ver">
+                                                Ver
+                                            </button>
+                                            <button className="thm-btn thm-btn-small btn-editar">
+                                                Editar
+                                            </button>
+                                            <button className="thm-btn thm-btn-small btn-eliminar">
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={7}>No hay tareas por mostar.</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
