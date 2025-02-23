@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import axios from "axios";
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 
@@ -10,6 +10,9 @@ const VerEgresos = () => {
     const [mostrarInactivos, setMostrarInactivos] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [egresoParaModificar, setEgresoParaModificar] = useState(null);
+
+    const [categoriaFiltro, setCategoriaFiltro] = useState(""); // Filtro por categoría
+    const [estadoFiltro, setEstadoFiltro] = useState("Todos"); // Filtro por estado
 
     useEffect(() => {
         const obtenerEgresos = async () => {
@@ -48,18 +51,38 @@ const VerEgresos = () => {
         setShowModal(true);
     };
 
-    const egresosFiltrados = egresos.filter(egreso => egreso.activo === !mostrarInactivos);
+    // Filtrar los egresos según el estado y la categoría
+    const egresosFiltrados = egresos.filter(egreso => {
+        const cumpleEstado = estadoFiltro === "Todos" ||
+            (estadoFiltro === "Activo" && egreso.activo) ||
+            (estadoFiltro === "Inactivo" && !egreso.activo);
+
+        const cumpleCategoria = categoriaFiltro === "" || egreso.categoria.toLowerCase().includes(categoriaFiltro.toLowerCase());
+
+        return cumpleEstado && cumpleCategoria;
+    });
 
     return (
         <div>
             <Navbar />
             <h2>Egresos</h2>
-            <Button
-                variant={mostrarInactivos ? "secondary" : "primary"}
-                onClick={() => setMostrarInactivos(!mostrarInactivos)}
-            >
-                {mostrarInactivos ? "Ver Activos" : "Ver Inactivos"}
-            </Button>
+
+            {/* Filtros */}
+            <div className="d-flex gap-3 mb-3">
+                <Form.Control
+                    type="text"
+                    placeholder="Buscar por categoría"
+                    value={categoriaFiltro}
+                    onChange={(e) => setCategoriaFiltro(e.target.value)}
+                />
+                <Form.Select value={estadoFiltro} onChange={(e) => setEstadoFiltro(e.target.value)}>
+                    <option value="Todos">Todos</option>
+                    <option value="Activo">Activos</option>
+                    <option value="Inactivo">Inactivos</option>
+                </Form.Select>
+            </div>
+
+            {/* Tabla */}
             <Table className="kreativa-table">
                 <thead>
                     <tr>
@@ -85,7 +108,7 @@ const VerEgresos = () => {
                                 <td>{egreso.categoria}</td>
                                 <td>{egreso.descripcion}</td>
                                 <td>{egreso.proveedor}</td>
-                                <td>{egreso.estado}</td> {/* Mostrar estado correcto */}
+                                <td>{egreso.activo ? "Activo" : "Inactivo"}</td>
 
                                 <td>
                                     <Link to={`/egreso/editar/${egreso._id}`}>
@@ -105,6 +128,7 @@ const VerEgresos = () => {
                 </tbody>
             </Table>
 
+            {/* Modal de Confirmación */}
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirmación</Modal.Title>

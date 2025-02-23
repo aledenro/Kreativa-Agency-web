@@ -13,8 +13,8 @@ const AgregarIngreso = () => {
 
         const fecha = event.target.fecha.value;
         const monto = event.target.monto.value;
-        const descripcion = event.target.descripcion.value;  // Agregado
-        const cliente = event.target.cliente.value;
+        const descripcion = event.target.descripcion.value;
+        const cedula = event.target.cedula.value;
         const servicio = event.target.servicio.value;
         const estado = event.target.estado.value;
         const nota = event.target.nota.value;
@@ -23,7 +23,7 @@ const AgregarIngreso = () => {
             fecha,
             monto,
             descripcion,  // Agregado
-            cedula: cliente,
+            cedula,
             servicio,
             estado,
             nota,
