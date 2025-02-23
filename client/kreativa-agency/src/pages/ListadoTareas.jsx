@@ -2,6 +2,14 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import axios from "axios";
 import lodash from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faSort,
+    faForward,
+    faCaretRight,
+    faCaretLeft,
+    faBackward,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ListadoTareas = () => {
     const [tareas, setTareas] = useState([]);
@@ -82,7 +90,7 @@ const ListadoTareas = () => {
                                 }}
                                 className="sort-field"
                             >
-                                Nombre
+                                Nombre <FontAwesomeIcon icon={faSort} />
                             </th>
                             <th
                                 onClick={() => {
@@ -98,7 +106,7 @@ const ListadoTareas = () => {
                                 }}
                                 className="sort-field"
                             >
-                                Proyecto
+                                Proyecto <FontAwesomeIcon icon={faSort} />
                             </th>
                             <th
                                 onClick={() => {
@@ -114,7 +122,7 @@ const ListadoTareas = () => {
                                 }}
                                 className="sort-field"
                             >
-                                Colaborador
+                                Colaborador <FontAwesomeIcon icon={faSort} />
                             </th>
                             <th
                                 onClick={() => {
@@ -130,7 +138,7 @@ const ListadoTareas = () => {
                                 }}
                                 className="sort-field"
                             >
-                                Estado
+                                Estado <FontAwesomeIcon icon={faSort} />
                             </th>
                             <th
                                 onClick={() => {
@@ -146,7 +154,7 @@ const ListadoTareas = () => {
                                 }}
                                 className="sort-field"
                             >
-                                Prioridad
+                                Prioridad <FontAwesomeIcon icon={faSort} />
                             </th>
                             <th
                                 onClick={() => {
@@ -162,7 +170,8 @@ const ListadoTareas = () => {
                                 }}
                                 className="sort-field"
                             >
-                                Fecha de Entrega
+                                Fecha de Entrega{" "}
+                                <FontAwesomeIcon icon={faSort} />
                             </th>
                             <th className="text-center">Acciones</th>
                         </tr>
@@ -189,9 +198,6 @@ const ListadoTareas = () => {
                                         <button className="thm-btn thm-btn-small btn-editar">
                                             Editar
                                         </button>
-                                        <button
-                                            className={`thm-btn thm-btn-small`}
-                                        ></button>
                                         <button className="thm-btn thm-btn-small btn-eliminar">
                                             Eliminar
                                         </button>
@@ -220,28 +226,28 @@ const ListadoTareas = () => {
                     onClick={() => setPagActual(1)}
                     disabled={pagActual === 1}
                 >
-                    {"<<"}
+                    <FontAwesomeIcon icon={faBackward} />
                 </button>
                 <button
                     className={`thm-btn btn-volver thm-btn-small me-2`}
                     onClick={() => setPagActual(pagActual - 1)}
                     disabled={pagActual === 1}
                 >
-                    {"<"}
+                    <FontAwesomeIcon icon={faCaretLeft} />
                 </button>
                 <button
                     className={`thm-btn btn-volver thm-btn-small me-2`}
                     onClick={() => setPagActual(pagActual + 1)}
                     disabled={pagActual === totalPags || totalPags - 1 === 0}
                 >
-                    {">"}
+                    <FontAwesomeIcon icon={faCaretRight} />
                 </button>
                 <button
                     className={`thm-btn thm-btn-small btn-volver me-2`}
                     onClick={() => setPagActual(totalPags)}
                     disabled={pagActual === totalPags || totalPags - 1 === 0}
                 >
-                    {">>"}
+                    <FontAwesomeIcon icon={faForward} />
                 </button>
             </div>
         </div>
