@@ -19,7 +19,6 @@ const router = express.Router();
 //Ruta no protegida
 router.post("/login", iniciarSesion);
 
-
 //Rutas protegidas
 router.post("/usuarios", verificarToken, crearUsuario);
 router.get("/usuarios", verificarToken, obtenerTodosLosUsuarios);

@@ -29,6 +29,7 @@ import VistaColaborador from "./pages/VistaColaborador";
 import Recuperar from "./pages/Recuperar";
 import Restablecer from "./pages/Restablecer";
 import RestablecerContraseña from "./pages/RestablecerContraseña";
+import ListadoTareas from "./pages/ListadoTareas";
 
 function App() {
     return (
@@ -124,6 +125,8 @@ function App() {
                     path="/restablecer/:token"
                     element={<RestablecerContraseña />}
                 ></Route>
+
+                <Route path="/tareas" element={<ListadoTareas />}></Route>
             </Routes>
         </Router>
     );

@@ -366,6 +366,11 @@ h3 {
     text-align: left;
 }
 
+.kreativa-table .sort-field:hover {
+    background-color: var(--kreativa-black);
+    color: var(--kreativa-white);
+}
+
 .kreativa-table tbody tr {
     border-bottom: 1px solid var(--kreativa-gray);
     transition: background-color 0.3s ease-in-out;
@@ -867,4 +872,8 @@ h3 {
 
 .swal-button-kreativa:hover {
     background-color: #c2185b !important;
+}
+
+.w-10 {
+    width: 8%;
 }
