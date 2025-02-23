@@ -38,7 +38,7 @@ const Usuarios = () => {
         fetchUsuarios();
     }, []);
 
-    // 📌 Obtener detalles de un usuario
+    //  Obtener detalles de un usuario
     const handleVerUsuario = async (id) => {
         try {
             const token = localStorage.getItem("token");
@@ -59,12 +59,12 @@ const Usuarios = () => {
         }
     };
 
-    // 📌 Redirigir a la edición de un usuario
+    //  Redirigir a la edición de un usuario
     const handleEditarUsuario = (id) => {
         navigate(`/usuario/editar/${id}`);
     };
 
-    // 📌 Activar/Desactivar usuario
+    // Activar/Desactivar usuario
     const handleActivarDesactivar = async (id, estadoActual) => {
         const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
         if (!window.confirm(`¿Seguro que deseas ${nuevoEstado.toLowerCase()} este usuario?`)) return;
@@ -82,7 +82,7 @@ const Usuarios = () => {
         }
     };
 
-    // 📌 Eliminar usuario
+    // Eliminar usuario
     const handleEliminar = async (id) => {
         if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) return;
         try {
@@ -97,12 +97,12 @@ const Usuarios = () => {
         }
     };
 
-    // 📌 Filtrar usuarios por CÉDULA 
+    // Filtrar usuarios por CÉDULA 
     const usuariosFiltrados = usuarios
         .filter(usuario => usuario.cedula.includes(search)) 
         .filter(usuario => (estadoFiltro ? usuario.estado === estadoFiltro : true));
 
-    // 📌 Paginación
+    //  Paginación
     const indexOfLastUser = paginaActual * usuariosPorPagina;
     const indexOfFirstUser = indexOfLastUser - usuariosPorPagina;
     const usuariosPaginados = usuariosFiltrados.slice(indexOfFirstUser, indexOfLastUser);

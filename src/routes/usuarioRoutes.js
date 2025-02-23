@@ -19,7 +19,7 @@ const router = express.Router();
 
 //Ruta no protegida
 router.post("/login", iniciarSesion);
-
+router.get("/usuarios/jerarquia", getJerarquiaUsuarios);
 
 //Rutas protegidas
 router.post("/usuarios", verificarToken, crearUsuario);
@@ -31,6 +31,6 @@ router.put("/usuarios/:id", verificarToken, actualizarUsuarioPorId);
 router.delete("/usuarios/:id", verificarToken, eliminarUsuarioPorId);
 router.post("/recuperar", recuperarContraseña);
 router.post("/restablecer", restablecerContraseña);
-router.get("/usuarios/jerarquia", getJerarquiaUsuarios);
+
 
 module.exports = router;
