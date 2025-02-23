@@ -366,6 +366,11 @@ h3 {
     text-align: left;
 }
 
+.kreativa-table .sort-field:hover {
+    background-color: var(--kreativa-black);
+    color: var(--kreativa-white);
+}
+
 .kreativa-table tbody tr {
     border-bottom: 1px solid var(--kreativa-gray);
     transition: background-color 0.3s ease-in-out;
@@ -869,6 +874,10 @@ h3 {
     background-color: #C2185B !important;
 }
 
+.w-10 {
+    width: 8%;
+}
+
 
 /* Jerarquía de Usuarios */
 .jerarquia-section {
@@ -990,3 +999,4 @@ h3 {
     font-size: 16px;
     color: var(--kreativa-black);
 }
+

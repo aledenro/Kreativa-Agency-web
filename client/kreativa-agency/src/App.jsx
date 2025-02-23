@@ -32,11 +32,11 @@ import VistaColaborador from "./pages/VistaColaborador";
 import Recuperar from "./pages/Recuperar";
 import Restablecer from "./pages/Restablecer";
 import RestablecerContraseña from "./pages/RestablecerContraseña";
+import ListadoTareas from "./pages/ListadoTareas";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
 import AgregarPTO from "./pages/AgregarPTO";
 import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
-
 
 function App() {
     return (
@@ -148,6 +148,7 @@ function App() {
                     path="/restablecer/:token"
                     element={<RestablecerContraseña />}
                 ></Route>
+                <Route path="/tareas" element={<ListadoTareas />}></Route>
                 <Route
                     path="/jerarquia"
                     element={<JerarquiaUsuarios />}

@@ -1,3 +1,4 @@
+const tareasService = require("../services/tareasService");
 const TareasService = require("../services/tareasService");
 const lodash = require("lodash");
 
@@ -64,6 +65,24 @@ class TareasController {
         } catch (error) {
             return res.status(500).json({
                 error: `Error al actualizar el log de la tarea: ${error.message}`,
+            });
+        }
+    }
+
+    async getAllTareas(req, res) {
+        try {
+            const tareas = await tareasService.getAllTareas();
+
+            if (!tareas || lodash.isEmpty(tareas)) {
+                return res.status(404).json({
+                    error: `No se encontraron tareas.`,
+                });
+            }
+
+            return res.json({ tareas: tareas });
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error al obtener las tareas: ${error.message}`,
             });
         }
     }

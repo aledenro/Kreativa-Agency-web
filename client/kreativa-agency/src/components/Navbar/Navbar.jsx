@@ -77,6 +77,16 @@ export default function Navbar() {
                 </li>
                 <li className="dropdown">
                     <a href="#" className="dropdown-toggle">
+                        Tareas
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <a href="/tareas">Listado de Tareas</a>
+                        </li>
+                    </ul>
+                </li>
+                <li className="dropdown">
+                    <a href="#" className="dropdown-toggle">
                         Contabilidad
                     </a>
                     <ul className="dropdown-menu">

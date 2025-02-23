@@ -1,3 +1,4 @@
+const tareasModel = require("../models/tareasModel");
 const TareasModel = require("../models/tareasModel");
 const lodash = require("lodash");
 
@@ -48,6 +49,29 @@ class TareasService {
         } catch (error) {
             throw new Error(
                 `Error al actualizar el log de la tarea con el id: ${id}`
+            );
+        }
+    }
+
+    async getAllTareas() {
+        try {
+            return await tareasModel
+                .find()
+                .select({
+                    nombre: 1,
+                    descripcion: 1,
+                    colaborador_id: 1,
+                    estado: 1,
+                    prioridad: 1,
+                    fecha_asignacion: 1,
+                    fecha_vencimiento: 1,
+                    fecha_creacion: 1,
+                })
+                .populate("colaborador_id", "nombre")
+                .populate("proyecto_id", "nombre");
+        } catch (error) {
+            throw new Error(
+                `Error al obetener todas las tareas: ${error.message}`
             );
         }
     }
