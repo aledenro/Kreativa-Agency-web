@@ -30,6 +30,7 @@ import Recuperar from "./pages/Recuperar";
 import Restablecer from "./pages/Restablecer";
 import RestablecerContraseña from "./pages/RestablecerContraseña";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
+import AgregarPTO from "./pages/AgregarPTO";
 
 function App() {
     return (
@@ -128,6 +129,10 @@ function App() {
                 <Route
                     path="/jerarquia"
                     element={<JerarquiaUsuarios />}
+                ></Route>
+                <Route 
+                path="/agregar-pto" 
+                element={<AgregarPTO />}
                 ></Route>
             </Routes>
         </Router>

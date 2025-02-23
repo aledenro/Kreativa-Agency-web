@@ -12,6 +12,7 @@ const egresosRoutes = require("./routes/egresosRoutes");
 const proyectosRoutes = require("./routes/proyectoRoutes");
 const tareasRoutes = require("./routes/tareasRoutes");
 const fileManagementRoutes = require("./routes/fileManagementRoutes");
+const PTORoutes = require("./routes/PTORoutes");
 
 
 connectDB();
@@ -33,6 +34,7 @@ app.use("/api/egresos", egresosRoutes);
 app.use("/api/proyectos", proyectosRoutes);
 app.use("/api/tareas", tareasRoutes);
 app.use("/api", usuarioRoutes);
+app.use("/api/pto", PTORoutes);
 
 //end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);
