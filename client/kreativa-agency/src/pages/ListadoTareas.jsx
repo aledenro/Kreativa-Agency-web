@@ -11,6 +11,7 @@ import {
     faBackward,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 
 const ListadoTareas = () => {
     const navigate = useNavigate();
@@ -21,6 +22,8 @@ const ListadoTareas = () => {
     const [sortField, setsortField] = useState("fecha_creacion");
     const [sortOrder, setsortOrder] = useState("desc");
     const [filterColab, setFilterColab] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [tareaModal, setTareaModal] = useState({});
 
     useEffect(() => {
         const fetchTareas = async () => {
@@ -264,7 +267,13 @@ const ListadoTareas = () => {
 
                                     <td className="acciones">
                                         <div className="botones-grupo">
-                                            <button className="thm-btn thm-btn-small btn-ver">
+                                            <button
+                                                className="thm-btn thm-btn-small btn-ver"
+                                                onClick={() => {
+                                                    setTareaModal(tarea);
+                                                    setShowModal(true);
+                                                }}
+                                            >
                                                 Ver
                                             </button>
                                             <button
@@ -329,6 +338,146 @@ const ListadoTareas = () => {
                     <FontAwesomeIcon icon={faForward} />
                 </button>
             </div>
+
+            <Modal
+                show={showModal && !lodash.isEmpty(tareaModal)}
+                onHide={() => setShowModal(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Ver Detalles Tarea</Modal.Title>
+                </Modal.Header>
+                <div className="card p-4 shadow-lg">
+                    <div className="row mb-3">
+                        <div className="col mx-3">
+                            Fecha de Solicitud:{" "}
+                            <small>
+                                {new Date(
+                                    tareaModal.fecha_creacion
+                                ).toLocaleDateString()}
+                            </small>
+                        </div>
+                        <div className="col mx-3">
+                            <label htmlFor="estado">Estado</label>
+                            <select
+                                className="form-select"
+                                name="estado"
+                                id="estado"
+                                disabled
+                            >
+                                <option value="">{tareaModal.estado}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="proyecto" className="form-label">
+                            Proyecto
+                        </label>
+                        <select
+                            className="form-select"
+                            name="proyecto"
+                            id="proyecto"
+                            disabled
+                        >
+                            <option value="">
+                                {tareaModal.proyecto_id.nombre}
+                            </option>
+                        </select>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="nombre" className="form-label">
+                            Nombre
+                        </label>
+                        <input
+                            type="text"
+                            className="form_input"
+                            id="nombre"
+                            name="nombre"
+                            required
+                            value={tareaModal.nombre}
+                            disabled
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="descripcion" className="form-label">
+                            Descripción
+                        </label>
+                        <textarea
+                            name="descripcion"
+                            className="form_text_area"
+                            id="descripcion"
+                            rows={7}
+                            placeholder="Describa su solicitud"
+                            required
+                            value={tareaModal.descripcion}
+                            disabled
+                        ></textarea>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="colab" className="form-label">
+                            Colaborador
+                        </label>
+                        <select
+                            className="form-select"
+                            name="colab"
+                            id="colab"
+                            disabled
+                        >
+                            <option value="">
+                                {tareaModal.colaborador_id.nombre}
+                            </option>
+                        </select>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <div className="mb-3">
+                                <label
+                                    className="form-label"
+                                    htmlFor="prioridad"
+                                >
+                                    Prioridad
+                                </label>
+                                <select
+                                    className="form-select"
+                                    name="prioridad"
+                                    id="prioridad"
+                                    disabled
+                                >
+                                    <option value="">
+                                        {tareaModal.prioridad}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="mb-3">
+                                <label
+                                    htmlFor="fecha_entrega"
+                                    className="form-label"
+                                >
+                                    Fecha de Entrega
+                                </label>
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    id="fecha_entrega"
+                                    name="fecha_entrega"
+                                    required
+                                    value={
+                                        tareaModal.fecha_vencimiento
+                                            ? new Date(
+                                                  tareaModal.fecha_vencimiento
+                                              )
+                                                  .toISOString()
+                                                  .split("T")[0]
+                                            : ""
+                                    }
+                                    disabled
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };
