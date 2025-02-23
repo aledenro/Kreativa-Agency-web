@@ -44,13 +44,21 @@ const AgregarPaquete = () => {
     };
 
     const eliminarBeneficio = (index) => {
-        const nuevosBeneficios = paquete.beneficios.filter(
-            (_, i) => i !== index
-        );
-        setPaquete((prevPaquete) => ({
-            ...prevPaquete,
-            beneficios: nuevosBeneficios,
-        }));
+        if (paquete.beneficios.length > 1) {
+            const nuevosBeneficios = paquete.beneficios.filter(
+                (_, i) => i !== index
+            );
+            setPaquete((prevPaquete) => ({
+                ...prevPaquete,
+                beneficios: nuevosBeneficios,
+            }));
+        }
+    };
+
+    const handleFocus = (index) => {
+        if (index === paquete.beneficios.length - 1) {
+            agregarBeneficio();
+        }
     };
 
     const handleSubmit = async () => {
@@ -71,7 +79,7 @@ const AgregarPaquete = () => {
             setShowModal(false);
 
             setTimeout(() => {
-                navigate("/servicios");
+                navigate(`/servicio/${id}`);
             }, 2000);
         } catch (error) {
             console.error("Error al agregar el paquete: ", error.message);
@@ -195,18 +203,26 @@ const AgregarPaquete = () => {
                                                             e.target.value
                                                         )
                                                     }
-                                                />
-                                                <button
-                                                    type="button"
-                                                    className="icon-btn"
-                                                    onClick={() =>
-                                                        eliminarBeneficio(index)
+                                                    onFocus={() =>
+                                                        handleFocus(index)
                                                     }
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faX}
-                                                    />
-                                                </button>
+                                                    required
+                                                />
+                                                {index > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        className="icon-btn"
+                                                        onClick={() =>
+                                                            eliminarBeneficio(
+                                                                index
+                                                            )
+                                                        }
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faX}
+                                                        />
+                                                    </button>
+                                                )}
                                             </div>
                                         )
                                     )}

@@ -61,12 +61,17 @@ class ServiciosService {
 
     async agregarPaquete(id, paquete) {
         try {
-            const servicio = await Servicios.findById(id);
+            const servicioActualizado = await Servicios.findByIdAndUpdate(
+                id,
+                { $push: { paquetes: paquete } },
+                { new: true, runValidators: true }
+            );
 
-            servicio["paquetes"].push(paquete);
-            await servicio.save();
+            if (!servicioActualizado) {
+                throw new Error(`Servicio ${id} no encontrado`);
+            }
 
-            return servicio;
+            return servicioActualizado;
         } catch (error) {
             throw new Error("Error al agregar el paquete: " + error.message);
         }
