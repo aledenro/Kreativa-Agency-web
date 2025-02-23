@@ -131,7 +131,10 @@ const ListadoTareas = () => {
                         </label>
                         <select
                             className="form-select form-select-sm w-25 mb-4"
-                            onChange={(e) => setFilterColab(e.target.value)}
+                            onChange={(e) => {
+                                setFilterColab(e.target.value);
+                                setPagActual(1);
+                            }}
                             id="filterColab"
                         >
                             <option defaultValue={""}></option>
