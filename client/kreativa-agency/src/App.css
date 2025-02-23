@@ -939,3 +939,54 @@ h3 {
     background-color: transparent !important;
     color: inherit !important;
 }
+
+/* ----------- PERFIL ----------- */
+.perfil-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: var(--kreativa-white);
+    border-radius: var(--kreativa-bdr-radius);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+}
+
+.perfil-card {
+    padding: 20px;
+    background-color: var(--kreativa-base-clear);
+    border-radius: var(--kreativa-bdr-radius);
+}
+
+.perfil-header h2 {
+    color: var(--kreativa-black);
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.perfil-rol {
+    background-color: var(--kreativa-secondary);
+    color: var(--kreativa-white);
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: var(--kreativa-bdr-radius);
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.perfil-info {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.perfil-info p {
+    font-size: 16px;
+    color: var(--kreativa-black);
+    padding: 8px;
+    border-bottom: 1px solid var(--kreativa-gray);
+}
+
+.loading-text, .error-text {
+    text-align: center;
+    font-size: 16px;
+    color: var(--kreativa-black);
+}

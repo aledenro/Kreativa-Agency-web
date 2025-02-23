@@ -35,6 +35,8 @@ import RestablecerContraseña from "./pages/RestablecerContraseña";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
 import AgregarPTO from "./pages/AgregarPTO";
 import VerPTOEmpleados from "./pages/VerPTOEmpleados";
+import VerPerfil from "./pages/VerPerfil";
+
 
 function App() {
     return (
@@ -157,6 +159,10 @@ function App() {
                 <Route
                     path="/ver-pto-empleados"
                     element={<VerPTOEmpleados />}
+                ></Route>
+                <Route
+                    path="/perfil"
+                    element={<VerPerfil />}
                 ></Route>
             </Routes>
         </Router>
