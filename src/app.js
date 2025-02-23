@@ -9,9 +9,11 @@ const serviciosRoutes = require("./routes/serviciosRoutes");
 const cotizacionesRoutes = require("./routes/cotizacionesRoutes");
 const usuarioRoutes = require("./routes/usuarioRoutes");
 const egresosRoutes = require("./routes/egresosRoutes");
+const ingresosRoutes = require('./routes/ingresosRoutes');
 const proyectosRoutes = require("./routes/proyectoRoutes");
 const tareasRoutes = require("./routes/tareasRoutes");
 const fileManagementRoutes = require("./routes/fileManagementRoutes");
+const PTORoutes = require("./routes/PTORoutes");
 
 
 connectDB();
@@ -30,9 +32,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/cotizaciones", cotizacionesRoutes);
 app.use("/api/servicios", serviciosRoutes);
 app.use("/api/egresos", egresosRoutes);
+app.use("/api/ingresos", ingresosRoutes);
 app.use("/api/proyectos", proyectosRoutes);
 app.use("/api/tareas", tareasRoutes);
 app.use("/api", usuarioRoutes);
+app.use("/api/pto", PTORoutes);
 
 //end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);

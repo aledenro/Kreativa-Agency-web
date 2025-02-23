@@ -5,8 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useState } from "react";
 
-const AgregarEgreso = () => {
-
+const AgregarIngreso = () => {
     const [mensaje, setMensaje] = useState("");
 
     const handleSubmit = async (event) => {
@@ -14,44 +13,46 @@ const AgregarEgreso = () => {
 
         const fecha = event.target.fecha.value;
         const monto = event.target.monto.value;
-        const categoria = event.target.categoria.value;
         const descripcion = event.target.descripcion.value;
-        const proveedor = event.target.proveedor.value;
+        const cedula = event.target.cedula.value;
+        const servicio = event.target.servicio.value;
         const estado = event.target.estado.value;
         const nota = event.target.nota.value;
 
         const data = {
-            fecha: fecha,
-            monto: monto,
-            categoria: categoria,
-            descripcion: descripcion,
-            proveedor: proveedor,
-            estado: estado,
-            nota: nota
+            fecha,
+            monto,
+            descripcion,  // Agregado
+            cedula,
+            servicio,
+            estado,
+            nota,
+            // fecha_creacion y ultima_modificacion son automáticos en Mongoose, no es necesario enviarlos desde el frontend
+            activo: true  // Si no estás cambiando el estado, se puede dejar por defecto como true
         };
 
         try {
-            const res = await axios.post("http://localhost:4000/api/egresos", data);
+            const res = await axios.post("http://localhost:4000/api/ingresos", data);
             console.log(res.data);
-            setMensaje("¡Egreso agregado exitosamente!");
+            setMensaje("¡Ingreso agregado exitosamente!");
         } catch (error) {
             console.error(error.message);
-            setMensaje("Error al agregar el egreso.");
+            setMensaje("Error al agregar el ingreso.");
         }
     };
 
     return (
         <div>
-            <Navbar></Navbar>
+            <Navbar />
             <div className="container">
                 <div className="section-title text-center">
-                    <h2>Agregar nuevo agreso</h2>
+                    <h2>Agregar nuevo ingreso</h2>
                 </div>
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
-                        <Form onSubmit={handleSubmit} className="egreso_form">
+                        <Form onSubmit={handleSubmit} className="ingreso_form">
                             <div className="row">
-                                <div className="">
+                                <div className="col">
                                     <input
                                         type="date"
                                         placeholder="Fecha"
@@ -70,54 +71,51 @@ const AgregarEgreso = () => {
                                     />
                                 </div>
                             </div>
-
                             <div className="row">
-                                <div className="">
-                                    <Form.Select required name="categoria" className="form_input">
-                                        <option value="">Selecciona una categoría</option>
-                                        <option value="Salarios">Salarios</option>
-                                        <option value="Software">Software</option>
-                                        <option value="Servicios de contabilidad">Servicios de contabilidad</option>
-                                        <option value="Servicios">Servicios</option>
-                                    </Form.Select>
-                                </div>
                                 <div className="col">
                                     <input
-                                        as="textarea"
+                                        type="text"
                                         placeholder="Descripción"
-                                        style={{ height: "100px" }}
                                         required
-                                        name="descripcion"
+                                        name="descripcion"  // Nuevo campo
                                         className="form_input"
                                     />
                                 </div>
                             </div>
 
                             <div className="row">
-                                <div className="">
+                                <div className="col">
                                     <input
                                         type="text"
-                                        placeholder="Proveedor"
+                                        placeholder="Cédula"
                                         required
-                                        name="proveedor"
+                                        name="cedula"
                                         className="form_input"
                                     />
                                 </div>
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        placeholder="Servicio"
+                                        required
+                                        name="servicio"
+                                        className="form_input"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row">
                                 <div className="col">
                                     <Form.Select
                                         required
                                         name="estado"
                                         className="form_input"
-                                        defaultValue="Pendiente"
+                                        defaultValue="Pendiente de pago"
                                     >
-                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Pendiente de pago">Pendiente de pago</option>
                                         <option value="Aprobado">Aprobado</option>
-                                        <option value="Rechazado">Rechazado</option>
                                     </Form.Select>
                                 </div>
-                            </div>
-
-                            <div className="row">
                                 <div className="col">
                                     <input
                                         type="text"
@@ -126,19 +124,23 @@ const AgregarEgreso = () => {
                                         name="nota"
                                         className="form_input"
                                     />
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col text-center">
                                     <button type="submit" className="thm-btn form-btn">
                                         Agregar
                                     </button>
                                 </div>
                             </div>
-
                         </Form>
 
-                        {/* Asegurarse de que el mensaje se muestre correctamente */}
                         {mensaje && (
-                            <div className="alert alert-info mt-4">{mensaje}</div>
+                            <Alert variant="info" className="mt-4">
+                                {mensaje}
+                            </Alert>
                         )}
-
                     </div>
                 </div>
             </div>
@@ -146,4 +148,4 @@ const AgregarEgreso = () => {
     );
 };
 
-export default AgregarEgreso;
+export default AgregarIngreso;

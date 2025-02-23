@@ -87,6 +87,59 @@ const verificarCredenciales = async (usuario, contraseña) => {
     return user;
 };
 
+// Obtener Jerarquía ordenada
+
+const obtenerJerarquiaUsuarios = async () => {
+    try {
+        console.log("🔍 Buscando usuarios en MongoDB...");
+
+       
+        const usuarios = await Usuario.find({}, "nombre email tipo_usuario estado");
+
+        if (!usuarios.length) {
+            console.log("⚠️ No hay usuarios registrados.");
+            return { mensaje: "No hay empleados o clientes registrados." };
+        }
+
+        console.log("📌 Usuarios encontrados:", usuarios);
+
+        const jerarquia = {
+            Administradores: [],
+            Colaboradores: [],
+            Clientes: [],
+        };
+
+        usuarios.forEach((usuario) => {
+            if (usuario.tipo_usuario === "Administrador") {
+                jerarquia.Administradores.push({
+                    nombre: usuario.nombre,
+                    email: usuario.email,
+                    estado: usuario.estado,
+                });
+            } else if (usuario.tipo_usuario === "Colaborador") {
+                jerarquia.Colaboradores.push({
+                    nombre: usuario.nombre,
+                    email: usuario.email,
+                    estado: usuario.estado,
+                });
+            } else if (usuario.tipo_usuario === "Cliente") {
+                jerarquia.Clientes.push({
+                    nombre: usuario.nombre,
+                    email: usuario.email,
+                    estado: usuario.estado,
+                });
+            }
+        });
+
+        console.log("Jerarquía generada correctamente:", jerarquia);
+        return jerarquia;
+    } catch (error) {
+        console.error("ERROR en obtenerJerarquiaUsuarios:", error);
+        throw new Error("Error al obtener la jerarquía de usuarios");
+    }
+};
+
+
 module.exports = {
     verificarUsuarioExistente,
     crearNuevoUsuario,
@@ -97,4 +150,5 @@ module.exports = {
     getUsuariosClientes,
     getUsuariosColabAdmins,
     verificarCredenciales,
+    obtenerJerarquiaUsuarios,
 };

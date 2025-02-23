@@ -26,7 +26,7 @@ class EgresosController {
         }
     }
 
-    //Ver egresos
+    // Obtener egreso
     async obtenerEgresos(req, res) {
         try {
             const egresos = await EgresosService.obtenerEgresos();
@@ -92,23 +92,29 @@ class EgresosController {
         }
     }
 
-    //Eliminar egreso
-    async eliminarEgreso(req, res) {
+    // Desactivar egreso
+    async desactivarEgreso(req, res) {
         try {
             const { id } = req.params;
-    
-            const egresoEliminado = await EgresosService.eliminarEgreso(id);
-    
-            if (!egresoEliminado) {
-                return res.status(404).json({ error: "Egreso no encontrado" });
-            }
-    
-            return res.status(200).json({ message: "Egreso eliminado correctamente", egresoEliminado });
+            const egreso = await EgresosService.desactivarEgresoById(id); // Usamos el servicio para desactivar el egreso
+            return res.status(200).json({ mensaje: "Egreso desactivado", egreso });
         } catch (error) {
-            console.error("Error al intentar eliminar el egreso: " + error.message);
-            return res.status(500).json({ error: "Error interno del servidor" });
+            console.error("Error al desactivar el egreso: " + error.message);
+            return res.status(500).json({ error: error.message });
         }
-    }    
+    }
+
+    // Activar egreso
+    async activarEgreso(req, res) {
+        try {
+            const { id } = req.params;
+            const egreso = await EgresosService.activarEgresoById(id); // Usamos el servicio para activar el egreso
+            return res.status(200).json({ mensaje: "Egreso activado", egreso });
+        } catch (error) {
+            console.error("Error al activar el egreso: " + error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new EgresosController();

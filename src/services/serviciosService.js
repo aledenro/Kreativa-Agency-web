@@ -40,16 +40,13 @@ class ServiciosService {
         try {
             const servicioActualizado = await Servicios.findByIdAndUpdate(
                 id,
-                { datosActualizados, ultima_modificacion: Date.now() },
+                datosActualizados,
                 {
                     new: true,
-                    runValidators: true,
                 }
             );
 
-            if (!servicioActualizado) {
-                throw new Error(`Servicio ${id} no encontrado`);
-            }
+            console.log(datosActualizados);
 
             return servicioActualizado;
         } catch (error) {
@@ -61,14 +58,44 @@ class ServiciosService {
 
     async agregarPaquete(id, paquete) {
         try {
-            const servicio = await Servicios.findById(id);
+            const servicioActualizado = await Servicios.findByIdAndUpdate(
+                id,
+                { $push: { paquetes: paquete } },
+                { new: true }
+            );
 
-            servicio["paquetes"].push(paquete);
-            await servicio.save();
+            if (!servicioActualizado) {
+                throw new Error(`Servicio ${id} no encontrado`);
+            }
+
+            return servicioActualizado;
+        } catch (error) {
+            throw new Error("Error al agregar el paquete: " + error.message);
+        }
+    }
+
+    async modificarPaquete(id, paqueteId, paqueteActualizado) {
+        try {
+            const servicio = await Servicios.findOneAndUpdate(
+                { _id: id, "paquetes._id": paqueteId },
+                {
+                    $set: {
+                        "paquetes.$": paqueteActualizado,
+                        ultima_modificacion: Date.now(),
+                    },
+                },
+                { new: true }
+            );
+
+            if (!servicio) {
+                throw new Error(
+                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
+                );
+            }
 
             return servicio;
         } catch (error) {
-            throw new Error("Error al agregar el paquete: " + error.message);
+            throw new Error("Error al modificar el paquete: " + error.message);
         }
     }
 

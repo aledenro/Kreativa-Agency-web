@@ -19,7 +19,7 @@ const lodash = require("lodash");
 // Crear un usuario
 const crearUsuario = async (req, res) => {
     const { nombre, usuario, cedula, email, contraseña, tipo_usuario, estado } = req.body;
-    
+
     if (!nombre || !usuario || !cedula || !email || !contraseña || !tipo_usuario || !estado) {
         return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
     }
@@ -43,7 +43,7 @@ const crearUsuario = async (req, res) => {
             email,
             contraseña,
             tipo_usuario,
-            estado
+            estado,
         });
 
         res.status(201).json({
@@ -84,10 +84,7 @@ const obtenerUsuario = async (req, res) => {
 // Actualizar un usuario
 const actualizarUsuarioPorId = async (req, res) => {
     try {
-        const usuarioActualizado = await actualizarUsuario(
-            req.params.id,
-            req.body
-        );
+        const usuarioActualizado = await actualizarUsuario(req.params.id, req.body);
         if (!usuarioActualizado) {
             return res.status(404).json({ mensaje: "Usuario no encontrado" });
         }
@@ -127,9 +124,7 @@ const getClientes = async (req, res) => {
         const usuarios = await getUsuariosClientes();
 
         if (!usuarios || lodash.isEmpty(usuarios)) {
-            return res
-                .status(404)
-                .json({ error: "No se pudo encontrar los clientes." });
+            return res.status(404).json({ error: "No se pudo encontrar los clientes." });
         }
 
         res.status(200).json(usuarios);
@@ -146,9 +141,7 @@ const getEmpleados = async (req, res) => {
         const usuarios = await getUsuariosColabAdmins();
 
         if (!usuarios || lodash.isEmpty(usuarios)) {
-            return res
-                .status(404)
-                .json({ error: "No se pudo encontrar los empleados." });
+            return res.status(404).json({ error: "No se pudo encontrar los empleados." });
         }
 
         res.status(200).json(usuarios);
@@ -160,8 +153,7 @@ const getEmpleados = async (req, res) => {
     }
 };
 
-//Iniciar Sesión
-
+// Iniciar Sesión
 const iniciarSesion = async (req, res) => {
     const { usuario, contraseña } = req.body;
 
@@ -172,7 +164,6 @@ const iniciarSesion = async (req, res) => {
             return res.status(400).json({ mensaje: "Usuario no encontrado" });
         }
 
- 
         if (user.estado && user.estado.toLowerCase() === "inactivo") {
             return res.status(403).json({ mensaje: "Tu cuenta está inactiva. Contacta al administrador." });
         }
@@ -188,23 +179,21 @@ const iniciarSesion = async (req, res) => {
                 usuario: user.usuario,
                 tipo_usuario: user.tipo_usuario,
             },
-            process.env.JWT_SECRET, 
-            { expiresIn: "2h" } 
+            process.env.JWT_SECRET,
+            { expiresIn: "2h" }
         );
 
-        res.json({ 
-            mensaje: "Inicio de sesión exitoso", 
-            token, 
-            usuario: user 
+        res.json({
+            mensaje: "Inicio de sesión exitoso",
+            token,
+            usuario: user,
         });
-
     } catch (error) {
         res.status(500).json({ mensaje: "Error en el inicio de sesión", error });
     }
 };
 
-//Recuperar Contraseña 
-
+// Recuperar Contraseña
 const recuperarContraseña = async (req, res) => {
     const { email } = req.body;
 
@@ -215,11 +204,7 @@ const recuperarContraseña = async (req, res) => {
             return res.status(404).json({ mensaje: "Usuario o correo no registrado" });
         }
 
-        const token = jwt.sign(
-            { id: usuario._id },
-            process.env.JWT_SECRET,
-            { expiresIn: "15m" }
-        );
+        const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
         await enviarCorreoRecuperacion(email, token);
 
@@ -230,13 +215,11 @@ const recuperarContraseña = async (req, res) => {
     }
 };
 
-//Restablecer Contraseña 
-
+// Restablecer Contraseña
 const restablecerContraseña = async (req, res) => {
     const { token, nuevaContraseña } = req.body;
 
     try {
-     
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const usuario = await Usuario.findById(decoded.id);
 
@@ -250,10 +233,48 @@ const restablecerContraseña = async (req, res) => {
         await usuario.save();
 
         res.json({ mensaje: "Contraseña restablecida exitosamente" });
-
     } catch (error) {
         console.error("Error al restablecer la contraseña:", error);
         res.status(500).json({ mensaje: "Error al restablecer la contraseña" });
+    }
+};
+
+// Obtener Jerarquía de Usuarios
+
+const getJerarquiaUsuarios = async (req, res) => {
+    try {
+        console.log("Buscando usuarios en MongoDB...");
+
+        const usuarios = await Usuario.find({}, "nombre email tipo_usuario estado");
+
+        if (!usuarios.length) {
+            console.log("No hay usuarios en la BD.");
+            return res.status(404).json({ mensaje: "No hay empleados o clientes registrados." });
+        }
+
+        console.log("Usuarios encontrados:", usuarios);
+
+       
+        const jerarquia = {
+            Administrador: [],
+            Colaborador: [],
+            Cliente: [],
+        };
+
+        usuarios.forEach((usuario) => {
+            if (jerarquia[usuario.tipo_usuario]) {
+                jerarquia[usuario.tipo_usuario].push(usuario);
+            } else {
+                console.warn(`⚠️ Tipo de usuario desconocido: ${usuario.tipo_usuario}`);
+            }
+        });
+
+        console.log("Jerarquía final:", jerarquia);
+
+        res.status(200).json(jerarquia);
+    } catch (error) {
+        console.error("❌ ERROR en getJerarquiaUsuarios:", error);
+        res.status(500).json({ mensaje: "Error al obtener la jerarquía de usuarios" });
     }
 };
 
@@ -268,5 +289,5 @@ module.exports = {
     iniciarSesion,
     recuperarContraseña,
     restablecerContraseña,
+    getJerarquiaUsuarios,
 };
-

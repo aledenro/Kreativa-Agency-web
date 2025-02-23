@@ -143,6 +143,7 @@ const ModificarServicio = () => {
                                         <option value="">
                                             Seleccione una categoría
                                         </option>
+
                                         {categorias.map((cat) => (
                                             <option
                                                 key={cat._id}

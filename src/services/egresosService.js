@@ -12,11 +12,11 @@ class EgresosService {
             throw error;
         }
     }
-    
-    //Todos los egresos
+
+    //Todos los egresos activos
     async obtenerEgresos() {
         try {
-            return await EgresosModel.find(); // Devuelve todos los egresos de la base de datos
+            return await EgresosModel.find({ activo: true }); // Solo devuelve los egresos activos
         } catch (error) {
             throw error;
         }
@@ -34,24 +34,48 @@ class EgresosService {
 
     // Editar egreso
     async editarEgreso(id, datos) {
-        datos.ultima_modificacion = new Date();  // Actualizar la fecha de modificación
-        return await EgresosModel.findByIdAndUpdate(id, datos, { new: true });
+
+        try {
+            datos.ultima_modificacion = new Date();  // Actualizar la fecha de modificación
+            return await EgresosModel.findByIdAndUpdate(id, datos, { new: true });
+        } catch (error) {
+            throw new Error("Error al editar el egreso: " + error.message);
+        }
     }
 
-    // Eliminar egreso
-    async eliminarEgreso(id) {
+    // Desactivar un egreso
+    async desactivarEgresoById(id) {
         try {
-            const egresoEliminado = await EgresosModel.findByIdAndDelete(id);
-    
-            if (!egresoEliminado) {
-                throw new Error("Egreso no encontrado");
+            const egresoDesactivado = await EgresosModel.findByIdAndUpdate(
+                id,
+                { activo: false, ultima_modificacion: Date.now() }, // Desactivar y actualizar la última modificación
+                { new: true }  // Retorna el documento actualizado
+            );
+            if (!egresoDesactivado) {
+                throw new Error(`Egreso ${id} no encontrado`);
             }
-    
-            return egresoEliminado;
+            return egresoDesactivado;
         } catch (error) {
-            throw new Error("Error al eliminar el egreso: " + error.message);
+            throw new Error(`No se pudo desactivar el egreso ${id}: ` + error.message);
         }
-    }    
+    }
+
+    // Activar un egreso
+    async activarEgresoById(id) {
+        try {
+            const egresoActivado = await EgresosModel.findByIdAndUpdate(
+                id,
+                { activo: true, ultima_modificacion: new Date() }, // Activar y actualizar la última modificación
+                { new: true }  // Retorna el documento actualizado
+            );
+            if (!egresoActivado) {
+                throw new Error(`Egreso ${id} no encontrado`);
+            }
+            return egresoActivado;
+        } catch (error) {
+            throw new Error(`No se pudo activar el egreso ${id}: ` + error.message);
+        }
+    }
 }
 
 module.exports = new EgresosService();

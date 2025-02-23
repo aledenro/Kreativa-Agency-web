@@ -151,9 +151,8 @@ const EditarEgreso = () => {
                                         defaultValue={egreso.estado}
                                         className="form_input"
                                     >
-                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Pendiente de pago">Pendiente de pago</option>
                                         <option value="Aprobado">Aprobado</option>
-                                        <option value="Rechazado">Rechazado</option>
                                     </Form.Select>
                                 </div>
                             </div>

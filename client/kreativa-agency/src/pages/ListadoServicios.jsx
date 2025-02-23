@@ -17,7 +17,10 @@ const ListadoServicios = () => {
                 );
 
                 if (Array.isArray(response.data)) {
-                    setServicios(response.data);
+                    const serviciosActivos = response.data.filter(
+                        (servicio) => servicio.activo
+                    );
+                    setServicios(serviciosActivos);
                 } else {
                     setServicios([]);
                 }
@@ -43,8 +46,7 @@ const ListadoServicios = () => {
                 <section className="services">
                     <div className="container">
                         <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
-                            {Array.isArray(servicios) &&
-                            servicios.length > 0 ? (
+                            {servicios.length > 0 ? (
                                 servicios.map((servicio, index) => (
                                     <div key={index} className="col">
                                         <div className="services-card p-3 shadow-sm d-flex flex-column h-100">

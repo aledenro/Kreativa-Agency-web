@@ -3,61 +3,88 @@ import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom"; // Usa useNavigate en lugar de useHistory
 
-const AgregarEgreso = () => {
-
+const EditarIngreso = () => {
     const [mensaje, setMensaje] = useState("");
+    const [ingreso, setIngreso] = useState(null);
+    const { id } = useParams(); // Obtener el ID del ingreso desde la URL
+    const navigate = useNavigate(); // Usa useNavigate en lugar de useHistory
 
+    // Obtener los detalles del ingreso cuando el componente se monta
+    useEffect(() => {
+        const obtenerIngreso = async () => {
+            try {
+                const res = await axios.get(`http://localhost:4000/api/ingresos/${id}`);
+                setIngreso(res.data);
+            } catch (error) {
+                console.error(error.message);
+                setMensaje("Error al obtener el ingreso.");
+            }
+        };
+
+        obtenerIngreso();
+    }, [id]);
+
+    // Manejar la edición del ingreso
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         const fecha = event.target.fecha.value;
         const monto = event.target.monto.value;
-        const categoria = event.target.categoria.value;
         const descripcion = event.target.descripcion.value;
-        const proveedor = event.target.proveedor.value;
+        const cedula = event.target.cedula.value;
+        const servicio = event.target.servicio.value;
         const estado = event.target.estado.value;
         const nota = event.target.nota.value;
 
         const data = {
-            fecha: fecha,
-            monto: monto,
-            categoria: categoria,
-            descripcion: descripcion,
-            proveedor: proveedor,
-            estado: estado,
-            nota: nota
+            fecha,
+            monto,
+            descripcion,
+            cedula,
+            servicio,
+            estado,
+            nota,
+            activo: true, // Si no estás cambiando el estado, se puede dejar por defecto como true
         };
 
         try {
-            const res = await axios.post("http://localhost:4000/api/egresos", data);
+            const res = await axios.put(`http://localhost:4000/api/ingresos/${id}`, data);
             console.log(res.data);
-            setMensaje("¡Egreso agregado exitosamente!");
+            setMensaje("¡Ingreso actualizado exitosamente!");
+            // Redirigir a otra página (por ejemplo, la lista de ingresos) después de la edición
+            navigate("/ingresos"); // Usa navigate para redirigir
         } catch (error) {
             console.error(error.message);
-            setMensaje("Error al agregar el egreso.");
+            setMensaje("Error al actualizar el ingreso.");
         }
     };
 
+    if (!ingreso) {
+        return <div>Cargando...</div>; // Muestra un mensaje mientras se cargan los datos del ingreso
+    }
+
     return (
         <div>
-            <Navbar></Navbar>
+            <Navbar />
             <div className="container">
                 <div className="section-title text-center">
-                    <h2>Agregar nuevo agreso</h2>
+                    <h2>Editar ingreso</h2>
                 </div>
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
-                        <Form onSubmit={handleSubmit} className="egreso_form">
+                        <Form onSubmit={handleSubmit} className="ingreso_form">
                             <div className="row">
-                                <div className="">
+                                <div className="col">
                                     <input
                                         type="date"
                                         placeholder="Fecha"
                                         required
                                         name="fecha"
                                         className="form_input"
+                                        defaultValue={ingreso.fecha.split("T")[0]} // Valor por defecto desde los datos cargados
                                     />
                                 </div>
                                 <div className="col">
@@ -67,57 +94,58 @@ const AgregarEgreso = () => {
                                         required
                                         name="monto"
                                         className="form_input"
+                                        defaultValue={ingreso.monto}
                                     />
                                 </div>
                             </div>
-
                             <div className="row">
-                                <div className="">
-                                    <Form.Select required name="categoria" className="form_input">
-                                        <option value="">Selecciona una categoría</option>
-                                        <option value="Salarios">Salarios</option>
-                                        <option value="Software">Software</option>
-                                        <option value="Servicios de contabilidad">Servicios de contabilidad</option>
-                                        <option value="Servicios">Servicios</option>
-                                    </Form.Select>
-                                </div>
                                 <div className="col">
                                     <input
-                                        as="textarea"
+                                        type="text"
                                         placeholder="Descripción"
-                                        style={{ height: "100px" }}
                                         required
                                         name="descripcion"
                                         className="form_input"
+                                        defaultValue={ingreso.descripcion}
                                     />
                                 </div>
                             </div>
 
                             <div className="row">
-                                <div className="">
+                                <div className="col">
                                     <input
                                         type="text"
-                                        placeholder="Proveedor"
+                                        placeholder="Cédula"
                                         required
-                                        name="proveedor"
+                                        name="cedula"
                                         className="form_input"
+                                        defaultValue={ingreso.cedula}
                                     />
                                 </div>
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        placeholder="Servicio"
+                                        required
+                                        name="servicio"
+                                        className="form_input"
+                                        defaultValue={ingreso.servicio}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row">
                                 <div className="col">
                                     <Form.Select
                                         required
                                         name="estado"
                                         className="form_input"
-                                        defaultValue="Pendiente"
+                                        defaultValue={ingreso.estado}
                                     >
-                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Pendiente de pago">Pendiente de pago</option>
                                         <option value="Aprobado">Aprobado</option>
-                                        <option value="Rechazado">Rechazado</option>
                                     </Form.Select>
                                 </div>
-                            </div>
-
-                            <div className="row">
                                 <div className="col">
                                     <input
                                         type="text"
@@ -125,20 +153,25 @@ const AgregarEgreso = () => {
                                         required
                                         name="nota"
                                         className="form_input"
+                                        defaultValue={ingreso.nota}
                                     />
-                                    <button type="submit" className="thm-btn form-btn">
-                                        Agregar
-                                    </button>
                                 </div>
                             </div>
 
+                            <div className="row">
+                                <div className="col text-center">
+                                    <button type="submit" className="thm-btn form-btn">
+                                        Editar
+                                    </button>
+                                </div>
+                            </div>
                         </Form>
 
-                        {/* Asegurarse de que el mensaje se muestre correctamente */}
                         {mensaje && (
-                            <div className="alert alert-info mt-4">{mensaje}</div>
+                            <Alert variant="info" className="mt-4">
+                                {mensaje}
+                            </Alert>
                         )}
-
                     </div>
                 </div>
             </div>
@@ -146,4 +179,4 @@ const AgregarEgreso = () => {
     );
 };
 
-export default AgregarEgreso;
+export default EditarIngreso;

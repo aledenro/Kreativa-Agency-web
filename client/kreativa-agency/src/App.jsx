@@ -6,8 +6,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import AgregarCotizacion from "./pages/AgregarCotizacion";
 import AgregarEgreso from "./pages/AgregarEgreso";
-import ObtenerEgresos from "./pages/ObtenerEgresos";
+import VerEgresos from "./pages/VerEgresos";
 import EditarEgreso from "./pages/EditarEgreso";
+import VerIngresos from './pages/VerIngresos';
+import AgregarIngreso from './pages/AgregarIngreso';
+import EditarIngreso from './pages/EditarIngreso';
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
 import CrearUsuario from "./pages/CrearUsuario";
@@ -30,6 +33,10 @@ import Recuperar from "./pages/Recuperar";
 import Restablecer from "./pages/Restablecer";
 import RestablecerContraseña from "./pages/RestablecerContraseña";
 import ListadoTareas from "./pages/ListadoTareas";
+import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
+import AgregarPTO from "./pages/AgregarPTO";
+import VerPTOEmpleados from "./pages/VerPTOEmpleados";
+import VerPerfil from "./pages/VerPerfil";
 
 function App() {
     return (
@@ -75,11 +82,27 @@ function App() {
                     path="/egreso/agregar"
                     element={<AgregarEgreso />}
                 ></Route>
-                <Route path="/egresos" element={<ObtenerEgresos />}></Route>
+                <Route
+                    path="/egresos"
+                    element={<VerEgresos />}>
+                </Route>
                 <Route
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
                 ></Route>
+                <Route
+                    path="/ingreso/agregar"
+                    element={<AgregarIngreso />}
+                />
+                <Route
+                    path="/ingresos"
+                    element={<VerIngresos />}
+                />
+                <Route
+                    path="/ingreso/editar/:id"
+                    element={<EditarIngreso />}
+                />
+
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 
                 <Route
@@ -125,8 +148,23 @@ function App() {
                     path="/restablecer/:token"
                     element={<RestablecerContraseña />}
                 ></Route>
-
                 <Route path="/tareas" element={<ListadoTareas />}></Route>
+                <Route
+                    path="/jerarquia"
+                    element={<JerarquiaUsuarios />}
+                ></Route>
+                <Route
+                    path="/agregar-pto"
+                    element={<AgregarPTO />}
+                ></Route>
+                <Route
+                    path="/ver-pto-empleados"
+                    element={<VerPTOEmpleados />}
+                ></Route>
+                <Route
+                    path="/perfil"
+                    element={<VerPerfil />}
+                ></Route>
             </Routes>
         </Router>
     );
