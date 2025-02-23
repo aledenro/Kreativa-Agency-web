@@ -61,7 +61,7 @@ class ServiciosService {
             const servicioActualizado = await Servicios.findByIdAndUpdate(
                 id,
                 { $push: { paquetes: paquete } },
-                { new: true, runValidators: true }
+                { new: true }
             );
 
             if (!servicioActualizado) {
@@ -71,6 +71,31 @@ class ServiciosService {
             return servicioActualizado;
         } catch (error) {
             throw new Error("Error al agregar el paquete: " + error.message);
+        }
+    }
+
+    async modificarPaquete(id, paqueteId, paqueteActualizado) {
+        try {
+            const servicio = await Servicios.findOneAndUpdate(
+                { _id: id, "paquetes._id": paqueteId },
+                {
+                    $set: {
+                        "paquetes.$": paqueteActualizado,
+                        ultima_modificacion: Date.now(),
+                    },
+                },
+                { new: true }
+            );
+
+            if (!servicio) {
+                throw new Error(
+                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
+                );
+            }
+
+            return servicio;
+        } catch (error) {
+            throw new Error("Error al modificar el paquete: " + error.message);
         }
     }
 

@@ -66,6 +66,24 @@ class ServiciosController {
         }
     }
 
+    async modificarPaquete(req, res) {
+        try {
+            const { id, paqueteId } = req.params;
+            const paqueteActualizado = req.body;
+
+            const servicioActualizado = await ServiciosService.modificarPaquete(
+                id,
+                paqueteId,
+                paqueteActualizado
+            );
+
+            return res.status(200).json(servicioActualizado);
+        } catch (error) {
+            console.error("Error al modificar el paquete: " + error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
     async desactivarServicio(req, res) {
         try {
             const { id } = req.params;
