@@ -37,9 +37,11 @@ class ServiciosController {
 
     async modificarServicioById(req, res) {
         try {
-            const { id } = req.params;
+            const id = req.params.id;
+            const data = req.body;
+
             const servicioActualizado =
-                await ServiciosService.modificarServicioById(id, req.body);
+                await ServiciosService.modificarServicioById(id, data);
 
             return res.status(200).json(servicioActualizado);
         } catch (error) {

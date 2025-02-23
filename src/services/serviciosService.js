@@ -40,16 +40,13 @@ class ServiciosService {
         try {
             const servicioActualizado = await Servicios.findByIdAndUpdate(
                 id,
-                { datosActualizados, ultima_modificacion: Date.now() },
+                datosActualizados,
                 {
                     new: true,
-                    runValidators: true,
                 }
             );
 
-            if (!servicioActualizado) {
-                throw new Error(`Servicio ${id} no encontrado`);
-            }
+            console.log(datosActualizados);
 
             return servicioActualizado;
         } catch (error) {
