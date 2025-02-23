@@ -80,6 +80,9 @@ export default function Navbar() {
                         <li>
                             <a href="/egresos">Ver Egresos</a>
                         </li>
+                        <li>
+                            <a href="/egreso/agregar">Agregar Egreso</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
