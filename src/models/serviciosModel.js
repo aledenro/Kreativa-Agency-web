@@ -41,6 +41,11 @@ const ServiciosModel = new mongoose.Schema(
                     type: Number,
                     required: true,
                 },
+                activo: {
+                    type: Boolean,
+                    default: true,
+                    required: true,
+                },
             },
         ],
         fecha_creacion: {

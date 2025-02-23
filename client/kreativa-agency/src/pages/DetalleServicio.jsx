@@ -69,7 +69,7 @@ const DetalleServicio = () => {
                             </div>
                             <div className="col-lg text-end align-self-center">
                                 <button
-                                    className="btn-editar thm-btn-small"
+                                    className="thm-btn btn-editar thm-btn-small"
                                     type="button"
                                     onClick={() =>
                                         handleModificar(servicio._id)
@@ -78,10 +78,10 @@ const DetalleServicio = () => {
                                     Modificar
                                 </button>
                                 <button
-                                    className={`btn-eliminar thm-btn-small ${
+                                    className={`thm-btn btn-eliminar thm-btn-small ${
                                         servicio.activo
-                                            ? "thm-btn-danger"
-                                            : "thm-btn-success"
+                                            ? "thm-btn thm-btn-danger"
+                                            : "thm-btn thm-btn-success"
                                     } ms-2`}
                                     type="button"
                                     onClick={toggleEstadoServicio}
