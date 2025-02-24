@@ -9,15 +9,15 @@ const verificarUsuarioExistente = async (usuario) => {
 // Crear un nuevo usuario
 const crearNuevoUsuario = async (datosUsuario) => {
     try {
-        const salt = await bcrypt.genSalt(10); 
-        const hashedPassword = await bcrypt.hash(datosUsuario.contraseña, salt); 
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(datosUsuario.contraseña, salt);
 
         const nuevoUsuario = new Usuario({
             nombre: datosUsuario.nombre,
             usuario: datosUsuario.usuario,
             cedula: datosUsuario.cedula,
             email: datosUsuario.email,
-            contraseña: hashedPassword,  
+            contraseña: hashedPassword,
             tipo_usuario: datosUsuario.tipo_usuario,
             estado: datosUsuario.estado || "Activo",
         });
@@ -93,8 +93,10 @@ const obtenerJerarquiaUsuarios = async () => {
     try {
         console.log("🔍 Buscando usuarios en MongoDB...");
 
-       
-        const usuarios = await Usuario.find({}, "nombre email tipo_usuario estado");
+        const usuarios = await Usuario.find(
+            {},
+            "nombre email tipo_usuario estado"
+        );
 
         if (!usuarios.length) {
             console.log("⚠️ No hay usuarios registrados.");
@@ -139,6 +141,13 @@ const obtenerJerarquiaUsuarios = async () => {
     }
 };
 
+const getEmailUsuario = async (id) => {
+    try {
+        return await Usuario.findById(id).select("email");
+    } catch (error) {
+        throw new Error(`Error al obtener los empleados: ${error.message}`);
+    }
+};
 
 module.exports = {
     verificarUsuarioExistente,
@@ -151,4 +160,5 @@ module.exports = {
     getUsuariosColabAdmins,
     verificarCredenciales,
     obtenerJerarquiaUsuarios,
+    getEmailUsuario,
 };

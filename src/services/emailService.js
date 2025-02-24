@@ -1,5 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
+const lodash = require("lodash");
+const { getEmailUsuario } = require("./usuarioService");
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -31,4 +33,29 @@ const enviarCorreoRecuperacion = async (email, token) => {
     }
 };
 
-module.exports = { enviarCorreoRecuperacion };
+const sendEmail = async (idReceptor, emailContent, subject) => {
+    try {
+        const user = await getEmailUsuario(idReceptor);
+
+        if (!user || lodash.isEmpty(user)) {
+            throw new Error("No se pudo enviar el correo, receptor invalido.");
+        }
+
+        const email = user.email;
+        const mailOptions = {
+            from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: subject,
+            html: emailContent,
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log("Correo enviado a:", email);
+        return;
+    } catch (error) {
+        console.error("Error al enviar el correo:", error);
+        throw new Error("No se pudo enviar el correo.");
+    }
+};
+
+module.exports = { enviarCorreoRecuperacion, sendEmail };

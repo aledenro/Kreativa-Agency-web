@@ -354,9 +354,11 @@ const ListadoTareas = () => {
                         <div className="col mx-3">
                             Fecha de Solicitud:{" "}
                             <small>
-                                {new Date(
-                                    tareaModal.fecha_creacion
-                                ).toLocaleDateString()}
+                                {tareaModal.fecha_creacion
+                                    ? new Date(
+                                          tareaModal.fecha_creacion
+                                      ).toLocaleDateString()
+                                    : ""}
                             </small>
                         </div>
                         <div className="col mx-3">
@@ -367,7 +369,9 @@ const ListadoTareas = () => {
                                 id="estado"
                                 disabled
                             >
-                                <option value="">{tareaModal.estado}</option>
+                                <option value="">
+                                    {tareaModal.estado ? tareaModal.estado : ""}
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -382,7 +386,9 @@ const ListadoTareas = () => {
                             disabled
                         >
                             <option value="">
-                                {tareaModal.proyecto_id.nombre}
+                                {tareaModal.proyecto_id
+                                    ? tareaModal.proyecto_id.nombre
+                                    : ""}
                             </option>
                         </select>
                     </div>
@@ -396,7 +402,7 @@ const ListadoTareas = () => {
                             id="nombre"
                             name="nombre"
                             required
-                            value={tareaModal.nombre}
+                            value={tareaModal.nombre ? tareaModal.nombre : ""}
                             disabled
                         />
                     </div>
@@ -411,7 +417,11 @@ const ListadoTareas = () => {
                             rows={7}
                             placeholder="Describa su solicitud"
                             required
-                            value={tareaModal.descripcion}
+                            value={
+                                tareaModal.descripcion
+                                    ? tareaModal.descripcion
+                                    : ""
+                            }
                             disabled
                         ></textarea>
                     </div>
@@ -426,7 +436,9 @@ const ListadoTareas = () => {
                             disabled
                         >
                             <option value="">
-                                {tareaModal.colaborador_id.nombre}
+                                {tareaModal.colaborador_id
+                                    ? tareaModal.colaborador_id.nombre
+                                    : ""}
                             </option>
                         </select>
                     </div>
@@ -446,7 +458,9 @@ const ListadoTareas = () => {
                                     disabled
                                 >
                                     <option value="">
-                                        {tareaModal.prioridad}
+                                        {tareaModal.prioridad
+                                            ? tareaModal.prioridad
+                                            : ""}
                                     </option>
                                 </select>
                             </div>

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
+import sendEmail from "../utils/emailSender";
 
 function construirJsonRequest(
     proyecto,
@@ -75,6 +76,14 @@ const AgregarTarea = () => {
                 setAlertVariant("success");
                 setShowAlert(true);
                 event.target.reset();
+
+                await sendEmail(
+                    colab,
+                    "Se le ha asignado una nueva tarea.",
+                    "Nueva Asignación de Trabajo",
+                    "Ver",
+                    "test"
+                );
             }
         } catch (error) {
             console.error(error.message);
@@ -90,8 +99,13 @@ const AgregarTarea = () => {
     useEffect(() => {
         async function fetchEmpleados() {
             try {
+                const token = localStorage.getItem("token");
+
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/empleados"
+                    "http://localhost:4000/api/usuarios/empleados",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 setEmpleados(response.data);
