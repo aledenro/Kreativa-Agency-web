@@ -85,10 +85,12 @@ const text = {
 };
 
 const button = {
-    backgroundColor: "#007bff",
-    color: "#fff",
-    padding: "10px 20px",
+    backgroundColor: "#ff0072",
+    color: "#ffffff",
+    padding: "12px 40px 12px",
     textDecoration: "none",
     borderRadius: "5px",
     display: "inline-block",
+    fontWeight: 600,
+    fontSize: "16px",
 };
