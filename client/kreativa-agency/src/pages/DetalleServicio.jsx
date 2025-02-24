@@ -1,8 +1,9 @@
+import ModificarPaqueteModal from "../pages/ModificarPaquete";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/Navbar/Navbar";
 
 const DetalleServicio = () => {
@@ -12,12 +13,17 @@ const DetalleServicio = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // modificar paquete
+    const [showModal, setShowModal] = useState(false);
+    const [paqueteSeleccionado, setPaqueteSeleccionado] = useState(null);
+
     useEffect(() => {
         const fetchServicio = async () => {
             try {
                 const response = await axios.get(
                     `http://localhost:4000/api/servicios/${id}`
                 );
+
                 setServicio(response.data);
             } catch (err) {
                 setError(err.message);
@@ -35,6 +41,11 @@ const DetalleServicio = () => {
     function handleModificar(id) {
         navigate(`/servicio/modificar/${id}`);
     }
+
+    const handleModificarPaquete = (paquete) => {
+        setPaqueteSeleccionado(paquete);
+        setShowModal(true);
+    };
 
     const toggleEstadoServicio = async () => {
         if (!servicio) return;
@@ -170,10 +181,38 @@ const DetalleServicio = () => {
                                                     )
                                                 )}
                                             </ul>
-                                            <p className="card-text">
-                                                <strong>Precio:</strong> $
-                                                {paquete.precio}
-                                            </p>
+                                            <div className="row">
+                                                <div className="col">
+                                                    <p className="card-text">
+                                                        <strong>Precio:</strong>{" "}
+                                                        ${paquete.precio}
+                                                    </p>
+                                                </div>
+                                                <div className="col text-end">
+                                                    <div
+                                                        className="btn-group"
+                                                        role="group"
+                                                    >
+                                                        <button
+                                                            className="thm-btn thm-btn-small btn-editar"
+                                                            onClick={() =>
+                                                                handleModificarPaquete(
+                                                                    paquete
+                                                                )
+                                                            }
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={faPencil}
+                                                            />
+                                                        </button>
+                                                        <button className="thm-btn thm-btn-small btn-eliminar">
+                                                            <FontAwesomeIcon
+                                                                icon={faTrash}
+                                                            />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -184,6 +223,16 @@ const DetalleServicio = () => {
                             <p className="mt-3">
                                 Este servicio no tiene paquetes por mostrar.
                             </p>
+                        )}
+
+                        {paqueteSeleccionado && (
+                            <ModificarPaqueteModal
+                                show={showModal}
+                                handleClose={() => setShowModal(false)}
+                                paquete={paqueteSeleccionado}
+                                servicioId={servicio._id}
+                                actualizarServicio={setServicio}
+                            />
                         )}
                     </div>
                 </div>
