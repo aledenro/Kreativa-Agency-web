@@ -64,6 +64,25 @@ const DetalleServicio = () => {
         }
     };
 
+    const toggleEstadoPaquete = async (paqueteId, estadoActual) => {
+        if (!servicio) return;
+
+        try {
+            const endpoint = estadoActual
+                ? `http://localhost:4000/api/servicios/${id}/paquetes/${paqueteId}/desactivar`
+                : `http://localhost:4000/api/servicios/${id}/paquetes/${paqueteId}/activar`;
+
+            const response = await axios.put(endpoint);
+
+            setServicio(response.data);
+        } catch (err) {
+            console.error(
+                "Error al cambiar el estado del paquete:",
+                err.message
+            );
+        }
+    };
+
     if (loading) return <p>Cargando...</p>;
     if (error) return <p>Error: {error}</p>;
     if (!servicio) return <p>No se encontró el servicio.</p>;
@@ -201,14 +220,24 @@ const DetalleServicio = () => {
                                                                 )
                                                             }
                                                         >
-                                                            <FontAwesomeIcon
-                                                                icon={faPencil}
-                                                            />
+                                                            Modificar
                                                         </button>
-                                                        <button className="thm-btn thm-btn-small btn-eliminar">
-                                                            <FontAwesomeIcon
-                                                                icon={faTrash}
-                                                            />
+                                                        <button
+                                                            className={`thm-btn thm-btn-small btn-eliminar ${
+                                                                paquete.activo
+                                                                    ? "thm-btn-danger"
+                                                                    : "thm-btn-success"
+                                                            }`}
+                                                            onClick={() =>
+                                                                toggleEstadoPaquete(
+                                                                    paquete._id,
+                                                                    paquete.activo
+                                                                )
+                                                            }
+                                                        >
+                                                            {paquete.activo
+                                                                ? "Desactivar"
+                                                                : "Activar"}
                                                         </button>
                                                     </div>
                                                 </div>
