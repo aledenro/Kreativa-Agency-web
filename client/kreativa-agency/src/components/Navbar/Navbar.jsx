@@ -55,9 +55,6 @@ export default function Navbar() {
                         <li>
                             <a href="/cotizacion/">Ver Cotizaciones</a>
                         </li>
-                        <li>
-                            <a href="/cotizacion/agregar">Agregar Cotización</a>
-                        </li>
                     </ul>
                 </li>
                 <li className="dropdown">
