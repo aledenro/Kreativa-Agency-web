@@ -4,8 +4,9 @@ import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
 
 function construirJsonRequest(titulo, descripcion, urgente) {
+    const user_id = localStorage.getItem("user_id");
     return {
-        cliente_id: "679834de23a11c303cf6c6b5",
+        cliente_id: user_id,
         titulo: titulo,
         detalles: descripcion,
         urgente: urgente,

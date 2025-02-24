@@ -12,6 +12,8 @@ function construirJsonRequest(
     prioridad,
     fechaEntrega
 ) {
+    const user_id = localStorage.getItem("user_id");
+
     return {
         proyecto_id: proyecto,
         nombre: nombre,
@@ -21,7 +23,7 @@ function construirJsonRequest(
         fecha_vencimiento: fechaEntrega,
         log: [
             {
-                usuario_id: "679834de23a11c303cf6c6b5",
+                usuario_id: user_id,
                 accion: "Crear tarea.",
             },
         ],
