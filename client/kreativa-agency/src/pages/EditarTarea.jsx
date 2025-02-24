@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
+import sendEmail from "../utils/emailSender";
 
 function construirJsonRequest(
     proyecto,
@@ -95,6 +96,7 @@ const EditarTarea = () => {
     const [alertVariant, setAlertVariant] = useState("danger");
     const [tarea, setTarea] = useState(null);
     const [estado, setEstado] = useState("");
+    const [colaboradorOriginal, setColaboradorOriginal] = useState("");
 
     const prioridades = ["Baja", "Media", "Alta"];
     const estados = [
@@ -177,6 +179,16 @@ const EditarTarea = () => {
                 setAlertVariant("success");
                 setShowAlert(true);
                 await addActionLog("Editó la tarea.");
+
+                if (colaboradorOriginal !== colab) {
+                    await sendEmail(
+                        colab,
+                        "Se le ha asignado una nueva tarea.",
+                        "Nueva Asignación de Trabajo",
+                        "Ver",
+                        "test"
+                    );
+                }
             }
         } catch (error) {
             console.error(error.message);
@@ -205,11 +217,15 @@ const EditarTarea = () => {
 
     useEffect(() => {
         async function fetchEmpleados() {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/empleados"
+                    "http://localhost:4000/api/usuarios/empleados",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
-
                 setEmpleados(response.data);
             } catch (error) {
                 console.error(
@@ -240,6 +256,7 @@ const EditarTarea = () => {
 
                 setTarea(response.data);
                 setEstado(response.data.estado);
+                setColaboradorOriginal(response.data.colaborador_id._id);
             } catch (error) {
                 console.error(`Error al obtener la tarea: ${error.message}`);
             }
