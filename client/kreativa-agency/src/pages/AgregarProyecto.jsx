@@ -10,6 +10,7 @@ function construirJsonRequest(
     urgente,
     fechaEntrega
 ) {
+    const user_id = localStorage.getItem("user_id");
     return {
         cliente_id: cliente,
         nombre: nombre,
@@ -18,7 +19,7 @@ function construirJsonRequest(
         fecha_entrega: fechaEntrega,
         log: [
             {
-                usuario_id: "679834de23a11c303cf6c6b5",
+                usuario_id: user_id,
                 accion: "Crear proyecto.",
             },
         ],
@@ -84,8 +85,13 @@ const AgregarProyecto = () => {
     useEffect(() => {
         async function fetchClientes() {
             try {
+                const token = localStorage.getItem("token");
+
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/clientes"
+                    "http://localhost:4000/api/usuarios/clientes",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 setClientes(response.data);

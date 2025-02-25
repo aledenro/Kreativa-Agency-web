@@ -22,7 +22,10 @@ const Login = () => {
         setError("");
 
         try {
-            const response = await axios.post("http://localhost:4000/api/login", formData);
+            const response = await axios.post(
+                "http://localhost:4000/api/login",
+                formData
+            );
             console.log("Respuesta del servidor:", response.data);
 
             const { token } = response.data;
@@ -32,7 +35,7 @@ const Login = () => {
                     icon: "error",
                     title: "Error",
                     text: "No se recibió token del servidor",
-                    confirmButtonColor: "#E91E63"
+                    confirmButtonColor: "#E91E63",
                 });
                 return;
             }
@@ -43,6 +46,7 @@ const Login = () => {
             console.log("Token decodificado:", decodedToken);
 
             localStorage.setItem("tipo_usuario", decodedToken.tipo_usuario);
+            localStorage.setItem("user_id", decodedToken.id);
 
             Swal.fire({
                 icon: "success",
@@ -69,19 +73,24 @@ const Login = () => {
                     localStorage.removeItem("tipo_usuario");
                 }
             }, 1500);
-
         } catch (error) {
-            console.error("Error al iniciar sesión:", error.response?.data || error);
+            console.error(
+                "Error al iniciar sesión:",
+                error.response?.data || error
+            );
 
             if (error.response) {
                 const mensajeError = error.response.data.mensaje;
 
-                if (mensajeError === "Tu cuenta está inactiva. Contacta al administrador.") {
+                if (
+                    mensajeError ===
+                    "Tu cuenta está inactiva. Contacta al administrador."
+                ) {
                     Swal.fire({
                         icon: "warning",
                         title: "Cuenta inactiva",
                         text: "Tu cuenta está inactiva. Contacta al administrador.",
-                        confirmButtonColor: "#E91E63"
+                        confirmButtonColor: "#E91E63",
                     });
                 } else {
                     Swal.fire({
@@ -136,7 +145,6 @@ const Login = () => {
                         />
                     </div>
 
-
                     <div className="login-buttons">
                         <button
                             type="button"
@@ -145,20 +153,25 @@ const Login = () => {
                         >
                             Volver
                         </button>
-                        <button
-                            type="submit"
-                            className="thm-btn login-btn"
-                        >
+                        <button type="submit" className="thm-btn login-btn">
                             Iniciar Sesión
                         </button>
                     </div>
-                    <span style={{ display: "inline-block", width: "20px" }}></span>
+                    <span
+                        style={{ display: "inline-block", width: "20px" }}
+                    ></span>
                     <p style={{ textAlign: "left", marginTop: "10px" }}>
-                        <a href="/recuperar" style={{ color: "#ff4081", textDecoration: "none", fontWeight: "bold" }}>
+                        <a
+                            href="/recuperar"
+                            style={{
+                                color: "#ff4081",
+                                textDecoration: "none",
+                                fontWeight: "bold",
+                            }}
+                        >
                             ¿Olvidaste tu contraseña?
                         </a>
                     </p>
-
                 </form>
             </div>
         </div>

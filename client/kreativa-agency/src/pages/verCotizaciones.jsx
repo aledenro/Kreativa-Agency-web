@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import lodash from "lodash";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 
@@ -27,11 +26,33 @@ const VerCotizaciones = () => {
         navigate(`/cotizacion/${id}`);
     }
 
+    if (!cotizaciones) {
+        return (
+            <div className="container d-flex align-items-center justify-content-center">
+                <p>Cargando cotizaciones...</p>
+            </div>
+        );
+    }
+
     return (
         <div>
             <Navbar></Navbar>
-            <div className="container">
-                <table className="table table-striped">
+            <h3 className="section-title text-center">
+                Listado de Cotizaciones
+            </h3>
+
+            <div className="container pt-3  table-responsive">
+                <div className="row mb-3">
+                    <div className="col text-end">
+                        <button
+                            className="thm-btn btn-crear"
+                            onClick={() => navigate("/cotizacion/agregar")}
+                        >
+                            Solicitar Cotización
+                        </button>
+                    </div>
+                </div>
+                <table className="table kreativa-table">
                     <thead>
                         <tr>
                             <th scope="col">Titulo</th>
@@ -56,7 +77,8 @@ const VerCotizaciones = () => {
                                 <td>{cotizacion.urgente ? "Si" : "No"}</td>
                                 <td>
                                     <button
-                                        className="thm-btn"
+                                        className="thm-btn thm-btn-small btn-ver"
+
                                         onClick={() =>
                                             handleVerDetalles(cotizacion._id)
                                         }

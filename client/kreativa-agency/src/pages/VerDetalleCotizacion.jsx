@@ -41,8 +41,9 @@ const VerDetalleCotizacion = () => {
         const formData = new FormData(event.target);
         const content = formData.get("message");
 
+        const user_id = localStorage.getItem("user_id");
         const data = {
-            usuario_id: "679834de23a11c303cf6c6b5",
+            usuario_id: user_id,
             contenido: content,
         };
 

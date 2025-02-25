@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
 
-const id = "67a043437b55c4040e008b3b";
+const id = "67bbfe4502b4c485e784c55b";
 const estados = [
     "Por Hacer",
     "En Progreso",
@@ -156,10 +156,11 @@ const AgregarProyecto = () => {
 
     const addActionLog = async (accion) => {
         try {
+            const user_id = localStorage.getItem("user_id");
             await axios.put(
                 `http://localhost:4000/api/proyectos/actualizarLog/${id}`,
                 {
-                    usuario_id: "679834de23a11c303cf6c6b5",
+                    usuario_id: user_id,
                     accion: accion,
                 }
             );
@@ -171,8 +172,13 @@ const AgregarProyecto = () => {
     useEffect(() => {
         async function fetchClientes() {
             try {
+                const token = localStorage.getItem("token");
+
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/clientes"
+                    "http://localhost:4000/api/usuarios/clientes",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 setClientes(response.data);

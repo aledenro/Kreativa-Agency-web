@@ -203,10 +203,11 @@ const EditarTarea = () => {
 
     const addActionLog = async (accion) => {
         try {
+            const user_id = localStorage.getItem("user_id");
             await axios.put(
                 `http://localhost:4000/api/tareas/actualizarLog/${id}`,
                 {
-                    usuario_id: "679834de23a11c303cf6c6b5",
+                    usuario_id: user_id,
                     accion: accion,
                 }
             );
