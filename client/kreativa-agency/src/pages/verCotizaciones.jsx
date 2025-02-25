@@ -78,6 +78,7 @@ const VerCotizaciones = () => {
                                 <td>
                                     <button
                                         className="thm-btn thm-btn-small btn-ver"
+
                                         onClick={() =>
                                             handleVerDetalles(cotizacion._id)
                                         }
