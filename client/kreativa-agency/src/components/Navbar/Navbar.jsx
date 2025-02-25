@@ -105,7 +105,9 @@ export default function Navbar() {
                     </ul>
                 </li>
             </ul>
-            <button className="login-button">Iniciar Sesión</button>
+            <a href="/login">
+                <button className="login-button">Iniciar Sesión</button>
+            </a>
         </nav>
     );
 }

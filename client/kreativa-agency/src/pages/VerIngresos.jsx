@@ -10,7 +10,7 @@ const VerIngresos = () => {
     const [clientes, setClientes] = useState([]); // Agregado para almacenar clientes
     const [showModal, setShowModal] = useState(false);
     const [ingresoParaModificar, setIngresoParaModificar] = useState(null);
-    
+
     const [search, setSearch] = useState(""); // Búsqueda por cédula
     const [estadoFiltro, setEstadoFiltro] = useState("Activo"); // Filtro por estado
     const [paginaActual, setPaginaActual] = useState(1); // Paginación
@@ -20,13 +20,20 @@ const VerIngresos = () => {
     useEffect(() => {
         const obtenerIngresosYClientes = async () => {
             try {
-                const resIngresos = await axios.get("http://localhost:4000/api/ingresos");
+                const resIngresos = await axios.get(
+                    "http://localhost:4000/api/ingresos"
+                );
                 setIngresos(resIngresos.data);
 
-                const resClientes = await axios.get("http://localhost:4000/api/usuario"); // Asegúrate de tener un endpoint para obtener clientes
+                const resClientes = await axios.get(
+                    "http://localhost:4000/api/usuario"
+                ); // Asegúrate de tener un endpoint para obtener clientes
                 setClientes(resClientes.data);
             } catch (error) {
-                console.error("Error al obtener ingresos o clientes:", error.message);
+                console.error(
+                    "Error al obtener ingresos o clientes:",
+                    error.message
+                );
             }
         };
 
@@ -34,12 +41,14 @@ const VerIngresos = () => {
     }, []);
 
     // Filtrar ingresos por búsqueda y estado
-    const ingresosFiltrados = ingresos.filter(ingreso => {
+    const ingresosFiltrados = ingresos.filter((ingreso) => {
         // Filtro directamente por la cédula
         const cédulaCliente = ingreso.cedula; // Ahora la cédula es lo que se busca
 
         return (
-            (estadoFiltro === "Todos" || (estadoFiltro === "Activo" && ingreso.activo) || (estadoFiltro === "Inactivo" && !ingreso.activo)) &&
+            (estadoFiltro === "Todos" ||
+                (estadoFiltro === "Activo" && ingreso.activo) ||
+                (estadoFiltro === "Inactivo" && !ingreso.activo)) &&
             (search === "" || cédulaCliente.includes(search)) // Buscamos por cédula
         );
     });
@@ -47,9 +56,14 @@ const VerIngresos = () => {
     // Paginación
     const indiceUltimoIngreso = paginaActual * ingresosPorPagina;
     const indicePrimerIngreso = indiceUltimoIngreso - ingresosPorPagina;
-    const ingresosPaginados = ingresosFiltrados.slice(indicePrimerIngreso, indiceUltimoIngreso);
+    const ingresosPaginados = ingresosFiltrados.slice(
+        indicePrimerIngreso,
+        indiceUltimoIngreso
+    );
 
-    const totalPaginas = Math.ceil(ingresosFiltrados.length / ingresosPorPagina);
+    const totalPaginas = Math.ceil(
+        ingresosFiltrados.length / ingresosPorPagina
+    );
 
     const cambiarPagina = (num) => {
         if (num >= 1 && num <= totalPaginas) setPaginaActual(num);
@@ -66,9 +80,13 @@ const VerIngresos = () => {
 
         try {
             await axios.put(url);
-            setIngresos(ingresos.map(ingreso =>
-                ingreso._id === ingresoId ? { ...ingreso, activo: !ingreso.activo } : ingreso
-            ));
+            setIngresos(
+                ingresos.map((ingreso) =>
+                    ingreso._id === ingresoId
+                        ? { ...ingreso, activo: !ingreso.activo }
+                        : ingreso
+                )
+            );
             setShowModal(false);
         } catch (error) {
             console.error("Error al modificar el ingreso:", error.message);
@@ -84,106 +102,154 @@ const VerIngresos = () => {
     return (
         <div>
             <Navbar />
-            <h2>Ingresos</h2>
+            <div className="container">
+                <h2>Ingresos</h2>
 
-            {/* Filtros */}
-            <div className="d-flex gap-3 mb-3">
-                <Form.Control
-                    type="text"
-                    placeholder="Buscar por cédula"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-                <Form.Select value={estadoFiltro} onChange={(e) => setEstadoFiltro(e.target.value)}>
-                    <option value="Activo">Activos</option>
-                    <option value="Inactivo">Inactivos</option>
-                    <option value="Todos">Todos</option>
-                </Form.Select>
-            </div>
+                {/* Filtros */}
+                <div className="d-flex gap-3 mb-3">
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por cédula"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <Form.Select
+                        value={estadoFiltro}
+                        onChange={(e) => setEstadoFiltro(e.target.value)}
+                    >
+                        <option value="Activo">Activos</option>
+                        <option value="Inactivo">Inactivos</option>
+                        <option value="Todos">Todos</option>
+                    </Form.Select>
+                </div>
 
-            {/* Tabla */}
-            <Table className="kreativa-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Monto</th>
-                        <th>Cédula</th>
-                        <th>Nombre Cliente</th> {/* Nueva columna */}
-                        <th>Servicio</th>
-                        <th>Descripción</th>
-                        <th>Nota</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {ingresosPaginados.length === 0 ? (
+                {/* Tabla */}
+                <Table className="kreativa-table">
+                    <thead>
                         <tr>
-                            <td colSpan="9">No hay ingresos para mostrar.</td>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Cédula</th>
+                            <th>Nombre Cliente</th> {/* Nueva columna */}
+                            <th>Servicio</th>
+                            <th>Descripción</th>
+                            <th>Nota</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
-                    ) : (
-                        ingresosPaginados.map((ingreso) => (
-                            <tr key={ingreso._id}>
-                                <td>{new Date(ingreso.fecha).toLocaleDateString()}</td>
-                                <td>{ingreso.monto}</td>
-                                <td>{ingreso.cedula}</td>
-                                <td>{ingreso.nombreCliente || "Desconocido"}</td> {/* Mostrar nombre */}
-                                <td>{ingreso.servicio}</td>
-                                <td>{ingreso.descripcion}</td>
-                                <td>{ingreso.nota}</td>
-                                <td>{ingreso.activo ? "Activo" : "Inactivo"}</td>
-                                <td>
-                                    <Link to={`/ingreso/editar/${ingreso._id}`}>
-                                        <Button variant="warning" disabled={!ingreso.activo}>Editar</Button>
-                                    </Link>
-                                    {" "}
-                                    <Button
-                                        variant={ingreso.activo ? "danger" : "success"}
-                                        onClick={() => abrirModal(ingreso)}
-                                    >
-                                        {ingreso.activo ? "Desactivar" : "Activar"}
-                                    </Button>
+                    </thead>
+                    <tbody>
+                        {ingresosPaginados.length === 0 ? (
+                            <tr>
+                                <td colSpan="9">
+                                    No hay ingresos para mostrar.
                                 </td>
                             </tr>
-                        ))
-                    )}
-                </tbody>
-            </Table>
+                        ) : (
+                            ingresosPaginados.map((ingreso) => (
+                                <tr key={ingreso._id}>
+                                    <td>
+                                        {new Date(
+                                            ingreso.fecha
+                                        ).toLocaleDateString()}
+                                    </td>
+                                    <td>{ingreso.monto}</td>
+                                    <td>{ingreso.cedula}</td>
+                                    <td>
+                                        {ingreso.nombreCliente || "Desconocido"}
+                                    </td>{" "}
+                                    {/* Mostrar nombre */}
+                                    <td>{ingreso.servicio}</td>
+                                    <td>{ingreso.descripcion}</td>
+                                    <td>{ingreso.nota}</td>
+                                    <td>
+                                        {ingreso.activo ? "Activo" : "Inactivo"}
+                                    </td>
+                                    <td>
+                                        <Link
+                                            to={`/ingreso/editar/${ingreso._id}`}
+                                        >
+                                            <Button
+                                                className="thm-btn thm-btn-small btn-editar"
+                                                disabled={!ingreso.activo}
+                                            >
+                                                Editar
+                                            </Button>
+                                        </Link>{" "}
+                                        <button
+                                            className={
+                                                ingreso.activo
+                                                    ? "thm-btn thm-btn-small btn-eliminar"
+                                                    : "thm-btn thm-btn-small btn-crear"
+                                            }
+                                            onClick={() => abrirModal(ingreso)}
+                                        >
+                                            {ingreso.activo
+                                                ? "Desactivar"
+                                                : "Activar"}
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </Table>
 
-            {/* Paginación */}
-            {totalPaginas > 1 && (
-                <Pagination className="justify-content-center">
-                    <Pagination.Prev disabled={paginaActual === 1} onClick={() => cambiarPagina(paginaActual - 1)} />
-                    {[...Array(totalPaginas)].map((_, index) => (
-                        <Pagination.Item
-                            key={index + 1}
-                            active={index + 1 === paginaActual}
-                            onClick={() => cambiarPagina(index + 1)}
+                {/* Paginación */}
+                {totalPaginas > 1 && (
+                    <Pagination className="justify-content-center">
+                        <Pagination.Prev
+                            disabled={paginaActual === 1}
+                            onClick={() => cambiarPagina(paginaActual - 1)}
+                        />
+                        {[...Array(totalPaginas)].map((_, index) => (
+                            <Pagination.Item
+                                key={index + 1}
+                                active={index + 1 === paginaActual}
+                                onClick={() => cambiarPagina(index + 1)}
+                            >
+                                {index + 1}
+                            </Pagination.Item>
+                        ))}
+                        <Pagination.Next
+                            disabled={paginaActual === totalPaginas}
+                            onClick={() => cambiarPagina(paginaActual + 1)}
+                        />
+                    </Pagination>
+                )}
+
+                {/* Modal de Confirmación */}
+                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirmación</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {ingresoParaModificar?.activo
+                            ? "¿Estás seguro de que deseas desactivar este ingreso?"
+                            : "¿Estás seguro de que deseas activar este ingreso?"}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button
+                            className="thm-btn-2 thm-btn-small"
+                            onClick={() => setShowModal(false)}
                         >
-                            {index + 1}
-                        </Pagination.Item>
-                    ))}
-                    <Pagination.Next disabled={paginaActual === totalPaginas} onClick={() => cambiarPagina(paginaActual + 1)} />
-                </Pagination>
-            )}
-
-            {/* Modal de Confirmación */}
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirmación</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {ingresoParaModificar?.activo
-                        ? "¿Estás seguro de que deseas desactivar este ingreso?"
-                        : "¿Estás seguro de que deseas activar este ingreso?"}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
-                    <Button variant={ingresoParaModificar?.activo ? "danger" : "success"} onClick={modificarIngreso}>
-                        {ingresoParaModificar?.activo ? "Desactivar" : "Activar"}
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                            Cancelar
+                        </button>
+                        <button
+                            className={
+                                ingresoParaModificar?.activo
+                                    ? "thm-btn thm-btn-small btn-eliminar"
+                                    : "thm-btn thm-btn-small btn-crear"
+                            }
+                            onClick={modificarIngreso}
+                        >
+                            {ingresoParaModificar?.activo
+                                ? "Desactivar"
+                                : "Activar"}
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
         </div>
     );
 };
