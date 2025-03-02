@@ -1,5 +1,5 @@
 const IngresosModel = require("../models/ingresosModel");
-const Usuario = require("../models/usuarioModel"); // Asegúrate de que aquí esté el modelo correcto
+const Usuario = require("../models/usuarioModel");
 
 const ingresosService = {
     async registrarIngreso({ cedula, monto, descripcion, servicio, estado, nota }) {
@@ -25,6 +25,19 @@ const ingresosService = {
         // Guardar en la base de datos
         await nuevoIngreso.save();
         return nuevoIngreso;
+    },
+
+    // Buscar un usuario por cédula
+    async buscarUsuarioPorCedula(cedula) {
+        try {
+            const usuario = await Usuario.findOne({ cedula });
+            if (!usuario) {
+                throw new Error("Usuario no encontrado.");
+            }
+            return usuario;
+        } catch (error) {
+            throw new Error("Error al buscar el usuario: " + error.message);
+        }
     },
 
     async obtenerIngresos() {

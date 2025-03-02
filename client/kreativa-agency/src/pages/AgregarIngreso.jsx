@@ -7,6 +7,30 @@ import { useState } from "react";
 
 const AgregarIngreso = () => {
     const [mensaje, setMensaje] = useState("");
+    const [cedula, setCedula] = useState("");
+    const [nombreCliente, setNombreCliente] = useState("");
+    const [errorCedula, setErrorCedula] = useState("");
+
+    // Buscar el nombre del cliente por cédula
+    const buscarNombreCliente = async () => {
+        if (cedula.trim() === "") return;
+
+        try {
+            const response = await fetch(`http://localhost:4000/api/ingresos/buscarPorCedula/${cedula}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                setNombreCliente(data.nombre);  // Asigna el nombre del cliente
+                setErrorCedula("");  // Limpiar el error si todo está bien
+            } else {
+                setNombreCliente("");  // Limpiar el nombre si no se encuentra el cliente
+                setErrorCedula("Cliente no encontrado");  // Mostrar mensaje de error
+            }
+        } catch (error) {
+            console.error("Error al buscar el cliente:", error);
+            setErrorCedula("Error al buscar cliente");  // En caso de error en la API
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -14,7 +38,6 @@ const AgregarIngreso = () => {
         const fecha = event.target.fecha.value;
         const monto = event.target.monto.value;
         const descripcion = event.target.descripcion.value;
-        const cedula = event.target.cedula.value;
         const servicio = event.target.servicio.value;
         const estado = event.target.estado.value;
         const nota = event.target.nota.value;
@@ -22,13 +45,12 @@ const AgregarIngreso = () => {
         const data = {
             fecha,
             monto,
-            descripcion,  // Agregado
+            descripcion,
             cedula,
             servicio,
             estado,
             nota,
-            // fecha_creacion y ultima_modificacion son automáticos en Mongoose, no es necesario enviarlos desde el frontend
-            activo: true  // Si no estás cambiando el estado, se puede dejar por defecto como true
+            activo: true
         };
 
         try {
@@ -77,7 +99,7 @@ const AgregarIngreso = () => {
                                         type="text"
                                         placeholder="Descripción"
                                         required
-                                        name="descripcion"  // Nuevo campo
+                                        name="descripcion"
                                         className="form_input"
                                     />
                                 </div>
@@ -87,12 +109,36 @@ const AgregarIngreso = () => {
                                 <div className="col">
                                     <input
                                         type="text"
-                                        placeholder="Cédula"
+                                        value={cedula}
+                                        onChange={(e) => setCedula(e.target.value)}
+                                        onBlur={buscarNombreCliente}
+                                        placeholder="Ingrese la cédula"
                                         required
-                                        name="cedula"
                                         className="form_input"
                                     />
                                 </div>
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        value={nombreCliente}
+                                        readOnly
+                                        placeholder="Nombre del cliente"
+                                        className="form_input"
+                                    />
+                                </div>
+                            </div>
+
+                            {errorCedula && (
+                                <div className="row">
+                                    <div className="col">
+                                        <Alert variant="danger" className="mt-2">
+                                            {errorCedula}
+                                        </Alert>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="row">
                                 <div className="col">
                                     <input
                                         type="text"

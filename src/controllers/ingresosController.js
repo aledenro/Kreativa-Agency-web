@@ -1,4 +1,5 @@
 const ingresosService = require("../services/ingresosService");
+const Usuario = require("../models/usuarioModel");
 
 const ingresosController = {
     async registrarIngreso(req, res) {
@@ -19,6 +20,18 @@ const ingresosController = {
             res.status(200).json(ingresos);
         } catch (error) {
             res.status(500).json({ message: "Error al obtener ingresos." });
+        }
+    },
+
+    async buscarUsuarioPorCedula(req, res) {
+        try {
+            const usuario = await Usuario.findOne({ cedula: req.params.cedula });
+            if (!usuario) {
+                return res.status(404).json({ message: "Usuario no encontrado" });
+            }
+            return res.status(200).json(usuario);
+        } catch (error) {
+            return res.status(500).json({ message: "Error al buscar usuario", error: error.message });
         }
     },
 

@@ -22,13 +22,17 @@ const IngresosModel = new mongoose.Schema(
             required: true,
             validate: {
                 validator: async function (cedula) {
-                    console.log('Buscando cliente con cédula:', cedula); // Aquí agregamos un log
+                    console.log('Buscando cliente con cédula:', cedula);
                     const usuario = await Usuario.findOne({ cedula });
-                    console.log('Cliente encontrado:', usuario); // Aquí agregamos otro log
+                    console.log('Cliente encontrado:', usuario);
                     return !!usuario; // Devuelve true si existe, false si no
                 },
                 message: "La cédula ingresada no pertenece a un usuario registrado.",
             },
+        },
+        nombre_cliente: { 
+            type: String, 
+            required: true 
         },
         servicio: {
             type: String,
@@ -64,6 +68,6 @@ const IngresosModel = new mongoose.Schema(
 IngresosModel.pre("save", function (next) {
     this.ultima_modificacion = Date.now();
     next();
-}); // Actualiza la última modificación automáticamente
+});
 
 module.exports = mongoose.model("ingresos", IngresosModel);

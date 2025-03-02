@@ -7,7 +7,7 @@ import { Modal } from "react-bootstrap";
 
 const VerIngresos = () => {
     const [ingresos, setIngresos] = useState([]);
-    const [clientes, setClientes] = useState([]); // Agregado para almacenar clientes
+    const [clientes, setClientes] = useState([]); // Almacenar clientes
     const [showModal, setShowModal] = useState(false);
     const [ingresoParaModificar, setIngresoParaModificar] = useState(null);
 
@@ -27,7 +27,7 @@ const VerIngresos = () => {
 
                 const resClientes = await axios.get(
                     "http://localhost:4000/api/usuario"
-                ); // Asegúrate de tener un endpoint para obtener clientes
+                );
                 setClientes(resClientes.data);
             } catch (error) {
                 console.error(
@@ -42,8 +42,7 @@ const VerIngresos = () => {
 
     // Filtrar ingresos por búsqueda y estado
     const ingresosFiltrados = ingresos.filter((ingreso) => {
-        // Filtro directamente por la cédula
-        const cédulaCliente = ingreso.cedula; // Ahora la cédula es lo que se busca
+        const cédulaCliente = ingreso.cedula;
 
         return (
             (estadoFiltro === "Todos" ||
@@ -99,6 +98,10 @@ const VerIngresos = () => {
         setShowModal(true);
     };
 
+    const obtenerNombreCliente = (ingreso) => {
+        return ingreso.nombre_cliente || "Desconocido"; // Directamente accedemos al nombre ingresado
+    };
+
     return (
         <div>
             <Navbar />
@@ -130,7 +133,7 @@ const VerIngresos = () => {
                             <th>Fecha</th>
                             <th>Monto</th>
                             <th>Cédula</th>
-                            <th>Nombre Cliente</th> {/* Nueva columna */}
+                            <th>Nombre Cliente</th>
                             <th>Servicio</th>
                             <th>Descripción</th>
                             <th>Nota</th>
@@ -153,12 +156,9 @@ const VerIngresos = () => {
                                             ingreso.fecha
                                         ).toLocaleDateString()}
                                     </td>
-                                    <td>{ingreso.monto}</td>
+                                    <td>₡{ingreso.monto}</td>
                                     <td>{ingreso.cedula}</td>
-                                    <td>
-                                        {ingreso.nombreCliente || "Desconocido"}
-                                    </td>{" "}
-                                    {/* Mostrar nombre */}
+                                    <td>{obtenerNombreCliente(ingreso)}</td> {/* Nombre Cliente */}
                                     <td>{ingreso.servicio}</td>
                                     <td>{ingreso.descripcion}</td>
                                     <td>{ingreso.nota}</td>
@@ -177,16 +177,13 @@ const VerIngresos = () => {
                                             </Button>
                                         </Link>{" "}
                                         <button
-                                            className={
-                                                ingreso.activo
-                                                    ? "thm-btn thm-btn-small btn-eliminar"
-                                                    : "thm-btn thm-btn-small btn-crear"
+                                            className={ingreso.activo
+                                                ? "thm-btn thm-btn-small btn-eliminar"
+                                                : "thm-btn thm-btn-small btn-crear"
                                             }
                                             onClick={() => abrirModal(ingreso)}
                                         >
-                                            {ingreso.activo
-                                                ? "Desactivar"
-                                                : "Activar"}
+                                            {ingreso.activo ? "Desactivar" : "Activar"}
                                         </button>
                                     </td>
                                 </tr>
@@ -236,10 +233,9 @@ const VerIngresos = () => {
                             Cancelar
                         </button>
                         <button
-                            className={
-                                ingresoParaModificar?.activo
-                                    ? "thm-btn thm-btn-small btn-eliminar"
-                                    : "thm-btn thm-btn-small btn-crear"
+                            className={ingresoParaModificar?.activo
+                                ? "thm-btn thm-btn-small btn-eliminar"
+                                : "thm-btn thm-btn-small btn-crear"
                             }
                             onClick={modificarIngreso}
                         >
