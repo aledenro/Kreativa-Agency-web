@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import axios from "axios";
-import { Table, Button, Form } from "react-bootstrap";
+import { Table, Button, Form, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 
 const VerEgresos = () => {
     const [egresos, setEgresos] = useState([]);
-    const [mostrarInactivos, setMostrarInactivos] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [egresoParaModificar, setEgresoParaModificar] = useState(null);
 
     const [categoriaFiltro, setCategoriaFiltro] = useState(""); // Filtro por categoría
     const [estadoFiltro, setEstadoFiltro] = useState("Todos"); // Filtro por estado
+
+    const [paginaActual, setPaginaActual] = useState(1); // Paginación
+    const egresosPorPagina = 5; // Cantidad de egresos por página
 
     useEffect(() => {
         const obtenerEgresos = async () => {
@@ -73,6 +75,20 @@ const VerEgresos = () => {
         return cumpleEstado && cumpleCategoria;
     });
 
+    // Paginación
+    const indiceUltimoEgreso = paginaActual * egresosPorPagina;
+    const indicePrimerEgreso = indiceUltimoEgreso - egresosPorPagina;
+    const egresosPaginados = egresosFiltrados.slice(
+        indicePrimerEgreso,
+        indiceUltimoEgreso
+    );
+
+    const totalPaginas = Math.ceil(egresosFiltrados.length / egresosPorPagina);
+
+    const cambiarPagina = (num) => {
+        if (num >= 1 && num <= totalPaginas) setPaginaActual(num);
+    };
+
     return (
         <div>
             <Navbar />
@@ -111,50 +127,41 @@ const VerEgresos = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {egresosFiltrados.length === 0 ? (
+                        {egresosPaginados.length === 0 ? (
                             <tr>
-                                <td colSpan="7">
-                                    No hay egresos para mostrar.
-                                </td>
+                                <td colSpan="7">No hay egresos para mostrar.</td>
                             </tr>
                         ) : (
-                            egresosFiltrados.map((egreso) => (
+                            egresosPaginados.map((egreso) => (
                                 <tr key={egreso._id}>
                                     <td>
-                                        {new Date(
-                                            egreso.fecha
-                                        ).toLocaleDateString()}
+                                        {new Date(egreso.fecha).toLocaleDateString()}
                                     </td>
-                                    <td>{egreso.monto}</td>
+                                    <td>₡{egreso.monto}</td>
                                     <td>{egreso.categoria}</td>
                                     <td>{egreso.descripcion}</td>
                                     <td>{egreso.proveedor}</td>
                                     <td>
                                         {egreso.activo ? "Activo" : "Inactivo"}
                                     </td>
-
                                     <td>
-                                        <Link
-                                            to={`/egreso/editar/${egreso._id}`}
-                                        >
-                                            <button
+                                        <Link to={`/egreso/editar/${egreso._id}`}>
+                                            <Button
                                                 className="thm-btn thm-btn-small btn-editar"
                                                 disabled={!egreso.activo}
                                             >
                                                 Editar
-                                            </button>
+                                            </Button>
                                         </Link>{" "}
                                         <button
-                                            class={
+                                            className={
                                                 egreso.activo
                                                     ? "thm-btn thm-btn-small btn-eliminar"
                                                     : "thm-btn thm-btn-small btn-crear"
                                             }
                                             onClick={() => abrirModal(egreso)}
                                         >
-                                            {egreso.activo
-                                                ? "Desactivar"
-                                                : "Activar"}
+                                            {egreso.activo ? "Desactivar" : "Activar"}
                                         </button>
                                     </td>
                                 </tr>
@@ -162,6 +169,29 @@ const VerEgresos = () => {
                         )}
                     </tbody>
                 </Table>
+
+                {/* Paginación */}
+                {totalPaginas > 1 && (
+                    <Pagination className="justify-content-center">
+                        <Pagination.Prev
+                            disabled={paginaActual === 1}
+                            onClick={() => cambiarPagina(paginaActual - 1)}
+                        />
+                        {[...Array(totalPaginas)].map((_, index) => (
+                            <Pagination.Item
+                                key={index + 1}
+                                active={index + 1 === paginaActual}
+                                onClick={() => cambiarPagina(index + 1)}
+                            >
+                                {index + 1}
+                            </Pagination.Item>
+                        ))}
+                        <Pagination.Next
+                            disabled={paginaActual === totalPaginas}
+                            onClick={() => cambiarPagina(paginaActual + 1)}
+                        />
+                    </Pagination>
+                )}
 
                 {/* Modal de Confirmación */}
                 <Modal show={showModal} onHide={() => setShowModal(false)}>

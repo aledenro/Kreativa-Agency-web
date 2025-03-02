@@ -4,13 +4,13 @@ import Alert from "react-bootstrap/Alert";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Usa useNavigate en lugar de useHistory
+import { useParams, useNavigate } from "react-router-dom";
 
 const EditarIngreso = () => {
     const [mensaje, setMensaje] = useState("");
     const [ingreso, setIngreso] = useState(null);
-    const { id } = useParams(); // Obtener el ID del ingreso desde la URL
-    const navigate = useNavigate(); // Usa useNavigate en lugar de useHistory
+    const { id } = useParams();
+    const navigate = useNavigate();
 
     // Obtener los detalles del ingreso cuando el componente se monta
     useEffect(() => {
@@ -47,15 +47,14 @@ const EditarIngreso = () => {
             servicio,
             estado,
             nota,
-            activo: true, // Si no estás cambiando el estado, se puede dejar por defecto como true
+            activo: true,
         };
 
         try {
             const res = await axios.put(`http://localhost:4000/api/ingresos/${id}`, data);
             console.log(res.data);
             setMensaje("¡Ingreso actualizado exitosamente!");
-            // Redirigir a otra página (por ejemplo, la lista de ingresos) después de la edición
-            navigate("/ingresos"); // Usa navigate para redirigir
+            navigate("/ingresos");
         } catch (error) {
             console.error(error.message);
             setMensaje("Error al actualizar el ingreso.");
@@ -63,7 +62,7 @@ const EditarIngreso = () => {
     };
 
     if (!ingreso) {
-        return <div>Cargando...</div>; // Muestra un mensaje mientras se cargan los datos del ingreso
+        return <div>Cargando...</div>;
     }
 
     return (
@@ -84,7 +83,7 @@ const EditarIngreso = () => {
                                         required
                                         name="fecha"
                                         className="form_input"
-                                        defaultValue={ingreso.fecha.split("T")[0]} // Valor por defecto desde los datos cargados
+                                        defaultValue={ingreso.fecha.split("T")[0]}
                                     />
                                 </div>
                                 <div className="col">
@@ -116,11 +115,22 @@ const EditarIngreso = () => {
                                     <input
                                         type="text"
                                         placeholder="Cédula"
-                                        required
+                                        disabled
                                         name="cedula"
                                         className="form_input"
                                         defaultValue={ingreso.cedula}
                                     />
+                                </div>
+                                <div className="row">
+                                    <div className="col">
+                                        <input
+                                            type="text"
+                                            placeholder="Nombre del cliente"
+                                            disabled
+                                            className="form_input"
+                                            defaultValue={ingreso.nombre_cliente}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="col">
                                     <input
