@@ -26,6 +26,26 @@ export default function Navbar() {
                 </li>
                 <li className="dropdown">
                     <a href="#" className="dropdown-toggle">
+                        Empleados
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <a href="/agregar-pto">Agregar PTO</a>
+                        </li>
+
+                        <li>
+                            <a href="/ver-pto-empleados">Ver PTO Empleado</a>
+                        </li>
+                        <li>
+                            <a href="/jerarquia">Jerarquía</a>
+                        </li>
+                        <li>
+                            <a href="/perfil">Perfil</a>
+                        </li>
+                    </ul>
+                </li>
+                <li className="dropdown">
+                    <a href="#" className="dropdown-toggle">
                         Servicios
                     </a>
                     <ul className="dropdown-menu">
