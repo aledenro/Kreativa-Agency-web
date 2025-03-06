@@ -3,6 +3,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 import { jwtDecode } from "jwt-decode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faEye,
+    faPencil,
+    faToggleOff,
+    faToggleOn,
+    faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Usuarios = () => {
     const navigate = useNavigate();
@@ -248,7 +256,7 @@ const Usuarios = () => {
                                                 handleVerUsuario(usuario._id)
                                             }
                                         >
-                                            Ver
+                                            <FontAwesomeIcon icon={faEye} />
                                         </button>
                                         <button
                                             className="thm-btn thm-btn-small btn-azul"
@@ -256,10 +264,10 @@ const Usuarios = () => {
                                                 handleEditarUsuario(usuario._id)
                                             }
                                         >
-                                            Editar
+                                            <FontAwesomeIcon icon={faPencil} />
                                         </button>
                                         <button
-                                            className={`thm-btn thm-btn-small ${usuario.estado === "Activo" ? "btn-naranja" : "btn-activar"}`}
+                                            className={`thm-btn thm-btn-small ${usuario.estado === "Activo" ? "btn-verde" : "btn-naranja"}`}
                                             onClick={() =>
                                                 handleActivarDesactivar(
                                                     usuario._id,
@@ -267,9 +275,15 @@ const Usuarios = () => {
                                                 )
                                             }
                                         >
-                                            {usuario.estado === "Activo"
-                                                ? "Desactivar"
-                                                : "Activar"}
+                                            {usuario.estado === "Activo" ? (
+                                                <FontAwesomeIcon
+                                                    icon={faToggleOff}
+                                                />
+                                            ) : (
+                                                <FontAwesomeIcon
+                                                    icon={faToggleOn}
+                                                />
+                                            )}
                                         </button>
                                         <button
                                             className="thm-btn thm-btn-small btn-rojo"
@@ -277,7 +291,7 @@ const Usuarios = () => {
                                                 handleEliminar(usuario._id)
                                             }
                                         >
-                                            Eliminar
+                                            <FontAwesomeIcon icon={faTrash} />
                                         </button>
                                     </div>
                                 </td>

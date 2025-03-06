@@ -3,7 +3,12 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+    faCheck,
+    faPencil,
+    faToggleOff,
+    faToggleOn,
+} from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/Navbar/Navbar";
 
 const DetalleServicio = () => {
@@ -105,18 +110,22 @@ const DetalleServicio = () => {
                                         handleModificar(servicio._id)
                                     }
                                 >
-                                    Modificar
+                                    <FontAwesomeIcon icon={faPencil} />
                                 </button>
                                 <button
-                                    className={`thm-btn btn-rojo thm-btn-small ${
+                                    className={`thm-btn thm-btn-small ${
                                         servicio.activo
-                                            ? "thm-btn thm-btn-danger"
-                                            : "thm-btn thm-btn-success"
+                                            ? "btn-rojo"
+                                            : "btn-verde"
                                     } ms-2`}
                                     type="button"
                                     onClick={toggleEstadoServicio}
                                 >
-                                    {servicio.activo ? "Desactivar" : "Activar"}
+                                    {servicio.activo ? (
+                                        <FontAwesomeIcon icon={faToggleOn} />
+                                    ) : (
+                                        <FontAwesomeIcon icon={faToggleOff} />
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -220,13 +229,15 @@ const DetalleServicio = () => {
                                                                 )
                                                             }
                                                         >
-                                                            Modificar
+                                                            <FontAwesomeIcon
+                                                                icon={faPencil}
+                                                            />
                                                         </button>
                                                         <button
-                                                            className={`thm-btn thm-btn-small btn-rojo ${
+                                                            className={`thm-btn thm-btn-small ${
                                                                 paquete.activo
-                                                                    ? "thm-btn-danger"
-                                                                    : "thm-btn-success"
+                                                                    ? "btn-verde"
+                                                                    : "btn-rojo"
                                                             }`}
                                                             onClick={() =>
                                                                 toggleEstadoPaquete(
@@ -235,9 +246,19 @@ const DetalleServicio = () => {
                                                                 )
                                                             }
                                                         >
-                                                            {paquete.activo
-                                                                ? "Desactivar"
-                                                                : "Activar"}
+                                                            {paquete.activo ? (
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        faToggleOn
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        faToggleOff
+                                                                    }
+                                                                />
+                                                            )}
                                                         </button>
                                                     </div>
                                                 </div>

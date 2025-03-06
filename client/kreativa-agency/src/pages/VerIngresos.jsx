@@ -4,6 +4,12 @@ import axios from "axios";
 import { Table, Button, Form, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faPencil,
+    faToggleOff,
+    faToggleOn,
+} from "@fortawesome/free-solid-svg-icons";
 
 const VerIngresos = () => {
     const [ingresos, setIngresos] = useState([]);
@@ -176,20 +182,28 @@ const VerIngresos = () => {
                                                 className="thm-btn thm-btn-small btn-azul"
                                                 disabled={!ingreso.activo}
                                             >
-                                                Editar
+                                                <FontAwesomeIcon
+                                                    icon={faPencil}
+                                                />
                                             </Button>
                                         </Link>{" "}
                                         <button
                                             className={
                                                 ingreso.activo
-                                                    ? "thm-btn thm-btn-small btn-rojo"
-                                                    : "thm-btn thm-btn-small btn-amarillo"
+                                                    ? "thm-btn thm-btn-small btn-verde"
+                                                    : "thm-btn thm-btn-small btn-rojo"
                                             }
                                             onClick={() => abrirModal(ingreso)}
                                         >
-                                            {ingreso.activo
-                                                ? "Desactivar"
-                                                : "Activar"}
+                                            {ingreso.activo ? (
+                                                <FontAwesomeIcon
+                                                    icon={faToggleOn}
+                                                />
+                                            ) : (
+                                                <FontAwesomeIcon
+                                                    icon={faToggleOff}
+                                                />
+                                            )}
                                         </button>
                                     </td>
                                 </tr>

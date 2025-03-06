@@ -651,9 +651,9 @@ h3 {
 /* Botones pequeños */
 .thm-btn-small {
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: 14px;
     border-radius: var(--kreativa-bdr-radius);
-    min-width: 80px;
+    min-width: 60px;
     text-align: center;
     margin-left: 10px;
 }

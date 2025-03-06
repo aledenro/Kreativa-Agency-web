@@ -292,9 +292,11 @@ const EditarTarea = () => {
                             </small>
                         </div>
                         <div className="col mx-3">
-                            <label htmlFor="estado">Estado</label>
+                            <label htmlFor="estado" className="form-label">
+                                Estado
+                            </label>
                             <select
-                                className="form-select"
+                                className="form-select form_input"
                                 name="estado"
                                 id="estado"
                                 onChange={handleChangeEstado}
@@ -320,7 +322,7 @@ const EditarTarea = () => {
                                 Proyecto
                             </label>
                             <select
-                                className="form-select"
+                                className="form-select form_input"
                                 name="proyecto"
                                 id="proyecto"
                                 disabled={
@@ -375,7 +377,7 @@ const EditarTarea = () => {
                                 Colaborador
                             </label>
                             <select
-                                className="form-select"
+                                className="form-select form_input"
                                 name="colab"
                                 id="colab"
                                 disabled={
@@ -398,7 +400,7 @@ const EditarTarea = () => {
                                         Prioridad
                                     </label>
                                     <select
-                                        className="form-select"
+                                        className="form-select form_input"
                                         name="prioridad"
                                         id="prioridad"
                                         disabled={
@@ -425,7 +427,7 @@ const EditarTarea = () => {
                                     </label>
                                     <input
                                         type="date"
-                                        className="form-control"
+                                        className="form-control form_input"
                                         id="fecha_entrega"
                                         name="fecha_entrega"
                                         required

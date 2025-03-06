@@ -244,9 +244,11 @@ const AgregarProyecto = () => {
                             </small>
                         </div>
                         <div className="col mx-3">
-                            <label htmlFor="estado">Estado</label>
+                            <label htmlFor="estado" className="form-label">
+                                Estado
+                            </label>
                             <select
-                                className="form-select"
+                                className="form-select form_input"
                                 name="estado"
                                 id="estado"
                                 onChange={handleChangeEstado}
@@ -303,7 +305,7 @@ const AgregarProyecto = () => {
                                 Cliente
                             </label>
                             <select
-                                className="form-select"
+                                className="form-select form_input"
                                 name="cliente"
                                 id="cliente"
                                 onChange={handleChange}

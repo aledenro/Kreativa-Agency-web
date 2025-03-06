@@ -9,6 +9,8 @@ import {
     faCaretRight,
     faCaretLeft,
     faBackward,
+    faEye,
+    faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
@@ -277,7 +279,7 @@ const ListadoTareas = () => {
                                                     setShowModal(true);
                                                 }}
                                             >
-                                                Ver
+                                                <FontAwesomeIcon icon={faEye} />
                                             </button>
                                             <button
                                                 className="thm-btn thm-btn-small btn-azul"
@@ -285,7 +287,9 @@ const ListadoTareas = () => {
                                                     handleEditar(tarea._id)
                                                 }
                                             >
-                                                Editar
+                                                <FontAwesomeIcon
+                                                    icon={faPencil}
+                                                />
                                             </button>
                                         </div>
                                     </td>
