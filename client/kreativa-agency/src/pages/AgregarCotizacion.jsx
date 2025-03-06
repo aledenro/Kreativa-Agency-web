@@ -96,7 +96,7 @@ const AgregarCotizacion = () => {
                             </label>
                             <textarea
                                 name="descripcion"
-                                className="form_text_area"
+                                className="form_input form-textarea"
                                 id="descripcion"
                                 rows={5}
                                 placeholder="Describa su solicitud"

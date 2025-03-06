@@ -26,9 +26,12 @@ const EditarUsuario = () => {
                     return;
                 }
 
-                const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const { data } = await axios.get(
+                    `http://localhost:4000/api/usuarios/${id}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
 
                 setFormData({
                     nombre: data.nombre,
@@ -38,7 +41,10 @@ const EditarUsuario = () => {
                     cedula: data.cedula,
                 });
             } catch (error) {
-                console.error("Error al obtener usuario:", error.response?.data || error);
+                console.error(
+                    "Error al obtener usuario:",
+                    error.response?.data || error
+                );
                 setErrorServidor("Error al cargar los datos del usuario.");
             }
         };
@@ -61,7 +67,10 @@ const EditarUsuario = () => {
         if (!value) {
             errorMsg = "Este campo es obligatorio";
         } else {
-            if (name === "email" && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
+            if (
+                name === "email" &&
+                !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
+            ) {
                 errorMsg = "Correo no válido";
             }
             if (name === "cedula" && !/^\d{8,9}$/.test(value)) {
@@ -78,19 +87,24 @@ const EditarUsuario = () => {
                         return;
                     }
 
-                    const response = await axios.get(`http://localhost:4000/api/usuarios`, {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
+                    const response = await axios.get(
+                        `http://localhost:4000/api/usuarios`,
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    );
 
-                    const existe = response.data.some((user) => user[name] === value && user._id !== id);
+                    const existe = response.data.some(
+                        (user) => user[name] === value && user._id !== id
+                    );
 
                     if (existe) {
                         errorMsg =
                             name === "usuario"
                                 ? "Este usuario ya está en uso"
                                 : name === "email"
-                                ? "Este correo ya está registrado"
-                                : "Esta cédula ya está registrada";
+                                  ? "Este correo ya está registrado"
+                                  : "Esta cédula ya está registrada";
                     }
                 } catch (error) {
                     console.error("Error al verificar disponibilidad:", error);
@@ -105,7 +119,9 @@ const EditarUsuario = () => {
         e.preventDefault();
         setErrorServidor("");
 
-        const camposConError = Object.values(errors).some((error) => error !== "");
+        const camposConError = Object.values(errors).some(
+            (error) => error !== ""
+        );
         if (camposConError) {
             alert("Por favor, corrige los errores antes de continuar.");
             return;
@@ -118,14 +134,21 @@ const EditarUsuario = () => {
                 return;
             }
 
-            await axios.put(`http://localhost:4000/api/usuarios/${id}`, formData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await axios.put(
+                `http://localhost:4000/api/usuarios/${id}`,
+                formData,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
 
             alert("Usuario actualizado correctamente");
             navigate("/usuarios");
         } catch (error) {
-            console.error("Error al actualizar usuario:", error.response?.data || error);
+            console.error(
+                "Error al actualizar usuario:",
+                error.response?.data || error
+            );
             setErrorServidor("Error al actualizar el usuario.");
         }
     };
@@ -137,7 +160,11 @@ const EditarUsuario = () => {
                 <div className="section-title text-center">
                     <h1>Editar Usuario</h1>
                 </div>
-                {errorServidor && <div className="alert alert-danger kreativa-alert">{errorServidor}</div>}
+                {errorServidor && (
+                    <div className="alert alert-danger kreativa-alert">
+                        {errorServidor}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="col-lg-6 mx-auto">
                     <div className="form-group mb-3">
@@ -150,7 +177,11 @@ const EditarUsuario = () => {
                             onChange={handleInputChange}
                             required
                         />
-                        {errors.nombre && <small className="text-danger">{errors.nombre}</small>}
+                        {errors.nombre && (
+                            <small className="text-danger">
+                                {errors.nombre}
+                            </small>
+                        )}
                     </div>
 
                     <div className="form-group mb-3">
@@ -163,7 +194,11 @@ const EditarUsuario = () => {
                             onChange={handleInputChange}
                             required
                         />
-                        {errors.usuario && <small className="text-danger">{errors.usuario}</small>}
+                        {errors.usuario && (
+                            <small className="text-danger">
+                                {errors.usuario}
+                            </small>
+                        )}
                     </div>
 
                     <div className="form-group mb-3">
@@ -187,7 +222,11 @@ const EditarUsuario = () => {
                             onChange={handleInputChange}
                             required
                         />
-                        {errors.email && <small className="text-danger">{errors.email}</small>}
+                        {errors.email && (
+                            <small className="text-danger">
+                                {errors.email}
+                            </small>
+                        )}
                     </div>
 
                     <div className="form-group mb-3">
@@ -209,8 +248,10 @@ const EditarUsuario = () => {
                     <div className="d-flex justify-content-between">
                         <button
                             type="submit"
-                            className="thm-btn btn-guardar"
-                            disabled={Object.values(errors).some((e) => e !== "")}
+                            className="thm-btn"
+                            disabled={Object.values(errors).some(
+                                (e) => e !== ""
+                            )}
                         >
                             Guardar Cambios
                         </button>

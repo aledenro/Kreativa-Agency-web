@@ -143,7 +143,7 @@ const AgregarProyecto = () => {
                             </label>
                             <textarea
                                 name="descripcion"
-                                className="form_text_area"
+                                className="form_input form-textarea"
                                 id="descripcion"
                                 rows={5}
                                 placeholder="Describa su solicitud"
@@ -155,7 +155,7 @@ const AgregarProyecto = () => {
                                 Cliente
                             </label>
                             <select
-                                className="form-select"
+                                className="form_input form-select"
                                 name="cliente"
                                 id="cliente"
                             >
@@ -196,7 +196,7 @@ const AgregarProyecto = () => {
                                     </label>
                                     <input
                                         type="date"
-                                        className="form-control"
+                                        className="form-control form_input"
                                         id="fecha_entrega"
                                         name="fecha_entrega"
                                         required

@@ -9,6 +9,8 @@ import {
     faCaretRight,
     faCaretLeft,
     faBackward,
+    faEye,
+    faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
@@ -143,7 +145,7 @@ const ListadoTareas = () => {
                     </div>
                     <div className="col text-end">
                         <button
-                            className="thm-btn btn-crear"
+                            className="thm-btn btn-verde"
                             onClick={() => navigate("/tarea/agregar")}
                         >
                             Crear Tarea
@@ -271,21 +273,23 @@ const ListadoTareas = () => {
                                     <td className="acciones">
                                         <div className="botones-grupo">
                                             <button
-                                                className="thm-btn thm-btn-small btn-ver"
+                                                className="thm-btn thm-btn-small btn-amarillo"
                                                 onClick={() => {
                                                     setTareaModal(tarea);
                                                     setShowModal(true);
                                                 }}
                                             >
-                                                Ver
+                                                <FontAwesomeIcon icon={faEye} />
                                             </button>
                                             <button
-                                                className="thm-btn thm-btn-small btn-editar"
+                                                className="thm-btn thm-btn-small btn-azul"
                                                 onClick={() =>
                                                     handleEditar(tarea._id)
                                                 }
                                             >
-                                                Editar
+                                                <FontAwesomeIcon
+                                                    icon={faPencil}
+                                                />
                                             </button>
                                         </div>
                                     </td>
@@ -412,7 +416,7 @@ const ListadoTareas = () => {
                         </label>
                         <textarea
                             name="descripcion"
-                            className="form_text_area"
+                            className="form_input form-textarea"
                             id="descripcion"
                             rows={7}
                             placeholder="Describa su solicitud"

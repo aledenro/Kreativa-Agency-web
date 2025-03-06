@@ -157,7 +157,7 @@ const AgregarTarea = () => {
                                 Proyecto
                             </label>
                             <select
-                                className="form-select"
+                                className="form-select form_input"
                                 name="proyecto"
                                 id="proyecto"
                             >
@@ -189,7 +189,7 @@ const AgregarTarea = () => {
                             </label>
                             <textarea
                                 name="descripcion"
-                                className="form_text_area"
+                                className="form_input form-textarea"
                                 id="descripcion"
                                 rows={7}
                                 placeholder="Describa su solicitud"
@@ -197,11 +197,11 @@ const AgregarTarea = () => {
                             ></textarea>
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="colab" className="form-label">
+                            <label htmlFor="colab" className="form-label ">
                                 Colaborador
                             </label>
                             <select
-                                className="form-select"
+                                className="form-select form_input"
                                 name="colab"
                                 id="colab"
                             >
@@ -222,7 +222,7 @@ const AgregarTarea = () => {
                                         Prioridad
                                     </label>
                                     <select
-                                        className="form-select"
+                                        className="form-select form_input"
                                         name="prioridad"
                                         id="prioridad"
                                     >
@@ -247,7 +247,7 @@ const AgregarTarea = () => {
                                     </label>
                                     <input
                                         type="date"
-                                        className="form-control"
+                                        className="form-control form_input"
                                         id="fecha_entrega"
                                         name="fecha_entrega"
                                         required
