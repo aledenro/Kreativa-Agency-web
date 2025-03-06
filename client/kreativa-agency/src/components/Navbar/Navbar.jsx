@@ -90,6 +90,11 @@ export default function Navbar() {
                         <li>
                             <a href="/proyecto/agregar">Agregar Proyecto</a>
                         </li>
+                        <li>
+                            <a href={`/proyecto/67c9454f6409700ee0b56f1e`}>
+                                Ver Detalle Proyecto
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li className="dropdown">

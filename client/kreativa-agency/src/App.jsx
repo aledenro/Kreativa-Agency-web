@@ -8,9 +8,9 @@ import AgregarCotizacion from "./pages/AgregarCotizacion";
 import AgregarEgreso from "./pages/AgregarEgreso";
 import VerEgresos from "./pages/VerEgresos";
 import EditarEgreso from "./pages/EditarEgreso";
-import VerIngresos from './pages/VerIngresos';
-import AgregarIngreso from './pages/AgregarIngreso';
-import EditarIngreso from './pages/EditarIngreso';
+import VerIngresos from "./pages/VerIngresos";
+import AgregarIngreso from "./pages/AgregarIngreso";
+import EditarIngreso from "./pages/EditarIngreso";
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
 import CrearUsuario from "./pages/CrearUsuario";
@@ -37,6 +37,7 @@ import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
 import AgregarPTO from "./pages/AgregarPTO";
 import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
+import VerDetalleProyecto from "./pages/VerDetalleProyecto";
 
 function App() {
     return (
@@ -82,26 +83,14 @@ function App() {
                     path="/egreso/agregar"
                     element={<AgregarEgreso />}
                 ></Route>
-                <Route
-                    path="/egresos"
-                    element={<VerEgresos />}>
-                </Route>
+                <Route path="/egresos" element={<VerEgresos />}></Route>
                 <Route
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
                 ></Route>
-                <Route
-                    path="/ingreso/agregar"
-                    element={<AgregarIngreso />}
-                />
-                <Route
-                    path="/ingresos"
-                    element={<VerIngresos />}
-                />
-                <Route
-                    path="/ingreso/editar/:id"
-                    element={<EditarIngreso />}
-                />
+                <Route path="/ingreso/agregar" element={<AgregarIngreso />} />
+                <Route path="/ingresos" element={<VerIngresos />} />
+                <Route path="/ingreso/editar/:id" element={<EditarIngreso />} />
 
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 
@@ -153,17 +142,15 @@ function App() {
                     path="/jerarquia"
                     element={<JerarquiaUsuarios />}
                 ></Route>
-                <Route
-                    path="/agregar-pto"
-                    element={<AgregarPTO />}
-                ></Route>
+                <Route path="/agregar-pto" element={<AgregarPTO />}></Route>
                 <Route
                     path="/ver-pto-empleados"
                     element={<VerPTOEmpleados />}
                 ></Route>
+                <Route path="/perfil" element={<VerPerfil />}></Route>
                 <Route
-                    path="/perfil"
-                    element={<VerPerfil />}
+                    path="/proyecto/:id"
+                    element={<VerDetalleProyecto />}
                 ></Route>
             </Routes>
         </Router>

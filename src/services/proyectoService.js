@@ -13,10 +13,9 @@ class ProyectoService {
 
     async getProyectoById(id) {
         try {
-            return await ProyectoModel.findById(id).populate(
-                "cliente_id",
-                "nombre"
-            );
+            return await ProyectoModel.findById(id)
+                .populate("cliente_id", "nombre")
+                .populate("historial_respuestas.usuario_id", "nombre");
         } catch (error) {
             throw new Error(`Error al obtener el proyecto: ${error.message}`);
         }
@@ -69,6 +68,19 @@ class ProyectoService {
             throw new Error(
                 `Error al actualizar el  log del proyecto con el id: ${id}`
             );
+        }
+    }
+
+    async addRespuesta(id, respuesta) {
+        try {
+            const proyecto = await ProyectoModel.findById(id);
+
+            proyecto["historial_respuestas"].push(respuesta);
+            await proyecto.save();
+
+            return proyecto["historial_respuestas"].at(-1);
+        } catch (error) {
+            throw new Error("Error al agregar la respuesta " + error.message);
         }
     }
 }
