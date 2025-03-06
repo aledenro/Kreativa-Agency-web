@@ -99,7 +99,7 @@ const DetalleServicio = () => {
                             </div>
                             <div className="col-lg text-end align-self-center">
                                 <button
-                                    className="thm-btn btn-editar thm-btn-small"
+                                    className="thm-btn btn-azul thm-btn-small"
                                     type="button"
                                     onClick={() =>
                                         handleModificar(servicio._id)
@@ -108,7 +108,7 @@ const DetalleServicio = () => {
                                     Modificar
                                 </button>
                                 <button
-                                    className={`thm-btn btn-eliminar thm-btn-small ${
+                                    className={`thm-btn btn-rojo thm-btn-small ${
                                         servicio.activo
                                             ? "thm-btn thm-btn-danger"
                                             : "thm-btn thm-btn-success"
@@ -213,7 +213,7 @@ const DetalleServicio = () => {
                                                         role="group"
                                                     >
                                                         <button
-                                                            className="thm-btn thm-btn-small btn-editar"
+                                                            className="thm-btn thm-btn-small btn-azul"
                                                             onClick={() =>
                                                                 handleModificarPaquete(
                                                                     paquete
@@ -223,7 +223,7 @@ const DetalleServicio = () => {
                                                             Modificar
                                                         </button>
                                                         <button
-                                                            className={`thm-btn thm-btn-small btn-eliminar ${
+                                                            className={`thm-btn thm-btn-small btn-rojo ${
                                                                 paquete.activo
                                                                     ? "thm-btn-danger"
                                                                     : "thm-btn-success"

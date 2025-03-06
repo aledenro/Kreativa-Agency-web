@@ -129,13 +129,17 @@ const VerEgresos = () => {
                     <tbody>
                         {egresosPaginados.length === 0 ? (
                             <tr>
-                                <td colSpan="7">No hay egresos para mostrar.</td>
+                                <td colSpan="7">
+                                    No hay egresos para mostrar.
+                                </td>
                             </tr>
                         ) : (
                             egresosPaginados.map((egreso) => (
                                 <tr key={egreso._id}>
                                     <td>
-                                        {new Date(egreso.fecha).toLocaleDateString()}
+                                        {new Date(
+                                            egreso.fecha
+                                        ).toLocaleDateString()}
                                     </td>
                                     <td>₡{egreso.monto}</td>
                                     <td>{egreso.categoria}</td>
@@ -145,9 +149,11 @@ const VerEgresos = () => {
                                         {egreso.activo ? "Activo" : "Inactivo"}
                                     </td>
                                     <td>
-                                        <Link to={`/egreso/editar/${egreso._id}`}>
+                                        <Link
+                                            to={`/egreso/editar/${egreso._id}`}
+                                        >
                                             <Button
-                                                className="thm-btn thm-btn-small btn-editar"
+                                                className="thm-btn thm-btn-small btn-azul"
                                                 disabled={!egreso.activo}
                                             >
                                                 Editar
@@ -156,12 +162,14 @@ const VerEgresos = () => {
                                         <button
                                             className={
                                                 egreso.activo
-                                                    ? "thm-btn thm-btn-small btn-eliminar"
-                                                    : "thm-btn thm-btn-small btn-crear"
+                                                    ? "thm-btn thm-btn-small btn-rojo"
+                                                    : "thm-btn thm-btn-small btn-amarillo"
                                             }
                                             onClick={() => abrirModal(egreso)}
                                         >
-                                            {egreso.activo ? "Desactivar" : "Activar"}
+                                            {egreso.activo
+                                                ? "Desactivar"
+                                                : "Activar"}
                                         </button>
                                     </td>
                                 </tr>
@@ -213,8 +221,8 @@ const VerEgresos = () => {
                         <button
                             className={
                                 egresoParaModificar?.activo
-                                    ? "thm-btn thm-btn-small btn-eliminar"
-                                    : "thm-btn thm-btn-small btn-crear"
+                                    ? "thm-btn thm-btn-small btn-rojo"
+                                    : "thm-btn thm-btn-small btn-amarillo"
                             }
                             onClick={modificarEgreso}
                         >

@@ -45,7 +45,7 @@ const VerCotizaciones = () => {
                 <div className="row mb-3">
                     <div className="col text-end">
                         <button
-                            className="thm-btn btn-crear"
+                            className="thm-btn btn-verde"
                             onClick={() => navigate("/cotizacion/agregar")}
                         >
                             Solicitar Cotización
@@ -77,8 +77,7 @@ const VerCotizaciones = () => {
                                 <td>{cotizacion.urgente ? "Si" : "No"}</td>
                                 <td>
                                     <button
-                                        className="thm-btn thm-btn-small btn-ver"
-
+                                        className="thm-btn thm-btn-small btn-amarillo"
                                         onClick={() =>
                                             handleVerDetalles(cotizacion._id)
                                         }

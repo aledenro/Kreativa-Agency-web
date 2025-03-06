@@ -158,7 +158,10 @@ const VerIngresos = () => {
                                     </td>
                                     <td>₡{ingreso.monto}</td>
                                     <td>{ingreso.cedula}</td>
-                                    <td>{obtenerNombreCliente(ingreso)}</td> {/* Nombre Cliente */}
+                                    <td>
+                                        {obtenerNombreCliente(ingreso)}
+                                    </td>{" "}
+                                    {/* Nombre Cliente */}
                                     <td>{ingreso.servicio}</td>
                                     <td>{ingreso.descripcion}</td>
                                     <td>{ingreso.nota}</td>
@@ -170,20 +173,23 @@ const VerIngresos = () => {
                                             to={`/ingreso/editar/${ingreso._id}`}
                                         >
                                             <Button
-                                                className="thm-btn thm-btn-small btn-editar"
+                                                className="thm-btn thm-btn-small btn-azul"
                                                 disabled={!ingreso.activo}
                                             >
                                                 Editar
                                             </Button>
                                         </Link>{" "}
                                         <button
-                                            className={ingreso.activo
-                                                ? "thm-btn thm-btn-small btn-eliminar"
-                                                : "thm-btn thm-btn-small btn-crear"
+                                            className={
+                                                ingreso.activo
+                                                    ? "thm-btn thm-btn-small btn-rojo"
+                                                    : "thm-btn thm-btn-small btn-amarillo"
                                             }
                                             onClick={() => abrirModal(ingreso)}
                                         >
-                                            {ingreso.activo ? "Desactivar" : "Activar"}
+                                            {ingreso.activo
+                                                ? "Desactivar"
+                                                : "Activar"}
                                         </button>
                                     </td>
                                 </tr>
@@ -233,9 +239,10 @@ const VerIngresos = () => {
                             Cancelar
                         </button>
                         <button
-                            className={ingresoParaModificar?.activo
-                                ? "thm-btn thm-btn-small btn-eliminar"
-                                : "thm-btn thm-btn-small btn-crear"
+                            className={
+                                ingresoParaModificar?.activo
+                                    ? "thm-btn thm-btn-small btn-rojo"
+                                    : "thm-btn thm-btn-small btn-amarillo"
                             }
                             onClick={modificarIngreso}
                         >
