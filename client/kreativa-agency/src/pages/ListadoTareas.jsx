@@ -24,13 +24,22 @@ const ListadoTareas = () => {
     const [filterColab, setFilterColab] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [tareaModal, setTareaModal] = useState({});
+    const [filterStatus, setFilterStatus] = useState("");
+
+    const rol = localStorage.getItem("tipo_usuario");
 
     useEffect(() => {
         const fetchTareas = async () => {
             try {
-                const response = await axios.get(
-                    "http://localhost:4000/api/tareas"
-                );
+                let url = "http://localhost:4000/";
+
+                const idUsuario = localStorage.getItem("user_id");
+
+                url += "api/tareas";
+
+                url += rol === "Colaborador" ? `/getByColab/${idUsuario}` : "";
+
+                const response = await axios.get(url);
                 setTareas(response.data.tareas);
             } catch (error) {
                 console.error(error.message);
@@ -58,7 +67,7 @@ const ListadoTareas = () => {
 
         fetchTareas();
         fetchColabs();
-    }, []);
+    }, [rol]);
 
     const handleChangeCantItems = (event) => {
         setItemsPag(event.target.value);
@@ -77,7 +86,7 @@ const ListadoTareas = () => {
         ));
     };
 
-    const tareasFiltradas =
+    let tareasFiltradas =
         filterColab !== ""
             ? tareas.filter(
                   (tarea) =>
@@ -86,6 +95,16 @@ const ListadoTareas = () => {
                           .localeCompare(filterColab) === 0
               )
             : tareas;
+
+    tareasFiltradas =
+        filterStatus !== ""
+            ? tareasFiltradas.filter(
+                  (tarea) =>
+                      lodash
+                          .get(tarea, "estado")
+                          .localeCompare(filterStatus) === 0
+              )
+            : tareasFiltradas;
 
     const tareasOrdenadas =
         sortOrder === "asc"
@@ -121,35 +140,68 @@ const ListadoTareas = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <h3 className="section-title text-center">Listado de Tareas</h3>
+            <h3 className="section-title text-center">
+                {rol === "Administrador" ? "Listado de Tareas" : "Mis Tareas"}
+            </h3>
 
             <div className="container pt-3  table-responsive">
                 <div className="row">
+                    {rol === "Administrador" ? (
+                        <div className="col">
+                            <label htmlFor="filterColab">
+                                Filtrar por Colaborador:
+                            </label>
+                            <select
+                                className="form-select form-select-sm mb-4"
+                                onChange={(e) => {
+                                    setFilterColab(e.target.value);
+                                    setFilterStatus(filterStatus);
+                                    setPagActual(1);
+                                }}
+                                id="filterColab"
+                            >
+                                <option defaultValue={""}></option>
+                                {renderOptionsColabs()}
+                            </select>
+                        </div>
+                    ) : (
+                        ""
+                    )}
                     <div className="col">
-                        <label htmlFor="filterColab">
-                            Filtrar por Colaborador:
+                        <label htmlFor="filterStatus">
+                            Filtrar por Prioridad:
                         </label>
                         <select
-                            className="form-select form-select-sm w-25 mb-4"
+                            className="form-select form-select-sm mb-4"
                             onChange={(e) => {
-                                setFilterColab(e.target.value);
+                                setFilterStatus(e.target.value);
+                                setFilterColab(filterColab);
                                 setPagActual(1);
                             }}
-                            id="filterColab"
+                            id="filterStatus"
                         >
                             <option defaultValue={""}></option>
-                            {renderOptionsColabs()}
+                            <option value={"Por Hacer"}>Por Hacer</option>
+                            <option value={"En Progreso"}>En Progreso</option>
+                            <option value={"Cancelado"}>Cancelado</option>
+                            <option value={"Finalizado"}>Finalizado</option>
+                            <option value={"En Revisión"}>En Revisión</option>
                         </select>
                     </div>
-                    <div className="col text-end">
-                        <button
-                            className="thm-btn btn-crear"
-                            onClick={() => navigate("/tarea/agregar")}
-                        >
-                            Crear Tarea
-                        </button>
-                    </div>
+                    {rol === "Administrador" ? (
+                        <div className="col text-end">
+                            <button
+                                className="thm-btn btn-crear"
+                                onClick={() => navigate("/tarea/agregar")}
+                            >
+                                Crear Tarea
+                            </button>
+                        </div>
+                    ) : (
+                        ""
+                    )}
                 </div>
+
                 <table className="table kreativa-table">
                     <thead>
                         <tr>
@@ -185,22 +237,32 @@ const ListadoTareas = () => {
                             >
                                 Proyecto <FontAwesomeIcon icon={faSort} />
                             </th>
-                            <th
-                                onClick={() => {
-                                    if (sortField === "colaborador_id.nombre") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
+                            {rol === "Administrador" ? (
+                                <th
+                                    onClick={() => {
+                                        if (
+                                            sortField ===
+                                            "colaborador_id.nombre"
+                                        ) {
+                                            setsortOrder(
+                                                sortOrder === "asc"
+                                                    ? "desc"
+                                                    : "asc"
+                                            );
+                                            return;
+                                        }
 
-                                    setsortField("colaborador_id.nombre");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Colaborador <FontAwesomeIcon icon={faSort} />
-                            </th>
+                                        setsortField("colaborador_id.nombre");
+                                        setsortOrder("asc");
+                                    }}
+                                    className="sort-field"
+                                >
+                                    Colaborador{" "}
+                                    <FontAwesomeIcon icon={faSort} />
+                                </th>
+                            ) : (
+                                ""
+                            )}
                             <th
                                 onClick={() => {
                                     if (sortField === "estado") {
@@ -259,7 +321,11 @@ const ListadoTareas = () => {
                                 <tr key={tarea._id}>
                                     <td>{tarea.nombre}</td>
                                     <td>{tarea.proyecto_id.nombre}</td>
-                                    <td>{tarea.colaborador_id.nombre}</td>
+                                    {rol === "Administrador" ? (
+                                        <td>{tarea.colaborador_id.nombre}</td>
+                                    ) : (
+                                        ""
+                                    )}
                                     <td>{tarea.estado}</td>
                                     <td>{tarea.prioridad}</td>
                                     <td>
@@ -279,14 +345,18 @@ const ListadoTareas = () => {
                                             >
                                                 Ver
                                             </button>
-                                            <button
-                                                className="thm-btn thm-btn-small btn-editar"
-                                                onClick={() =>
-                                                    handleEditar(tarea._id)
-                                                }
-                                            >
-                                                Editar
-                                            </button>
+                                            {rol === "Administrador" ? (
+                                                <button
+                                                    className="thm-btn thm-btn-small btn-editar"
+                                                    onClick={() =>
+                                                        handleEditar(tarea._id)
+                                                    }
+                                                >
+                                                    Editar
+                                                </button>
+                                            ) : (
+                                                ""
+                                            )}
                                         </div>
                                     </td>
                                 </tr>
@@ -329,14 +399,14 @@ const ListadoTareas = () => {
                 <button
                     className={`thm-btn btn-volver thm-btn-small me-2`}
                     onClick={() => setPagActual(pagActual + 1)}
-                    disabled={pagActual === totalPags || totalPags - 1 === 0}
+                    disabled={pagActual === totalPags || totalPags - 1 <= 0}
                 >
                     <FontAwesomeIcon icon={faCaretRight} />
                 </button>
                 <button
                     className={`thm-btn thm-btn-small btn-volver me-2`}
                     onClick={() => setPagActual(totalPags)}
-                    disabled={pagActual === totalPags || totalPags - 1 === 0}
+                    disabled={pagActual === totalPags || totalPags - 1 <= 0}
                 >
                     <FontAwesomeIcon icon={faForward} />
                 </button>
