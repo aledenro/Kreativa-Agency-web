@@ -75,6 +75,29 @@ class TareasService {
             );
         }
     }
+
+    async getAllTareasByColab(id) {
+        try {
+            return await tareasModel
+                .find({ colaborador_id: id })
+                .select({
+                    nombre: 1,
+                    descripcion: 1,
+                    colaborador_id: 1,
+                    estado: 1,
+                    prioridad: 1,
+                    fecha_asignacion: 1,
+                    fecha_vencimiento: 1,
+                    fecha_creacion: 1,
+                })
+                .populate("colaborador_id", "nombre")
+                .populate("proyecto_id", "nombre");
+        } catch (error) {
+            throw new Error(
+                `Error al obetener todas las tareas: ${error.message}`
+            );
+        }
+    }
 }
 
 module.exports = new TareasService();

@@ -86,6 +86,26 @@ class TareasController {
             });
         }
     }
+
+    async getAllTareasByColab(req, res) {
+        try {
+            const id = req.params.id;
+
+            const tareas = await tareasService.getAllTareasByColab(id);
+
+            if (!tareas || lodash.isEmpty(tareas)) {
+                return res.status(404).json({
+                    error: `No se encontraron tareas.`,
+                });
+            }
+
+            return res.json({ tareas: tareas });
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error al obtener las tareas: ${error.message}`,
+            });
+        }
+    }
 }
 
 module.exports = new TareasController();
