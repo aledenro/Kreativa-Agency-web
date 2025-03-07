@@ -4,6 +4,12 @@ import axios from "axios";
 import { Table, Button, Form, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faPencil,
+    faToggleOff,
+    faToggleOn,
+} from "@fortawesome/free-solid-svg-icons";
 
 const VerIngresos = () => {
     const [ingresos, setIngresos] = useState([]);
@@ -158,7 +164,10 @@ const VerIngresos = () => {
                                     </td>
                                     <td>₡{ingreso.monto}</td>
                                     <td>{ingreso.cedula}</td>
-                                    <td>{obtenerNombreCliente(ingreso)}</td> {/* Nombre Cliente */}
+                                    <td>
+                                        {obtenerNombreCliente(ingreso)}
+                                    </td>{" "}
+                                    {/* Nombre Cliente */}
                                     <td>{ingreso.servicio}</td>
                                     <td>{ingreso.descripcion}</td>
                                     <td>{ingreso.nota}</td>
@@ -170,20 +179,31 @@ const VerIngresos = () => {
                                             to={`/ingreso/editar/${ingreso._id}`}
                                         >
                                             <Button
-                                                className="thm-btn thm-btn-small btn-editar"
+                                                className="thm-btn thm-btn-small btn-azul"
                                                 disabled={!ingreso.activo}
                                             >
-                                                Editar
+                                                <FontAwesomeIcon
+                                                    icon={faPencil}
+                                                />
                                             </Button>
                                         </Link>{" "}
                                         <button
-                                            className={ingreso.activo
-                                                ? "thm-btn thm-btn-small btn-eliminar"
-                                                : "thm-btn thm-btn-small btn-crear"
+                                            className={
+                                                ingreso.activo
+                                                    ? "thm-btn thm-btn-small btn-verde"
+                                                    : "thm-btn thm-btn-small btn-rojo"
                                             }
                                             onClick={() => abrirModal(ingreso)}
                                         >
-                                            {ingreso.activo ? "Desactivar" : "Activar"}
+                                            {ingreso.activo ? (
+                                                <FontAwesomeIcon
+                                                    icon={faToggleOn}
+                                                />
+                                            ) : (
+                                                <FontAwesomeIcon
+                                                    icon={faToggleOff}
+                                                />
+                                            )}
                                         </button>
                                     </td>
                                 </tr>
@@ -233,9 +253,10 @@ const VerIngresos = () => {
                             Cancelar
                         </button>
                         <button
-                            className={ingresoParaModificar?.activo
-                                ? "thm-btn thm-btn-small btn-eliminar"
-                                : "thm-btn thm-btn-small btn-crear"
+                            className={
+                                ingresoParaModificar?.activo
+                                    ? "thm-btn thm-btn-small btn-rojo"
+                                    : "thm-btn thm-btn-small btn-amarillo"
                             }
                             onClick={modificarIngreso}
                         >

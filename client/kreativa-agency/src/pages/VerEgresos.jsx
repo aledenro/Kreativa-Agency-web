@@ -4,6 +4,12 @@ import axios from "axios";
 import { Table, Button, Form, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faPencil,
+    faToggleOff,
+    faToggleOn,
+} from "@fortawesome/free-solid-svg-icons";
 
 const VerEgresos = () => {
     const [egresos, setEgresos] = useState([]);
@@ -129,13 +135,17 @@ const VerEgresos = () => {
                     <tbody>
                         {egresosPaginados.length === 0 ? (
                             <tr>
-                                <td colSpan="7">No hay egresos para mostrar.</td>
+                                <td colSpan="7">
+                                    No hay egresos para mostrar.
+                                </td>
                             </tr>
                         ) : (
                             egresosPaginados.map((egreso) => (
                                 <tr key={egreso._id}>
                                     <td>
-                                        {new Date(egreso.fecha).toLocaleDateString()}
+                                        {new Date(
+                                            egreso.fecha
+                                        ).toLocaleDateString()}
                                     </td>
                                     <td>₡{egreso.monto}</td>
                                     <td>{egreso.categoria}</td>
@@ -145,23 +155,35 @@ const VerEgresos = () => {
                                         {egreso.activo ? "Activo" : "Inactivo"}
                                     </td>
                                     <td>
-                                        <Link to={`/egreso/editar/${egreso._id}`}>
+                                        <Link
+                                            to={`/egreso/editar/${egreso._id}`}
+                                        >
                                             <Button
-                                                className="thm-btn thm-btn-small btn-editar"
+                                                className="thm-btn thm-btn-small btn-azul"
                                                 disabled={!egreso.activo}
                                             >
-                                                Editar
+                                                <FontAwesomeIcon
+                                                    icon={faPencil}
+                                                />
                                             </Button>
                                         </Link>{" "}
                                         <button
                                             className={
                                                 egreso.activo
-                                                    ? "thm-btn thm-btn-small btn-eliminar"
-                                                    : "thm-btn thm-btn-small btn-crear"
+                                                    ? "thm-btn thm-btn-small btn-verde"
+                                                    : "thm-btn thm-btn-small btn-rojo"
                                             }
                                             onClick={() => abrirModal(egreso)}
                                         >
-                                            {egreso.activo ? "Desactivar" : "Activar"}
+                                            {egreso.activo ? (
+                                                <FontAwesomeIcon
+                                                    icon={faToggleOn}
+                                                />
+                                            ) : (
+                                                <FontAwesomeIcon
+                                                    icon={faToggleOff}
+                                                />
+                                            )}
                                         </button>
                                     </td>
                                 </tr>
@@ -213,8 +235,8 @@ const VerEgresos = () => {
                         <button
                             className={
                                 egresoParaModificar?.activo
-                                    ? "thm-btn thm-btn-small btn-eliminar"
-                                    : "thm-btn thm-btn-small btn-crear"
+                                    ? "thm-btn thm-btn-small btn-rojo"
+                                    : "thm-btn thm-btn-small btn-amarillo"
                             }
                             onClick={modificarEgreso}
                         >

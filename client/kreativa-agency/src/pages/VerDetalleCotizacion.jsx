@@ -192,7 +192,7 @@ const VerDetalleCotizacion = () => {
                                     <textarea
                                         name="message"
                                         placeholder="Por favor escriba su respuesta"
-                                        className="form_text_area"
+                                        className="form_input form-textarea"
                                         required
                                     ></textarea>
                                     <button

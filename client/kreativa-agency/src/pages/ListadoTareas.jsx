@@ -9,6 +9,8 @@ import {
     faCaretRight,
     faCaretLeft,
     faBackward,
+    faEye,
+    faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
@@ -188,6 +190,7 @@ const ListadoTareas = () => {
                             <option value={"En Revisión"}>En Revisión</option>
                         </select>
                     </div>
+
                     {rol === "Administrador" ? (
                         <div className="col text-end">
                             <button
@@ -200,6 +203,7 @@ const ListadoTareas = () => {
                     ) : (
                         ""
                     )}
+
                 </div>
 
                 <table className="table kreativa-table">
@@ -337,13 +341,13 @@ const ListadoTareas = () => {
                                     <td className="acciones">
                                         <div className="botones-grupo">
                                             <button
-                                                className="thm-btn thm-btn-small btn-ver"
+                                                className="thm-btn thm-btn-small btn-amarillo"
                                                 onClick={() => {
                                                     setTareaModal(tarea);
                                                     setShowModal(true);
                                                 }}
                                             >
-                                                Ver
+                                                <FontAwesomeIcon icon={faEye} />
                                             </button>
                                             {rol === "Administrador" ? (
                                                 <button
@@ -482,7 +486,7 @@ const ListadoTareas = () => {
                         </label>
                         <textarea
                             name="descripcion"
-                            className="form_text_area"
+                            className="form_input form-textarea"
                             id="descripcion"
                             rows={7}
                             placeholder="Describa su solicitud"

@@ -12,7 +12,7 @@ const AgregarPTO = () => {
         empleado_id: "",
         fecha_inicio: "",
         fecha_fin: "",
-        comentario: ""
+        comentario: "",
     });
     const [errors, setErrors] = useState({});
 
@@ -32,7 +32,10 @@ const AgregarPTO = () => {
 
                 const decoded = jwtDecode(token);
                 if (decoded && decoded.id) {
-                    setFormData(prev => ({ ...prev, empleado_id: decoded.id }));
+                    setFormData((prev) => ({
+                        ...prev,
+                        empleado_id: decoded.id,
+                    }));
                 } else {
                     Swal.fire({
                         title: "Error",
@@ -65,10 +68,13 @@ const AgregarPTO = () => {
 
     const validateForm = () => {
         let newErrors = {};
-        if (!formData.fecha_inicio) newErrors.fecha_inicio = "La fecha de inicio es obligatoria";
-        if (!formData.fecha_fin) newErrors.fecha_fin = "La fecha de fin es obligatoria";
+        if (!formData.fecha_inicio)
+            newErrors.fecha_inicio = "La fecha de inicio es obligatoria";
+        if (!formData.fecha_fin)
+            newErrors.fecha_fin = "La fecha de fin es obligatoria";
         if (new Date(formData.fecha_inicio) > new Date(formData.fecha_fin)) {
-            newErrors.fecha_fin = "La fecha de fin debe ser posterior a la fecha de inicio";
+            newErrors.fecha_fin =
+                "La fecha de fin debe ser posterior a la fecha de inicio";
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -91,7 +97,7 @@ const AgregarPTO = () => {
             }
 
             await axios.post("http://localhost:4000/api/pto", formData, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
             });
 
             Swal.fire({
@@ -102,7 +108,6 @@ const AgregarPTO = () => {
             }).then(() => {
                 navigate("/ver-pto");
             });
-
         } catch (error) {
             console.error("Error al enviar PTO:", error);
             Swal.fire({
@@ -121,24 +126,64 @@ const AgregarPTO = () => {
                 <div className="section-title text-center">
                     <h1 className="kreativa-title">Solicitar PTO</h1>
                 </div>
-                <form onSubmit={handleSubmit} className="col-lg-6 mx-auto kreativa-form">
+                <form
+                    onSubmit={handleSubmit}
+                    className="col-lg-6 mx-auto kreativa-form"
+                >
                     <div className="form-group mb-3">
                         <label className="form-label">Fecha de Inicio</label>
-                        <input type="date" name="fecha_inicio" value={formData.fecha_inicio} onChange={handleChange} className="form_input" required />
-                        {errors.fecha_inicio && <small className="text-danger">{errors.fecha_inicio}</small>}
+                        <input
+                            type="date"
+                            name="fecha_inicio"
+                            value={formData.fecha_inicio}
+                            onChange={handleChange}
+                            className="form_input"
+                            required
+                        />
+                        {errors.fecha_inicio && (
+                            <small className="text-danger">
+                                {errors.fecha_inicio}
+                            </small>
+                        )}
                     </div>
                     <div className="form-group mb-3">
                         <label className="form-label">Fecha de Fin</label>
-                        <input type="date" name="fecha_fin" value={formData.fecha_fin} onChange={handleChange} className="form_input" required />
-                        {errors.fecha_fin && <small className="text-danger">{errors.fecha_fin}</small>}
+                        <input
+                            type="date"
+                            name="fecha_fin"
+                            value={formData.fecha_fin}
+                            onChange={handleChange}
+                            className="form_input"
+                            required
+                        />
+                        {errors.fecha_fin && (
+                            <small className="text-danger">
+                                {errors.fecha_fin}
+                            </small>
+                        )}
                     </div>
                     <div className="form-group mb-3">
-                        <label className="form-label">Comentario (Opcional)</label>
-                        <textarea name="comentario" value={formData.comentario} onChange={handleChange} className="form_text_area"></textarea>
+                        <label className="form-label">
+                            Comentario (Opcional)
+                        </label>
+                        <textarea
+                            name="comentario"
+                            value={formData.comentario}
+                            onChange={handleChange}
+                            className="form_input form-textarea"
+                        ></textarea>
                     </div>
                     <div className="d-flex justify-content-between">
-                        <button type="submit" className="thm-btn">Solicitar PTO</button>
-                        <button type="button" className="thm-btn thm-btn-secondary" onClick={() => navigate("/dashboard")}>Cancelar</button>
+                        <button type="submit" className="thm-btn">
+                            Solicitar PTO
+                        </button>
+                        <button
+                            type="button"
+                            className="thm-btn thm-btn-secondary"
+                            onClick={() => navigate("/dashboard")}
+                        >
+                            Cancelar
+                        </button>
                     </div>
                 </form>
             </div>
