@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile } from "@fortawesome/free-solid-svg-icons";
+import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 import fileUpload from "../utils/fileUpload";
 
@@ -21,6 +21,7 @@ const VerDetalleProyecto = () => {
             const res = await axios.get(
                 `http://localhost:4000/api/proyectos/id/${id}`
             );
+            console.log(res.data.proyecto);
 
             setproyecto(res.data.proyecto);
         } catch (error) {
@@ -104,7 +105,7 @@ const VerDetalleProyecto = () => {
         <div>
             <Navbar></Navbar>
             <div className="container d-flex align-items-center justify-content-center">
-                <div className="card p-4 shadow-lg w-50">
+                <div className="">
                     {showAlert && (
                         <Alert
                             variant={alertVariant}
@@ -120,38 +121,54 @@ const VerDetalleProyecto = () => {
                         </h3>
                         <div className="row">
                             <div className="col mx-3">
-                                Fecha de Solicitud:{" "}
-                                <small>
-                                    {new Date(
-                                        proyecto.fecha_creacion
-                                    ).toLocaleDateString()}
-                                </small>
+                                <b>Fecha de Solicitud:</b>{" "}
+                                {new Date(
+                                    proyecto.fecha_creacion
+                                ).toLocaleDateString()}
                             </div>
                             <div className="col mx-3 text-end">
-                                Fecha de Entrega:{" "}
-                                <small>
-                                    {new Date(
-                                        proyecto.fecha_entrega
-                                    ).toLocaleDateString()}
-                                </small>
+                                <b>Fecha de Entrega:</b>{" "}
+                                {new Date(
+                                    proyecto.fecha_entrega
+                                ).toLocaleDateString()}
                             </div>
                         </div>
-                        <p className="detalles-text  my-3">
-                            {proyecto.descripcion}
-                        </p>
+                        <div className="row mt-4">
+                            <div className="col mx-3">
+                                <b>Estado:</b> {proyecto.estado}
+                            </div>
+                            <div className="col mx-3 text-end">
+                                <b>Urgente</b>: {proyecto.urgente ? "Si" : "No"}
+                            </div>
+                        </div>
+
+                        <div className="my-4">
+                            <p className="detalles-text  py-3">
+                                {proyecto.descripcion}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <h3 className="section-title text-center">
+                            Respuestas
+                        </h3>
                     </div>
                     {proyecto.historial_respuestas.map((respuesta) => (
                         <div className="" key={respuesta._id}>
-                            <hr />
-                            <div className="respuesta">
+                            <div className="coontainer respuesta mt-3">
                                 <div className="contenido-respuesta">
                                     <div className="row">
                                         <div className="col me-5">
                                             <h3 className="titulo-respuesta">
-                                                {respuesta.usuario_id.nombre}
+                                                <b>
+                                                    {
+                                                        respuesta.usuario_id
+                                                            .nombre
+                                                    }
+                                                </b>
                                             </h3>
                                         </div>
-                                        <div className="col ms-5">
+                                        <div className="col ms-5 text-end">
                                             <small>
                                                 {new Date(
                                                     respuesta.fecha_envio
@@ -160,12 +177,20 @@ const VerDetalleProyecto = () => {
                                         </div>
                                     </div>
                                     <p>{respuesta.contenido}</p>
-                                    {respuesta.files.map((file) => {
-                                        <button className="btn thm-btn-small">
-                                            {file.name}{" "}
-                                            <FontAwesomeIcon icon={faFile} />
-                                        </button>;
-                                    })}
+                                    {respuesta.files.map((file) => (
+                                        <a
+                                            key={file.key}
+                                            href={file.url}
+                                            target="_blank"
+                                        >
+                                            <button className="btn btn-outline-info mx-3 my-1">
+                                                {file.fileName}{" "}
+                                                <FontAwesomeIcon
+                                                    icon={faFileArrowDown}
+                                                />
+                                            </button>
+                                        </a>
+                                    ))}
                                 </div>
                             </div>
                         </div>

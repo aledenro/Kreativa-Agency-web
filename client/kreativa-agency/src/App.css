@@ -249,11 +249,8 @@ h3 {
 }
 
 .respuesta {
-    display: -webkit-box;
-    display: flex;
     border-bottom: 1px solid #e2e0e5;
-    padding-bottom: 25px;
-    margin-bottom: 25px;
+    padding-bottom: 15px;
 }
 
 .contenido-respuesta {
