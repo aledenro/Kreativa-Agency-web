@@ -94,6 +94,15 @@ const ProyectoModel = new mongoose.Schema(
                 },
             },
         ],
+        colaboradores: [
+            {
+                colaborador_id: {
+                    required: true,
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "usuarios",
+                },
+            },
+        ],
     },
     { collection: "proyectos" }
 );
