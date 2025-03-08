@@ -5,9 +5,10 @@ import { useCallback } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faFileArrowDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 import fileUpload from "../utils/fileUpload";
+import deleteFile from "../utils/fileDelete";
 
 const VerDetalleProyecto = () => {
     const { id } = useParams();
@@ -93,6 +94,23 @@ const VerDetalleProyecto = () => {
         }
     }
 
+    const handleDelete = async (key) => {
+        try {
+            const msg = await deleteFile(key);
+
+            if (msg) {
+                setAlertMessage(msg);
+                setAlertVariant("success");
+                setShowAlert(true);
+                fetchproyecto();
+            }
+        } catch (error) {
+            setAlertMessage(error.message);
+            setAlertVariant("danger");
+            setShowAlert(true);
+        }
+    };
+
     if (!proyecto) {
         return (
             <div className="container d-flex align-items-center justify-content-center">
@@ -105,7 +123,7 @@ const VerDetalleProyecto = () => {
         <div>
             <Navbar></Navbar>
             <div className="container d-flex align-items-center justify-content-center">
-                <div className="">
+                <div className="mt-4">
                     {showAlert && (
                         <Alert
                             variant={alertVariant}
@@ -178,18 +196,34 @@ const VerDetalleProyecto = () => {
                                     </div>
                                     <p>{respuesta.contenido}</p>
                                     {respuesta.files.map((file) => (
-                                        <a
-                                            key={file.key}
-                                            href={file.url}
-                                            target="_blank"
-                                        >
-                                            <button className="btn btn-outline-info mx-3 my-1">
-                                                {file.fileName}{" "}
-                                                <FontAwesomeIcon
-                                                    icon={faFileArrowDown}
-                                                />
-                                            </button>
-                                        </a>
+                                        <span key={file.key}>
+                                            <a href={file.url} target="_blank">
+                                                <button className="btn btn-outline-info ms-3 my-1">
+                                                    {file.fileName}{" "}
+                                                    <FontAwesomeIcon
+                                                        icon={faFileArrowDown}
+                                                    />{" "}
+                                                </button>
+                                            </a>
+                                            {Date.now() -
+                                                new Date(
+                                                    respuesta.fecha_envio
+                                                ).getTime() <=
+                                            3600000 ? (
+                                                <button className="btn btn-danger">
+                                                    <FontAwesomeIcon
+                                                        icon={faTrash}
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                file.key
+                                                            )
+                                                        }
+                                                    />
+                                                </button>
+                                            ) : (
+                                                ""
+                                            )}
+                                        </span>
                                     ))}
                                 </div>
                             </div>
