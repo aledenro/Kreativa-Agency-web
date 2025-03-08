@@ -25,6 +25,7 @@ function construirJsonRequest(
         ],
         notificiaciones: [],
         estado: "Por Hacer",
+        historial_respuestas: [],
     };
 }
 

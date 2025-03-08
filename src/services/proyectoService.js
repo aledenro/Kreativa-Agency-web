@@ -1,5 +1,6 @@
 const ProyectoModel = require("../models/proyectoModel");
 const lodash = require("lodash");
+const awsS3Connect = require("../utils/awsS3Connect");
 
 class ProyectoService {
     async createProyecto(data) {
@@ -13,10 +14,31 @@ class ProyectoService {
 
     async getProyectoById(id) {
         try {
-            return await ProyectoModel.findById(id).populate(
-                "cliente_id",
-                "nombre"
-            );
+            const proyecto = await ProyectoModel.findById(id)
+                .populate("cliente_id", "nombre")
+                .populate("historial_respuestas.usuario_id", "nombre");
+
+            if (proyecto && !lodash.isEmpty(proyecto)) {
+                if (proyecto.historial_respuestas.length > 0) {
+                    for (
+                        let i = 0;
+                        i < proyecto.historial_respuestas.length;
+                        i++
+                    ) {
+                        const respuesta = proyecto.historial_respuestas.at(i);
+
+                        const files = await awsS3Connect.generateUrls({
+                            folder: "proyectos",
+                            parent: proyecto._id,
+                            parent_id: respuesta._id,
+                        });
+
+                        proyecto.historial_respuestas.at(i).files = files;
+                    }
+                }
+            }
+
+            return proyecto;
         } catch (error) {
             throw new Error(`Error al obtener el proyecto: ${error.message}`);
         }
@@ -69,6 +91,19 @@ class ProyectoService {
             throw new Error(
                 `Error al actualizar el  log del proyecto con el id: ${id}`
             );
+        }
+    }
+
+    async addRespuesta(id, respuesta) {
+        try {
+            const proyecto = await ProyectoModel.findById(id);
+
+            proyecto["historial_respuestas"].push(respuesta);
+            await proyecto.save();
+
+            return proyecto["historial_respuestas"].at(-1);
+        } catch (error) {
+            throw new Error("Error al agregar la respuesta " + error.message);
         }
     }
 }
