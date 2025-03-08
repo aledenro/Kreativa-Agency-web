@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
+import sendEmail from "../utils/emailSender";
 
-const id = "67bbfe4502b4c485e784c55b";
 const estados = [
     "Por Hacer",
     "En Progreso",
@@ -61,6 +62,7 @@ function renderOptionsEstados(opcion, estadoProyecto) {
 }
 
 const AgregarProyecto = () => {
+    const { id } = useParams();
     const [clientes, setClientes] = useState([]);
     const [proyecto, setProyecto] = useState(null);
     const [estado, setEstado] = useState("");
@@ -105,7 +107,7 @@ const AgregarProyecto = () => {
 
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/proyectos/editar/67a043437b55c4040e008b3b`,
+                `http://localhost:4000/api/proyectos/editar/${id}`,
                 data
             );
 
@@ -114,6 +116,7 @@ const AgregarProyecto = () => {
                 setAlertVariant("success");
                 setShowAlert(true);
                 await addActionLog("Editó el proyecto.");
+                fetchProyecto();
             }
         } catch (error) {
             console.error(error.message);
@@ -143,6 +146,24 @@ const AgregarProyecto = () => {
                 await addActionLog(
                     `Cambió el estado del proyecto a: ${estadoEdit}.`
                 );
+
+                if (estadoEdit !== "Finalizado") {
+                    await sendEmail(
+                        proyecto.cliente_id,
+                        `El estado de su proyecto ha sido actualizado a ${estadoEdit}.`,
+                        `Actualización en su proyecto ${proyecto.nombre}`,
+                        "Ver",
+                        "test"
+                    );
+                } else {
+                    await sendEmail(
+                        proyecto.cliente_id,
+                        `El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingresse para ver más detalles.`,
+                        `Actualización en su proyecto ${proyecto.nombre}`,
+                        "Ver",
+                        "test"
+                    );
+                }
             }
         } catch (error) {
             console.error(error.message);
@@ -170,44 +191,42 @@ const AgregarProyecto = () => {
     };
 
     useEffect(() => {
-        async function fetchClientes() {
-            try {
-                const token = localStorage.getItem("token");
-
-                const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/clientes",
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-
-                setClientes(response.data);
-            } catch (error) {
-                console.error(
-                    `Error al obtener los clientes: ${error.message}`
-                );
-            }
-        }
-
-        async function fetchProyecto() {
-            try {
-                const response = await axios.get(
-                    `http://localhost:4000/api/proyectos/id/${id}`
-                );
-
-                if (response.status === 200) {
-                    setProyecto(response.data);
-                    setEstado(response.data.estado);
-                }
-
-                fetchClientes();
-            } catch (error) {
-                console.error(`Error al obtener el proyecto: ${error.message}`);
-            }
-        }
-
         fetchProyecto();
     }, []);
+
+    async function fetchClientes() {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await axios.get(
+                "http://localhost:4000/api/usuarios/clientes",
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            setClientes(response.data);
+        } catch (error) {
+            console.error(`Error al obtener los clientes: ${error.message}`);
+        }
+    }
+
+    async function fetchProyecto() {
+        try {
+            const response = await axios.get(
+                `http://localhost:4000/api/proyectos/id/${id}`
+            );
+
+            if (response.status === 200) {
+                setProyecto(response.data.proyecto);
+                setEstado(response.data.estado);
+            }
+
+            fetchClientes();
+        } catch (error) {
+            console.error(`Error al obtener el proyecto: ${error.message}`);
+        }
+    }
 
     if (!proyecto) {
         return (
@@ -220,8 +239,8 @@ const AgregarProyecto = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <div className="container d-flex align-items-center justify-content-center">
-                <div className="card p-4 shadow-lg w-50">
+            <div className="container align-items-center justify-content-center">
+                <div className=" p-4">
                     <h3 className="text-center section-title">
                         Editar Proyecto
                     </h3>
@@ -289,7 +308,7 @@ const AgregarProyecto = () => {
                                 name="descripcion"
                                 className="form_input form-textarea"
                                 id="descripcion"
-                                rows={7}
+                                rows={15}
                                 placeholder="Describa su solicitud"
                                 required
                                 value={proyecto.descripcion}
