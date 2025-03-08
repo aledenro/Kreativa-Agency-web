@@ -34,7 +34,7 @@ import Restablecer from "./pages/Restablecer";
 import RestablecerContraseña from "./pages/RestablecerContraseña";
 import ListadoTareas from "./pages/ListadoTareas";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
-import AgregarPTO from "./pages/AgregarPTO";
+import AgregarPTO from "./pages/AgregarPTO"; 
 import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
 
