@@ -34,9 +34,10 @@ import Restablecer from "./pages/Restablecer";
 import RestablecerContraseña from "./pages/RestablecerContraseña";
 import ListadoTareas from "./pages/ListadoTareas";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
-import AgregarPTO from "./pages/AgregarPTO"; 
+import AgregarPTO from "./pages/AgregarPTO";
 import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
+import AdminPanel from "./pages/AdminPanel";
 
 function App() {
     return (
@@ -164,6 +165,10 @@ function App() {
                 <Route
                     path="/perfil"
                     element={<VerPerfil />}
+                ></Route>
+                <Route
+                    path="/admin"
+                    element={<AdminPanel />}
                 ></Route>
             </Routes>
         </Router>
