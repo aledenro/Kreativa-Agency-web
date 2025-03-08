@@ -1,8 +1,8 @@
-/* 🎨 Estilos de AdminPanel - Diseño Mejorado */
+/* 🎨 Estilos Modernos de AdminPanel */
 
 :root {
-    --primary-color: #110D27; /* Morado oscuro */
-    --sidebar-hover: #1A1336; /* Hover más claro */
+    --primary-color: #110D27;
+    --sidebar-hover: #1A1336;
     --text-color: white;
     --icon-size: 24px;
     --content-bg: #F8F9FA;
@@ -36,24 +36,24 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: -40px;
+    margin-bottom: -30px;
     transition: all 0.3s ease-in-out;
-    margin-top: 10px; /* Más arriba */
+    margin-top: 10px;
 }
 
 .logo {
-    width: 120px; /* Un poco más grande */
+    width: 100px;
     height: auto;
     opacity: 1;
     transition: all 0.3s ease-in-out;
 }
 
 .sidebar.collapsed .logo {
-    width: 60px;
+    width: 50px;
     opacity: 0.7;
 }
 
-/* Botón para colapsar */
+/* Botón de menú */
 .toggle-btn {
     background: none;
     border: none;
@@ -123,16 +123,45 @@
     transition: left 0.3s ease-in-out;
 }
 
-.sidebar.collapsed + .content .header {
-    width: calc(100% - 80px);
-    left: 80px;
+/* Tarjetas de métricas */
+.dashboard {
+    display: flex;
+    gap: 20px;
+    margin-top: 100px;
 }
 
-/* Dashboard */
-.dashboard-content {
-    margin-top: 80px;
-    padding: 20px;
+.card {
     background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    flex: 1;
+    text-align: center;
+}
+
+/* Gráfico */
+.chart-container {
+    margin-top: 40px;
+    background: white;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: var(--shadow);
+}
+.metric-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    flex: 1;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.metric-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 10px rgba(255, 0, 114, 0.3);
 }
