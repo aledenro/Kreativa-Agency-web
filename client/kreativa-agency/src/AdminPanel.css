@@ -4,10 +4,11 @@
     --primary-color: #110D27;
     --sidebar-hover: #1A1336;
     --text-color: white;
-    --icon-size: 24px;
+    --icon-size: 30px; /* ✅ Íconos más grandes */
     --content-bg: #F8F9FA;
     --header-bg: white;
     --shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    --border-radius: 15px; /* ✅ Bordes redondeados para el dashboard */
 }
 
 /* Layout principal */
@@ -23,7 +24,7 @@
     background: var(--primary-color);
     color: var(--text-color);
     padding: 20px;
-    transition: all 0.4s ease-in-out;
+    transition: width 0.2s ease-in-out;
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -31,51 +32,69 @@
     box-shadow: var(--shadow);
 }
 
-/* Logo */
-.logo-container {
+/* ✅ Sidebar se expande automáticamente al pasar el cursor */
+.sidebar.collapsed:hover {
+    width: 250px;
+    transition: width 0.2s ease-in-out;
+    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Perfil del Administrador */
+.profile-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: -30px;
-    transition: all 0.3s ease-in-out;
+    margin-bottom: 30px;
+    transition: all 0.2s ease-in-out;
     margin-top: 10px;
 }
 
-.logo {
-    width: 100px;
-    height: auto;
-    opacity: 1;
+.profile-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #FF0072; /* ✅ Color rosado */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    box-shadow: var(--shadow);
     transition: all 0.3s ease-in-out;
 }
 
-.sidebar.collapsed .logo {
-    width: 50px;
-    opacity: 0.7;
+.profile-name {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-/* Botón de menú */
-.toggle-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    align-self: flex-end;
+.profile-role {
+    font-size: 12px;
+    color: #BBBBBB;
+}
+
+.sidebar.collapsed .profile-name,
+.sidebar.collapsed .profile-role {
+    display: none;
 }
 
 /* Menú */
 .sidebar ul {
     list-style: none;
     padding: 0;
+    margin-top: 15px;
 }
 
+/* ✅ Ajuste: más espacio entre íconos */
 .sidebar ul li {
     display: flex;
     align-items: center;
-    padding: 12px 15px;
+    gap: 15px;
+    padding: 16px 20px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
+    transition: background 0.2s, transform 0.1s;
     border-radius: 8px;
     font-size: 1rem;
 }
@@ -85,18 +104,19 @@
     transform: scale(1.05);
 }
 
+/* ✅ Íconos ahora están más abajo cuando el sidebar está cerrado */
+.sidebar.collapsed ul {
+    padding-top: 15px;
+}
+
+.sidebar.collapsed ul li {
+    justify-content: center;
+    padding: 15px 0;
+}
+
+/* ✅ Íconos más grandes */
 .sidebar ul li svg {
-    margin-right: 10px;
     font-size: var(--icon-size);
-}
-
-/* Sidebar colapsado */
-.sidebar.collapsed {
-    width: 80px;
-}
-
-.sidebar.collapsed ul li span {
-    display: none;
 }
 
 /* Contenido */
@@ -105,7 +125,13 @@
     padding: 20px;
     background-color: var(--content-bg);
     margin-left: 250px;
-    transition: margin-left 0.3s ease-in-out;
+    transition: margin-left 0.2s ease-in-out;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.sidebar.collapsed + .content {
+    margin-left: 80px;
 }
 
 /* Encabezado */
@@ -120,7 +146,7 @@
     width: calc(100% - 250px);
     top: 0;
     left: 250px;
-    transition: left 0.3s ease-in-out;
+    transition: left 0.2s ease-in-out;
 }
 
 /* Tarjetas de métricas */
@@ -130,31 +156,24 @@
     margin-top: 100px;
 }
 
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    flex: 1;
-    text-align: center;
-}
-
 /* Gráfico */
 .chart-container {
     margin-top: 40px;
     background: white;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow);
 }
+
+/* Tarjetas de métricas */
 .metric-card {
     background: white;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     flex: 1;
     text-align: center;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.2s ease-in-out;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -164,4 +183,53 @@
 .metric-card:hover {
     transform: scale(1.05);
     box-shadow: 0px 4px 10px rgba(255, 0, 114, 0.3);
+}
+
+/* ✅ Contenedor del perfil */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* ✅ Imagen de perfil circular */
+.profile-pic {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #FF0072; /* ✅ Borde rosado */
+    object-fit: cover;
+}
+
+/* ✅ Nombre y rol debajo de la foto */
+.profile-name {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+
+.profile-role {
+    font-size: 12px;
+    color: #BBBBBB;
+}
+
+/* ✅ Oculta el nombre y rol cuando el sidebar está colapsado */
+.sidebar.collapsed .profile-name,
+.sidebar.collapsed .profile-role {
+    display: none;
+}
+
+/* ✅ Centrar mejor el perfil cuando el sidebar está colapsado */
+.sidebar.collapsed .profile-container {
+    justify-content: center;
+}
+
+/* ✅ Cuando el sidebar está colapsado, la imagen es más pequeña */
+.sidebar.collapsed .profile-pic {
+    width: 50px;
+    height: 50px;
 }

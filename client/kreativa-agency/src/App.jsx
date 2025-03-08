@@ -39,6 +39,7 @@ import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
 import AdminPanel from "./pages/AdminPanel";
 
+
 function App() {
     return (
         <Router>

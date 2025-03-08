@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Home, Users, Settings, Menu, LogOut } from "lucide-react";
+import { Home, Users, Settings, LogOut } from "lucide-react";
 import "../AdminPanel.css";
-import logo from "../assets/img/logo.png";
+import profilePic from "../assets/img/AdminProfile.png"; // Imagen del perfil
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
@@ -12,7 +12,6 @@ const data = [
     { name: "Abril", ventas: 2000 },
 ];
 
-// 🔥 Datos para gráficos circulares
 const metricas = [
     { label: "Ventas", porcentaje: 75, color: "#FF0072" },
     { label: "Usuarios Nuevos", porcentaje: 50, color: "#FF0072" },
@@ -20,59 +19,46 @@ const metricas = [
 ];
 
 const AdminPanel = () => {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     return (
         <div className="admin-container">
-            {/* Sidebar con animación */}
             <motion.aside 
                 className={`sidebar ${collapsed ? "collapsed" : ""}`}
-                animate={{ width: collapsed ? "80px" : "250px" }}
+                animate={{ width: collapsed ? "80px" : "250px" }} 
                 transition={{ duration: 0.3, ease: "easeInOut" }}
+                onMouseEnter={() => setCollapsed(false)} 
+                onMouseLeave={() => setCollapsed(true)}
             >
-                {/* Botón de colapso */}
-                <button className="toggle-btn" onClick={() => setCollapsed(!collapsed)}>
-                    <Menu size={24} />
-                </button>
+                {/* ✅ Perfil del Administrador */}
+                <div className="profile-container">
+                    <img src={profilePic} alt="Perfil" className="profile-pic" />
+                    {!collapsed && (
+                        <>
+                            <span className="profile-name">Scarlett Peña</span>
+                            <span className="profile-role">Administrador</span>
+                        </>
+                    )}
+                </div>
 
-                {/* Logo animado */}
-                <motion.div 
-                    className="logo-container"
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: -50 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <motion.img 
-                        src={logo} 
-                        alt="Logo" 
-                        className="logo"
-                        animate={{ width: collapsed ? "50px" : "100px", opacity: collapsed ? 0.5 : 1 }}
-                        transition={{ duration: 0.3 }}
-                    />
-                </motion.div>
-
-                {/* Menú */}
+                {/* ✅ Menú de navegación */}
                 <ul>
-                    <motion.li whileHover={{ scale: 1.1 }}>
-                        <Home />
-                        {!collapsed && <span>Dashboard</span>}
-                    </motion.li>
-                    <motion.li whileHover={{ scale: 1.1 }}>
-                        <Users />
-                        {!collapsed && <span>Usuarios</span>}
-                    </motion.li>
-                    <motion.li whileHover={{ scale: 1.1 }}>
-                        <Settings />
-                        {!collapsed && <span>Configuración</span>}
-                    </motion.li>
-                    <motion.li whileHover={{ scale: 1.1 }}>
-                        <LogOut />
-                        {!collapsed && <span>Salir</span>}
-                    </motion.li>
+                    {[{ icon: Home, label: "Dashboard" }, { icon: Users, label: "Usuarios" }, { icon: Settings, label: "Configuración" }, { icon: LogOut, label: "Salir" }].map((item, index) => (
+                        <motion.li key={index} whileHover={{ scale: 1.1 }} className="menu-item">
+                            <item.icon size={24} />
+                            {!collapsed && (
+                                <motion.span 
+                                    animate={{ opacity: 1, display: "inline-block" }} 
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    {item.label}
+                                </motion.span>
+                            )}
+                        </motion.li>
+                    ))}
                 </ul>
             </motion.aside>
 
-            {/* Contenido principal con ajuste de margen */}
             <motion.main 
                 className="content"
                 animate={{ marginLeft: collapsed ? "80px" : "250px" }}
@@ -82,7 +68,6 @@ const AdminPanel = () => {
                     <h1>Panel de Administración</h1>
                 </div>
 
-                {/* 🔥 Nueva Sección con Gráficos Circulares */}
                 <div className="dashboard">
                     {metricas.map((metrica, index) => (
                         <motion.div key={index} className="metric-card">
@@ -111,7 +96,6 @@ const AdminPanel = () => {
                     ))}
                 </div>
 
-                {/* Gráfico de Barras */}
                 <div className="chart-container">
                     <h3>Ventas por Mes</h3>
                     <ResponsiveContainer width="100%" height={300}>
