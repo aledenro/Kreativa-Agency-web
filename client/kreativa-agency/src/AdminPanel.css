@@ -1,61 +1,138 @@
-/* AdminPanel.css - Estilos exclusivos para el panel de administración */
+/* 🎨 Estilos de AdminPanel - Diseño Mejorado */
 
+:root {
+    --primary-color: #110D27; /* Morado oscuro */
+    --sidebar-hover: #1A1336; /* Hover más claro */
+    --text-color: white;
+    --icon-size: 24px;
+    --content-bg: #F8F9FA;
+    --header-bg: white;
+    --shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Layout principal */
 .admin-container {
     display: flex;
     height: 100vh;
-    background-color: #f4f4f4;
+    background-color: var(--content-bg);
 }
 
+/* Sidebar */
 .sidebar {
     width: 250px;
-    background-color: #1e293b; /* Azul oscuro */
-    color: white;
+    background: var(--primary-color);
+    color: var(--text-color);
     padding: 20px;
-    transition: width 0.3s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    box-shadow: var(--shadow);
 }
 
-.sidebar h2 {
-    font-size: 1.2rem;
-    text-align: center;
+/* Logo */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -40px;
+    transition: all 0.3s ease-in-out;
+    margin-top: 10px; /* Más arriba */
 }
 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
+.logo {
+    width: 120px; /* Un poco más grande */
+    height: auto;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
 }
 
-.sidebar ul li {
-    padding: 10px;
-    cursor: pointer;
-    transition: background 0.3s;
+.sidebar.collapsed .logo {
+    width: 60px;
+    opacity: 0.7;
 }
 
-.sidebar ul li:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.content {
-    flex: 1;
-    padding: 20px;
-    background-color: #fff;
-    overflow-y: auto;
-}
-
+/* Botón para colapsar */
 .toggle-btn {
     background: none;
     border: none;
     color: white;
     font-size: 20px;
     cursor: pointer;
-    position: absolute;
-    top: 20px;
-    left: 10px;
+    margin-bottom: 10px;
+    align-self: flex-end;
 }
 
+/* Menú */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.sidebar ul li:hover {
+    background: var(--sidebar-hover);
+    transform: scale(1.05);
+}
+
+.sidebar ul li svg {
+    margin-right: 10px;
+    font-size: var(--icon-size);
+}
+
+/* Sidebar colapsado */
 .sidebar.collapsed {
-    width: 70px;
+    width: 80px;
 }
 
 .sidebar.collapsed ul li span {
     display: none;
+}
+
+/* Contenido */
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--content-bg);
+    margin-left: 250px;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* Encabezado */
+.header {
+    background: var(--header-bg);
+    padding: 15px 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: calc(100% - 250px);
+    top: 0;
+    left: 250px;
+    transition: left 0.3s ease-in-out;
+}
+
+.sidebar.collapsed + .content .header {
+    width: calc(100% - 80px);
+    left: 80px;
+}
+
+/* Dashboard */
+.dashboard-content {
+    margin-top: 80px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
 }
