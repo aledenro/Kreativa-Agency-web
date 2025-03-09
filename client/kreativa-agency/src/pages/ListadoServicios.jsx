@@ -38,75 +38,103 @@ const ListadoServicios = () => {
 
     return (
         <div>
-            <Navbar></Navbar>
+            <Navbar />
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Nuestros Servicios</h2>
                 </div>
-                <section className="services">
-                    <div className="container">
-                        <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
-                            {servicios.length > 0 ? (
-                                servicios.map((servicio, index) => (
-                                    <div key={index} className="col">
-                                        <div className="services-card p-3 shadow-sm d-flex flex-column h-100">
-                                            <div className="services-img">
-                                                <img
-                                                    src={
-                                                        // servicio.imagen ||
-                                                        "https://placehold.co/370x260"
-                                                    }
-                                                    alt={servicio.nombre}
-                                                    className="img-fluid rounded"
-                                                />
-                                            </div>
-                                            <div className="services-content mt-3 flex-grow-1">
-                                                <h5 className="services-title">
-                                                    <a
-                                                        onClick={() =>
-                                                            handleListadoServicios(
-                                                                servicio._id
-                                                            )
-                                                        }
-                                                        className="text-decoration-none"
-                                                    >
-                                                        {servicio.nombre}
-                                                    </a>
-                                                </h5>
-                                                <p className="services-text text-muted">
-                                                    {servicio.descripcion
-                                                        .length > 50
-                                                        ? servicio.descripcion.substring(
-                                                              0,
-                                                              50
-                                                          ) + "..."
-                                                        : servicio.descripcion}
-                                                </p>
-                                            </div>
-                                            <div className="mt-auto">
-                                                <a
-                                                    className="services-arrow"
-                                                    onClick={() =>
-                                                        handleListadoServicios(
-                                                            servicio._id
-                                                        )
-                                                    }
-                                                >
-                                                    Ver más{" "}
-                                                    <FontAwesomeIcon
-                                                        icon={faArrowRight}
-                                                    />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="text-center mt-4">
-                                    No hay servicios disponibles
-                                </p>
-                            )}
+                <div>
+                    {servicios.length > 0 && (
+                        <div className="text-center mt-4">
+                            <p className="fw-bold text-muted">
+                                {servicios.map((servicio, index) => (
+                                    <React.Fragment key={servicio._id}>
+                                        <a
+                                            href={`#servicio-${servicio._id}`}
+                                            className="text-decoration-none mx-2 text-muted"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                document
+                                                    .getElementById(
+                                                        `servicio-${servicio._id}`
+                                                    )
+                                                    ?.scrollIntoView({
+                                                        behavior: "smooth",
+                                                        block: "start",
+                                                    });
+                                            }}
+                                        >
+                                            {servicio.nombre}
+                                        </a>
+                                        {index < servicios.length - 1 && (
+                                            <span className="mx-1">
+                                                &#9679;
+                                            </span>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </p>
                         </div>
+                    )}
+                </div>
+                <section className="services">
+                    <div className="container d-flex flex-column align-items-center mt-5 gap-3 w-100">
+                        {servicios.length > 0 ? (
+                            servicios.map((servicio, index) => (
+                                <div
+                                    key={index}
+                                    id={`servicio-${servicio._id}`} // Asignamos el ID para el desplazamiento
+                                    className={`service-card ${index % 2 !== 0 ? "reverse" : ""}`}
+                                >
+                                    <img
+                                        src={
+                                            servicio.imagen ||
+                                            "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg"
+                                        }
+                                        alt={servicio.nombre}
+                                    />
+                                    <div>
+                                        <h5 className="mb-1 services-title">
+                                            <a
+                                                onClick={() =>
+                                                    handleListadoServicios(
+                                                        servicio._id
+                                                    )
+                                                }
+                                                className="text-decoration-none"
+                                            >
+                                                {servicio.nombre}
+                                            </a>
+                                        </h5>
+                                        <p className="text-muted mb-1">
+                                            {servicio.descripcion.length > 50
+                                                ? servicio.descripcion.substring(
+                                                      0,
+                                                      50
+                                                  ) + "..."
+                                                : servicio.descripcion}
+                                        </p>
+                                        <button
+                                            className="thm-btn thm-btn-small"
+                                            onClick={() =>
+                                                handleListadoServicios(
+                                                    servicio._id
+                                                )
+                                            }
+                                        >
+                                            Ver más{" "}
+                                            <FontAwesomeIcon
+                                                icon={faArrowRight}
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-center mt-4">
+                                No hay servicios disponibles
+                            </p>
+                        )}
                     </div>
                 </section>
             </div>

@@ -548,7 +548,7 @@ h3 {
 }
 
 .services-title a:hover {
-    color: var(--kreativa-base);
+    color: var(--kreativa-rosado);
     font-weight: 600;
     transition: color 0.3s ease-in-out;
 }
@@ -559,18 +559,79 @@ h3 {
 }
 
 .services-arrow:hover {
-    color: var(--kreativa-base);
+    color: var(--kreativa-rosado);
     transition: color 0.3s ease-in-out;
 }
 
-.services-card {
-    background-color: var(--kreativa-white);
-    border-radius: var(--kreativa-bdr-radius);
+.service-card {
+    width: 100%;
+    margin-bottom: 20px;
+    max-width: 800px;
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    height: 240px;
+    overflow: hidden;
+    transition:
+        transform 0.3s ease-in-out,
+        box-shadow 0.3s ease-in-out;
 }
 
-.services-card:hover {
-    background-color: var(--kreativa-base-clear);
-    transition: background-color 0.3s ease-in-out;
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.service-card:hover h5 a {
+    color: var(--kreativa-rosado);
+    font-weight: 600;
+    transition: color 0.3s ease-in-out;
+}
+
+.service-card img {
+    width: 40%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.service-card div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    height: 100%;
+    width: 100%;
+}
+
+.service-card button {
+    align-self: flex-end;
+    margin-top: auto;
+}
+
+.service-card:nth-of-type(even) {
+    flex-direction: row-reverse;
+}
+
+.service-card:nth-of-type(even) img {
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 570px) {
+    .service-card img {
+        display: none;
+    }
+
+    .service-card {
+        flex-direction: column;
+        height: auto;
+    }
 }
 
 /* ---------- botones de colores --------------*/
