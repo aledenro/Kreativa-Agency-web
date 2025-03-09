@@ -9,6 +9,7 @@ import { faFileArrowDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 import fileUpload from "../utils/fileUpload";
 import deleteFile from "../utils/fileDelete";
+import sendEmail from "../utils/emailSender";
 
 const VerDetalleProyecto = () => {
     const { id } = useParams();
@@ -52,6 +53,7 @@ const VerDetalleProyecto = () => {
             usuario_id: user_id,
             contenido: content,
             files: [],
+            fecha_envio: Date.now(),
         };
 
         try {
@@ -62,6 +64,10 @@ const VerDetalleProyecto = () => {
 
             const respuestaDb = response.data.respuesta;
 
+            setAlertMessage("Respuesta enviada correctamente.");
+            setAlertVariant("success");
+            setShowAlert(true);
+
             if (
                 files &&
                 !lodash.isEmpty(files) &&
@@ -69,19 +75,11 @@ const VerDetalleProyecto = () => {
                 !lodash.isEmpty(respuestaDb)
             ) {
                 console.log("subiendo");
+                await fileUploadErrorHandler(files, respuestaDb._id);
 
-                await fileUpload(
-                    files,
-                    "proyectos",
-                    proyecto._id,
-                    respuestaDb._id
-                );
                 console.log("subidos");
             }
 
-            setAlertMessage("Respuesta enviada correctamente.");
-            setAlertVariant("success");
-            setShowAlert(true);
             event.target.reset();
             fetchproyecto(id);
         } catch (error) {
@@ -91,8 +89,54 @@ const VerDetalleProyecto = () => {
             );
             setAlertVariant("danger");
             setShowAlert(true);
+            return;
+        }
+
+        try {
+            const tipoUsuario = localStorage.getItem("tipo_usuario");
+
+            if (tipoUsuario === "Cliente") {
+                proyecto.colaboradores.forEach(async (colab) => {
+                    await sendEmail(
+                        colab.colaborador_id._id,
+                        `El cliente ha enviado una respuesta/feedback sobre el proyecto, ingrese para ver los detalless.`,
+                        `Actualización en el proyecto ${proyecto.nombre}`,
+                        "Ver",
+                        "test"
+                    );
+                });
+            } else {
+                await sendEmail(
+                    proyecto.cliente_id,
+                    `Un colaborador de Kreativa Agency ha respondido a su proyecto, ingrese para ver los detalles.`,
+                    `Actualización en su proyecto ${proyecto.nombre}`,
+                    "Ver",
+                    "test"
+                );
+            }
+        } catch (error) {
+            console.error(`Error al enviar la notificacion: ${error.message}`);
+            setAlertMessage(
+                "Error al enviar la notificaión, por favor intente de nuevo o contacte al soporte tecnico."
+            );
+            setAlertVariant("danger");
+            setShowAlert(true);
+            return;
         }
     }
+
+    const fileUploadErrorHandler = async (files, respuestaDbId) => {
+        try {
+            await fileUpload(files, "proyectos", proyecto._id, respuestaDbId);
+        } catch (error) {
+            console.error(`Error al subir los archivos: ${error.message}`);
+            setAlertMessage(
+                "Error al subir los archivos, por favor intente de nuevo o contacte al soporte tecnico."
+            );
+            setAlertVariant("danger");
+            setShowAlert(true);
+        }
+    };
 
     const handleDelete = async (key) => {
         try {
