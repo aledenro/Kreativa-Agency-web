@@ -8,7 +8,8 @@ function construirJsonRequest(
     descripcion,
     cliente,
     urgente,
-    fechaEntrega
+    fechaEntrega,
+    colaboradores
 ) {
     const user_id = localStorage.getItem("user_id");
     return {
@@ -26,6 +27,7 @@ function construirJsonRequest(
         notificiaciones: [],
         estado: "Por Hacer",
         historial_respuestas: [],
+        colaboradores: colaboradores,
     };
 }
 
@@ -34,6 +36,7 @@ const AgregarProyecto = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const [empleados, setEmpleados] = useState([]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -51,13 +54,21 @@ const AgregarProyecto = () => {
         const cliente = formData.get("cliente");
         const urgente = formData.get("urgente") === "on";
         const fechaEntrega = formData.get("fecha_entrega");
+        const colab = formData.getAll("colab");
+
+        const colabFormateado = [];
+
+        colab.forEach((colaborador) => {
+            colabFormateado.push({ colaborador_id: colaborador });
+        });
 
         const data = construirJsonRequest(
             nombre,
             descripcion,
             cliente,
             urgente,
-            fechaEntrega
+            fechaEntrega,
+            colabFormateado
         );
 
         try {
@@ -103,6 +114,26 @@ const AgregarProyecto = () => {
             }
         }
 
+        async function fetchEmpleados() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await axios.get(
+                    "http://localhost:4000/api/usuarios/empleados",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
+                setEmpleados(response.data);
+            } catch (error) {
+                console.error(
+                    `Error al obtener los empleados: ${error.message}`
+                );
+            }
+        }
+
+        fetchEmpleados();
         fetchClientes();
     }, []);
 
@@ -111,8 +142,8 @@ const AgregarProyecto = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <div className="container d-flex align-items-center justify-content-center">
-                <div className="card p-4 shadow-lg w-50">
+            <div className="container align-items-center justify-content-center">
+                <div className="p-4">
                     <h3 className="text-center section-title">
                         Agregar Proyecto
                     </h3>
@@ -166,6 +197,23 @@ const AgregarProyecto = () => {
                                         value={cliente._id}
                                     >
                                         {cliente.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="colab" className="form-label ">
+                                Colaboradores:
+                            </label>
+                            <select
+                                className="form-select form_input"
+                                name="colab"
+                                id="colab"
+                                multiple
+                            >
+                                {empleados.map((colab) => (
+                                    <option key={colab._id} value={colab._id}>
+                                        {colab.nombre}
                                     </option>
                                 ))}
                             </select>

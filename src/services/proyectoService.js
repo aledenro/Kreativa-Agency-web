@@ -16,7 +16,8 @@ class ProyectoService {
         try {
             const proyecto = await ProyectoModel.findById(id)
                 .populate("cliente_id", "nombre")
-                .populate("historial_respuestas.usuario_id", "nombre");
+                .populate("historial_respuestas.usuario_id", "nombre")
+                .populate("colaboradores.colaborador_id", "nombre");
 
             if (proyecto && !lodash.isEmpty(proyecto)) {
                 if (proyecto.historial_respuestas.length > 0) {
