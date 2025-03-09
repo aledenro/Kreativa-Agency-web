@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
@@ -18,7 +18,8 @@ function construirJsonRequest(
     descripcion,
     cliente,
     urgente,
-    fechaEntrega
+    fechaEntrega,
+    colaboradores
 ) {
     return {
         cliente_id: cliente,
@@ -26,6 +27,7 @@ function construirJsonRequest(
         descripcion: descripcion,
         urgente: urgente,
         fecha_entrega: fechaEntrega,
+        colaboradores: colaboradores,
     };
 }
 
@@ -69,6 +71,7 @@ const AgregarProyecto = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const [empleados, setEmpleados] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -96,13 +99,21 @@ const AgregarProyecto = () => {
         const cliente = formData.get("cliente");
         const urgente = formData.get("urgente") === "on";
         const fechaEntrega = formData.get("fecha_entrega");
+        const colab = formData.getAll("colab");
+
+        const colabFormateado = [];
+
+        colab.forEach((colaborador) => {
+            colabFormateado.push({ colaborador_id: colaborador });
+        });
 
         const data = construirJsonRequest(
             nombre,
             descripcion,
             cliente,
             urgente,
-            fechaEntrega
+            fechaEntrega,
+            colabFormateado
         );
 
         try {
@@ -190,9 +201,58 @@ const AgregarProyecto = () => {
         }
     };
 
+    function renderColab(colab) {
+        const isSelected = proyecto.colaboradores.some(
+            (proyectoColab) => colab._id === proyectoColab.colaborador_id._id
+        );
+
+        return (
+            <option key={colab._id} value={colab._id} selected={isSelected}>
+                {colab.nombre}
+            </option>
+        );
+    }
+
+    const fetchProyecto = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                `http://localhost:4000/api/proyectos/id/${id}`
+            );
+
+            if (response.status === 200) {
+                setProyecto(response.data.proyecto);
+                setEstado(response.data.estado);
+            }
+
+            fetchClientes();
+        } catch (error) {
+            console.error(`Error al obtener el proyecto: ${error.message}`);
+        }
+    }, [id]);
+
     useEffect(() => {
         fetchProyecto();
-    }, []);
+        async function fetchEmpleados() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await axios.get(
+                    "http://localhost:4000/api/usuarios/empleados",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
+                setEmpleados(response.data);
+            } catch (error) {
+                console.error(
+                    `Error al obtener los empleados: ${error.message}`
+                );
+            }
+        }
+
+        fetchEmpleados();
+    }, [fetchProyecto]);
 
     async function fetchClientes() {
         try {
@@ -208,23 +268,6 @@ const AgregarProyecto = () => {
             setClientes(response.data);
         } catch (error) {
             console.error(`Error al obtener los clientes: ${error.message}`);
-        }
-    }
-
-    async function fetchProyecto() {
-        try {
-            const response = await axios.get(
-                `http://localhost:4000/api/proyectos/id/${id}`
-            );
-
-            if (response.status === 200) {
-                setProyecto(response.data.proyecto);
-                setEstado(response.data.estado);
-            }
-
-            fetchClientes();
-        } catch (error) {
-            console.error(`Error al obtener el proyecto: ${error.message}`);
         }
     }
 
@@ -339,6 +382,19 @@ const AgregarProyecto = () => {
                                         proyecto.cliente_id
                                     )
                                 )}
+                            </select>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="colab" className="form-label ">
+                                Colaboradores:
+                            </label>
+                            <select
+                                className="form-select form_input"
+                                name="colab"
+                                id="colab"
+                                multiple
+                            >
+                                {empleados.map((colab) => renderColab(colab))}
                             </select>
                         </div>
                         <div className="row">
