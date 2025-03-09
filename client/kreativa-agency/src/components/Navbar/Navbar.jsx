@@ -83,7 +83,7 @@ export default function Navbar() {
                     </a>
                     <ul className="dropdown-menu">
                         <li>
-                            <a href="/proyecto/editar/67c9454f6409700ee0b56f1e">
+                            <a href="/proyecto/editar/67cc94cf9ee53834562aa6d4">
                                 Editar Proyecto
                             </a>
                         </li>
@@ -91,7 +91,7 @@ export default function Navbar() {
                             <a href="/proyecto/agregar">Agregar Proyecto</a>
                         </li>
                         <li>
-                            <a href={`/proyecto/67c9454f6409700ee0b56f1e`}>
+                            <a href={`/proyecto/67cc94cf9ee53834562aa6d4`}>
                                 Ver Detalle Proyecto
                             </a>
                         </li>

@@ -159,6 +159,17 @@ const VerDetalleProyecto = () => {
                                 <b>Urgente</b>: {proyecto.urgente ? "Si" : "No"}
                             </div>
                         </div>
+                        <div className="row mt-4">
+                            <div className="col mx-3">
+                                <b>Colaboradores Asignados:</b>{" "}
+                                {proyecto.colaboradores.map((colaborador) => (
+                                    <span key={colaborador.colaborador_id._id}>
+                                        <br />
+                                        {colaborador.colaborador_id.nombre}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
 
                         <div className="my-4">
                             <p className="detalles-text  py-3">
@@ -171,64 +182,73 @@ const VerDetalleProyecto = () => {
                             Respuestas
                         </h3>
                     </div>
-                    {proyecto.historial_respuestas.map((respuesta) => (
-                        <div className="" key={respuesta._id}>
-                            <div className="coontainer respuesta mt-3">
-                                <div className="contenido-respuesta">
-                                    <div className="row">
-                                        <div className="col me-5">
-                                            <h3 className="titulo-respuesta">
-                                                <b>
-                                                    {
-                                                        respuesta.usuario_id
-                                                            .nombre
-                                                    }
-                                                </b>
-                                            </h3>
-                                        </div>
-                                        <div className="col ms-5 text-end">
-                                            <small>
-                                                {new Date(
-                                                    respuesta.fecha_envio
-                                                ).toLocaleDateString()}
-                                            </small>
-                                        </div>
-                                    </div>
-                                    <p>{respuesta.contenido}</p>
-                                    {respuesta.files.map((file) => (
-                                        <span key={file.key}>
-                                            <a href={file.url} target="_blank">
-                                                <button className="btn btn-outline-info ms-3 my-1">
-                                                    {file.fileName}{" "}
-                                                    <FontAwesomeIcon
-                                                        icon={faFileArrowDown}
-                                                    />{" "}
-                                                </button>
-                                            </a>
-                                            {Date.now() -
-                                                new Date(
-                                                    respuesta.fecha_envio
-                                                ).getTime() <=
-                                            3600000 ? (
-                                                <button className="btn btn-danger">
-                                                    <FontAwesomeIcon
-                                                        icon={faTrash}
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                file.key
-                                                            )
+                    {proyecto.historial_respuestas.length > 0 ? (
+                        proyecto.historial_respuestas.map((respuesta) => (
+                            <div className="" key={respuesta._id}>
+                                <div className="coontainer respuesta mt-3">
+                                    <div className="contenido-respuesta">
+                                        <div className="row">
+                                            <div className="col me-5">
+                                                <h3 className="titulo-respuesta">
+                                                    <b>
+                                                        {
+                                                            respuesta.usuario_id
+                                                                .nombre
                                                         }
-                                                    />
-                                                </button>
-                                            ) : (
-                                                ""
-                                            )}
-                                        </span>
-                                    ))}
+                                                    </b>
+                                                </h3>
+                                            </div>
+                                            <div className="col ms-5 text-end">
+                                                <small>
+                                                    {new Date(
+                                                        respuesta.fecha_envio
+                                                    ).toLocaleDateString()}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <p>{respuesta.contenido}</p>
+                                        {respuesta.files.map((file) => (
+                                            <span key={file.key}>
+                                                <a
+                                                    href={file.url}
+                                                    target="_blank"
+                                                >
+                                                    <button className="btn btn-outline-info ms-3 my-1">
+                                                        {file.fileName}{" "}
+                                                        <FontAwesomeIcon
+                                                            icon={
+                                                                faFileArrowDown
+                                                            }
+                                                        />{" "}
+                                                    </button>
+                                                </a>
+                                                {Date.now() -
+                                                    new Date(
+                                                        respuesta.fecha_envio
+                                                    ).getTime() <=
+                                                3600000 ? (
+                                                    <button className="btn btn-danger">
+                                                        <FontAwesomeIcon
+                                                            icon={faTrash}
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    file.key
+                                                                )
+                                                            }
+                                                        />
+                                                    </button>
+                                                ) : (
+                                                    ""
+                                                )}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    ) : (
+                        <p>¡No hay respuestas todavía!</p>
+                    )}
 
                     <div className="comment-form">
                         <h3 className="section-title text-center">
