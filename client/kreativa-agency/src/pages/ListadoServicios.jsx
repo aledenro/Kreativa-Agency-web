@@ -15,23 +15,27 @@ const ListadoServicios = () => {
                 const response = await axios.get(
                     "http://localhost:4000/api/servicios/"
                 );
+                console.log("Servicios recibidos en frontend:", response.data);
 
                 if (Array.isArray(response.data)) {
-                    const serviciosActivos = response.data.filter(
-                        (servicio) => servicio.activo
-                    );
+                    const serviciosActivos = response.data.map((servicio) => ({
+                        ...servicio,
+                        imagen:
+                            servicio.imagen || "https://placehold.co/600x400",
+                    }));
+
                     setServicios(serviciosActivos);
                 } else {
                     setServicios([]);
                 }
             } catch (error) {
-                console.error(error.message);
+                console.error("Error obteniendo servicios:", error.message);
                 setServicios([]);
             }
         }
+
         getServicios();
     }, []);
-
     function handleListadoServicios(id) {
         navigate(`/servicio/${id}`);
     }
@@ -83,15 +87,16 @@ const ListadoServicios = () => {
                             servicios.map((servicio, index) => (
                                 <div
                                     key={index}
-                                    id={`servicio-${servicio._id}`} // Asignamos el ID para el desplazamiento
+                                    id={`servicio-${servicio._id}`}
                                     className={`service-card ${index % 2 !== 0 ? "reverse" : ""}`}
                                 >
                                     <img
-                                        src={
-                                            servicio.imagen ||
-                                            "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg"
-                                        }
-                                        alt={servicio.nombre}
+                                        src={servicio.imagen}
+                                        alt="Servicio"
+                                        onError={(e) => {
+                                            e.target.src =
+                                                "https://placehold.co/600x400";
+                                        }}
                                     />
                                     <div>
                                         <h5 className="mb-1 services-title">
@@ -132,7 +137,7 @@ const ListadoServicios = () => {
                             ))
                         ) : (
                             <p className="text-center mt-4">
-                                No hay servicios disponibles
+                                No hay servicios por mostrar
                             </p>
                         )}
                     </div>
