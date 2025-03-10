@@ -2,6 +2,8 @@ const EgresosService = require("../services/egresosService");
 const lodash = require("lodash");
 
 class EgresosController {
+
+    //Agregar egreso
     async agregarEgreso(req, res) {
         try {
             // Validar que están todos los datos
@@ -24,6 +26,7 @@ class EgresosController {
         }
     }
 
+    // Obtener egreso
     async obtenerEgresos(req, res) {
         try {
             const egresos = await EgresosService.obtenerEgresos();
@@ -34,7 +37,7 @@ class EgresosController {
         }
     }
 
-    // Función para obtener un egreso por ID
+    // Obtener un egreso por ID
     async obtenerEgresoPorId(req, res) {
         try {
             const { id } = req.params; // Obtener el ID de la URL
@@ -51,6 +54,7 @@ class EgresosController {
         }
     }
 
+    // Editar egreso
     async editarEgreso(req, res) {
         try {
             const { id } = req.params; // Obtener el ID del egreso a editar
@@ -85,6 +89,30 @@ class EgresosController {
 
             // Error para otros casos
             return res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
+    // Desactivar egreso
+    async desactivarEgreso(req, res) {
+        try {
+            const { id } = req.params;
+            const egreso = await EgresosService.desactivarEgresoById(id); // Usamos el servicio para desactivar el egreso
+            return res.status(200).json({ mensaje: "Egreso desactivado", egreso });
+        } catch (error) {
+            console.error("Error al desactivar el egreso: " + error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    // Activar egreso
+    async activarEgreso(req, res) {
+        try {
+            const { id } = req.params;
+            const egreso = await EgresosService.activarEgresoById(id); // Usamos el servicio para activar el egreso
+            return res.status(200).json({ mensaje: "Egreso activado", egreso });
+        } catch (error) {
+            console.error("Error al activar el egreso: " + error.message);
+            return res.status(500).json({ error: error.message });
         }
     }
 }

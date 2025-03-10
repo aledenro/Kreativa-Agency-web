@@ -81,7 +81,7 @@ const EditarEgreso = () => {
             <Navbar></Navbar>
             <div className="container">
                 <div className="section-title text-center">
-                    <h2>Editar agreso</h2>
+                    <h2>Editar egreso</h2>
                 </div>
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
@@ -151,9 +151,8 @@ const EditarEgreso = () => {
                                         defaultValue={egreso.estado}
                                         className="form_input"
                                     >
-                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Pendiente de pago">Pendiente de pago</option>
                                         <option value="Aprobado">Aprobado</option>
-                                        <option value="Rechazado">Rechazado</option>
                                     </Form.Select>
                                 </div>
                             </div>
@@ -166,12 +165,15 @@ const EditarEgreso = () => {
                                         required
                                         className="form_input"
                                     />
-                                    <button type="submit" className="thm-btn form-btn">
-                                        confirmar
-                                    </button>
+                                    <div className="row">
+                                        <div className="col d-flex justify-content-center">
+                                            <button type="submit" className="thm-btn form-btn">
+                                                Editar
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
                         </Form>
                     </div>
                 </div>

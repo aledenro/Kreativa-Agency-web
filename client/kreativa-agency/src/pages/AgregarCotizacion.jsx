@@ -1,9 +1,12 @@
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
+import Alert from "react-bootstrap/Alert";
+import { useState } from "react";
 
 function construirJsonRequest(titulo, descripcion, urgente) {
+    const user_id = localStorage.getItem("user_id");
     return {
-        cliente_id: "679834de23a11c303cf6c6b5",
+        cliente_id: user_id,
         titulo: titulo,
         detalles: descripcion,
         urgente: urgente,
@@ -12,42 +15,51 @@ function construirJsonRequest(titulo, descripcion, urgente) {
     };
 }
 
-const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const enviar = confirm("¿Desea enviar su cotización?");
-
-    if (!enviar) {
-        return;
-    }
-
-    const formData = new FormData(event.target);
-
-    const titulo = formData.get("titulo");
-    const descripcion = formData.get("descripcion");
-    const urgente = formData.get("urgente") === "on";
-
-    const data = construirJsonRequest(titulo, descripcion, urgente);
-
-    try {
-        const res = await axios.post(
-            "http://localhost:4000/api/cotizaciones/crear",
-            data
-        );
-
-        if (res.status == 201) {
-            alert("Cotización enviada correctamente.");
-            event.target.reset();
-        }
-    } catch (error) {
-        console.error(error.message);
-        alert(
-            "Error al enviar su cotización, por favor trate nuevamente o comuniquese con el soporte técnico."
-        );
-    }
-};
-
 const AgregarCotizacion = () => {
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertVariant, setAlertVariant] = useState("danger");
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const enviar = confirm("¿Desea enviar su cotización?");
+
+        if (!enviar) {
+            return;
+        }
+
+        const formData = new FormData(event.target);
+
+        const titulo = formData.get("titulo");
+        const descripcion = formData.get("descripcion");
+        const urgente = formData.get("urgente") === "on";
+
+        const data = construirJsonRequest(titulo, descripcion, urgente);
+
+        try {
+            const res = await axios.post(
+                "http://localhost:4000/api/cotizaciones/crear",
+                data
+            );
+
+            if (res.status == 201) {
+                setAlertMessage("Cotización enviada correctamente.");
+                setAlertVariant("success");
+                setShowAlert(true);
+                event.target.reset();
+            }
+        } catch (error) {
+            console.error(error.message);
+
+            setAlertMessage(
+                "Error al enviar su cotización, por favor trate nuevamente o comuniquese con el soporte técnico."
+            );
+            setAlertVariant("danger");
+            setShowAlert(true);
+        }
+    };
+
     return (
         <div>
             <Navbar></Navbar>
@@ -57,6 +69,15 @@ const AgregarCotizacion = () => {
                         Agregar Cotización
                     </h3>
                     <form onSubmit={handleSubmit}>
+                        {showAlert && (
+                            <Alert
+                                variant={alertVariant}
+                                onClose={() => setShowAlert(false)}
+                                dismissible
+                            >
+                                {alertMessage}
+                            </Alert>
+                        )}
                         <div className="mb-3">
                             <label htmlFor="titulo" className="form-label">
                                 Titulo
@@ -75,7 +96,7 @@ const AgregarCotizacion = () => {
                             </label>
                             <textarea
                                 name="descripcion"
-                                className="form_input"
+                                className="form_input form-textarea"
                                 id="descripcion"
                                 rows={5}
                                 placeholder="Describa su solicitud"

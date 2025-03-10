@@ -28,7 +28,7 @@ class ProyectoController {
                 });
             }
 
-            return res.json(proyecto);
+            return res.json({ proyecto: proyecto });
         } catch (error) {
             console.error(`Error al obtener el proyecto: ${error.message}`);
             return res.status(500).json({
@@ -50,6 +50,82 @@ class ProyectoController {
             return res.status(500).json({
                 error: `Error al editar el proyecto: ${error.message}`,
             });
+        }
+    }
+
+    async editEstado(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+
+            const proyecto = await ProyectoService.editEstado(id, data);
+
+            return res.json(proyecto);
+        } catch (error) {
+            console.error(
+                `Error al cambiar el estado del proyecto: ${error.message}`
+            );
+            return res.status(500).json({
+                error: `Error al cambiar el estado del proyecto: ${error.message}`,
+            });
+        }
+    }
+
+    async getAllProyectosLimitedData(req, res) {
+        try {
+            const proyectos =
+                await ProyectoService.getAllProyectosLimitedData();
+
+            if (!proyectos || lodash.isEmpty(proyectos)) {
+                return res.status(404).json({
+                    error: `No se pudo obtener ningun proyecto`,
+                });
+            }
+
+            return res.json({ proyectos: proyectos });
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error al obtener los proyectos: ${error.message}`,
+            });
+        }
+    }
+
+    async actualizarLog(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+            const proyecto = await ProyectoService.actualizarLog(id, data);
+
+            if (!proyecto || lodash.isEmpty(proyecto)) {
+                return res.status(404).json({
+                    error: `No se encontro el proyecto.`,
+                });
+            }
+
+            return res.json(proyecto);
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error al actualizar el log del proyecto: ${error.message}`,
+            });
+        }
+    }
+
+    async addRespuesta(req, res) {
+        try {
+            const id = req.params.id;
+            const respuesta = req.body;
+
+            const respuestaDb = await ProyectoService.addRespuesta(
+                id,
+                respuesta
+            );
+
+            return res.json({ respuesta: respuestaDb });
+        } catch (error) {
+            console.error(
+                "Error al agregar una respuesta al proyecto: " + error.message
+            );
+            return res.status(500).json({ error: error.message });
         }
     }
 }

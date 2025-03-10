@@ -6,7 +6,6 @@ import axios from "axios";
 import { useState } from "react";
 
 const AgregarEgreso = () => {
-
     const [mensaje, setMensaje] = useState("");
 
     const handleSubmit = async (event) => {
@@ -27,11 +26,14 @@ const AgregarEgreso = () => {
             descripcion: descripcion,
             proveedor: proveedor,
             estado: estado,
-            nota: nota
+            nota: nota,
         };
 
         try {
-            const res = await axios.post("http://localhost:4000/api/egresos", data);
+            const res = await axios.post(
+                "http://localhost:4000/api/egresos",
+                data
+            );
             console.log(res.data);
             setMensaje("¡Egreso agregado exitosamente!");
         } catch (error) {
@@ -45,7 +47,7 @@ const AgregarEgreso = () => {
             <Navbar></Navbar>
             <div className="container">
                 <div className="section-title text-center">
-                    <h2>Agregar nuevo agreso</h2>
+                    <h2>Agregar nuevo egreso</h2>
                 </div>
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
@@ -73,13 +75,27 @@ const AgregarEgreso = () => {
 
                             <div className="row">
                                 <div className="">
-                                    <input
-                                        type="text"
-                                        placeholder="Categoría"
+                                    <Form.Select
                                         required
                                         name="categoria"
                                         className="form_input"
-                                    />
+                                    >
+                                        <option value="">
+                                            Selecciona una categoría
+                                        </option>
+                                        <option value="Salarios">
+                                            Salarios
+                                        </option>
+                                        <option value="Software">
+                                            Software
+                                        </option>
+                                        <option value="Servicios de contabilidad">
+                                            Servicios de contabilidad
+                                        </option>
+                                        <option value="Servicios">
+                                            Servicios
+                                        </option>
+                                    </Form.Select>
                                 </div>
                                 <div className="col">
                                     <input
@@ -110,9 +126,15 @@ const AgregarEgreso = () => {
                                         className="form_input"
                                         defaultValue="Pendiente"
                                     >
-                                        <option value="Pendiente">Pendiente</option>
-                                        <option value="Aprobado">Aprobado</option>
-                                        <option value="Rechazado">Rechazado</option>
+                                        <option value="Pendiente">
+                                            Pendiente
+                                        </option>
+                                        <option value="Aprobado">
+                                            Aprobado
+                                        </option>
+                                        <option value="Rechazado">
+                                            Rechazado
+                                        </option>
                                     </Form.Select>
                                 </div>
                             </div>
@@ -126,19 +148,22 @@ const AgregarEgreso = () => {
                                         name="nota"
                                         className="form_input"
                                     />
-                                    <button type="submit" className="thm-btn form-btn">
+                                    <button
+                                        type="submit"
+                                        className="thm-btn form-btn"
+                                    >
                                         Agregar
                                     </button>
                                 </div>
                             </div>
-
                         </Form>
 
                         {/* Asegurarse de que el mensaje se muestre correctamente */}
                         {mensaje && (
-                            <div className="alert alert-info mt-4">{mensaje}</div>
+                            <div className="alert alert-info mt-4">
+                                {mensaje}
+                            </div>
                         )}
-
                     </div>
                 </div>
             </div>

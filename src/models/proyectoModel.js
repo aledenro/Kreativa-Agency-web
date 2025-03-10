@@ -75,6 +75,34 @@ const ProyectoModel = new mongoose.Schema(
                 },
             },
         ],
+        historial_respuestas: [
+            {
+                usuario_id: {
+                    required: true,
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "usuarios",
+                },
+                contenido: {
+                    type: String,
+                    required: true,
+                },
+                files: [],
+                fecha_envio: {
+                    type: Date,
+                    required: true,
+                    default: Date.now(),
+                },
+            },
+        ],
+        colaboradores: [
+            {
+                colaborador_id: {
+                    required: true,
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "usuarios",
+                },
+            },
+        ],
     },
     { collection: "proyectos" }
 );

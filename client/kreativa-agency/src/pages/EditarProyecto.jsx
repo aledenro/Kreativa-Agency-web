@@ -1,15 +1,25 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
+import Alert from "react-bootstrap/Alert";
+import sendEmail from "../utils/emailSender";
 
-const id = "67a043437b55c4040e008b3b";
+const estados = [
+    "Por Hacer",
+    "En Progreso",
+    "Cancelado",
+    "Finalizado",
+    "En Revisión",
+];
 
 function construirJsonRequest(
     nombre,
     descripcion,
     cliente,
     urgente,
-    fechaEntrega
+    fechaEntrega,
+    colaboradores
 ) {
     return {
         cliente_id: cliente,
@@ -17,50 +27,9 @@ function construirJsonRequest(
         descripcion: descripcion,
         urgente: urgente,
         fecha_entrega: fechaEntrega,
+        colaboradores: colaboradores,
     };
 }
-
-const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const enviar = confirm("¿Desea editar el proyecto?");
-
-    if (!enviar) {
-        return;
-    }
-
-    const formData = new FormData(event.target);
-
-    const nombre = formData.get("nombre");
-    const descripcion = formData.get("descripcion");
-    const cliente = formData.get("cliente");
-    const urgente = formData.get("urgente") === "on";
-    const fechaEntrega = formData.get("fecha_entrega");
-
-    const data = construirJsonRequest(
-        nombre,
-        descripcion,
-        cliente,
-        urgente,
-        fechaEntrega
-    );
-
-    try {
-        const res = await axios.put(
-            `http://localhost:4000/api/proyectos/editar/67a043437b55c4040e008b3b`,
-            data
-        );
-
-        if (res.status == 200) {
-            alert("Proyecto editado correctamente.");
-        }
-    } catch (error) {
-        console.error(error.message);
-        alert(
-            "Error al editar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
-        );
-    }
-};
 
 function renderOptionsClientes(cliente, clienteProyecto) {
     if (cliente._id === clienteProyecto._id) {
@@ -78,9 +47,31 @@ function renderOptionsClientes(cliente, clienteProyecto) {
     }
 }
 
+function renderOptionsEstados(opcion, estadoProyecto) {
+    if (opcion === estadoProyecto) {
+        return (
+            <option key={estadoProyecto} value={estadoProyecto} selected>
+                {estadoProyecto}
+            </option>
+        );
+    } else {
+        return (
+            <option key={opcion} value={opcion}>
+                {opcion}
+            </option>
+        );
+    }
+}
+
 const AgregarProyecto = () => {
+    const { id } = useParams();
     const [clientes, setClientes] = useState([]);
     const [proyecto, setProyecto] = useState(null);
+    const [estado, setEstado] = useState("");
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertVariant, setAlertVariant] = useState("danger");
+    const [empleados, setEmpleados] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -92,38 +83,193 @@ const AgregarProyecto = () => {
         setProyecto((prevProyecto) => ({ ...prevProyecto, [name]: checked }));
     };
 
-    useEffect(() => {
-        async function fetchClientes() {
-            try {
-                const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/clientes"
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const enviar = confirm("¿Desea editar el proyecto?");
+
+        if (!enviar) {
+            return;
+        }
+
+        const formData = new FormData(event.target);
+
+        const nombre = formData.get("nombre");
+        const descripcion = formData.get("descripcion");
+        const cliente = formData.get("cliente");
+        const urgente = formData.get("urgente") === "on";
+        const fechaEntrega = formData.get("fecha_entrega");
+        const colab = formData.getAll("colab");
+
+        const colabFormateado = [];
+
+        colab.forEach((colaborador) => {
+            colabFormateado.push({ colaborador_id: colaborador });
+        });
+
+        const data = construirJsonRequest(
+            nombre,
+            descripcion,
+            cliente,
+            urgente,
+            fechaEntrega,
+            colabFormateado
+        );
+
+        try {
+            const res = await axios.put(
+                `http://localhost:4000/api/proyectos/editar/${id}`,
+                data
+            );
+
+            if (res.status == 200) {
+                setAlertMessage("Proyecto editado correctamente.");
+                setAlertVariant("success");
+                setShowAlert(true);
+                await addActionLog("Editó el proyecto.");
+                fetchProyecto();
+            }
+        } catch (error) {
+            console.error(error.message);
+            setAlertMessage(
+                "Error al editar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
+            );
+            setAlertVariant("danger");
+            setShowAlert(true);
+        }
+    };
+
+    const handleChangeEstado = async (event) => {
+        event.preventDefault();
+        const estadoEdit = event.target.value;
+
+        try {
+            const response = await axios.put(
+                `http://localhost:4000/api/proyectos/editar/${id}`,
+                { estado: estadoEdit }
+            );
+
+            if (response.status === 200) {
+                setAlertMessage("Estado cambiado  correctamente.");
+                setAlertVariant("success");
+                setShowAlert(true);
+                setEstado(estadoEdit);
+                await addActionLog(
+                    `Cambió el estado del proyecto a: ${estadoEdit}.`
                 );
 
-                setClientes(response.data);
+                if (estadoEdit !== "Finalizado") {
+                    await sendEmail(
+                        proyecto.cliente_id,
+                        `El estado de su proyecto ha sido actualizado a ${estadoEdit}.`,
+                        `Actualización en su proyecto ${proyecto.nombre}`,
+                        "Ver",
+                        "test"
+                    );
+                } else {
+                    await sendEmail(
+                        proyecto.cliente_id,
+                        `El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingresse para ver más detalles.`,
+                        `Actualización en su proyecto ${proyecto.nombre}`,
+                        "Ver",
+                        "test"
+                    );
+                }
+            }
+        } catch (error) {
+            console.error(error.message);
+            setAlertMessage(
+                "Error al editar el estado de su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
+            );
+            setAlertVariant("danger");
+            setShowAlert(true);
+        }
+    };
+
+    const addActionLog = async (accion) => {
+        try {
+            const user_id = localStorage.getItem("user_id");
+            await axios.put(
+                `http://localhost:4000/api/proyectos/actualizarLog/${id}`,
+                {
+                    usuario_id: user_id,
+                    accion: accion,
+                }
+            );
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+    function renderColab(colab) {
+        const isSelected = proyecto.colaboradores.some(
+            (proyectoColab) => colab._id === proyectoColab.colaborador_id._id
+        );
+
+        return (
+            <option key={colab._id} value={colab._id} selected={isSelected}>
+                {colab.nombre}
+            </option>
+        );
+    }
+
+    const fetchProyecto = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                `http://localhost:4000/api/proyectos/id/${id}`
+            );
+
+            if (response.status === 200) {
+                setProyecto(response.data.proyecto);
+                setEstado(response.data.estado);
+            }
+
+            fetchClientes();
+        } catch (error) {
+            console.error(`Error al obtener el proyecto: ${error.message}`);
+        }
+    }, [id]);
+
+    useEffect(() => {
+        fetchProyecto();
+        async function fetchEmpleados() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await axios.get(
+                    "http://localhost:4000/api/usuarios/empleados",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
+                setEmpleados(response.data);
             } catch (error) {
                 console.error(
-                    `Error al obtener los clientes: ${error.message}`
+                    `Error al obtener los empleados: ${error.message}`
                 );
             }
         }
 
-        async function fetchProyecto() {
-            try {
-                const response = await axios.get(
-                    `http://localhost:4000/api/proyectos/id/${id}`
-                );
+        fetchEmpleados();
+    }, [fetchProyecto]);
 
-                if (response.status === 200) {
-                    setProyecto(response.data);
+    async function fetchClientes() {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await axios.get(
+                "http://localhost:4000/api/usuarios/clientes",
+                {
+                    headers: { Authorization: `Bearer ${token}` },
                 }
-            } catch (error) {
-                console.error(`Error al obtener el proyecto: ${error.message}`);
-            }
-        }
+            );
 
-        fetchClientes();
-        fetchProyecto();
-    }, []);
+            setClientes(response.data);
+        } catch (error) {
+            console.error(`Error al obtener los clientes: ${error.message}`);
+        }
+    }
 
     if (!proyecto) {
         return (
@@ -136,11 +282,48 @@ const AgregarProyecto = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <div className="container d-flex align-items-center justify-content-center">
-                <div className="card p-4 shadow-lg w-50">
+            <div className="container align-items-center justify-content-center">
+                <div className=" p-4">
                     <h3 className="text-center section-title">
                         Editar Proyecto
                     </h3>
+                    {showAlert && (
+                        <Alert
+                            variant={alertVariant}
+                            onClose={() => setShowAlert(false)}
+                            dismissible
+                        >
+                            {alertMessage}
+                        </Alert>
+                    )}
+                    <div className="row mb-3">
+                        <div className="col mx-3">
+                            Fecha de Solicitud:{" "}
+                            <small>
+                                {new Date(
+                                    proyecto.fecha_creacion
+                                ).toLocaleDateString()}
+                            </small>
+                        </div>
+                        <div className="col mx-3">
+                            <label htmlFor="estado" className="form-label">
+                                Estado
+                            </label>
+                            <select
+                                className="form-select form_input"
+                                name="estado"
+                                id="estado"
+                                onChange={handleChangeEstado}
+                            >
+                                {estados.map((opcion) =>
+                                    renderOptionsEstados(
+                                        opcion,
+                                        proyecto.estado
+                                    )
+                                )}
+                            </select>
+                        </div>
+                    </div>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="nombre" className="form-label">
@@ -154,6 +337,10 @@ const AgregarProyecto = () => {
                                 required
                                 value={proyecto.nombre}
                                 onChange={handleChange}
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             />
                         </div>
                         <div className="mb-3">
@@ -162,13 +349,17 @@ const AgregarProyecto = () => {
                             </label>
                             <textarea
                                 name="descripcion"
-                                className="form_input"
+                                className="form_input form-textarea"
                                 id="descripcion"
-                                rows={5}
+                                rows={15}
                                 placeholder="Describa su solicitud"
                                 required
                                 value={proyecto.descripcion}
                                 onChange={handleChange}
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             ></textarea>
                         </div>
                         <div className="mb-3">
@@ -176,10 +367,14 @@ const AgregarProyecto = () => {
                                 Cliente
                             </label>
                             <select
-                                className="form-select"
+                                className="form-select form_input"
                                 name="cliente"
                                 id="cliente"
                                 onChange={handleChange}
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
                             >
                                 {clientes.map((cliente) =>
                                     renderOptionsClientes(
@@ -187,6 +382,19 @@ const AgregarProyecto = () => {
                                         proyecto.cliente_id
                                     )
                                 )}
+                            </select>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="colab" className="form-label ">
+                                Colaboradores:
+                            </label>
+                            <select
+                                className="form-select form_input"
+                                name="colab"
+                                id="colab"
+                                multiple
+                            >
+                                {empleados.map((colab) => renderColab(colab))}
                             </select>
                         </div>
                         <div className="row">
@@ -199,6 +407,10 @@ const AgregarProyecto = () => {
                                         name="urgente"
                                         checked={proyecto.urgente}
                                         onChange={handleChangeCheckBox}
+                                        disabled={
+                                            estado === "Cancelado" ||
+                                            estado === "Finalizado"
+                                        }
                                     />
                                     <label
                                         className="form-check-label"
@@ -228,11 +440,22 @@ const AgregarProyecto = () => {
                                                 .toISOString()
                                                 .split("T")[0]
                                         }
+                                        disabled={
+                                            estado === "Cancelado" ||
+                                            estado === "Finalizado"
+                                        }
                                     />
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" className="thm-btn">
+                        <button
+                            type="submit"
+                            className="thm-btn"
+                            disabled={
+                                estado === "Cancelado" ||
+                                estado === "Finalizado"
+                            }
+                        >
                             Enviar
                         </button>
                     </form>

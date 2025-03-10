@@ -26,9 +26,32 @@ export default function Navbar() {
                 </li>
                 <li className="dropdown">
                     <a href="#" className="dropdown-toggle">
+                        Empleados
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <a href="/agregar-pto">Agregar PTO</a>
+                        </li>
+
+                        <li>
+                            <a href="/ver-pto-empleados">Ver PTO Empleado</a>
+                        </li>
+                        <li>
+                            <a href="/jerarquia">Jerarquía</a>
+                        </li>
+                        <li>
+                            <a href="/perfil">Perfil</a>
+                        </li>
+                    </ul>
+                </li>
+                <li className="dropdown">
+                    <a href="#" className="dropdown-toggle">
                         Servicios
                     </a>
                     <ul className="dropdown-menu">
+                        <li>
+                            <a href="/servicios">Servicios</a>
+                        </li>
                         <li>
                             <a href="/servicio/agregar">Agregar Servicio</a>
                         </li>
@@ -52,9 +75,6 @@ export default function Navbar() {
                         <li>
                             <a href="/cotizacion/">Ver Cotizaciones</a>
                         </li>
-                        <li>
-                            <a href="/cotizacion/agregar">Agregar Cotización</a>
-                        </li>
                     </ul>
                 </li>
                 <li className="dropdown">
@@ -63,12 +83,27 @@ export default function Navbar() {
                     </a>
                     <ul className="dropdown-menu">
                         <li>
-                            <a href="/proyecto/editar/editar">
+                            <a href="/proyecto/editar/67cc94cf9ee53834562aa6d4">
                                 Editar Proyecto
                             </a>
                         </li>
                         <li>
                             <a href="/proyecto/agregar">Agregar Proyecto</a>
+                        </li>
+                        <li>
+                            <a href={`/proyecto/67cc94cf9ee53834562aa6d4`}>
+                                Ver Detalle Proyecto
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li className="dropdown">
+                    <a href="#" className="dropdown-toggle">
+                        Tareas
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li>
+                            <a href="/tareas">Listado de Tareas</a>
                         </li>
                     </ul>
                 </li>
@@ -80,10 +115,21 @@ export default function Navbar() {
                         <li>
                             <a href="/egresos">Ver Egresos</a>
                         </li>
+                        <li>
+                            <a href="/egreso/agregar">Agregar Egreso</a>
+                        </li>
+                        <li>
+                            <a href="/ingresos">Ver Ingresos</a>
+                        </li>
+                        <li>
+                            <a href="/ingreso/agregar">Agregar Ingreso</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
-            <button className="login-button">Iniciar Sesión</button>
+            <a href="/login">
+                <button className="login-button">Iniciar Sesión</button>
+            </a>
         </nav>
     );
 }

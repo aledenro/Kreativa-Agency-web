@@ -14,7 +14,8 @@ const EgresosModel = new mongoose.Schema(
         },
         categoria: {
             type: String,
-            required: true,
+            enum: ['Salarios', 'Software', 'Servicios de contabilidad', 'Servicios'], 
+            required: true
         },
         descripcion: {
             type: String,
@@ -41,7 +42,12 @@ const EgresosModel = new mongoose.Schema(
         ultima_modificacion: {
             type: Date,
             required: true,
-            default: Date.now(),
+            default: Date.now,
+        },
+        activo: { 
+            type: Boolean,
+            default: true,
+            required: true
         },
     },
     {collection: "egresos"}

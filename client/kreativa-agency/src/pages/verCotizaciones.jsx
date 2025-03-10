@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import lodash from "lodash";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 
@@ -27,46 +26,70 @@ const VerCotizaciones = () => {
         navigate(`/cotizacion/${id}`);
     }
 
+    if (!cotizaciones) {
+        return (
+            <div className="container d-flex align-items-center justify-content-center">
+                <p>Cargando cotizaciones...</p>
+            </div>
+        );
+    }
+
     return (
-        <div className="container">
+        <div>
             <Navbar></Navbar>
-            <table className="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Titulo</th>
-                        <th scope="col">Cliente</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Urgente</th>
-                        <th scope="col">Ver Detalles</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {cotizaciones.map((cotizacion) => (
-                        <tr key={cotizacion._id}>
-                            <td>{cotizacion.titulo}</td>
-                            <td>{cotizacion.cliente_id.nombre}</td>
-                            <td>{cotizacion.estado}</td>
-                            <td>
-                                {new Date(
-                                    cotizacion.fecha_solicitud
-                                ).toLocaleDateString()}
-                            </td>
-                            <td>{cotizacion.urgente ? "Si" : "No"}</td>
-                            <td>
-                                <button
-                                    className="thm-btn"
-                                    onClick={() =>
-                                        handleVerDetalles(cotizacion._id)
-                                    }
-                                >
-                                    Ver detalles
-                                </button>
-                            </td>
+            <h3 className="section-title text-center">
+                Listado de Cotizaciones
+            </h3>
+
+            <div className="container pt-3  table-responsive">
+                <div className="row mb-3">
+                    <div className="col text-end">
+                        <button
+                            className="thm-btn btn-verde"
+                            onClick={() => navigate("/cotizacion/agregar")}
+                        >
+                            Solicitar Cotización
+                        </button>
+                    </div>
+                </div>
+                <table className="table kreativa-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Titulo</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Urgente</th>
+                            <th scope="col">Ver Detalles</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {cotizaciones.map((cotizacion) => (
+                            <tr key={cotizacion._id}>
+                                <td>{cotizacion.titulo}</td>
+                                <td>{cotizacion.cliente_id.nombre}</td>
+                                <td>{cotizacion.estado}</td>
+                                <td>
+                                    {new Date(
+                                        cotizacion.fecha_solicitud
+                                    ).toLocaleDateString()}
+                                </td>
+                                <td>{cotizacion.urgente ? "Si" : "No"}</td>
+                                <td>
+                                    <button
+                                        className="thm-btn thm-btn-small btn-amarillo"
+                                        onClick={() =>
+                                            handleVerDetalles(cotizacion._id)
+                                        }
+                                    >
+                                        Ver detalles
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
