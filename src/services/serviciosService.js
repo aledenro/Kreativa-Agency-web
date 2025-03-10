@@ -1,12 +1,28 @@
 const Servicios = require("../models/serviciosModel");
 const mongoose = require("mongoose");
+const awsS3Connect = require("../utils/awsS3Connect");
 
 class ServiciosService {
-    async agregarServicio(data) {
+    async agregarServicio(data, files) {
         try {
-            const servicio = new Servicios(data);
+            let imagenes = [];
 
-            return await servicio.save();
+            if (files && files.length > 0) {
+                imagenes = await Promise.all(
+                    files.map(async (file) => {
+                        return await awsS3Connect.uploadFile(file, {
+                            folder: "landingpage",
+                            parent: "servicios",
+                            parent_id: "",
+                        });
+                    })
+                );
+            }
+
+            const servicio = new Servicios({ ...data, imagenes });
+            const nuevoServicio = await servicio.save();
+
+            return nuevoServicio.toObject();
         } catch (error) {
             throw new Error("No se pudo agregar el servicio: " + error.message);
         }

@@ -4,8 +4,13 @@ const lodash = require("lodash");
 class ServiciosController {
     async agregarServicio(req, res) {
         try {
-            const servicio = await ServiciosService.agregarServicio(req.body);
+            console.log("body ", req.body);
+            console.log("files ", req.files);
 
+            const servicio = await ServiciosService.agregarServicio(
+                req.body,
+                req.files
+            );
             return res.status(201).json(servicio);
         } catch (error) {
             console.error("Error al agregar el servicio: " + error.message);
