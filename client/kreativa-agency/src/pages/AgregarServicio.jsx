@@ -3,21 +3,14 @@ import { Form, Alert, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
-
-function jsonRequests(nombre, descripcion, categoria) {
-    return {
-        nombre: nombre,
-        descripcion: descripcion,
-        categoria_id: categoria,
-        paquetes: [],
-    };
-}
+import fileUpload from "../utils/fileUpload";
 
 const AgregarServicio = () => {
     const [categorias, setCategorias] = useState([]);
     const [selectedCategoria, setSelectedCategoria] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [nuevaCategoria, setNuevaCategoria] = useState("");
+    const [files, setFiles] = useState([]);
 
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
@@ -52,26 +45,60 @@ const AgregarServicio = () => {
             return;
         }
 
-        const data = jsonRequests(nombre, descripcion, selectedCategoria);
-
         try {
-            await axios.post(
+            const res = await axios.post(
                 "http://localhost:4000/api/servicios/agregar",
-                data
+                {
+                    nombre,
+                    descripcion,
+                    categoria_id: selectedCategoria,
+                    imagenes: [],
+                }
             );
+
+            const servicioId = res.data._id;
+
+            let imagenes = [];
+            if (files.length > 0) {
+                try {
+                    imagenes = await fileUpload(
+                        files,
+                        "landingpage",
+                        "servicios",
+                        servicioId
+                    );
+
+                    await axios.put(
+                        `http://localhost:4000/api/servicios/modificar/${servicioId}`,
+                        { imagenes }
+                    );
+                } catch (error) {
+                    console.error("Error al subir archivos:", error);
+                    setAlertMessage("No se pudieron subir las imágenes.");
+                    setAlertVariant("danger");
+                    setShowAlert(true);
+                    return;
+                }
+            }
+
             setAlertMessage("Servicio agregado exitosamente.");
             setAlertVariant("success");
             setShowAlert(true);
             event.target.reset();
             setSelectedCategoria("");
+            setFiles([]);
         } catch (error) {
-            console.error(error);
+            console.error("Error al agregar el servicio:", error);
             setAlertMessage("Hubo un error al agregar el servicio.");
             setAlertVariant("danger");
             setShowAlert(true);
         } finally {
             setTimeout(() => setShowAlert(false), 3000);
         }
+    };
+
+    const handleFileChange = (event) => {
+        setFiles(Array.from(event.target.files));
     };
 
     const handleAgregarCategoria = async () => {
@@ -177,7 +204,7 @@ const AgregarServicio = () => {
                                             </Form.Select>
                                             <button
                                                 type="button"
-                                                className="inline-btn"
+                                                className="inline-btn btn-verde"
                                                 onClick={() =>
                                                     setShowModal(true)
                                                 }
@@ -202,15 +229,34 @@ const AgregarServicio = () => {
                                         className="form_input form-textarea"
                                         required
                                     />
-                                    <div className="d-flex justify-content-center mt-3">
-                                        <button
-                                            type="submit"
-                                            className="thm-btn form-btn"
-                                        >
-                                            Agregar
-                                        </button>
-                                    </div>
                                 </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <label
+                                        className="form-label"
+                                        htmlFor="imagenes"
+                                    >
+                                        Imágenes del servicio
+                                    </label>
+                                    <input
+                                        required
+                                        type="file"
+                                        name="files"
+                                        id="files"
+                                        multiple
+                                        className="form_input form-control"
+                                        onChange={handleFileChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className="d-flex justify-content-center mt-3">
+                                <button
+                                    type="submit"
+                                    className="thm-btn form-btn"
+                                >
+                                    Agregar
+                                </button>
                             </div>
                         </Form>
                     </div>

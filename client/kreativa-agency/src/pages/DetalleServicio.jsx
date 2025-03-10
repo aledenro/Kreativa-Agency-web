@@ -115,8 +115,8 @@ const DetalleServicio = () => {
                                 <button
                                     className={`thm-btn thm-btn-small ${
                                         servicio.activo
-                                            ? "btn-rojo"
-                                            : "btn-verde"
+                                            ? "btn-verde"
+                                            : "btn-rojo"
                                     } ms-2`}
                                     type="button"
                                     onClick={toggleEstadoServicio}
