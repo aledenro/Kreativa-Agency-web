@@ -233,3 +233,62 @@
     width: 50px;
     height: 50px;
 }
+
+
+
+/* ✅ Contenedor del perfil */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: visible !important; /* ✅ Evita que se esconda */
+}
+
+/* ✅ Imagen de perfil circular */
+.profile-avatar {
+    width: 70px !important;
+    height: 70px !important;
+    border-radius: 50%;
+    border: 3px solid #FF0072; /* ✅ Borde rosado */
+    object-fit: cover;
+}
+
+/* ✅ Nombre y rol debajo de la foto */
+.profile-name {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+
+.profile-role {
+    font-size: 12px;
+    color: #BBBBBB;
+}
+
+/* ✅ Oculta el nombre y rol cuando el sidebar está colapsado */
+.sidebar.collapsed .profile-name,
+.sidebar.collapsed .profile-role {
+    display: none;
+}
+
+/* ✅ Centrar mejor el perfil cuando el sidebar está colapsado */
+.sidebar.collapsed .profile-container {
+    justify-content: center;
+}
+
+/* ✅ Cuando el sidebar está colapsado, la imagen es más pequeña */
+.sidebar.collapsed .profile-avatar {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.profile-avatar img {
+    opacity: 1 !important; /* ✅ Forzar visibilidad */
+    transition: opacity 0.3s ease-in-out;
+    width: 70px !important;  
+}
+

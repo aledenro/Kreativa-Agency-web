@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Home, Users, Settings, LogOut } from "lucide-react";
+import { Home, Users, Settings, LogOut, Menu } from "lucide-react";
+import { Avatar } from "@heroui/react"; // ✅ Usamos Avatar en lugar de User
 import "../AdminPanel.css";
-import profilePic from "../assets/img/AdminProfile.png"; // Imagen del perfil
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
@@ -23,6 +23,7 @@ const AdminPanel = () => {
 
     return (
         <div className="admin-container">
+            {/* Sidebar con animación */}
             <motion.aside 
                 className={`sidebar ${collapsed ? "collapsed" : ""}`}
                 animate={{ width: collapsed ? "80px" : "250px" }} 
@@ -30,9 +31,14 @@ const AdminPanel = () => {
                 onMouseEnter={() => setCollapsed(false)} 
                 onMouseLeave={() => setCollapsed(true)}
             >
-                {/* ✅ Perfil del Administrador */}
+
+                {/* ✅ Avatar del Administrador con HeroUI */}
                 <div className="profile-container">
-                    <img src={profilePic} alt="Perfil" className="profile-pic" />
+                    <Avatar
+                        size="xl" // ✅ Tamaño grande
+                        className="profile-avatar" // ✅ Aplicar estilos extra
+                        src="https://i.pravatar.cc/150?u=a04258114e29026702d"
+                    />
                     {!collapsed && (
                         <>
                             <span className="profile-name">Scarlett Peña</span>
@@ -41,7 +47,7 @@ const AdminPanel = () => {
                     )}
                 </div>
 
-                {/* ✅ Menú de navegación */}
+                {/* Menú de navegación */}
                 <ul>
                     {[{ icon: Home, label: "Dashboard" }, { icon: Users, label: "Usuarios" }, { icon: Settings, label: "Configuración" }, { icon: LogOut, label: "Salir" }].map((item, index) => (
                         <motion.li key={index} whileHover={{ scale: 1.1 }} className="menu-item">
