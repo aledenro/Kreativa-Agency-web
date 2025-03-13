@@ -23,6 +23,7 @@
     "@popperjs/core": "^2.11.8",
     "@react-email/components": "^0.0.33",
     "@react-email/render": "^1.0.5",
+    "antd": "^5.24.3",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "framer-motion": "^12.4.10",

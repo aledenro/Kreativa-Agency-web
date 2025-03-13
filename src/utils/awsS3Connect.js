@@ -6,6 +6,7 @@ const {
     DeleteObjectCommand,
 } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { replace } = require("lodash");
 
 const s3Client = new S3Client({
     region: process.env.AWS_REGION,
@@ -60,9 +61,19 @@ const generateUrls = async (path) => {
                     Key: key,
                 });
 
-                return await getSignedUrl(s3Client, command, {
-                    expiresIn: 1800,
-                });
+                const fileName = replace(
+                    key,
+                    `${path.folder}/${path.parent}/${path.parent_id}/`,
+                    ""
+                );
+
+                return {
+                    key: key,
+                    url: await getSignedUrl(s3Client, command, {
+                        expiresIn: 1800,
+                    }),
+                    fileName: fileName.substring(fileName.indexOf("-") + 1),
+                };
             })
         );
 

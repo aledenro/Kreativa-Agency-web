@@ -28,7 +28,7 @@ class ProyectoController {
                 });
             }
 
-            return res.json(proyecto);
+            return res.json({ proyecto: proyecto });
         } catch (error) {
             console.error(`Error al obtener el proyecto: ${error.message}`);
             return res.status(500).json({
@@ -107,6 +107,25 @@ class ProyectoController {
             return res.status(500).json({
                 error: `Error al actualizar el log del proyecto: ${error.message}`,
             });
+        }
+    }
+
+    async addRespuesta(req, res) {
+        try {
+            const id = req.params.id;
+            const respuesta = req.body;
+
+            const respuestaDb = await ProyectoService.addRespuesta(
+                id,
+                respuesta
+            );
+
+            return res.json({ respuesta: respuestaDb });
+        } catch (error) {
+            console.error(
+                "Error al agregar una respuesta al proyecto: " + error.message
+            );
+            return res.status(500).json({ error: error.message });
         }
     }
 }
