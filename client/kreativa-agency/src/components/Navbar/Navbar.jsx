@@ -1,14 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        const handleScroll = () => {
+            console.log("Scroll position:", window.scrollY);
+            setIsScrolled(window.scrollY > 50);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
 
     return (
-        <nav className="navbar">
+        <nav
+            className={`navbar ${isScrolled ? "navbar-scrolled" : "navbar-fixed"} ${
+                location.pathname === "/" ? "navbar-transparent" : ""
+            }`}
+        >
             <div className="hamburger" onClick={toggleMenu}>
                 <div></div>
                 <div></div>
@@ -19,117 +38,98 @@ export default function Navbar() {
             </div>
             <ul className={`menu ${menuOpen ? "active" : ""}`}>
                 <li>
-                    <a href="/">Inicio</a>
+                    <Link to="/">Inicio</Link>
                 </li>
                 <li>
-                    <a href="/usuarios">Usuarios</a>
+                    <Link to="/usuarios">Usuarios</Link>
                 </li>
-                <li className="dropdown">
-                    <a href="#" className="dropdown-toggle">
-                        Empleados
-                    </a>
-                    <ul className="dropdown-menu">
-                        <li>
-                            <a href="/agregar-pto">Agregar PTO</a>
-                        </li>
 
+                <li className="dropdown">
+                    <Link to="#">Empleados</Link>
+                    <ul className="dropdown-menu">
                         <li>
-                            <a href="/ver-pto-empleados">Ver PTO Empleado</a>
+                            <Link to="/agregar-pto">Agregar PTO</Link>
                         </li>
                         <li>
-                            <a href="/jerarquia">Jerarquía</a>
+                            <Link to="/ver-pto-empleados">
+                                Ver PTO Empleado
+                            </Link>
                         </li>
                         <li>
-                            <a href="/perfil">Perfil</a>
+                            <Link to="/jerarquia">Jerarquía</Link>
+                        </li>
+                        <li>
+                            <Link to="/perfil">Perfil</Link>
                         </li>
                     </ul>
                 </li>
+
                 <li className="dropdown">
-                    <a href="#" className="dropdown-toggle">
-                        Servicios
-                    </a>
+                    <Link to="#">Servicios</Link>
                     <ul className="dropdown-menu">
                         <li>
-                            <a href="/servicios">Servicios</a>
+                            <Link to="/servicios">Servicios</Link>
                         </li>
                         <li>
-                            <a href="/servicio/agregar">Agregar Servicio</a>
-                        </li>
-                        <li>
-                            <a href="/servicio/modificar/679e997dc509472dd326b37e">
-                                Modificar Servicio
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/servicio/agregarPaquete/679e7b6d4fb1f2469e878ee8">
-                                Agregar Paquete
-                            </a>
+                            <Link to="/servicio/agregar">Agregar Servicio</Link>
                         </li>
                     </ul>
                 </li>
+
                 <li className="dropdown">
-                    <a href="#" className="dropdown-toggle">
-                        Cotizaciones
-                    </a>
+                    <Link to="#">Cotizaciones</Link>
                     <ul className="dropdown-menu">
                         <li>
-                            <a href="/cotizacion/">Ver Cotizaciones</a>
+                            <Link to="/cotizacion/">Ver Cotizaciones</Link>
                         </li>
                     </ul>
                 </li>
+
                 <li className="dropdown">
-                    <a href="#" className="dropdown-toggle">
-                        Proyectos
-                    </a>
+                    <Link to="#">Proyectos</Link>
                     <ul className="dropdown-menu">
                         <li>
-                            <a href="/proyecto/editar/67cc94cf9ee53834562aa6d4">
-                                Editar Proyecto
-                            </a>
+                            <Link to="/proyecto/agregar">Agregar Proyecto</Link>
                         </li>
                         <li>
-                            <a href="/proyecto/agregar">Agregar Proyecto</a>
-                        </li>
-                        <li>
-                            <a href={`/proyecto/67cc94cf9ee53834562aa6d4`}>
+                            <Link to="/proyecto/67cc94cf9ee53834562aa6d4">
                                 Ver Detalle Proyecto
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </li>
+
                 <li className="dropdown">
-                    <a href="#" className="dropdown-toggle">
-                        Tareas
-                    </a>
+                    <Link to="#">Tareas</Link>
                     <ul className="dropdown-menu">
                         <li>
-                            <a href="/tareas">Listado de Tareas</a>
+                            <Link to="/tareas">Listado de Tareas</Link>
                         </li>
                     </ul>
                 </li>
+
                 <li className="dropdown">
-                    <a href="#" className="dropdown-toggle">
-                        Contabilidad
-                    </a>
+                    <Link to="#">Contabilidad</Link>
                     <ul className="dropdown-menu">
                         <li>
-                            <a href="/egresos">Ver Egresos</a>
+                            <Link to="/egresos">Ver Egresos</Link>
                         </li>
                         <li>
-                            <a href="/egreso/agregar">Agregar Egreso</a>
+                            <Link to="/egreso/agregar">Agregar Egreso</Link>
                         </li>
                         <li>
-                            <a href="/ingresos">Ver Ingresos</a>
+                            <Link to="/ingresos">Ver Ingresos</Link>
                         </li>
                         <li>
-                            <a href="/ingreso/agregar">Agregar Ingreso</a>
+                            <Link to="/ingreso/agregar">Agregar Ingreso</Link>
                         </li>
                     </ul>
                 </li>
             </ul>
-            <a href="/login">
+
+            <Link to="/login">
                 <button className="login-button">Iniciar Sesión</button>
-            </a>
+            </Link>
         </nav>
     );
 }

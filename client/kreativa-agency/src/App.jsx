@@ -39,7 +39,7 @@ import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
 import AdminPanel from "./pages/AdminPanel";
 import VerDetalleProyecto from "./pages/VerDetalleProyecto";
-
+import Landing from "./pages/Landing";
 
 function App() {
     return (
@@ -154,10 +154,8 @@ function App() {
                     path="/proyecto/:id"
                     element={<VerDetalleProyecto />}
                 ></Route>
-                <Route
-                    path="/admin"
-                    element={<AdminPanel />}
-                ></Route>
+                <Route path="/admin" element={<AdminPanel />}></Route>
+                <Route path="/" element={<Landing />} />
             </Routes>
         </Router>
     );

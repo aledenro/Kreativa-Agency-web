@@ -30,26 +30,23 @@ class ServiciosService {
 
     async getServicios() {
         try {
-            // Obtener servicios desde la base de datos y convertirlos en objetos planos
-            let servicios = await Servicios.find().lean(); // <-- Convertimos documentos Mongoose en objetos JS
+            let servicios = await Servicios.find().lean();
 
             if (servicios.length > 0) {
                 for (let servicio of servicios) {
-                    // Generar URLs de imágenes desde AWS S3
                     const files = await awsS3Connect.generateUrls({
                         folder: "landingpage",
                         parent: "servicios",
                         parent_id: servicio._id,
                     });
 
-                    // Si hay imágenes, asignar la primera URL generada al servicio
                     servicio.imagen = files.length > 0 ? files[0].url : null;
                 }
             }
 
             console.log("Servicios con imágenes generadas:", servicios);
 
-            return servicios; // Retornamos la lista con las imágenes generadas
+            return servicios;
         } catch (error) {
             throw new Error(
                 "No se pudieron obtener los servicios: " + error.message
