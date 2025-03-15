@@ -6,5 +6,6 @@ const PagosController = require("../controllers/pagosController");
 router.post("/", PagosController.createPago);
 router.get("/", PagosController.getAllPagos);
 router.get("/cliente/:id", PagosController.getByCliente);
+router.get("/id/:id", PagosController.getById);
 
 module.exports = router;

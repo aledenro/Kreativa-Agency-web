@@ -45,6 +45,23 @@ class PagosController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    async getById(req, res) {
+        try {
+            const id = req.params.id;
+
+            const pago = await PagosService.getById(id);
+
+            if (!pago && !lodash.isEmpty(pago)) {
+                return res.status(404).json(pago);
+            }
+
+            return res.json(pago);
+        } catch (error) {
+            console.error(error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new PagosController();

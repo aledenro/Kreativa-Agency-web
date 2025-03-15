@@ -28,6 +28,14 @@ class PagosService {
             throw new Error(`Error al obtener los pagos: ${error.message}`);
         }
     }
+
+    async getById(id) {
+        try {
+            return await PagosModel.findById(id);
+        } catch (error) {
+            throw new Error(`Error al obtener el pago: ${error.message}`);
+        }
+    }
 }
 
 module.exports = new PagosService();
