@@ -15,6 +15,7 @@ const tareasRoutes = require("./routes/tareasRoutes");
 const fileManagementRoutes = require("./routes/fileManagementRoutes");
 const PTORoutes = require("./routes/PTORoutes");
 const emailRoutes = require("./routes/emailRoutes");
+const contactoRoutes = require("./routes/contactoRoutes");
 
 connectDB();
 
@@ -38,6 +39,7 @@ app.use("/api/tareas", tareasRoutes);
 app.use("/api", usuarioRoutes);
 app.use("/api/pto", PTORoutes);
 app.use("/api/email", emailRoutes);
+app.use("/api/contacto", contactoRoutes);
 
 //end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);
