@@ -62,6 +62,24 @@ class PagosController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    async updateById(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+
+            const pago = await PagosService.updateById(id, data);
+
+            if (!pago && !lodash.isEmpty(pago)) {
+                return res.status(404).json(pago);
+            }
+
+            return res.json(pago);
+        } catch (error) {
+            console.error(error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new PagosController();

@@ -33,7 +33,21 @@ class PagosService {
         try {
             return await PagosModel.findById(id);
         } catch (error) {
-            throw new Error(`Error al obtener el pago: ${error.message}`);
+            throw new Error(
+                `Error al obtener el pago con el id ${id}: ${error.message}`
+            );
+        }
+    }
+
+    async updateById(id, data) {
+        try {
+            return await PagosModel.findByIdAndUpdate(id, data, {
+                new: true,
+            });
+        } catch (error) {
+            throw new Error(
+                `Error al actualizar el pago con el id ${id}: ${error.message}`
+            );
         }
     }
 }

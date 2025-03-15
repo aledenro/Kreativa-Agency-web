@@ -28,7 +28,7 @@ const PagosModel = new mongoose.Schema(
         estado: {
             type: String,
             required: true,
-            enum: ["Pendiente", "Pagado"],
+            enum: ["Pendiente", "Pagado", "Cancelado"],
         },
     },
     { collection: "pagos" }
