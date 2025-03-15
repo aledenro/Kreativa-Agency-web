@@ -1,0 +1,17 @@
+const PagosModel = require("../models/pagosModel");
+
+class PagosService {
+    async createPago(data) {
+        try {
+            const pago = new PagosModel(data);
+
+            pago.save();
+
+            return pago;
+        } catch (error) {
+            throw new Error(`Error creando el pago: ${error.message}`);
+        }
+    }
+}
+
+module.exports = new PagosService();
