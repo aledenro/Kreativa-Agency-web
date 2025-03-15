@@ -33,6 +33,10 @@ a {
     text-decoration: none;
 }
 
+.container {
+    padding-top: 60px;
+}
+
 h1,
 h2,
 h3 {
@@ -308,7 +312,6 @@ h3 {
     text-align: center;
 }
 
-/* Estilos para el botón */
 .kreativa-table .btn-warning {
     background-color: var(--kreativa-secondary);
     border: none;
@@ -323,7 +326,6 @@ h3 {
     background-color: var(--kreativa-base);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .kreativa-table thead {
         display: none;
@@ -358,11 +360,33 @@ h3 {
 
 .navbar {
     display: flex;
+    height: 60px;
     justify-content: space-between;
     align-items: center;
     background-color: var(--kreativa-black);
     padding: 10px 40px;
-    position: relative;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    transition:
+        background-color 0.3s ease-in-out,
+        box-shadow 0.3s ease-in-out;
+    top: 0;
+    left: 0;
+}
+
+.navbar-transparent {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.navbar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.navbar-scrolled {
+    background-color: var(--kreativa-black) !important;
 }
 
 .logo {
@@ -957,3 +981,77 @@ h3 {
     color: var(--kreativa-black);
 }
 
+/* ----------------landing ----------------*/
+
+.landing-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #111;
+    color: white;
+}
+
+.video-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.video-content {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    z-index: 10;
+    transform: translateY(50px);
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out forwards;
+}
+
+.video-logo {
+    width: 300px;
+}
+
+.video-text {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

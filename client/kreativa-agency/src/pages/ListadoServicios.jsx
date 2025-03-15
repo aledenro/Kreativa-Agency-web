@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar";
 
 const ListadoServicios = () => {
     const [servicios, setServicios] = useState([]);
@@ -42,7 +41,6 @@ const ListadoServicios = () => {
 
     return (
         <div>
-            <Navbar />
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Nuestros Servicios</h2>
