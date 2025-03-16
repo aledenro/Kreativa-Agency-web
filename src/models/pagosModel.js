@@ -7,6 +7,10 @@ const PagosModel = new mongoose.Schema(
             required: true,
             ref: "usuarios",
         },
+        titulo: {
+            type: String,
+            required: true,
+        },
         detalle: {
             type: String,
             required: true,

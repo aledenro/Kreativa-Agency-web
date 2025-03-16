@@ -122,6 +122,9 @@ export default function Navbar() {
                         <li>
                             <Link to="/ingreso/agregar">Agregar Ingreso</Link>
                         </li>
+                        <li>
+                            <Link to="/pagos/">Pagos</Link>
+                        </li>
                     </ul>
                 </li>
             </ul>

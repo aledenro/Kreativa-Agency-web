@@ -1,0 +1,395 @@
+import { useEffect, useState, useCallback } from "react";
+import Navbar from "../components/Navbar/Navbar";
+import axios from "axios";
+import lodash from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faSort,
+    faForward,
+    faCaretRight,
+    faCaretLeft,
+    faBackward,
+    faEye,
+} from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import ModalVerPago from "../components/Pagos/ModalVerPago";
+import ModalEditarPago from "../components/Pagos/ModalEditarPago";
+
+const ListadoPagos = () => {
+    const navigate = useNavigate();
+    const [pagos, setPagos] = useState([]);
+    const [itemsPag, setItemsPag] = useState(5);
+    const [pagActual, setPagActual] = useState(1);
+    const [sortField, setsortField] = useState("fecha_creacion");
+    const [sortOrder, setsortOrder] = useState("desc");
+    const [filterColab, setFilterColab] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [pagoModal, setPagoModal] = useState({});
+    const [filterStatus, setFilterStatus] = useState("");
+    const [showModalEdit, setShowModalEdit] = useState(false);
+    const [pagoModalEdit, setPagoModalEdit] = useState({});
+    const estados = ["Pendiente", "Pagado", "Cancelado"];
+    const [clientes, setClientes] = useState([]);
+
+    const rol = localStorage.getItem("tipo_usuario");
+
+    const fetchPagos = useCallback(async () => {
+        try {
+            let url = "http://localhost:4000/";
+
+            const idUsuario = localStorage.getItem("user_id");
+
+            url += "api/pagos";
+
+            url += rol === "Cliente" ? `/cliente/${idUsuario}` : "";
+
+            const response = await axios.get(url);
+            setPagos(response.data);
+        } catch (error) {
+            console.error(error.message);
+        }
+    }, [rol]);
+
+    useEffect(() => {
+        async function fetchClientes() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const response = await axios.get(
+                    "http://localhost:4000/api/usuarios/clientes",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
+                setClientes(response.data);
+            } catch (error) {
+                console.error(
+                    `Error al obtener los clientes: ${error.message}`
+                );
+            }
+        }
+
+        fetchPagos();
+        fetchClientes();
+    }, [rol, fetchPagos]);
+
+    const handleChangeCantItems = (event) => {
+        setItemsPag(event.target.value);
+        setPagActual(1);
+    };
+
+    const pagosFiltradas =
+        filterStatus !== ""
+            ? pagosFiltradas.filter(
+                  (pago) =>
+                      lodash.get(pago, "estado").localeCompare(filterStatus) ===
+                      0
+              )
+            : pagos;
+
+    const pagosOrdenadas =
+        sortOrder === "asc"
+            ? pagosFiltradas.sort((a, b) =>
+                  lodash
+                      .get(a, sortField)
+                      .localeCompare(lodash.get(b, sortField))
+              )
+            : pagosFiltradas.sort((a, b) =>
+                  lodash
+                      .get(b, sortField)
+                      .localeCompare(lodash.get(a, sortField))
+              );
+
+    const pagosPags =
+        itemsPag !== pagosOrdenadas.length
+            ? pagosOrdenadas.slice(
+                  (pagActual - 1) * itemsPag,
+                  pagActual * itemsPag
+              )
+            : pagosOrdenadas;
+
+    const totalPags = Math.ceil(pagosFiltradas.length / itemsPag);
+
+    if (!pagos) {
+        return (
+            <div className="container d-flex align-items-center justify-content-center">
+                <p>Cargando pagos...</p>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <Navbar></Navbar>
+            <h3 className="section-title text-center">
+                {rol === "Administrador" ? "Listado de pagos" : "Mis pagos"}
+            </h3>
+
+            <div className="container pt-3  table-responsive">
+                <div className="row">
+                    <div className="col">
+                        <label htmlFor="filterStatus">
+                            Filtrar por Prioridad:
+                        </label>
+                        <select
+                            className="form-select form-select-sm mb-4"
+                            onChange={(e) => {
+                                setFilterStatus(e.target.value);
+                                setFilterColab(filterColab);
+                                setPagActual(1);
+                            }}
+                            id="filterStatus"
+                        >
+                            <option defaultValue={""}></option>
+                            <option value={"Por Hacer"}>Por Hacer</option>
+                            <option value={"En Progreso"}>En Progreso</option>
+                            <option value={"Cancelado"}>Cancelado</option>
+                            <option value={"Finalizado"}>Finalizado</option>
+                            <option value={"En Revisión"}>En Revisión</option>
+                        </select>
+                    </div>
+
+                    {rol === "Administrador" ? (
+                        <div className="col text-end">
+                            <button
+                                className="thm-btn btn-crear"
+                                onClick={() => navigate("/pago/agregar")}
+                            >
+                                Crear Pago
+                            </button>
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                </div>
+
+                <table className="table kreativa-table">
+                    <thead>
+                        <tr>
+                            <th
+                                onClick={() => {
+                                    if (sortField === "titulo") {
+                                        setsortOrder(
+                                            sortOrder === "asc" ? "desc" : "asc"
+                                        );
+                                        return;
+                                    }
+
+                                    setsortField("titulo");
+                                    setsortOrder("asc");
+                                }}
+                                className="sort-field"
+                            >
+                                Titulo <FontAwesomeIcon icon={faSort} />
+                            </th>
+                            {rol === "Administrador" ? (
+                                <th
+                                    onClick={() => {
+                                        if (sortField === "cliente_id.nombre") {
+                                            setsortOrder(
+                                                sortOrder === "asc"
+                                                    ? "desc"
+                                                    : "asc"
+                                            );
+                                            return;
+                                        }
+
+                                        setsortField("cliente_id.nombre");
+                                        setsortOrder("asc");
+                                    }}
+                                    className="sort-field"
+                                >
+                                    Cliente <FontAwesomeIcon icon={faSort} />
+                                </th>
+                            ) : (
+                                ""
+                            )}
+                            <th
+                                onClick={() => {
+                                    if (sortField === "estado") {
+                                        setsortOrder(
+                                            sortOrder === "asc" ? "desc" : "asc"
+                                        );
+                                        return;
+                                    }
+
+                                    setsortField("estado");
+                                    setsortOrder("asc");
+                                }}
+                                className="sort-field"
+                            >
+                                Estado <FontAwesomeIcon icon={faSort} />
+                            </th>
+
+                            <th
+                                onClick={() => {
+                                    if (sortField === "fecha_creacion") {
+                                        setsortOrder(
+                                            sortOrder === "asc" ? "desc" : "asc"
+                                        );
+                                        return;
+                                    }
+
+                                    setsortField("fecha_creacion");
+                                    setsortOrder("asc");
+                                }}
+                                className="sort-field"
+                            >
+                                Fecha de Creación{" "}
+                                <FontAwesomeIcon icon={faSort} />
+                            </th>
+                            <th
+                                onClick={() => {
+                                    if (sortField === "fecha_vencimiento") {
+                                        setsortOrder(
+                                            sortOrder === "asc" ? "desc" : "asc"
+                                        );
+                                        return;
+                                    }
+
+                                    setsortField("fecha_vencimiento");
+                                    setsortOrder("asc");
+                                }}
+                                className="sort-field"
+                            >
+                                Fecha de Vencimiento{" "}
+                                <FontAwesomeIcon icon={faSort} />
+                            </th>
+                            <th className="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {pagosOrdenadas.length !== 0 ? (
+                            pagosPags.map((pago) => (
+                                <tr key={pago._id}>
+                                    <td>{pago.titulo}</td>
+                                    {rol === "Administrador" ? (
+                                        <td>{pago.cliente_id.nombre}</td>
+                                    ) : (
+                                        ""
+                                    )}
+                                    <td>{pago.estado}</td>
+                                    <td>
+                                        {new Date(
+                                            pago.fecha_creacion
+                                        ).toLocaleDateString()}
+                                    </td>
+                                    <td>
+                                        {new Date(
+                                            pago.fecha_vencimiento
+                                        ).toLocaleDateString()}
+                                    </td>
+
+                                    <td className="acciones">
+                                        <div className="botones-grupo">
+                                            <button
+                                                className="thm-btn thm-btn-small btn-amarillo"
+                                                onClick={() => {
+                                                    setPagoModal(pago);
+                                                    setShowModal(true);
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faEye} />
+                                            </button>
+                                            {rol === "Administrador" ? (
+                                                <button
+                                                    className="thm-btn thm-btn-small btn-editar"
+                                                    onClick={() => {
+                                                        setPagoModalEdit(pago);
+                                                        setTimeout(
+                                                            () =>
+                                                                setShowModalEdit(
+                                                                    true
+                                                                ),
+                                                            25
+                                                        );
+                                                    }}
+                                                >
+                                                    Editar
+                                                </button>
+                                            ) : (
+                                                ""
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={7}>No hay pagos por mostar.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            <div className="d-flex justify-content-center mt-4">
+                <select
+                    className="form-select form-select-sm w-10 "
+                    onChange={handleChangeCantItems}
+                >
+                    <option value={5} selected>
+                        5
+                    </option>
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={pagosOrdenadas.length}>Todos</option>
+                </select>{" "}
+                <button
+                    className={`thm-btn btn-volver thm-btn-small me-2`}
+                    onClick={() => setPagActual(1)}
+                    disabled={pagActual === 1}
+                >
+                    <FontAwesomeIcon icon={faBackward} />
+                </button>
+                <button
+                    className={`thm-btn btn-volver thm-btn-small me-2`}
+                    onClick={() => setPagActual(pagActual - 1)}
+                    disabled={pagActual === 1}
+                >
+                    <FontAwesomeIcon icon={faCaretLeft} />
+                </button>
+                <button
+                    className={`thm-btn btn-volver thm-btn-small me-2`}
+                    onClick={() => setPagActual(pagActual + 1)}
+                    disabled={pagActual === totalPags || totalPags - 1 <= 0}
+                >
+                    <FontAwesomeIcon icon={faCaretRight} />
+                </button>
+                <button
+                    className={`thm-btn thm-btn-small btn-volver me-2`}
+                    onClick={() => setPagActual(totalPags)}
+                    disabled={pagActual === totalPags || totalPags - 1 <= 0}
+                >
+                    <FontAwesomeIcon icon={faForward} />
+                </button>
+            </div>
+
+            {pagoModal && (
+                <ModalVerPago
+                    show={showModal}
+                    handleClose={() => setShowModal(false)}
+                    pago={pagoModal}
+                    rol={rol}
+                />
+            )}
+
+            {pagoModalEdit && (
+                <ModalEditarPago
+                    show={showModalEdit}
+                    handleClose={() => {
+                        setShowModalEdit(false);
+                        setTimeout(() => fetchPagos(), 50);
+                    }}
+                    pago={pagoModalEdit}
+                    rol={rol}
+                    clientes={clientes}
+                    estados={estados}
+                />
+            )}
+        </div>
+    );
+};
+
+export default ListadoPagos;
