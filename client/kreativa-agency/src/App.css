@@ -1026,6 +1026,23 @@ h3 {
     color: var(--kreativa-black);
 }
 
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px; /* Espacio entre los gráficos */
+}
+
+.chart-box {
+    flex: 1;
+    min-width: 48%; /* Asegura que los gráficos se alineen correctamente */
+    margin-bottom: 20px;
+  
 /* ----------------landing ----------------*/
 
 .landing-container {
