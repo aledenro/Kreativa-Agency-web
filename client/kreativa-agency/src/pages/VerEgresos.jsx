@@ -98,10 +98,14 @@ const VerEgresos = () => {
     return (
         <div>
             <Navbar />
+            <br></br>
+            <br></br>
+            <br></br>
             <div className="container">
                 <h2>Egresos</h2>
 
                 {/* Filtros */}
+                <br></br>
                 <div className="d-flex gap-3 mb-3">
                     <Form.Control
                         type="text"
@@ -142,18 +146,12 @@ const VerEgresos = () => {
                         ) : (
                             egresosPaginados.map((egreso) => (
                                 <tr key={egreso._id}>
-                                    <td>
-                                        {new Date(
-                                            egreso.fecha
-                                        ).toLocaleDateString()}
-                                    </td>
+                                    <td>{new Date(egreso.fecha).toISOString().split('T')[0]}</td>
                                     <td>₡{egreso.monto}</td>
                                     <td>{egreso.categoria}</td>
                                     <td>{egreso.descripcion}</td>
                                     <td>{egreso.proveedor}</td>
-                                    <td>
-                                        {egreso.activo ? "Activo" : "Inactivo"}
-                                    </td>
+                                    <td>{egreso.estado}</td>
                                     <td>
                                         <Link
                                             to={`/egreso/editar/${egreso._id}`}

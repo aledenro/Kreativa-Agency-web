@@ -90,6 +90,35 @@ class EgresosService {
             throw new Error("Error al obtener los egresos por fecha");
         }
     }
+
+    async obtenerEgresosPorAnio(anio) {
+        try {
+            let fechaInicio, fechaFin;
+        
+            if (anio) {
+                fechaInicio = new Date(anio, 0, 1); // 1 de enero del año dado
+                fechaFin = new Date(anio, 11, 31, 23, 59, 59, 999); // 31 de diciembre del año dado
+            } else {
+                const today = new Date();
+                fechaInicio = new Date(today.getFullYear(), 0, 1);
+                fechaFin = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+            }
+    
+            // Filtramos solo los egresos activos y dentro del rango de fechas
+            const egresos = await EgresosModel.find({
+                fecha: { $gte: fechaInicio, $lte: fechaFin },
+                activo: true  // Filtrar solo los egresos activos
+            });
+    
+            // Sumamos el monto de todos los egresos filtrados
+            const totalEgresos = egresos.reduce((total, egreso) => total + egreso.monto, 0);
+    
+            return totalEgresos;
+        } catch (error) {
+            console.error("Error al obtener los egresos por año:", error);
+            throw new Error("No se pudieron obtener los egresos por año.");
+        }
+    }
 }
 
 module.exports = new EgresosService();

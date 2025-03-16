@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/", ingresosController.registrarIngreso);
 router.get("/", ingresosController.obtenerIngresos);
+router.get("/anio", ingresosController.obtenerIngresosPorAnio);
 router.get("/ingresosPorMes", ingresosController.obtenerIngresosPorMes);
 router.get("/:id", ingresosController.obtenerIngresoPorId);
 router.put("/:id", ingresosController.actualizarIngreso);

@@ -145,7 +145,40 @@ class EgresosController {
             console.error("Error al obtener los egresos:", error);
             return res.status(500).json({ error: "Error al obtener los egresos." });
         }
-    }    
+    }
+    
+    async obtenerTotalEgresosAnuales(req, res) {
+        try {
+            const { year } = req.query;
+            if (!year) {
+                return res.status(400).json({ error: "Se requiere el parámetro 'year'" });
+            }
+
+            const total = await EgresoService.obtenerTotalEgresosAnuales(year);
+            res.json({ total });
+        } catch (error) {
+            res.status(500).json({ error: "Error al obtener los egresos anuales" });
+        }
+    }
+
+    async obtenerEgresosPorAnio(req, res) {
+        try {
+            const { anio } = req.query;
+    
+            // Validar que el año sea proporcionado
+            if (!anio) {
+                return res.status(400).json({ error: "Se requiere el parámetro 'anio'" });
+            }
+    
+            // Llamar al servicio para obtener el total de egresos
+            const totalEgresos = await EgresosService.obtenerEgresosPorAnio(anio);
+    
+            // Retornar el total de egresos
+            return res.json({ totalEgresos });
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new EgresosController();

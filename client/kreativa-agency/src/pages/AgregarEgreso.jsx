@@ -7,6 +7,8 @@ import { useState } from "react";
 
 const AgregarEgreso = () => {
     const [mensaje, setMensaje] = useState("");
+    const today = new Date().toISOString().split('T')[0];
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -17,7 +19,6 @@ const AgregarEgreso = () => {
         const descripcion = event.target.descripcion.value;
         const proveedor = event.target.proveedor.value;
         const estado = event.target.estado.value;
-        const nota = event.target.nota.value;
 
         const data = {
             fecha: fecha,
@@ -26,7 +27,6 @@ const AgregarEgreso = () => {
             descripcion: descripcion,
             proveedor: proveedor,
             estado: estado,
-            nota: nota,
         };
 
         try {
@@ -45,6 +45,8 @@ const AgregarEgreso = () => {
     return (
         <div>
             <Navbar></Navbar>
+            <br></br>
+            <br></br>
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Agregar nuevo egreso</h2>
@@ -60,6 +62,7 @@ const AgregarEgreso = () => {
                                         required
                                         name="fecha"
                                         className="form_input"
+                                        min={today}
                                     />
                                 </div>
                                 <div className="col">
@@ -141,13 +144,6 @@ const AgregarEgreso = () => {
 
                             <div className="row">
                                 <div className="col">
-                                    <input
-                                        type="text"
-                                        placeholder="Nota"
-                                        required
-                                        name="nota"
-                                        className="form_input"
-                                    />
                                     <button
                                         type="submit"
                                         className="thm-btn form-btn"

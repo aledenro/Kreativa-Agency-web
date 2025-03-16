@@ -126,6 +126,7 @@ const ingresosService = {
             console.log(`Inicio del mes: ${inicioDelMes}`);
             console.log(`Fin del mes: ${finDelMes}`);
     
+            // Buscamos todos los ingresos activos dentro del rango de fechas
             const ingresosPorMes = await IngresosModel.find({
                 activo: true,
                 fecha: {
@@ -138,33 +139,60 @@ const ingresosService = {
                 throw new Error("No se encontraron ingresos para el mes y año proporcionados.");
             }
     
-            // Agrupamos los ingresos por mes y año, calculando el total y la cantidad
-            const resultados = ingresosPorMes.reduce((acc, ingreso) => {
-                const fechaMes = `${ingreso.fecha.getFullYear()}-${(ingreso.fecha.getMonth() + 1).toString().padStart(2, '0')}`;
-                
-                if (!acc[fechaMes]) {
-                    acc[fechaMes] = {
-                        totalIngresos: 0,
-                        cantidad: 0
-                    };
-                }
+            // Calculamos el total de ingresos y la cantidad
+            const totalIngresos = ingresosPorMes.reduce((total, ingreso) => total + ingreso.monto, 0);
+            const cantidadIngresos = ingresosPorMes.length;
     
-                acc[fechaMes].totalIngresos += ingreso.monto;
-                acc[fechaMes].cantidad += 1;
-    
-                return acc;
-            }, {});
-    
-            return Object.keys(resultados).map(key => ({
-                _id: key,
-                totalIngresos: resultados[key].totalIngresos,
-                cantidad: resultados[key].cantidad
+            // Filtramos los datos para el resumen (nombre_cliente, fecha, monto)
+            const detalleIngresos = ingresosPorMes.map(ingreso => ({
+                nombre_cliente: ingreso.nombre_cliente,
+                fecha: ingreso.fecha,
+                monto: ingreso.monto,
+                servicio: ingreso.servicio
             }));
+    
+            // Devolvemos el resumen y el detalle
+            return {
+                resumen: {
+                    totalIngresos,
+                    cantidadIngresos
+                },
+                detalle: detalleIngresos
+            };
         } catch (error) {
             console.error("Error al obtener los ingresos por mes: " + error.message);
             throw new Error("Error al obtener los ingresos por mes");
         }
-    }    
+    },
+    
+    async obtenerIngresosPorAnio(anio) {
+        try {
+            let fechaInicio, fechaFin;
+        
+            if (anio) {
+                fechaInicio = new Date(anio, 0, 1); // 1 de enero del año dado
+                fechaFin = new Date(anio, 11, 31, 23, 59, 59, 999); // 31 de diciembre del año dado
+            } else {
+                const today = new Date();
+                fechaInicio = new Date(today.getFullYear(), 0, 1);
+                fechaFin = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+            }
+    
+            // Filtramos solo los ingresos activos y dentro del rango de fechas
+            const ingresos = await IngresosModel.find({
+                fecha: { $gte: fechaInicio, $lte: fechaFin },
+                activo: true  // Filtrar solo los ingresos activos
+            });
+    
+            // Sumamos el monto de todos los ingresos filtrados
+            const totalIngresos = ingresos.reduce((total, ingreso) => total + ingreso.monto, 0);
+    
+            return totalIngresos;
+        } catch (error) {
+            console.error("Error al obtener los ingresos por año:", error);
+            throw new Error("No se pudieron obtener los ingresos por año.");
+        }
+    }
 };
 
 module.exports = ingresosService;

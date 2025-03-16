@@ -10,10 +10,21 @@ const AgregarIngreso = () => {
     const [cedula, setCedula] = useState("");
     const [nombreCliente, setNombreCliente] = useState("");
     const [errorCedula, setErrorCedula] = useState("");
+    const today = new Date().toISOString().split('T')[0];
+    const validarCedula = (cedula) => {
+        const cedulaRegex = /^[0-9]{8,9}$/;
+        return cedulaRegex.test(cedula);
+    };
 
     // Buscar el nombre del cliente por cédula
     const buscarNombreCliente = async () => {
         if (cedula.trim() === "") return;
+
+        // Validar cédula antes de hacer la búsqueda
+        if (!validarCedula(cedula)) {
+            setErrorCedula("La cédula debe tener entre 8 y 9 dígitos.");
+            return;
+        }
 
         try {
             const response = await fetch(`http://localhost:4000/api/ingresos/buscarPorCedula/${cedula}`);
@@ -40,7 +51,7 @@ const AgregarIngreso = () => {
         const descripcion = event.target.descripcion.value;
         const servicio = event.target.servicio.value;
         const estado = event.target.estado.value;
-        const nota = event.target.nota.value;
+        //const nota = event.target.nota.value;
 
         const data = {
             fecha,
@@ -49,7 +60,7 @@ const AgregarIngreso = () => {
             cedula,
             servicio,
             estado,
-            nota,
+            //nota,
             activo: true
         };
 
@@ -66,6 +77,8 @@ const AgregarIngreso = () => {
     return (
         <div>
             <Navbar />
+            <br></br>
+            <br></br>
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Agregar nuevo ingreso</h2>
@@ -81,6 +94,7 @@ const AgregarIngreso = () => {
                                         required
                                         name="fecha"
                                         className="form_input"
+                                        min={today}
                                     />
                                 </div>
                                 <div className="col">
@@ -159,17 +173,8 @@ const AgregarIngreso = () => {
                                         defaultValue="Pendiente de pago"
                                     >
                                         <option value="Pendiente de pago">Pendiente de pago</option>
-                                        <option value="Aprobado">Aprobado</option>
+                                        <option value="Pagado">Pagado</option>
                                     </Form.Select>
-                                </div>
-                                <div className="col">
-                                    <input
-                                        type="text"
-                                        placeholder="Nota"
-                                        required
-                                        name="nota"
-                                        className="form_input"
-                                    />
                                 </div>
                             </div>
 
