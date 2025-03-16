@@ -1035,13 +1035,8 @@ h3 {
 .row {
     display: flex;
     justify-content: space-between;
-    gap: 30px; /* Espacio entre los gráficos */
+    gap: 30px;
 }
-
-.chart-box {
-    flex: 1;
-    min-width: 48%; /* Asegura que los gráficos se alineen correctamente */
-    margin-bottom: 20px;
   
 /* ----------------landing ----------------*/
 

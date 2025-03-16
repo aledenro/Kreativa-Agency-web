@@ -11,6 +11,7 @@ const EditarIngreso = () => {
     const [ingreso, setIngreso] = useState(null);
     const { id } = useParams();
     const navigate = useNavigate();
+    const today = new Date().toISOString().split('T')[0];
 
     // Obtener los detalles del ingreso cuando el componente se monta
     useEffect(() => {
@@ -37,7 +38,7 @@ const EditarIngreso = () => {
         const cedula = event.target.cedula.value;
         const servicio = event.target.servicio.value;
         const estado = event.target.estado.value;
-        const nota = event.target.nota.value;
+        //const nota = event.target.nota.value;
 
         const data = {
             fecha,
@@ -46,7 +47,7 @@ const EditarIngreso = () => {
             cedula,
             servicio,
             estado,
-            nota,
+            //nota,
             activo: true,
         };
 
@@ -68,6 +69,8 @@ const EditarIngreso = () => {
     return (
         <div>
             <Navbar />
+            <br></br>
+            <br></br>
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Editar ingreso</h2>
@@ -84,6 +87,7 @@ const EditarIngreso = () => {
                                         name="fecha"
                                         className="form_input"
                                         defaultValue={ingreso.fecha.split("T")[0]}
+                                        min={today}
                                     />
                                 </div>
                                 <div className="col">
@@ -153,18 +157,8 @@ const EditarIngreso = () => {
                                         defaultValue={ingreso.estado}
                                     >
                                         <option value="Pendiente de pago">Pendiente de pago</option>
-                                        <option value="Aprobado">Aprobado</option>
+                                        <option value="Pagado">Pagado</option>
                                     </Form.Select>
-                                </div>
-                                <div className="col">
-                                    <input
-                                        type="text"
-                                        placeholder="Nota"
-                                        required
-                                        name="nota"
-                                        className="form_input"
-                                        defaultValue={ingreso.nota}
-                                    />
                                 </div>
                             </div>
 

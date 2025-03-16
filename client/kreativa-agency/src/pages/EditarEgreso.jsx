@@ -12,12 +12,12 @@ const formatearFecha = (fecha) => {
 };
 
 const EditarEgreso = () => {
-    const { id } = useParams(); // Obtener el ID del egreso
+    const { id } = useParams();
     console.log("ID recibido en EditarEgreso:", id);
 
     const [egreso, setEgreso] = useState(null);
-    const [error, setError] = useState(null); // Para errores
-    const [monto, setMonto] = useState(0); // Para que el monto
+    const [error, setError] = useState(null);
+    const [monto, setMonto] = useState(0);
 
     // Obtener el egreso por ID
     useEffect(() => {
@@ -44,6 +44,8 @@ const EditarEgreso = () => {
         return <div>Loading...</div>; // Poner algo visual
     }
 
+    const today = new Date().toISOString().split('T')[0];
+
     // Función para manejar el submit y editar el egreso
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -51,9 +53,9 @@ const EditarEgreso = () => {
         const fecha = event.target.fecha.value;
         const fechaActual = new Date().toISOString().split('T')[0];  // Obtener la fecha actual en formato YYYY-MM-DD
 
-        // Validar que la fecha no sea posterior
-        if (fecha > fechaActual) {
-            alert("No puedes seleccionar una fecha futura.");
+        // Validar que la fecha no sea anterior
+        if (fecha < fechaActual) {
+            alert("No puedes seleccionar una fecha anterior a la actual.");
             return;
         }
 
@@ -64,7 +66,6 @@ const EditarEgreso = () => {
             descripcion: event.target.descripcion.value,
             proveedor: event.target.proveedor.value,
             estado: event.target.estado.value,
-            nota: event.target.nota.value,
             ultima_modificacion: new Date().toISOString(),
         };
 
@@ -79,6 +80,8 @@ const EditarEgreso = () => {
     return (
         <div>
             <Navbar></Navbar>
+            <br></br>
+            <br></br>
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Editar egreso</h2>
@@ -93,8 +96,8 @@ const EditarEgreso = () => {
                                         defaultValue={egreso.fecha ? formatearFecha(egreso.fecha) : ""}
                                         name="fecha"
                                         required
-                                        max={new Date().toISOString().split('T')[0]} // Fecha máxima: hoy
                                         className="form_input"
+                                        min={today}
                                     />
                                 </div>
                                 <div className="col">
@@ -151,20 +154,14 @@ const EditarEgreso = () => {
                                         defaultValue={egreso.estado}
                                         className="form_input"
                                     >
-                                        <option value="Pendiente de pago">Pendiente de pago</option>
+                                        <option value="Pendiente">Pendiente</option>
                                         <option value="Aprobado">Aprobado</option>
+                                        <option value="Rechazado">Rechazado</option>
                                     </Form.Select>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    <input
-                                        type="text"
-                                        defaultValue={egreso.nota}
-                                        name="nota"
-                                        required
-                                        className="form_input"
-                                    />
                                     <div className="row">
                                         <div className="col d-flex justify-content-center">
                                             <button type="submit" className="thm-btn form-btn">
