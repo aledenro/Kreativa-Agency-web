@@ -22,6 +22,7 @@
     "@heroui/system": "^2.4.12",
     "@react-email/components": "^0.0.33",
     "@tabler/icons-react": "^3.31.0",
+    "antd": "^5.24.3",
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.3",
     "clsx": "^2.1.1",

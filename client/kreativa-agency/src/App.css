@@ -268,6 +268,40 @@ h3 {
     margin-bottom: 10px;
 }
 
+.custom-dragger {
+    border: none !important;
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: var(--kreativa-rosado-claro);
+    margin-bottom: 15px;
+    border-radius: var(--kreativa-bdr-radius);
+    text-align: center;
+    transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.custom-dragger:hover {
+    border: 1px solid var(--kreativa-rosado);
+    background-color: rgba(255, 182, 193, 0.2);
+}
+
+.custom-dragger .ant-upload-text {
+    font-size: 14px;
+    color: var(--kreativa-black);
+}
+
+.custom-dragger .ant-upload-hint {
+    font-size: 12px;
+    color: var(--kreativa-black);
+}
+
+.custom-dragger .ant-upload-drag-icon svg {
+    color: var(--kreativa-rosado);
+    font-size: 30px;
+}
 .section-title {
     margin-top: 50px;
 }
@@ -1042,7 +1076,8 @@ h3 {
     flex: 1;
     min-width: 48%; /* Asegura que los gráficos se alineen correctamente */
     margin-bottom: 20px;
-  
+}
+
 /* ----------------landing ----------------*/
 
 .landing-container {
