@@ -11,12 +11,11 @@ import {
     faBackward,
     faEye,
 } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 import ModalVerPago from "../components/Pagos/ModalVerPago";
 import ModalEditarPago from "../components/Pagos/ModalEditarPago";
+import ModalCrearPago from "../components/Pagos/ModalCrearPago";
 
 const ListadoPagos = () => {
-    const navigate = useNavigate();
     const [pagos, setPagos] = useState([]);
     const [itemsPag, setItemsPag] = useState(5);
     const [pagActual, setPagActual] = useState(1);
@@ -30,6 +29,7 @@ const ListadoPagos = () => {
     const [pagoModalEdit, setPagoModalEdit] = useState({});
     const estados = ["Pendiente", "Pagado", "Cancelado"];
     const [clientes, setClientes] = useState([]);
+    const [showModalCrear, setShowModalCrear] = useState(false);
 
     const rol = localStorage.getItem("tipo_usuario");
 
@@ -154,7 +154,7 @@ const ListadoPagos = () => {
                         <div className="col text-end">
                             <button
                                 className="thm-btn btn-crear"
-                                onClick={() => navigate("/pago/agregar")}
+                                onClick={() => setShowModalCrear(true)}
                             >
                                 Crear Pago
                             </button>
@@ -384,6 +384,18 @@ const ListadoPagos = () => {
                     }}
                     pago={pagoModalEdit}
                     rol={rol}
+                    clientes={clientes}
+                    estados={estados}
+                />
+            )}
+
+            {showModalCrear && (
+                <ModalCrearPago
+                    show={showModalCrear}
+                    handleClose={() => {
+                        setShowModalEdit(false);
+                        setTimeout(() => fetchPagos(), 50);
+                    }}
                     clientes={clientes}
                     estados={estados}
                 />

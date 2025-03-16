@@ -144,6 +144,19 @@ const ModalEditarPago = ({
                                 onChange={handleChange}
                             ></textarea>
                         </div>
+                        <div className="mb-3">
+                            <label htmlFor="monto" className="form-label">
+                                Monto
+                            </label>
+                            <input
+                                type="number"
+                                className="form_input"
+                                id="monto"
+                                name="monto"
+                                value={pago.monto ? pago.monto : 0}
+                                required
+                            />
+                        </div>
                         {rol === "Administrador" ? (
                             <div className="mb-3">
                                 <label
@@ -249,6 +262,7 @@ ModalEditarPago.propTypes = {
         }),
         estado: PropTypes.string,
         fecha_vencimiento: PropTypes.string,
+        monto: PropTypes.number,
     }),
     show: PropTypes.bool.isRequired,
     handleClose: PropTypes.func.isRequired,
