@@ -33,7 +33,7 @@ a {
     text-decoration: none;
 }
 
-.container {
+.main-container {
     padding-top: 60px;
 }
 
@@ -82,6 +82,14 @@ h3 {
     text-transform: none;
     cursor: pointer;
     font-family: var(--kreativa-font);
+}
+
+.input-small {
+    height: 30px !important;
+}
+
+.filter-select {
+    width: 125px;
 }
 
 .form_input {

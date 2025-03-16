@@ -81,7 +81,7 @@ const ListadoPagos = () => {
 
     const pagosFiltradas =
         filterStatus !== ""
-            ? pagosFiltradas.filter(
+            ? pagos.filter(
                   (pago) =>
                       lodash.get(pago, "estado").localeCompare(filterStatus) ===
                       0
@@ -114,7 +114,7 @@ const ListadoPagos = () => {
     if (!pagos) {
         return (
             <div className="container d-flex align-items-center justify-content-center">
-                <p>Cargando pagos...</p>
+                <p>Cargando Pagos...</p>
             </div>
         );
     }
@@ -122,71 +122,52 @@ const ListadoPagos = () => {
     return (
         <div>
             <Navbar></Navbar>
-            <h3 className="section-title text-center">
-                {rol === "Administrador" ? "Listado de pagos" : "Mis pagos"}
-            </h3>
+            <div className="main-container">
+                <h3 className="section-title text-center">
+                    {rol === "Administrador" ? "Listado de Pagos" : "Mis Pagos"}
+                </h3>
 
-            <div className="container pt-3  table-responsive">
-                <div className="row">
-                    <div className="col">
-                        <label htmlFor="filterStatus">
-                            Filtrar por Prioridad:
-                        </label>
-                        <select
-                            className="form-select form-select-sm mb-4"
-                            onChange={(e) => {
-                                setFilterStatus(e.target.value);
-                                setFilterColab(filterColab);
-                                setPagActual(1);
-                            }}
-                            id="filterStatus"
-                        >
-                            <option defaultValue={""}></option>
-                            <option value={"Por Hacer"}>Por Hacer</option>
-                            <option value={"En Progreso"}>En Progreso</option>
-                            <option value={"Cancelado"}>Cancelado</option>
-                            <option value={"Finalizado"}>Finalizado</option>
-                            <option value={"En Revisión"}>En Revisión</option>
-                        </select>
+                <div className="container pt-3  table-responsive-xl">
+                    <div className="row">
+                        <div className="col">
+                            <label htmlFor="filterStatus">
+                                Filtrar por Estado:
+                            </label>
+                            <select
+                                className="form-select form-select-sm mb-4 input-small filter-select"
+                                onChange={(e) => {
+                                    setFilterStatus(e.target.value);
+                                    setPagActual(1);
+                                }}
+                                id="filterStatus"
+                            >
+                                <option defaultValue={""}></option>
+                                <option value={"Pendiente"}>Pendiente</option>
+                                <option value={"Pagado"}>Pagado</option>
+                                <option value={"Cancelado"}>Cancelado</option>
+                            </select>
+                        </div>
+
+                        {rol === "Administrador" ? (
+                            <div className="col text-end">
+                                <button
+                                    className="thm-btn btn-crear"
+                                    onClick={() => setShowModalCrear(true)}
+                                >
+                                    Crear Pago
+                                </button>
+                            </div>
+                        ) : (
+                            ""
+                        )}
                     </div>
 
-                    {rol === "Administrador" ? (
-                        <div className="col text-end">
-                            <button
-                                className="thm-btn btn-crear"
-                                onClick={() => setShowModalCrear(true)}
-                            >
-                                Crear Pago
-                            </button>
-                        </div>
-                    ) : (
-                        ""
-                    )}
-                </div>
-
-                <table className="table kreativa-table">
-                    <thead>
-                        <tr>
-                            <th
-                                onClick={() => {
-                                    if (sortField === "titulo") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
-
-                                    setsortField("titulo");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Titulo <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            {rol === "Administrador" ? (
+                    <table className="table kreativa-table">
+                        <thead>
+                            <tr>
                                 <th
                                     onClick={() => {
-                                        if (sortField === "cliente_id.nombre") {
+                                        if (sortField === "titulo") {
                                             setsortOrder(
                                                 sortOrder === "asc"
                                                     ? "desc"
@@ -195,211 +176,223 @@ const ListadoPagos = () => {
                                             return;
                                         }
 
-                                        setsortField("cliente_id.nombre");
+                                        setsortField("titulo");
                                         setsortOrder("asc");
                                     }}
                                     className="sort-field"
                                 >
-                                    Cliente <FontAwesomeIcon icon={faSort} />
+                                    Titulo <FontAwesomeIcon icon={faSort} />
                                 </th>
-                            ) : (
-                                ""
-                            )}
-                            <th
-                                onClick={() => {
-                                    if (sortField === "estado") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
+                                {rol === "Administrador" ? (
+                                    <th
+                                        onClick={() => {
+                                            if (
+                                                sortField ===
+                                                "cliente_id.nombre"
+                                            ) {
+                                                setsortOrder(
+                                                    sortOrder === "asc"
+                                                        ? "desc"
+                                                        : "asc"
+                                                );
+                                                return;
+                                            }
 
-                                    setsortField("estado");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Estado <FontAwesomeIcon icon={faSort} />
-                            </th>
+                                            setsortField("cliente_id.nombre");
+                                            setsortOrder("asc");
+                                        }}
+                                        className="sort-field"
+                                    >
+                                        Cliente{" "}
+                                        <FontAwesomeIcon icon={faSort} />
+                                    </th>
+                                ) : (
+                                    ""
+                                )}
+                                <th
+                                    onClick={() => {
+                                        if (sortField === "estado") {
+                                            setsortOrder(
+                                                sortOrder === "asc"
+                                                    ? "desc"
+                                                    : "asc"
+                                            );
+                                            return;
+                                        }
 
-                            <th
-                                onClick={() => {
-                                    if (sortField === "fecha_creacion") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
+                                        setsortField("estado");
+                                        setsortOrder("asc");
+                                    }}
+                                    className="sort-field"
+                                >
+                                    Estado <FontAwesomeIcon icon={faSort} />
+                                </th>
 
-                                    setsortField("fecha_creacion");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Fecha de Creación{" "}
-                                <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            <th
-                                onClick={() => {
-                                    if (sortField === "fecha_vencimiento") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
+                                <th
+                                    onClick={() => {
+                                        if (sortField === "fecha_vencimiento") {
+                                            setsortOrder(
+                                                sortOrder === "asc"
+                                                    ? "desc"
+                                                    : "asc"
+                                            );
+                                            return;
+                                        }
 
-                                    setsortField("fecha_vencimiento");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Fecha de Vencimiento{" "}
-                                <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            <th className="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {pagosOrdenadas.length !== 0 ? (
-                            pagosPags.map((pago) => (
-                                <tr key={pago._id}>
-                                    <td>{pago.titulo}</td>
-                                    {rol === "Administrador" ? (
-                                        <td>{pago.cliente_id.nombre}</td>
-                                    ) : (
-                                        ""
-                                    )}
-                                    <td>{pago.estado}</td>
-                                    <td>
-                                        {new Date(
-                                            pago.fecha_creacion
-                                        ).toLocaleDateString()}
-                                    </td>
-                                    <td>
-                                        {new Date(
-                                            pago.fecha_vencimiento
-                                        ).toLocaleDateString()}
-                                    </td>
+                                        setsortField("fecha_vencimiento");
+                                        setsortOrder("asc");
+                                    }}
+                                    className="sort-field"
+                                >
+                                    Fecha de Vencimiento{" "}
+                                    <FontAwesomeIcon icon={faSort} />
+                                </th>
+                                <th className="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pagosOrdenadas.length !== 0 ? (
+                                pagosPags.map((pago) => (
+                                    <tr key={pago._id}>
+                                        <td>{pago.titulo}</td>
+                                        {rol === "Administrador" ? (
+                                            <td>{pago.cliente_id.nombre}</td>
+                                        ) : (
+                                            ""
+                                        )}
+                                        <td>{pago.estado}</td>
+                                        <td>
+                                            {new Date(
+                                                pago.fecha_vencimiento
+                                            ).toLocaleDateString()}
+                                        </td>
 
-                                    <td className="acciones">
-                                        <div className="botones-grupo">
-                                            <button
-                                                className="thm-btn thm-btn-small btn-amarillo"
-                                                onClick={() => {
-                                                    setPagoModal(pago);
-                                                    setShowModal(true);
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faEye} />
-                                            </button>
-                                            {rol === "Administrador" ? (
+                                        <td className="acciones">
+                                            <div className="botones-grupo">
                                                 <button
-                                                    className="thm-btn thm-btn-small btn-editar"
+                                                    className="thm-btn thm-btn-small btn-amarillo"
                                                     onClick={() => {
-                                                        setPagoModalEdit(pago);
-                                                        setTimeout(
-                                                            () =>
-                                                                setShowModalEdit(
-                                                                    true
-                                                                ),
-                                                            25
-                                                        );
+                                                        setPagoModal(pago);
+                                                        setShowModal(true);
                                                     }}
                                                 >
-                                                    Editar
+                                                    <FontAwesomeIcon
+                                                        icon={faEye}
+                                                    />
                                                 </button>
-                                            ) : (
-                                                ""
-                                            )}
-                                        </div>
+                                                {rol === "Administrador" ? (
+                                                    <button
+                                                        className="thm-btn thm-btn-small btn-editar"
+                                                        onClick={() => {
+                                                            setPagoModalEdit(
+                                                                pago
+                                                            );
+                                                            setTimeout(
+                                                                () =>
+                                                                    setShowModalEdit(
+                                                                        true
+                                                                    ),
+                                                                25
+                                                            );
+                                                        }}
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                ) : (
+                                                    ""
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={7}>
+                                        No hay pagos por mostar.
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan={7}>No hay pagos por mostar.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="d-flex justify-content-center mt-4">
+                    <select
+                        className="form-select form-select-sm w-10 "
+                        onChange={handleChangeCantItems}
+                    >
+                        <option value={5} selected>
+                            5
+                        </option>
+                        <option value={10}>10</option>
+                        <option value={25}>25</option>
+                        <option value={pagosOrdenadas.length}>Todos</option>
+                    </select>{" "}
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(1)}
+                        disabled={pagActual === 1}
+                    >
+                        <FontAwesomeIcon icon={faBackward} />
+                    </button>
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(pagActual - 1)}
+                        disabled={pagActual === 1}
+                    >
+                        <FontAwesomeIcon icon={faCaretLeft} />
+                    </button>
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(pagActual + 1)}
+                        disabled={pagActual === totalPags || totalPags - 1 <= 0}
+                    >
+                        <FontAwesomeIcon icon={faCaretRight} />
+                    </button>
+                    <button
+                        className={`thm-btn thm-btn-small btn-volver me-2`}
+                        onClick={() => setPagActual(totalPags)}
+                        disabled={pagActual === totalPags || totalPags - 1 <= 0}
+                    >
+                        <FontAwesomeIcon icon={faForward} />
+                    </button>
+                </div>
+
+                {pagoModal && (
+                    <ModalVerPago
+                        show={showModal}
+                        handleClose={() => setShowModal(false)}
+                        pago={pagoModal}
+                        rol={rol}
+                    />
+                )}
+
+                {pagoModalEdit && (
+                    <ModalEditarPago
+                        show={showModalEdit}
+                        handleClose={() => {
+                            setShowModalEdit(false);
+                            setTimeout(() => fetchPagos(), 50);
+                        }}
+                        pago={pagoModalEdit}
+                        rol={rol}
+                        clientes={clientes}
+                        estados={estados}
+                    />
+                )}
+
+                {showModalCrear && (
+                    <ModalCrearPago
+                        show={showModalCrear}
+                        handleClose={() => {
+                            setShowModalCrear(false);
+                            setTimeout(() => fetchPagos(), 50);
+                        }}
+                        clientes={clientes}
+                        estados={estados}
+                    />
+                )}
             </div>
-
-            <div className="d-flex justify-content-center mt-4">
-                <select
-                    className="form-select form-select-sm w-10 "
-                    onChange={handleChangeCantItems}
-                >
-                    <option value={5} selected>
-                        5
-                    </option>
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={pagosOrdenadas.length}>Todos</option>
-                </select>{" "}
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(1)}
-                    disabled={pagActual === 1}
-                >
-                    <FontAwesomeIcon icon={faBackward} />
-                </button>
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(pagActual - 1)}
-                    disabled={pagActual === 1}
-                >
-                    <FontAwesomeIcon icon={faCaretLeft} />
-                </button>
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(pagActual + 1)}
-                    disabled={pagActual === totalPags || totalPags - 1 <= 0}
-                >
-                    <FontAwesomeIcon icon={faCaretRight} />
-                </button>
-                <button
-                    className={`thm-btn thm-btn-small btn-volver me-2`}
-                    onClick={() => setPagActual(totalPags)}
-                    disabled={pagActual === totalPags || totalPags - 1 <= 0}
-                >
-                    <FontAwesomeIcon icon={faForward} />
-                </button>
-            </div>
-
-            {pagoModal && (
-                <ModalVerPago
-                    show={showModal}
-                    handleClose={() => setShowModal(false)}
-                    pago={pagoModal}
-                    rol={rol}
-                />
-            )}
-
-            {pagoModalEdit && (
-                <ModalEditarPago
-                    show={showModalEdit}
-                    handleClose={() => {
-                        setShowModalEdit(false);
-                        setTimeout(() => fetchPagos(), 50);
-                    }}
-                    pago={pagoModalEdit}
-                    rol={rol}
-                    clientes={clientes}
-                    estados={estados}
-                />
-            )}
-
-            {showModalCrear && (
-                <ModalCrearPago
-                    show={showModalCrear}
-                    handleClose={() => {
-                        setShowModalEdit(false);
-                        setTimeout(() => fetchPagos(), 50);
-                    }}
-                    clientes={clientes}
-                    estados={estados}
-                />
-            )}
         </div>
     );
 };
