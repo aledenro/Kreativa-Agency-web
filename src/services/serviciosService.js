@@ -44,8 +44,6 @@ class ServiciosService {
                 }
             }
 
-            console.log("Servicios con imágenes generadas:", servicios);
-
             return servicios;
         } catch (error) {
             throw new Error(
@@ -73,6 +71,19 @@ class ServiciosService {
         } catch (error) {
             throw new Error(
                 `No se pudo obtener el servicio ${id}: ` + error.message
+            );
+        }
+    }
+
+    async getServiciosNombres() {
+        try {
+            let servicios = await Servicios.find({}, "_id nombre").lean();
+
+            return servicios;
+        } catch (error) {
+            throw new Error(
+                "No se pudieron obtener los nombres de los servicios: " +
+                    error.message
             );
         }
     }

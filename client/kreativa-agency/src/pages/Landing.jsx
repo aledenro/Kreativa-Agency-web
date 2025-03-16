@@ -2,6 +2,7 @@ import React from "react";
 // import video from "../assets/vid/landing-video.mov";
 import Navbar from "../components/Navbar/Navbar";
 import ListadoServicios from "./ListadoServicios";
+import FormContacto from "./FormContacto";
 
 const Landing = () => {
     return (
@@ -29,6 +30,9 @@ const Landing = () => {
             </section>
             <section id="servicios">
                 <ListadoServicios></ListadoServicios>
+            </section>
+            <section id="servicios">
+                <FormContacto></FormContacto>
             </section>
         </div>
     );
