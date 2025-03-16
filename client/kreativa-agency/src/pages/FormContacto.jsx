@@ -3,7 +3,6 @@ import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
-import { Checkbox } from "@heroui/react";
 
 const FormContacto = () => {
     const [formData, setFormData] = useState({
@@ -142,7 +141,7 @@ const FormContacto = () => {
                             <h2>Contactá con nosotros</h2>
                         </div>
                         <div>
-                            <p className="mb-5">
+                            <p className="mb-5 text-center">
                                 "¡Lleva tu negocio al siguiente nivel! Déjanos
                                 tus datos y uno de nuestros expertos en
                                 marketing digital se pondrá en contacto contigo
@@ -327,29 +326,33 @@ const FormContacto = () => {
                                         Servicios
                                     </label>
                                     {servicios.length > 0 ? (
-                                        <div className="row row-cols-2">
-                                            {servicios.map((servicio) => (
-                                                <div
-                                                    className="col"
-                                                    key={servicio._id}
-                                                >
-                                                    <Form.Check
-                                                        type="checkbox"
-                                                        label={servicio.nombre}
-                                                        value={servicio._id}
-                                                        checked={formData.servicios_id.includes(
-                                                            servicio._id
-                                                        )}
-                                                        onChange={
-                                                            handleCheckboxChange
-                                                        }
-                                                        className="custom-checkbox"
-                                                    />
-                                                </div>
-                                            ))}
+                                        <div className="row">
+                                            <div className="col-12 d-flex flex-wrap">
+                                                {servicios.map((servicio) => (
+                                                    <div
+                                                        className="col-6"
+                                                        key={servicio._id}
+                                                    >
+                                                        <Form.Check
+                                                            type="checkbox"
+                                                            label={
+                                                                servicio.nombre
+                                                            }
+                                                            value={servicio._id}
+                                                            checked={formData.servicios_id.includes(
+                                                                servicio._id
+                                                            )}
+                                                            onChange={
+                                                                handleCheckboxChange
+                                                            }
+                                                            className="custom-checkbox"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     ) : (
-                                        <p>No tenemos servicios disponibles </p>
+                                        <p>No tenemos servicios disponibles</p>
                                     )}
                                 </div>
                             </div>

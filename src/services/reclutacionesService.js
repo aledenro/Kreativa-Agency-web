@@ -98,6 +98,26 @@ class ReclutacionesService {
             );
         }
     }
+
+    async actualizarFormById(id, datosActualizados) {
+        try {
+            const formActualizado = await Reclutaciones.findByIdAndUpdate(
+                id,
+                datosActualizados,
+                {
+                    new: true,
+                }
+            );
+
+            console.log(datosActualizados);
+
+            return formActualizado;
+        } catch (error) {
+            throw new Error(
+                `No se pudo actualizar la respueta ${id}: ` + error.message
+            );
+        }
+    }
 }
 
 module.exports = new ReclutacionesService();

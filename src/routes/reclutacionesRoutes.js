@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/", ReclutacionesController.nuevaReclutacion);
 router.get("/", ReclutacionesController.getAllReclutaciones);
 router.get("/:id", ReclutacionesController.getReclutacionById);
-router.put("/:id", ReclutacionesController.desactivarReclutacion);
+router.put("/actualizar/:id", ReclutacionesController.actualizarFormById);
+router.put("/desactivar/:id", ReclutacionesController.desactivarReclutacion);
 
 module.exports = router;
