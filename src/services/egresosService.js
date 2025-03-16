@@ -76,6 +76,20 @@ class EgresosService {
             throw new Error(`No se pudo activar el egreso ${id}: ` + error.message);
         }
     }
+
+    async obtenerEgresosPorFecha(inicioDelMes, finDelMes) {
+        try {
+            return await Egreso.find({
+                fecha: {
+                    $gte: inicioDelMes,   // Mayor o igual a la fecha de inicio
+                    $lte: finDelMes       // Menor o igual a la fecha de fin
+                }
+            });
+        } catch (error) {
+            console.error("Error al obtener los egresos por fecha: " + error.message);
+            throw new Error("Error al obtener los egresos por fecha");
+        }
+    }
 }
 
 module.exports = new EgresosService();

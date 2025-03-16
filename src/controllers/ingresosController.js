@@ -78,8 +78,22 @@ const ingresosController = {
             console.error("Error al desactivar el ingreso: " + error.message);
             return res.status(500).json({ error: error.message });
         }
+    },
+    
+    async obtenerIngresosPorMes(req, res) {
+        try {
+            const { mes, año } = req.query; // Recibe los parámetros mes y año del query string
+    
+            if (!mes || !año) {
+                return res.status(400).json({ message: "Debe proporcionar mes y año." });
+            }
+    
+            const ingresosPorMes = await ingresosService.obtenerIngresosPorMes(mes, año);
+            res.status(200).json(ingresosPorMes);
+        } catch (error) {
+            res.status(500).json({ message: "Error al obtener los ingresos por mes.", error: error.message });
+        }
     }
-
 };
 
 module.exports = ingresosController;
