@@ -40,7 +40,9 @@ import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
 import AdminPanel from "./pages/AdminPanel";
 import VerDetalleProyecto from "./pages/VerDetalleProyecto";
-
+import Landing from "./pages/Landing";
+import ListadoPagos from "./pages/ListadoPagos";
+import FormContacto from "./pages/FormContacto";
 
 function App() {
     return (
@@ -155,6 +157,7 @@ function App() {
                     path="/proyecto/:id"
                     element={<VerDetalleProyecto />}
                 ></Route>
+
                 <Route
                     path="/admin"
                     element={<AdminPanel />}
@@ -163,6 +166,10 @@ function App() {
                 path="/estadisticas" 
                 element={<Estadisticas />} />
 
+                <Route path="/admin" element={<AdminPanel />}></Route>
+                <Route path="/" element={<Landing />} />
+                <Route path="/pagos" element={<ListadoPagos />} />
+                <Route path="/" element={<FormContacto />} />
             </Routes>
         </Router>
     );

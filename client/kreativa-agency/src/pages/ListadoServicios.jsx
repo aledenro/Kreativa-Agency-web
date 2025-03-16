@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar";
 
 const ListadoServicios = () => {
     const [servicios, setServicios] = useState([]);
@@ -15,7 +14,6 @@ const ListadoServicios = () => {
                 const response = await axios.get(
                     "http://localhost:4000/api/servicios/"
                 );
-                console.log("Servicios recibidos en frontend:", response.data);
 
                 if (Array.isArray(response.data)) {
                     const serviciosActivos = response.data.map((servicio) => ({
@@ -42,7 +40,6 @@ const ListadoServicios = () => {
 
     return (
         <div>
-            <Navbar />
             <div className="container">
                 <div className="section-title text-center">
                     <h2>Nuestros Servicios</h2>
