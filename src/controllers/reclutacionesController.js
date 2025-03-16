@@ -9,8 +9,6 @@ class ReclutacionesController {
                     req.files
                 );
 
-            console.log("body:" + req.body);
-            console.log("file: " + req.files);
             res.status(201).json(nuevaReclutacion);
         } catch (error) {
             console.error(

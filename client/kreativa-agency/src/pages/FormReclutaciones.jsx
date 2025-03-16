@@ -3,6 +3,7 @@ import { Form, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { InboxOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
+import fileUpload from "../utils/fileUpload";
 
 const { Dragger } = Upload;
 
@@ -12,9 +13,9 @@ const FormReclutaciones = () => {
         apellido: "",
         correo: "",
         telefono: "",
-        cv: null,
+        cv: [],
     });
-
+    const [files, setFiles] = useState([]);
     const [mensaje, setMensaje] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -26,41 +27,113 @@ const FormReclutaciones = () => {
         });
     };
 
-    const handleUpload = (info) => {
-        const { status, originFileObj } = info.file;
-        if (status === "done") {
-            message.success(`${info.file.name} subido correctamente.`);
-            setFormData({ ...formData, cv: originFileObj });
-        } else if (status === "error") {
-            message.error(`${info.file.name} falló al subir.`);
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setMensaje("");
         setError("");
 
+        const { nombre, apellido, correo, telefono } = formData;
+
+        if (
+            !nombre.trim() ||
+            !apellido.trim() ||
+            !correo.trim() ||
+            !telefono.trim() ||
+            files.length === 0
+        ) {
+            setError("Debes completar todos los campos y adjuntar un CV.");
+            setTimeout(() => setError(""), 3000);
+            setLoading(false);
+            return;
+        }
+
         try {
+            console.log("Enviando datos sin archivos:", {
+                nombre,
+                apellido,
+                correo,
+                telefono,
+            });
+
             const response = await axios.post(
                 "http://localhost:4000/api/reclutaciones",
-                formData
+                {
+                    nombre,
+                    apellido,
+                    correo,
+                    telefono,
+                    cv: [],
+                }
             );
-            setMensaje("Formulario enviado exitosamente");
+
+            const reclutacionId = response.data._id;
+            let uploadedFiles = [];
+
+            if (files.length > 0) {
+                try {
+                    uploadedFiles = await fileUpload(
+                        files,
+                        "reclutaciones",
+                        "cv",
+                        reclutacionId
+                    );
+
+                    await axios.put(
+                        `http://localhost:4000/api/reclutaciones/actualizar/${reclutacionId}`,
+                        {
+                            uploadedFiles,
+                        }
+                    );
+                } catch (error) {
+                    console.error(
+                        "Error al subir archivos:",
+                        error.response?.data || error.message
+                    );
+                    setError("No se pudo subir el CV. Inténtalo de nuevo.");
+                    setTimeout(() => setError(""), 3000);
+                    setLoading(false);
+                    return;
+                }
+            }
+
+            setMensaje("Formulario enviado exitosamente.");
             setFormData({
                 nombre: "",
                 apellido: "",
                 correo: "",
                 telefono: "",
+                cv: [],
             });
+            setFiles([]);
         } catch (error) {
-            console.error("Error al enviar el formulario:", error);
+            console.error(
+                "Error al enviar el formulario:",
+                error.response?.data || error.message
+            );
             setError(
                 "Hubo un error al enviar el formulario. Inténtalo de nuevo."
             );
         } finally {
             setLoading(false);
+            setTimeout(() => setMensaje(""), 3000);
+        }
+    };
+
+    const handleFileChange = (info) => {
+        const allowedTypes = ["application/pdf", "application/msword"];
+
+        if (info.fileList.length > 0) {
+            const file = info.fileList[0].originFileObj;
+            if (!allowedTypes.includes(file.type)) {
+                setError("Solo se permiten archivos PDF o Word.");
+                setTimeout(() => setError(""), 3000);
+                return;
+            }
+
+            setFiles([file]);
+        } else {
+            setFiles([]);
         }
     };
 
@@ -98,7 +171,6 @@ const FormReclutaciones = () => {
                                         name="nombre"
                                         value={formData.nombre}
                                         onChange={handleChange}
-                                        required
                                         aria-label="Nombre"
                                         className="form_input"
                                     />
@@ -113,7 +185,6 @@ const FormReclutaciones = () => {
                                         name="apellido"
                                         value={formData.apellido}
                                         onChange={handleChange}
-                                        required
                                     />
                                 </div>
                             </div>
@@ -129,7 +200,6 @@ const FormReclutaciones = () => {
                                         name="correo"
                                         value={formData.correo}
                                         onChange={handleChange}
-                                        required
                                     />
                                     <label className="form-label">
                                         Teléfono
@@ -140,8 +210,33 @@ const FormReclutaciones = () => {
                                         name="telefono"
                                         value={formData.telefono}
                                         onChange={handleChange}
-                                        required
                                     />
+                                </div>
+                            </div>
+                            <div className="row mb-5">
+                                <div className="col">
+                                    <label className="form-label">
+                                        Envíanos tu CV
+                                    </label>
+                                    <Dragger
+                                        name="file"
+                                        multiple={false}
+                                        action="#"
+                                        beforeUpload={() => false}
+                                        onChange={handleFileChange}
+                                    >
+                                        <p className="ant-upload-drag-icon">
+                                            <InboxOutlined />
+                                        </p>
+                                        <p className="ant-upload-text">
+                                            Haz clic o arrastra tu archivo aquí
+                                            para subirlo
+                                        </p>
+                                        <p className="ant-upload-hint">
+                                            Solo se permite subir archivos PDF o
+                                            Word.
+                                        </p>
+                                    </Dragger>
                                 </div>
                             </div>
 
