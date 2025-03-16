@@ -8,6 +8,7 @@ class ReclutacionesController {
                     req.body,
                     req.files
                 );
+
             res.status(201).json(nuevaReclutacion);
         } catch (error) {
             console.error(
@@ -57,6 +58,23 @@ class ReclutacionesController {
             );
 
             res.status(404).json({ message: error.message });
+        }
+    }
+
+    async actualizarFormById(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+
+            const formActualizado =
+                await ReclutacionesService.actualizarFormById(id, data);
+
+            return res.status(200).json(formActualizado);
+        } catch (error) {
+            console.error(
+                "Error al actualizar la respuesta recibida: " + error.message
+            );
+            return res.status(404).json({ error: error.message });
         }
     }
 }

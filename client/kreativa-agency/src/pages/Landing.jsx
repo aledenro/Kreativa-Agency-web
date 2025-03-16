@@ -3,6 +3,7 @@ import React from "react";
 import Navbar from "../components/Navbar/Navbar";
 import ListadoServicios from "./ListadoServicios";
 import FormContacto from "./FormContacto";
+import FormReclutaciones from "./FormReclutaciones";
 
 const Landing = () => {
     return (
@@ -33,6 +34,9 @@ const Landing = () => {
             </section>
             <section id="servicios">
                 <FormContacto></FormContacto>
+            </section>
+            <section id="servicios">
+                <FormReclutaciones></FormReclutaciones>
             </section>
         </div>
     );
