@@ -14,7 +14,6 @@ const ListadoServicios = () => {
                 const response = await axios.get(
                     "http://localhost:4000/api/servicios/"
                 );
-                console.log("Servicios recibidos en frontend:", response.data);
 
                 if (Array.isArray(response.data)) {
                     const serviciosActivos = response.data.map((servicio) => ({
