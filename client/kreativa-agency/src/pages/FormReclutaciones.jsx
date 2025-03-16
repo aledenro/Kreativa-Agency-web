@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
+import { ConfigProvider, Upload } from "antd";
 import fileUpload from "../utils/fileUpload";
 
 const { Dragger } = Upload;
@@ -218,25 +218,37 @@ const FormReclutaciones = () => {
                                     <label className="form-label">
                                         Envíanos tu CV
                                     </label>
-                                    <Dragger
-                                        name="file"
-                                        multiple={false}
-                                        action="#"
-                                        beforeUpload={() => false}
-                                        onChange={handleFileChange}
+                                    <ConfigProvider
+                                        theme={{
+                                            components: {
+                                                Upload: {
+                                                    colorBorder: "#ffebf4",
+                                                    lineWidth: "0",
+                                                },
+                                            },
+                                        }}
                                     >
-                                        <p className="ant-upload-drag-icon">
-                                            <InboxOutlined />
-                                        </p>
-                                        <p className="ant-upload-text">
-                                            Haz clic o arrastra tu archivo aquí
-                                            para subirlo
-                                        </p>
-                                        <p className="ant-upload-hint">
-                                            Solo se permite subir archivos PDF o
-                                            Word.
-                                        </p>
-                                    </Dragger>
+                                        <Dragger
+                                            name="file"
+                                            multiple={false}
+                                            action="#"
+                                            beforeUpload={() => false}
+                                            onChange={handleFileChange}
+                                            className="custom-dragger"
+                                        >
+                                            <p className="ant-upload-drag-icon custom-icon">
+                                                <InboxOutlined />
+                                            </p>
+                                            <p className="ant-upload-text">
+                                                Haz clic o arrastra tu archivo
+                                                aquí para subirlo
+                                            </p>
+                                            <p className="ant-upload-hint">
+                                                Solo se permite subir archivos
+                                                PDF o Word.
+                                            </p>
+                                        </Dragger>
+                                    </ConfigProvider>
                                 </div>
                             </div>
 
