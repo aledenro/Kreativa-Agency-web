@@ -7,6 +7,7 @@ router.get("/categorias", ServiciosController.getCategorias);
 router.post("/categorias", ServiciosController.agregarCategoria);
 
 router.get("/", ServiciosController.getServicios);
+router.get("/nombres", ServiciosController.getServiciosNombres);
 router.post("/agregar", ServiciosController.agregarServicio);
 router.get("/:id", ServiciosController.getServicioById);
 router.put("/modificar/:id", ServiciosController.modificarServicioById);

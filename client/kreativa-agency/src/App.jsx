@@ -40,6 +40,7 @@ import VerPerfil from "./pages/VerPerfil";
 import AdminPanel from "./pages/AdminPanel";
 import VerDetalleProyecto from "./pages/VerDetalleProyecto";
 import Landing from "./pages/Landing";
+import FormContacto from "./pages/FormContacto";
 
 function App() {
     return (
@@ -156,6 +157,7 @@ function App() {
                 ></Route>
                 <Route path="/admin" element={<AdminPanel />}></Route>
                 <Route path="/" element={<Landing />} />
+                <Route path="/" element={<FormContacto />} />
             </Routes>
         </Router>
     );
