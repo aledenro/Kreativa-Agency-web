@@ -21,7 +21,7 @@ const ListadoPagos = () => {
     const [pagActual, setPagActual] = useState(1);
     const [sortField, setsortField] = useState("fecha_creacion");
     const [sortOrder, setsortOrder] = useState("desc");
-    const [filterColab, setFilterColab] = useState("");
+    const [filterCliente, setFilterCliente] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [pagoModal, setPagoModal] = useState({});
     const [filterStatus, setFilterStatus] = useState("");
@@ -79,7 +79,7 @@ const ListadoPagos = () => {
         setPagActual(1);
     };
 
-    const pagosFiltradas =
+    let pagosFiltradas =
         filterStatus !== ""
             ? pagos.filter(
                   (pago) =>
@@ -87,6 +87,16 @@ const ListadoPagos = () => {
                       0
               )
             : pagos;
+
+    pagosFiltradas =
+        filterCliente !== ""
+            ? pagosFiltradas.filter(
+                  (pago) =>
+                      lodash
+                          .get(pago, "cliente_id._id")
+                          .localeCompare(filterCliente) === 0
+              )
+            : pagosFiltradas;
 
     const pagosOrdenadas =
         sortOrder === "asc"
@@ -147,6 +157,34 @@ const ListadoPagos = () => {
                                 <option value={"Cancelado"}>Cancelado</option>
                             </select>
                         </div>
+                        {rol === "Administrador" ? (
+                            <div className="col text-start">
+                                <label htmlFor="filterCliente">
+                                    Filtrar por Cliente:
+                                </label>
+                                <select
+                                    className="form-select form-select-sm mb-4 input-small"
+                                    onChange={(e) => {
+                                        setFilterCliente(e.target.value);
+                                        setFilterStatus(filterStatus);
+                                        setPagActual(1);
+                                    }}
+                                    id="filterCliente"
+                                >
+                                    <option defaultValue={""}></option>
+                                    {clientes.map((cliente) => (
+                                        <option
+                                            value={cliente._id}
+                                            key={cliente._id}
+                                        >
+                                            {cliente.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        ) : (
+                            ""
+                        )}
 
                         {rol === "Administrador" ? (
                             <div className="col text-end">
