@@ -5,6 +5,7 @@ export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const location = useLocation();
+    const rol = localStorage.getItem("tipo_usuario");
 
     useEffect(() => {
         const handleScroll = () => {
@@ -39,9 +40,6 @@ export default function Navbar() {
                 <li>
                     <Link to="/">Inicio</Link>
                 </li>
-                <li>
-                    <Link to="/usuarios">Usuarios</Link>
-                </li>
 
                 <li className="dropdown">
                     <Link to="#">Empleados</Link>
@@ -64,27 +62,6 @@ export default function Navbar() {
                 </li>
 
                 <li className="dropdown">
-                    <Link to="#">Servicios</Link>
-                    <ul className="dropdown-menu">
-                        <li>
-                            <Link to="/servicios">Servicios</Link>
-                        </li>
-                        <li>
-                            <Link to="/servicio/agregar">Agregar Servicio</Link>
-                        </li>
-                    </ul>
-                </li>
-
-                <li className="dropdown">
-                    <Link to="#">Cotizaciones</Link>
-                    <ul className="dropdown-menu">
-                        <li>
-                            <Link to="/cotizacion/">Ver Cotizaciones</Link>
-                        </li>
-                    </ul>
-                </li>
-
-                <li className="dropdown">
                     <Link to="#">Proyectos</Link>
                     <ul className="dropdown-menu">
                         <li>
@@ -94,15 +71,6 @@ export default function Navbar() {
                             <Link to="/proyecto/67cc94cf9ee53834562aa6d4">
                                 Ver Detalle Proyecto
                             </Link>
-                        </li>
-                    </ul>
-                </li>
-
-                <li className="dropdown">
-                    <Link to="#">Tareas</Link>
-                    <ul className="dropdown-menu">
-                        <li>
-                            <Link to="/tareas">Listado de Tareas</Link>
                         </li>
                     </ul>
                 </li>
@@ -129,9 +97,19 @@ export default function Navbar() {
                 </li>
             </ul>
 
-            <Link to="/login">
-                <button className="login-button">Iniciar Sesión</button>
-            </Link>
+            {rol === null ? (
+                <Link to="/login">
+                    <button className="login-button thm-btn btn-volver">
+                        Iniciar Sesión
+                    </button>
+                </Link>
+            ) : (
+                <Link to="/admin">
+                    <button className="login-button thm-btn btn-volver">
+                        Ir al Dashboard
+                    </button>
+                </Link>
+            )}
         </nav>
     );
 }

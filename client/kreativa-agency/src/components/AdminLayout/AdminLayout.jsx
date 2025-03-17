@@ -10,6 +10,9 @@ import {
     MessageCircle,
     Search,
     Mail,
+    IdCard,
+    SquareKanban,
+    FilePlus2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
@@ -18,6 +21,9 @@ const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
     { icon: Home, label: "Inicio", path: "/" },
     { icon: Users, label: "Usuarios", path: "/usuarios" },
+    { icon: SquareKanban, label: "Tareas", path: "/tareas" },
+    { icon: FilePlus2, label: "Cotizaciones", path: "/cotizacion" },
+    { icon: IdCard, label: "Empleados", path: "/jerarquia" },
     { icon: Settings, label: "Configuración", path: "/configuracion" },
     { icon: Mail, label: "Contactos", path: "/admin/contacto" },
     { icon: LogOut, label: "Salir", path: "/logout" },
