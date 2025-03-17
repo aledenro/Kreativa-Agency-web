@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Home, Users, Settings, LogOut, Bell, Search, MessageCircle, LayoutDashboard } from "lucide-react";
 import { Avatar } from "@heroui/react";
+import { useNavigate } from "react-router-dom";
 import "../AdminPanel.css";
 import logo from "../assets/img/logo.png";
 
@@ -23,6 +24,7 @@ const metricas = [
 
 const AdminPanel = () => {
     const [collapsed, setCollapsed] = useState(true);
+    const navigate = useNavigate();
 
     return (
         <div className="admin-container">
@@ -34,8 +36,8 @@ const AdminPanel = () => {
                 onMouseLeave={() => setCollapsed(true)}
             >
                 <ul>
-                    {[{ icon: LayoutDashboard, label: "Dashboard" }, { icon: Home, label: "Inicio" }, { icon: Users, label: "Usuarios" }, { icon: Settings, label: "Configuración" }, { icon: LogOut, label: "Salir" }].map((item, index) => (
-                        <motion.li key={index} whileHover={{ scale: 1.1 }} className="menu-item">
+                    {[{ icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" }, { icon: Home, label: "Inicio", path: "/" }, { icon: Users, label: "Usuarios", path: "/usuarios" }, { icon: Settings, label: "Configuración", path: "/configuracion" }, { icon: LogOut, label: "Salir", path: "/logout" }].map((item, index) => (
+                        <motion.li key={index} whileHover={{ scale: 1.1 }} className="menu-item" onClick={() => navigate(item.path)}>
                             <item.icon size={24} />
                             {!collapsed && (
                                 <motion.span animate={{ opacity: 1, display: "inline-block" }} transition={{ duration: 0.2 }}>
