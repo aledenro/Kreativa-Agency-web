@@ -957,3 +957,130 @@ h3 {
     color: var(--kreativa-black);
 }
 
+/* Contenedor más ancho */
+.full-width-container {
+    width: 20%; 
+    max-width: 10px;
+    margin: 60px auto; /* Centrarlo */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Tabla Extendida */
+.kreativa-table {
+    width: 95%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ff0072;
+    color: white;
+    box-shadow: 0px 5px 18px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    font-size: 18px;
+}
+
+/* Ajuste de las celdas */
+.kreativa-table th,
+.kreativa-table td {
+    padding: 18px;
+    text-align: left;
+    font-size: 18px;     
+}
+
+/* Encabezado */
+.kreativa-table th {
+    background: #e60065;
+    color: white;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+/* Espaciado entre filas */
+.kreativa-table td {
+    border-bottom: 1px solid #c40050;
+}
+
+/* RESPONSIVE: Ajustar en pantallas más grandes */
+@media screen and (min-width: 1600px) {
+    .full-width-container {
+        width: 100%;
+        max-width: 2200px;
+    }
+}
+
+/* RESPONSIVE: Ajuste en pantallas más pequeñas */
+@media screen and (max-width: 1200px) {
+    .full-width-container {
+        width: 95%;
+    }
+    .kreativa-table {
+        font-size: 16px;
+    }
+}
+
+/* RESPONSIVE: Permitir scroll en móviles */
+@media screen and (max-width: 1024px) {
+    .kreativa-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+/* Contenedor del input de búsqueda */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 250px;
+}
+
+/* Input de Búsqueda */
+.search-input {
+    border-radius: var(--kreativa-bdr-radius);
+    padding: 10px;
+    padding-left: 35px;
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+/* Icono de búsqueda */
+.icon-search {
+    position: absolute;
+    left: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Contenedor del select */
+.select-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 200px;
+    margin-left: -800px;
+}
+
+/* Select */
+.select-input {
+    border-radius: var(--kreativa-bdr-radius);
+    padding: 10px;
+    padding-right: 35px; 
+    width: 100%;
+    border: 1px solid #ccc;
+    appearance: none; 
+    margin-left: -89px;
+}
+
+/* Icono de flecha */
+.icon-arrow {
+    position: absolute;
+    right: 100px; 
+    top: 50%;
+    transform: translateY(-50%); 
+    font-size: 16px;
+    color: #555;
+    pointer-events: none; 
+}
+

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
 import {
     faEye,
     faPencil,
@@ -161,9 +163,9 @@ const Usuarios = () => {
     );
 
     return (
-        <div>
-            <Navbar />
-            <div className="container mt-5 mb-4">
+        <AdminLayout>
+            <div className="full-width-container">
+                <div style={{ height: "90px" }}></div>
                 <h1>Gestión de Usuarios</h1>
                 {error && <div className="alert alert-danger">{error}</div>}
                 <div style={{ marginBottom: "50px" }}></div>
@@ -176,31 +178,13 @@ const Usuarios = () => {
                     </button>
 
                     <div className="search-container">
+                        <FontAwesomeIcon icon={faSearch} className="icon-search" />
                         <input
                             type="text"
                             className="form-control search-input"
                             placeholder="Buscar por cédula..."
                             onChange={(e) => setSearch(e.target.value)}
                         />
-                        <svg
-                            className="icon-search"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M15 15L21 21"
-                                stroke="#323232"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            ></path>
-                            <path
-                                d="M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
-                                stroke="#323232"
-                                strokeWidth="2"
-                            ></path>
-                        </svg>
                     </div>
 
                     <div className="select-container">
@@ -212,18 +196,7 @@ const Usuarios = () => {
                             <option value="Activo">Activos</option>
                             <option value="Inactivo">Inactivos</option>
                         </select>
-                        <svg
-                            className="icon-arrow"
-                            viewBox="0 0 25 25"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M17 10.5L12.5 15L8 10.5"
-                                stroke="#121923"
-                                strokeWidth="1.2"
-                            ></path>
-                        </svg>
+                        <FontAwesomeIcon icon={faChevronDown} className="icon-arrow" />
                     </div>
                 </div>
 
@@ -313,7 +286,7 @@ const Usuarios = () => {
                     ))}
                 </div>
             </div>
-        </div>
+        </AdminLayout>
     );
 };
 
