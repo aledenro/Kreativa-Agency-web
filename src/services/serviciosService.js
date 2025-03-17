@@ -54,9 +54,10 @@ class ServiciosService {
 
     async getServicioById(id) {
         try {
-            const servicio = await Servicios.findById(id);
+            const servicio = await Servicios.findById(id).lean();
+
             if (!servicio) {
-                throw new Error(`Servicio ${id} no encontrado`);
+                throw new Error(`Servicio con ID ${id} no encontrado`);
             }
 
             const files = await awsS3Connect.generateUrls({
@@ -65,15 +66,16 @@ class ServiciosService {
                 parent_id: servicio._id,
             });
 
-            servicio.files = files;
+            servicio.imagen = files.length > 0 ? files[0].url : null;
 
             return servicio;
         } catch (error) {
             throw new Error(
-                `No se pudo obtener el servicio ${id}: ` + error.message
+                `No se pudo obtener el servicio con ID ${id}: ${error.message}`
             );
         }
     }
+    Mejoras;
 
     async getServiciosNombres() {
         try {

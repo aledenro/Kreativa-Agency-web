@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ModalVerRespuesta from "../components/Contacto/ModalVerRespuesta";
 import ModalResponder from "../components/Contacto/ModalResponder";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
 
 const RespuestasContacto = () => {
     const [formularios, setFormularios] = useState([]);
@@ -79,133 +80,140 @@ const RespuestasContacto = () => {
     };
 
     return (
-        <div className="container mt-4">
-            <h1>Formularios de Contacto</h1>
-            <div className="container pt-3  table-responsive">
-                <table className="table kreativa-table">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Correo</th>
-                            <th>Teléfono</th>
-                            <th>Negocio</th>
-                            <th
-                                onClick={() => handleSort("fecha_envio")}
-                                style={{ cursor: "pointer" }}
-                            >
-                                Fecha <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {formulariosPaginados.length > 0 ? (
-                            formulariosPaginados.map((form) => (
-                                <tr key={form._id}>
-                                    <td>{form.nombre}</td>
-                                    <td>{form.apellido}</td>
-                                    <td>{form.correo}</td>
-                                    <td>{form.telefono}</td>
-                                    <td>{form.nombre_negocio}</td>
-                                    <td>
-                                        {new Date(
-                                            form.fecha_envio
-                                        ).toLocaleDateString()}
-                                    </td>
-                                    <td className="acciones">
-                                        <div className="botones-grupo">
-                                            <button
-                                                className="thm-btn thm-btn-small btn-amarillo"
-                                                onClick={() =>
-                                                    handleVerFormulario(form)
-                                                }
-                                            >
-                                                <FontAwesomeIcon icon={faEye} />
-                                            </button>
-                                            <button
-                                                className="thm-btn thm-btn-small btn-azul"
-                                                onClick={() =>
-                                                    handleResponderFormulario(
-                                                        form
-                                                    )
-                                                }
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faEnvelope}
-                                                />
-                                            </button>
-                                        </div>
+        <AdminLayout>
+            <div className="container mt-4">
+                <div style={{ height: "90px" }}></div>
+                <h1 className="mb-4">Formularios de Contacto</h1>
+                <div className="table-responsive">
+                    <table className="table kreativa-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>Negocio</th>
+                                <th
+                                    onClick={() => handleSort("fecha_envio")}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    Fecha <FontAwesomeIcon icon={faSort} />
+                                </th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {formulariosPaginados.length > 0 ? (
+                                formulariosPaginados.map((form) => (
+                                    <tr key={form._id}>
+                                        <td>{form.nombre}</td>
+                                        <td>{form.apellido}</td>
+                                        <td>{form.correo}</td>
+                                        <td>{form.telefono}</td>
+                                        <td>{form.nombre_negocio}</td>
+                                        <td>
+                                            {new Date(
+                                                form.fecha_envio
+                                            ).toLocaleDateString()}
+                                        </td>
+                                        <td className="acciones">
+                                            <div className="botones-grupo">
+                                                <button
+                                                    className="thm-btn thm-btn-small btn-amarillo"
+                                                    onClick={() =>
+                                                        handleVerFormulario(
+                                                            form
+                                                        )
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faEye}
+                                                    />
+                                                </button>
+                                                <button
+                                                    className="thm-btn thm-btn-small btn-azul"
+                                                    onClick={() =>
+                                                        handleResponderFormulario(
+                                                            form
+                                                        )
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faEnvelope}
+                                                    />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="8" className="text-center">
+                                        No hay formularios disponibles
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="8" className="text-center">
-                                    No hay formularios disponibles
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
-            <div className="d-flex justify-content-center mt-4">
-                <select
-                    className="form-select form-select-sm w-auto me-2"
-                    onChange={(e) => {
-                        setItemsPag(Number(e.target.value));
-                        setPagActual(1);
-                    }}
-                >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={formularios.length}>Todos</option>
-                </select>
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(1)}
-                    disabled={pagActual === 1}
-                >
-                    <FontAwesomeIcon icon={faBackward} />
-                </button>
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(pagActual - 1)}
-                    disabled={pagActual === 1}
-                >
-                    <FontAwesomeIcon icon={faCaretLeft} />
-                </button>
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(pagActual + 1)}
-                    disabled={pagActual === totalPags || totalPags === 0}
-                >
-                    <FontAwesomeIcon icon={faCaretRight} />
-                </button>
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(totalPags)}
-                    disabled={pagActual === totalPags || totalPags === 0}
-                >
-                    <FontAwesomeIcon icon={faForward} />
-                </button>
-            </div>
+                <div className="d-flex justify-content-center mt-4">
+                    <select
+                        className="form-select form-select-sm w-auto me-2"
+                        onChange={(e) => {
+                            setItemsPag(Number(e.target.value));
+                            setPagActual(1);
+                        }}
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={25}>25</option>
+                        <option value={formularios.length}>Todos</option>
+                    </select>
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(1)}
+                        disabled={pagActual === 1}
+                    >
+                        <FontAwesomeIcon icon={faBackward} />
+                    </button>
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(pagActual - 1)}
+                        disabled={pagActual === 1}
+                    >
+                        <FontAwesomeIcon icon={faCaretLeft} />
+                    </button>
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(pagActual + 1)}
+                        disabled={pagActual === totalPags || totalPags === 0}
+                    >
+                        <FontAwesomeIcon icon={faCaretRight} />
+                    </button>
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(totalPags)}
+                        disabled={pagActual === totalPags || totalPags === 0}
+                    >
+                        <FontAwesomeIcon icon={faForward} />
+                    </button>
+                </div>
 
-            {mostrarVerModal && (
-                <ModalVerRespuesta
-                    form={formularioSeleccionado}
-                    onClose={() => setMostrarVerModal(false)}
-                />
-            )}
-            {mostrarResponderModal && (
-                <ModalResponder
-                    form={formularioSeleccionado}
-                    onClose={() => setMostrarResponderModal(false)}
-                />
-            )}
-        </div>
+                {mostrarVerModal && (
+                    <ModalVerRespuesta
+                        form={formularioSeleccionado}
+                        onClose={() => setMostrarVerModal(false)}
+                    />
+                )}
+                {mostrarResponderModal && (
+                    <ModalResponder
+                        form={formularioSeleccionado}
+                        onClose={() => setMostrarResponderModal(false)}
+                    />
+                )}
+            </div>
+        </AdminLayout>
     );
 };
 

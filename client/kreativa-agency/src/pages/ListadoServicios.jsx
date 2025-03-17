@@ -7,6 +7,7 @@ import axios from "axios";
 const ListadoServicios = () => {
     const [servicios, setServicios] = useState([]);
     const navigate = useNavigate();
+    const rol = localStorage.getItem("tipo_usuario");
 
     useEffect(() => {
         async function getServicios() {
@@ -38,12 +39,29 @@ const ListadoServicios = () => {
         navigate(`/servicio/${id}`);
     }
 
+    function handleAgregarServicio() {
+        navigate(`/servicio/agregar`);
+    }
+
     return (
         <div>
-            <div className="container">
-                <div className="section-title text-center">
-                    <h2>Nuestros Servicios</h2>
+            <div className="container main-container">
+                <div className="services-header">
+                    <div className="service-title">
+                        <h2>Nuestros Servicios</h2>
+                    </div>
+                    {rol === "Administrador" ? (
+                        <button
+                            className="new-service-btn thm-btn"
+                            onClick={() => handleAgregarServicio()}
+                        >
+                            Nuevo Servicio
+                        </button>
+                    ) : (
+                        ""
+                    )}
                 </div>
+
                 <div>
                     {servicios.length > 0 && (
                         <div className="text-center mt-4">

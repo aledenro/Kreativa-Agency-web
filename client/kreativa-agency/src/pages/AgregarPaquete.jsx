@@ -93,7 +93,7 @@ const AgregarPaquete = () => {
     return (
         <div>
             <Navbar />
-            <div className="container">
+            <div className="container main-container">
                 <div className="section-title text-center">
                     <h2>Agregar Paquete</h2>
                 </div>
@@ -248,7 +248,7 @@ const AgregarPaquete = () => {
                 <Modal.Body>¿Seguro que desea agregar este paquete?</Modal.Body>
                 <Modal.Footer>
                     <button
-                        className="thm-btn-2 thm-btn-small"
+                        className="thm-btn thm-btn-small btn-rojo"
                         onClick={() => setShowModal(false)}
                     >
                         No
