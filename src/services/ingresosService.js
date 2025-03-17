@@ -2,7 +2,7 @@ const IngresosModel = require("../models/ingresosModel");
 const Usuario = require("../models/usuarioModel");
 
 const ingresosService = {
-    async registrarIngreso({ cedula, monto, descripcion, servicio, estado, nota }) {
+    async registrarIngreso({ cedula, fecha, monto, descripcion, servicio, estado, nota }) {
         console.log("Buscando cliente con cédula:", cedula);
         // Validar si el usuario existe en la base de datos
         const usuarioExistente = await Usuario.findOne({ cedula });
@@ -14,6 +14,7 @@ const ingresosService = {
         // Crear el nuevo ingreso
         const nuevoIngreso = new IngresosModel({
             cedula,
+            fecha,
             nombre_cliente: usuarioExistente.nombre,  // Guardar el nombre del usuario en el ingreso
             monto,
             descripcion,
@@ -53,7 +54,7 @@ const ingresosService = {
     },
 
     // Función para actualizar un ingreso
-    async actualizarIngreso(id, { cedula, monto, descripcion, servicio, estado, nota, activo }) {
+    async actualizarIngreso(id, { cedula, fecha, monto, descripcion, servicio, estado, nota, activo }) {
         // Buscar el ingreso
         const ingreso = await IngresosModel.findById(id);
         if (!ingreso) {
@@ -62,6 +63,7 @@ const ingresosService = {
 
         // Actualizar el ingreso con los nuevos valores
         ingreso.cedula = cedula || ingreso.cedula;
+        ingreso.fecha = fecha || ingreso.fecha;
         ingreso.monto = monto || ingreso.monto;
         ingreso.descripcion = descripcion || ingreso.descripcion;
         ingreso.servicio = servicio || ingreso.servicio;
@@ -106,8 +108,91 @@ const ingresosService = {
         } catch (error) {
             throw new Error(`No se pudo activar el ingreso ${id}: ` + error.message);
         }
-    }
+    },
 
+    async obtenerIngresosPorMes(mes, año) {
+        if (!mes || !año) {
+            throw new Error("Debe proporcionar mes y año.");
+        }
+    
+        try {
+            // Calculamos las fechas de inicio y fin del mes
+            const inicioDelMes = new Date(año, mes - 1, 1); // El primer día del mes
+            const finDelMes = new Date(año, mes, 0); // El último día del mes
+    
+            // Ajustamos el finDelMes para que tenga la última hora del día
+            finDelMes.setHours(23, 59, 59, 999);
+    
+            console.log(`Inicio del mes: ${inicioDelMes}`);
+            console.log(`Fin del mes: ${finDelMes}`);
+    
+            // Buscamos todos los ingresos activos dentro del rango de fechas
+            const ingresosPorMes = await IngresosModel.find({
+                activo: true,
+                fecha: {
+                    $gte: inicioDelMes,   // Mayor o igual a la fecha de inicio
+                    $lte: finDelMes       // Menor o igual a la fecha de fin
+                }
+            }).exec();
+    
+            if (ingresosPorMes.length === 0) {
+                throw new Error("No se encontraron ingresos para el mes y año proporcionados.");
+            }
+    
+            // Calculamos el total de ingresos y la cantidad
+            const totalIngresos = ingresosPorMes.reduce((total, ingreso) => total + ingreso.monto, 0);
+            const cantidadIngresos = ingresosPorMes.length;
+    
+            // Filtramos los datos para el resumen (nombre_cliente, fecha, monto)
+            const detalleIngresos = ingresosPorMes.map(ingreso => ({
+                nombre_cliente: ingreso.nombre_cliente,
+                fecha: ingreso.fecha,
+                monto: ingreso.monto,
+                servicio: ingreso.servicio
+            }));
+    
+            // Devolvemos el resumen y el detalle
+            return {
+                resumen: {
+                    totalIngresos,
+                    cantidadIngresos
+                },
+                detalle: detalleIngresos
+            };
+        } catch (error) {
+            console.error("Error al obtener los ingresos por mes: " + error.message);
+            throw new Error("Error al obtener los ingresos por mes");
+        }
+    },
+    
+    async obtenerIngresosPorAnio(anio) {
+        try {
+            let fechaInicio, fechaFin;
+        
+            if (anio) {
+                fechaInicio = new Date(anio, 0, 1); // 1 de enero del año dado
+                fechaFin = new Date(anio, 11, 31, 23, 59, 59, 999); // 31 de diciembre del año dado
+            } else {
+                const today = new Date();
+                fechaInicio = new Date(today.getFullYear(), 0, 1);
+                fechaFin = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+            }
+    
+            // Filtramos solo los ingresos activos y dentro del rango de fechas
+            const ingresos = await IngresosModel.find({
+                fecha: { $gte: fechaInicio, $lte: fechaFin },
+                activo: true  // Filtrar solo los ingresos activos
+            });
+    
+            // Sumamos el monto de todos los ingresos filtrados
+            const totalIngresos = ingresos.reduce((total, ingreso) => total + ingreso.monto, 0);
+    
+            return totalIngresos;
+        } catch (error) {
+            console.error("Error al obtener los ingresos por año:", error);
+            throw new Error("No se pudieron obtener los ingresos por año.");
+        }
+    }
 };
 
 module.exports = ingresosService;

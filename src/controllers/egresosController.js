@@ -1,5 +1,6 @@
 const EgresosService = require("../services/egresosService");
 const lodash = require("lodash");
+const Egreso = require('../models/egresosModel');
 
 class EgresosController {
 
@@ -112,6 +113,69 @@ class EgresosController {
             return res.status(200).json({ mensaje: "Egreso activado", egreso });
         } catch (error) {
             console.error("Error al activar el egreso: " + error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+    // Obtener egresos por mes
+    async obtenerEgresosPorMes(req, res) {
+        try {
+            const { fecha } = req.query;
+            let fechaInicio, fechaFin;
+    
+            if (fecha) {
+                // Si el usuario selecciona un mes, usamos la fecha proporcionada.
+                const [anio, mes] = fecha.split('-'); // Suponiendo que el formato es 'YYYY-MM'
+                fechaInicio = new Date(anio, mes - 1, 1); // Primer día del mes
+                fechaFin = new Date(anio, mes, 0); // Último día del mes
+            } else {
+                // Si no se proporciona fecha, obtenemos el mes actual.
+                const today = new Date();
+                fechaInicio = new Date(today.getFullYear(), today.getMonth(), 1); // Primer día del mes actual
+                fechaFin = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Último día del mes actual
+            }
+    
+            // Realizamos la consulta para obtener los egresos dentro del rango de fechas.
+            const egresos = await Egreso.find({
+                fecha: { $gte: fechaInicio, $lte: fechaFin },
+            });
+    
+            return res.json(egresos); // Retornamos los egresos filtrados
+        } catch (error) {
+            console.error("Error al obtener los egresos:", error);
+            return res.status(500).json({ error: "Error al obtener los egresos." });
+        }
+    }
+    
+    async obtenerTotalEgresosAnuales(req, res) {
+        try {
+            const { year } = req.query;
+            if (!year) {
+                return res.status(400).json({ error: "Se requiere el parámetro 'year'" });
+            }
+
+            const total = await EgresoService.obtenerTotalEgresosAnuales(year);
+            res.json({ total });
+        } catch (error) {
+            res.status(500).json({ error: "Error al obtener los egresos anuales" });
+        }
+    }
+
+    async obtenerEgresosPorAnio(req, res) {
+        try {
+            const { anio } = req.query;
+    
+            // Validar que el año sea proporcionado
+            if (!anio) {
+                return res.status(400).json({ error: "Se requiere el parámetro 'anio'" });
+            }
+    
+            // Llamar al servicio para obtener el total de egresos
+            const totalEgresos = await EgresosService.obtenerEgresosPorAnio(anio);
+    
+            // Retornar el total de egresos
+            return res.json({ totalEgresos });
+        } catch (error) {
             return res.status(500).json({ error: error.message });
         }
     }

@@ -111,10 +111,14 @@ const VerIngresos = () => {
     return (
         <div>
             <Navbar />
+            <br></br>
+            <br></br>
+            <br></br>
             <div className="container">
                 <h2>Ingresos</h2>
 
                 {/* Filtros */}
+                <br></br>
                 <div className="d-flex gap-3 mb-3">
                     <Form.Control
                         type="text"
@@ -142,7 +146,6 @@ const VerIngresos = () => {
                             <th>Nombre Cliente</th>
                             <th>Servicio</th>
                             <th>Descripción</th>
-                            <th>Nota</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -157,11 +160,7 @@ const VerIngresos = () => {
                         ) : (
                             ingresosPaginados.map((ingreso) => (
                                 <tr key={ingreso._id}>
-                                    <td>
-                                        {new Date(
-                                            ingreso.fecha
-                                        ).toLocaleDateString()}
-                                    </td>
+                                    <td>{new Date(ingreso.fecha).toISOString().split('T')[0]}</td>
                                     <td>₡{ingreso.monto}</td>
                                     <td>{ingreso.cedula}</td>
                                     <td>
@@ -170,9 +169,8 @@ const VerIngresos = () => {
                                     {/* Nombre Cliente */}
                                     <td>{ingreso.servicio}</td>
                                     <td>{ingreso.descripcion}</td>
-                                    <td>{ingreso.nota}</td>
                                     <td>
-                                        {ingreso.activo ? "Activo" : "Inactivo"}
+                                        {ingreso.estado}
                                     </td>
                                     <td>
                                         <Link

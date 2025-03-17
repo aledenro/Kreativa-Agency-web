@@ -11,6 +11,7 @@ import EditarEgreso from "./pages/EditarEgreso";
 import VerIngresos from "./pages/VerIngresos";
 import AgregarIngreso from "./pages/AgregarIngreso";
 import EditarIngreso from "./pages/EditarIngreso";
+import Estadisticas from "./pages/Estadisticas";
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
 import CrearUsuario from "./pages/CrearUsuario";
@@ -39,7 +40,9 @@ import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
 import AdminPanel from "./pages/AdminPanel";
 import VerDetalleProyecto from "./pages/VerDetalleProyecto";
-
+import Landing from "./pages/Landing";
+import ListadoPagos from "./pages/ListadoPagos";
+import RespuestasContacto from "./pages/RespuestasContacto";
 
 function App() {
     return (
@@ -154,10 +157,17 @@ function App() {
                     path="/proyecto/:id"
                     element={<VerDetalleProyecto />}
                 ></Route>
+
+                <Route path="/admin" element={<AdminPanel />}></Route>
+                <Route path="/estadisticas" element={<Estadisticas />} />
+
+                <Route path="/admin" element={<AdminPanel />}></Route>
+                <Route path="/" element={<Landing />} />
+                <Route path="/pagos" element={<ListadoPagos />} />
                 <Route
-                    path="/admin"
-                    element={<AdminPanel />}
-                ></Route>
+                    path="/admin/contacto"
+                    element={<RespuestasContacto />}
+                />
             </Routes>
         </Router>
     );

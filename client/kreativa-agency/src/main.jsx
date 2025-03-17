@@ -6,7 +6,7 @@ import App from "./App.jsx";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
-        <HeroUIProvider>  {/* ✅ Envuelve toda la app con HeroUIProvider */}
+        <HeroUIProvider>
             <App />
         </HeroUIProvider>
     </StrictMode>

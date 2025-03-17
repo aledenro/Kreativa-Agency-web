@@ -33,6 +33,10 @@ a {
     text-decoration: none;
 }
 
+.main-container {
+    padding-top: 60px;
+}
+
 h1,
 h2,
 h3 {
@@ -78,6 +82,14 @@ h3 {
     text-transform: none;
     cursor: pointer;
     font-family: var(--kreativa-font);
+}
+
+.input-small {
+    height: 30px !important;
+}
+
+.filter-select {
+    width: 125px;
 }
 
 .form_input {
@@ -204,9 +216,36 @@ h3 {
     color: var(--kreativa-white);
 }
 
+.custom-checkbox input[type="checkbox"] {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    appearance: none;
+    border: 2px solid var(--kreativa-rosado-claro);
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+    transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:hover {
+    border: 1px solid var(--kreativa-rosado);
+}
+
+.custom-checkbox input[type="checkbox"]:checked {
+    background-color: var(--kreativa-rosado);
+    border: 1px solid var(--kreativa-rosado);
+}
+
+.custom-checkbox input[type="checkbox"]:focus {
+    box-shadow: 0 0 1px 2px var(--kreativa-rosado-claro);
+}
+
 .form-textarea {
     padding-top: 15px;
-    height: 120px;
+    height: 80px;
 }
 
 .inline-btn {
@@ -225,8 +264,12 @@ h3 {
     border-radius: var(--kreativa-bdr-radius);
     border: none;
     outline: none !important;
-    margin: 0;
+    margin-left: 10px;
     margin-bottom: 10px;
+}
+
+.custom-icon svg {
+    color: var(--kreativa-rosado) !important;
 }
 
 .section-title {
@@ -308,7 +351,6 @@ h3 {
     text-align: center;
 }
 
-/* Estilos para el botón */
 .kreativa-table .btn-warning {
     background-color: var(--kreativa-secondary);
     border: none;
@@ -323,7 +365,6 @@ h3 {
     background-color: var(--kreativa-base);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .kreativa-table thead {
         display: none;
@@ -358,11 +399,33 @@ h3 {
 
 .navbar {
     display: flex;
+    height: 60px;
     justify-content: space-between;
     align-items: center;
     background-color: var(--kreativa-black);
     padding: 10px 40px;
-    position: relative;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    transition:
+        background-color 0.3s ease-in-out,
+        box-shadow 0.3s ease-in-out;
+    top: 0;
+    left: 0;
+}
+
+.navbar-transparent {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.navbar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.navbar-scrolled {
+    background-color: var(--kreativa-black) !important;
 }
 
 .logo {
@@ -707,6 +770,16 @@ h3 {
     color: var(--kreativa-white);
 }
 
+.btn-kreativa {
+    background-color: var(--kreativa-rosado);
+    color: var(--kreativa-white);
+}
+
+.btn-kreativa:hover {
+    background-color: #ce005d;
+    color: var(--kreativa-white);
+}
+
 /* Botones pequeños */
 .thm-btn-small {
     padding: 5px 10px;
@@ -957,6 +1030,7 @@ h3 {
     color: var(--kreativa-black);
 }
 
+
 /* Contenedor más ancho */
 .full-width-container {
     width: 20%; 
@@ -1082,5 +1156,93 @@ h3 {
     font-size: 16px;
     color: #555;
     pointer-events: none; 
+}
+
+
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+/* ----------------landing ----------------*/
+
+.landing-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #111;
+    color: white;
+}
+
+.video-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.video-content {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    z-index: 10;
+    transform: translateY(50px);
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out forwards;
+}
+
+.video-logo {
+    width: 300px;
+}
+
+.video-text {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
