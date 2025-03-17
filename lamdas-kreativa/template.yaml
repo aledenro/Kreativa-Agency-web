@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    lamdas-kreativa
+
+    Sample SAM Template for lamdas-kreativa
+
+Globals:
+    Function:
+        Timeout: 3
+
+Resources:
+    ScheduledEmailPagos:
+        Type: AWS::Serverless::Function
+        Properties:
+            FunctionName: ScheduledEmailPagos
+            Handler: handler.handler
+            CodeUri: ScheduledEmailPagos/
+            Runtime: nodejs20.x
+            Timeout: 60
+            MemorySize: 256
+            Policies:
+                - AWSLambdaBasicExecutionRole
+            Events:
+                DailyTrigger:
+                    Type: Schedule
+                    Properties:
+                        Schedule: rate(3 minutes)
+
+Outputs:
+    LambdaFunctionArn:
+        Description: "ARN de la función Lambda"
+        Value: !GetAtt ScheduledEmailPagos.Arn
