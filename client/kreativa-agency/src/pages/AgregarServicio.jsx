@@ -139,7 +139,7 @@ const AgregarServicio = () => {
     return (
         <div>
             <Navbar />
-            <div className="container">
+            <div className="container main-container">
                 <div className="section-title text-center">
                     <h2>Agregar nuevo servicio</h2>
                 </div>
@@ -282,7 +282,7 @@ const AgregarServicio = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <button
-                        className="thm-btn-2 thm-btn-small"
+                        className="thm-btn thm-btn-small btn-rojo"
                         onClick={() => setShowModal(false)}
                     >
                         Cancelar
