@@ -62,4 +62,26 @@ const sendEmail = async (idReceptor, emailContent, subject) => {
     }
 };
 
-module.exports = { enviarCorreoRecuperacion, sendEmail };
+const sendEmailExterno = async (recipientEmail, emailContent, subject) => {
+    try {
+        if (!recipientEmail) {
+            throw new Error("No se proporcionó un correo electrónico válido.");
+        }
+
+        const mailOptions = {
+            from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
+            to: recipientEmail,
+            subject: subject,
+            html: emailContent,
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log("Correo enviado a:", recipientEmail);
+        return { success: true };
+    } catch (error) {
+        console.error("Error al enviar el correo:", error);
+        return { success: false, error: error.message };
+    }
+};
+
+module.exports = { enviarCorreoRecuperacion, sendEmail, sendEmailExterno };

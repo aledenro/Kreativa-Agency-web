@@ -42,7 +42,7 @@ import AdminPanel from "./pages/AdminPanel";
 import VerDetalleProyecto from "./pages/VerDetalleProyecto";
 import Landing from "./pages/Landing";
 import ListadoPagos from "./pages/ListadoPagos";
-import FormContacto from "./pages/FormContacto";
+import RespuestasContacto from "./pages/RespuestasContacto";
 
 function App() {
     return (
@@ -158,18 +158,16 @@ function App() {
                     element={<VerDetalleProyecto />}
                 ></Route>
 
-                <Route
-                    path="/admin"
-                    element={<AdminPanel />}
-                ></Route>
-                <Route 
-                path="/estadisticas" 
-                element={<Estadisticas />} />
+                <Route path="/admin" element={<AdminPanel />}></Route>
+                <Route path="/estadisticas" element={<Estadisticas />} />
 
                 <Route path="/admin" element={<AdminPanel />}></Route>
                 <Route path="/" element={<Landing />} />
                 <Route path="/pagos" element={<ListadoPagos />} />
-                <Route path="/" element={<FormContacto />} />
+                <Route
+                    path="/admin/contacto"
+                    element={<RespuestasContacto />}
+                />
             </Routes>
         </Router>
     );
