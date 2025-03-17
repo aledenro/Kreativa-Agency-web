@@ -3,6 +3,7 @@ import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import sendEmailExterno from "../utils/sendEmailExterno";
 
 const FormContacto = () => {
     const [formData, setFormData] = useState({
@@ -122,6 +123,14 @@ const FormContacto = () => {
                 objetivos: "",
                 servicios_id: [],
             });
+
+            if (response.status == 201) {
+                await sendEmailExterno(
+                    formData.correo,
+                    "Tu mensaje ha sido enviado. Pronto un miembro del equipo de Kreativa se pondrá en contacto.",
+                    "Mensaje enviado"
+                );
+            }
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
             setError(
