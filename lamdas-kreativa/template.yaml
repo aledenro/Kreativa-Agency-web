@@ -1,13 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: >
-    lamdas-kreativa
-
-    Sample SAM Template for lamdas-kreativa
-
-Globals:
-    Function:
-        Timeout: 3
 
 Resources:
     ScheduledEmailPagos:
@@ -17,7 +9,7 @@ Resources:
             Handler: handler.handler
             CodeUri: ScheduledEmailPagos/
             Runtime: nodejs20.x
-            Timeout: 60
+            Timeout: 120
             MemorySize: 256
             Policies:
                 - AWSLambdaBasicExecutionRole

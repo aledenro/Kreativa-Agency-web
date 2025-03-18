@@ -1,3 +1,5 @@
+process.env.NODE_PATH = "/opt/nodejs/node_modules";
+require("module").Module._initPaths();
 require("dotenv").config();
 const connectDB = require("./config/dbConnection");
 const sendEmail = require("./service/emailService");
@@ -5,6 +7,8 @@ const sendEmail = require("./service/emailService");
 module.exports.handler = async (event) => {
     try {
         const db = await connectDB();
+        console.log("dbConn");
+
         const pagosConUsuarios = await db
             .collection("pagos")
             .aggregate([
@@ -35,10 +39,10 @@ module.exports.handler = async (event) => {
             ])
             .toArray();
 
+        console.log("array  obtenido");
+
         for (const pago of pagosConUsuarios) {
-            console.log(pago);
             await sendEmail(pago);
-            console.log("enviado");
         }
     } catch (error) {
         console.error("Error", error);
@@ -50,6 +54,6 @@ module.exports.handler = async (event) => {
 
     return {
         statusCode: 200,
-        body: JSON.stringify({ message: "Lambda ejecutada con bien" }),
+        body: JSON.stringify({ message: "Lambda ejecutada bien" }),
     };
 };
