@@ -1261,3 +1261,11 @@ h3 {
         transform: translateY(0);
     }
 }
+
+.charts-container {
+    margin-top: 60px;
+}
+
+.pie-chart {
+    margin: auto;
+}
