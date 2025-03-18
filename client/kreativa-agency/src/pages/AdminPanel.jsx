@@ -1,12 +1,35 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Home, Users, Settings, LogOut, Bell, Search, MessageCircle, LayoutDashboard } from "lucide-react";
+import {
+    LayoutDashboard,
+    Home,
+    Users,
+    Settings,
+    LogOut,
+    Bell,
+    MessageCircle,
+    Search,
+    Mail,
+    IdCard,
+    SquareKanban,
+    FilePlus2,
+} from "lucide-react";
 import { Avatar } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import "../AdminPanel.css";
 import logo from "../assets/img/logo.png";
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    LineChart,
+    Line,
+} from "recharts";
 
 const data = [
     { name: "Enero", ventas: 4000, ganancias: 2400 },
@@ -36,11 +59,56 @@ const AdminPanel = () => {
                 onMouseLeave={() => setCollapsed(true)}
             >
                 <ul>
-                    {[{ icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" }, { icon: Home, label: "Inicio", path: "/" }, { icon: Users, label: "Usuarios", path: "/usuarios" }, { icon: Settings, label: "Configuración", path: "/configuracion" }, { icon: LogOut, label: "Salir", path: "/logout" }].map((item, index) => (
-                        <motion.li key={index} whileHover={{ scale: 1.1 }} className="menu-item" onClick={() => navigate(item.path)}>
+                    {[
+                        {
+                            icon: LayoutDashboard,
+                            label: "Dashboard",
+                            path: "/admin",
+                        },
+                        { icon: Home, label: "Inicio", path: "/" },
+                        { icon: Users, label: "Usuarios", path: "/usuarios" },
+                        {
+                            icon: SquareKanban,
+                            label: "Tareas",
+                            path: "/tareas",
+                        },
+                        {
+                            icon: FilePlus2,
+                            label: "Cotizaciones",
+                            path: "/cotizacion",
+                        },
+                        {
+                            icon: IdCard,
+                            label: "Empleados",
+                            path: "/jerarquia",
+                        },
+                        {
+                            icon: Settings,
+                            label: "Configuración",
+                            path: "/configuracion",
+                        },
+                        {
+                            icon: Mail,
+                            label: "Contactos",
+                            path: "/admin/contacto",
+                        },
+                        { icon: LogOut, label: "Salir", path: "/logout" },
+                    ].map((item, index) => (
+                        <motion.li
+                            key={index}
+                            whileHover={{ scale: 1.1 }}
+                            className="menu-item"
+                            onClick={() => navigate(item.path)}
+                        >
                             <item.icon size={24} />
                             {!collapsed && (
-                                <motion.span animate={{ opacity: 1, display: "inline-block" }} transition={{ duration: 0.2 }}>
+                                <motion.span
+                                    animate={{
+                                        opacity: 1,
+                                        display: "inline-block",
+                                    }}
+                                    transition={{ duration: 0.2 }}
+                                >
                                     {item.label}
                                 </motion.span>
                             )}
@@ -49,11 +117,19 @@ const AdminPanel = () => {
                 </ul>
             </motion.aside>
 
-            <motion.main className="content" animate={{ marginLeft: collapsed ? "80px" : "250px" }} transition={{ duration: 0.3 }}>
+            <motion.main
+                className="content"
+                animate={{ marginLeft: collapsed ? "80px" : "250px" }}
+                transition={{ duration: 0.3 }}
+            >
                 <div className="header">
                     {/* Logo de Kreativa a la izquierda */}
                     <div className="logo-header">
-                        <img src={logo} alt="Kreativa Agency" className="logo-img" />
+                        <img
+                            src={logo}
+                            alt="Kreativa Agency"
+                            className="logo-img"
+                        />
                     </div>
 
                     {/* Barra de búsqueda centrada */}
@@ -69,14 +145,21 @@ const AdminPanel = () => {
                         <Bell size={22} className="header-icon" />
                         <MessageCircle size={22} className="header-icon" />
                         <div className="header-avatar">
-                            <img src="https://i.pravatar.cc/150?u=a04258114e29026702d" alt="Perfil" />
+                            <img
+                                src="https://i.pravatar.cc/150?u=a04258114e29026702d"
+                                alt="Perfil"
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div className="dashboard">
                     {metricas.map((metrica, index) => (
-                        <motion.div key={index} className="metric-card" style={{ borderTop: `4px solid ${metrica.color}` }}>
+                        <motion.div
+                            key={index}
+                            className="metric-card"
+                            style={{ borderTop: `4px solid ${metrica.color}` }}
+                        >
                             <h3>{metrica.label}</h3>
                             <p>{metrica.cantidad}</p>
                         </motion.div>
@@ -105,7 +188,12 @@ const AdminPanel = () => {
                                 <XAxis dataKey="name" />
                                 <YAxis />
                                 <Tooltip />
-                                <Line type="monotone" dataKey="ganancias" stroke="#4CAF50" strokeWidth={3} />
+                                <Line
+                                    type="monotone"
+                                    dataKey="ganancias"
+                                    stroke="#4CAF50"
+                                    strokeWidth={3}
+                                />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>

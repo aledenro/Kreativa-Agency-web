@@ -97,16 +97,18 @@ export default function Navbar() {
                 </li>
             </ul>
 
-            {rol === null ? (
-                <Link to="/login">
+            {rol === "Administrador" ||
+            rol === "Colaborador" ||
+            rol === "Cliente" ? (
+                <Link to="/usuarios">
                     <button className="login-button thm-btn btn-volver">
-                        Iniciar Sesión
+                        Ir al Dashboard
                     </button>
                 </Link>
             ) : (
-                <Link to="/admin">
+                <Link to="/login">
                     <button className="login-button thm-btn btn-volver">
-                        Ir al Dashboard
+                        Iniciar Sesión
                     </button>
                 </Link>
             )}

@@ -1,5 +1,5 @@
 import React from "react";
-// import video from "../assets/vid/landing-video.mov";
+import video from "../assets/vid/landing-video.mov";
 import Navbar from "../components/Navbar/Navbar";
 import ListadoServicios from "./ListadoServicios";
 import FormContacto from "./FormContacto";
@@ -12,9 +12,9 @@ const Landing = () => {
             <section id="landing">
                 <div className="landing-container">
                     <div className="video-section">
-                        {/* <video className="video-background" autoPlay loop muted>
+                        <video className="video-background" autoPlay loop muted>
                             <source src={video} type="video/mp4" />
-                        </video> */}
+                        </video>
                         <div className="video-overlay"></div>
                         <div className="video-content">
                             <img
@@ -32,10 +32,10 @@ const Landing = () => {
             <section id="servicios">
                 <ListadoServicios></ListadoServicios>
             </section>
-            <section id="servicios">
+            <section id="contacto">
                 <FormContacto></FormContacto>
             </section>
-            <section id="servicios">
+            <section id="reclutaciones">
                 <FormReclutaciones></FormReclutaciones>
             </section>
         </div>
