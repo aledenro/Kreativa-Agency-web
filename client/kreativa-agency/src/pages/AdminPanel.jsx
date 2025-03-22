@@ -13,6 +13,7 @@ import {
     IdCard,
     SquareKanban,
     FilePlus2,
+    Menu,
 } from "lucide-react";
 import { Avatar } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
@@ -51,47 +52,40 @@ const AdminPanel = () => {
 
     return (
         <div className="admin-container">
+            {/* Sidebar */}
             <motion.aside
                 className={`sidebar ${collapsed ? "collapsed" : ""}`}
                 animate={{ width: collapsed ? "80px" : "250px" }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                onMouseEnter={() => setCollapsed(false)}
-                onMouseLeave={() => setCollapsed(true)}
             >
                 <ul>
+                    {/* Ícono de menú como primer ítem del sidebar */}
+                    <motion.li
+                        whileHover={{ scale: 1.1 }}
+                        className="menu-item"
+                        onClick={() => setCollapsed(!collapsed)}
+                    >
+                        <Menu size={24} />
+                        {!collapsed && (
+                            <motion.span
+                                animate={{ opacity: 1, display: "inline-block" }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                Menú
+                            </motion.span>
+                        )}
+                    </motion.li>
+
+                    {/* Resto del menú */}
                     {[
-                        {
-                            icon: LayoutDashboard,
-                            label: "Dashboard",
-                            path: "/admin",
-                        },
+                        { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
                         { icon: Home, label: "Inicio", path: "/" },
                         { icon: Users, label: "Usuarios", path: "/usuarios" },
-                        {
-                            icon: SquareKanban,
-                            label: "Tareas",
-                            path: "/tareas",
-                        },
-                        {
-                            icon: FilePlus2,
-                            label: "Cotizaciones",
-                            path: "/cotizacion",
-                        },
-                        {
-                            icon: IdCard,
-                            label: "Empleados",
-                            path: "/jerarquia",
-                        },
-                        {
-                            icon: Settings,
-                            label: "Configuración",
-                            path: "/configuracion",
-                        },
-                        {
-                            icon: Mail,
-                            label: "Contactos",
-                            path: "/admin/contacto",
-                        },
+                        { icon: SquareKanban, label: "Tareas", path: "/tareas" },
+                        { icon: FilePlus2, label: "Cotizaciones", path: "/cotizacion" },
+                        { icon: IdCard, label: "Empleados", path: "/jerarquia" },
+                        { icon: Settings, label: "Configuración", path: "/configuracion" },
+                        { icon: Mail, label: "Contactos", path: "/admin/contacto" },
                         { icon: LogOut, label: "Salir", path: "/logout" },
                     ].map((item, index) => (
                         <motion.li
@@ -103,10 +97,7 @@ const AdminPanel = () => {
                             <item.icon size={24} />
                             {!collapsed && (
                                 <motion.span
-                                    animate={{
-                                        opacity: 1,
-                                        display: "inline-block",
-                                    }}
+                                    animate={{ opacity: 1, display: "inline-block" }}
                                     transition={{ duration: 0.2 }}
                                 >
                                     {item.label}
@@ -117,13 +108,14 @@ const AdminPanel = () => {
                 </ul>
             </motion.aside>
 
+            {/* Contenido principal */}
             <motion.main
                 className="content"
                 animate={{ marginLeft: collapsed ? "80px" : "250px" }}
                 transition={{ duration: 0.3 }}
             >
                 <div className="header">
-                    {/* Logo de Kreativa a la izquierda */}
+                    {/* Logo de Kreativa */}
                     <div className="logo-header">
                         <img
                             src={logo}
@@ -132,7 +124,7 @@ const AdminPanel = () => {
                         />
                     </div>
 
-                    {/* Barra de búsqueda centrada */}
+                    {/* Barra de búsqueda */}
                     <div className="search-container">
                         <div className="search-bar">
                             <Search size={18} className="search-icon" />
@@ -140,7 +132,7 @@ const AdminPanel = () => {
                         </div>
                     </div>
 
-                    {/* Iconos a la derecha */}
+                    {/* Iconos derecha */}
                     <div className="header-icons">
                         <Bell size={22} className="header-icon" />
                         <MessageCircle size={22} className="header-icon" />
@@ -153,6 +145,7 @@ const AdminPanel = () => {
                     </div>
                 </div>
 
+                {/* Métricas */}
                 <div className="dashboard">
                     {metricas.map((metrica, index) => (
                         <motion.div
@@ -166,6 +159,7 @@ const AdminPanel = () => {
                     ))}
                 </div>
 
+                {/* Gráficos */}
                 <div className="charts-container">
                     <div className="chart-box">
                         <h3>Ventas por Mes</h3>

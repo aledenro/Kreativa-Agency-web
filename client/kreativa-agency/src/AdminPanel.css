@@ -262,3 +262,12 @@ html, body {
     overflow-x: hidden; /* Evita desbordamiento lateral */
     width: 100%; /* Asegura que nada sobresalga */
 }
+
+.menu-toggle-inside {
+    color: white;
+    transition: transform 0.2s ease-in-out;
+}
+
+.menu-toggle-inside:hover {
+    transform: scale(1.1);
+}

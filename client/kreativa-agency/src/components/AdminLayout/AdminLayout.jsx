@@ -13,6 +13,7 @@ import {
     IdCard,
     SquareKanban,
     FilePlus2,
+    Menu, // ¡Importante!
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
@@ -30,7 +31,7 @@ const menuItems = [
 ];
 
 const AdminLayout = ({ children }) => {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const navigate = useNavigate();
 
     return (
@@ -40,10 +41,29 @@ const AdminLayout = ({ children }) => {
                 className={`sidebar ${collapsed ? "collapsed" : ""}`}
                 animate={{ width: collapsed ? "80px" : "250px" }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                onMouseEnter={() => setCollapsed(false)}
-                onMouseLeave={() => setCollapsed(true)}
             >
                 <ul>
+                    {/* Ítem Menú arriba */}
+                    <motion.li
+                        whileHover={{ scale: 1.1 }}
+                        className="menu-item"
+                        onClick={() => setCollapsed(!collapsed)}
+                    >
+                        <Menu size={24} />
+                        {!collapsed && (
+                            <motion.span
+                                animate={{
+                                    opacity: 1,
+                                    display: "inline-block",
+                                }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                Menú
+                            </motion.span>
+                        )}
+                    </motion.li>
+
+                    {/* Ítems normales */}
                     {menuItems.map((item, index) => (
                         <motion.li
                             key={index}
