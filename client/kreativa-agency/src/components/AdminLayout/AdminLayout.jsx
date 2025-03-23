@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
@@ -55,14 +55,22 @@ const itemVariants = {
 const AdminLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(true);
     const [sidebarExpanded, setSidebarExpanded] = useState(false);
+    const [showSidebarItems, setShowSidebarItems] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setSidebarExpanded(true);
+        }, 500); // Mostrar íconos después de carga inicial
+        return () => clearTimeout(timeout);
+    }, []);
 
     const toggleSidebar = () => {
         if (collapsed) {
             setCollapsed(false);
-            setTimeout(() => setSidebarExpanded(true), 600);
+            setTimeout(() => setShowSidebarItems(true), 600);
         } else {
-            setSidebarExpanded(false);
+            setShowSidebarItems(false);
             setCollapsed(true);
         }
     };
@@ -72,6 +80,7 @@ const AdminLayout = ({ children }) => {
             {/* Sidebar */}
             <motion.aside
                 className={`sidebar ${collapsed ? "collapsed" : ""}`}
+                initial={false}
                 animate={{ width: collapsed ? "80px" : "250px" }}
                 transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }} // ease más profesional
             >
@@ -125,13 +134,13 @@ const AdminLayout = ({ children }) => {
             </motion.aside>
 
             {/* Contenido principal */}
-            <motion.main
-                className="content"
-                animate={{ marginLeft: collapsed ? "80px" : "250px" }}
-                transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}
-            >
+            <motion.main className="content">
                 {/* Header */}
-                <div className="header">
+                <motion.div
+                    className="header"
+                    animate={{ left: collapsed ? "80px" : "250px", width: collapsed ? "calc(100% - 80px)" : "calc(100% - 250px)" }}
+                    transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}
+                >
                     <div className="logo-header">
                         <img src={logo} alt="Kreativa Agency" className="logo-img" />
                     </div>
@@ -153,7 +162,7 @@ const AdminLayout = ({ children }) => {
                             />
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Contenido dinámico */}
                 {children}
