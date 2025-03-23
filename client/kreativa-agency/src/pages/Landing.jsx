@@ -1,9 +1,10 @@
 import React from "react";
-// import video from "../assets/vid/landing-video.mov";
+import video from "../assets/vid/landing-video.mov";
 import Navbar from "../components/Navbar/Navbar";
 import ListadoServicios from "./ListadoServicios";
 import FormContacto from "./FormContacto";
 import FormReclutaciones from "./FormReclutaciones";
+import "animate.css";
 
 const Landing = () => {
     return (
@@ -13,7 +14,7 @@ const Landing = () => {
                 <div className="landing-container">
                     <div className="video-section">
                         <video className="video-background" autoPlay loop muted>
-                            <source type="video/mp4" />
+                            <source src={video} type="video/mp4" />
                         </video>
                         <div className="video-overlay"></div>
                         <div className="video-content">
@@ -22,8 +23,8 @@ const Landing = () => {
                                 alt="Logo"
                                 className="video-logo"
                             />
-                            <p className="video-text">
-                                ¡Somos tu solución kreativa!
+                            <p className="video-text landing-h2">
+                                Somos tu solución Kreativa
                             </p>
                         </div>
                     </div>

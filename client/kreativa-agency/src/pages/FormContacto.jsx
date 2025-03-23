@@ -182,10 +182,10 @@ const FormContacto = () => {
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
                         <div className="section-title text-center">
-                            <h2>Contactá con nosotros</h2>
-                        </div>
-                        <div>
-                            <p className="mb-5 text-center">
+                            <h2 className="main-heading">
+                                Contactá con nosotros
+                            </h2>
+                            <p className="mb-5 text-center subtitle">
                                 ¡Lleva tu negocio al siguiente nivel! Déjanos
                                 tus datos y uno de nuestros expertos en
                                 marketing digital se pondrá en contacto contigo
@@ -200,7 +200,8 @@ const FormContacto = () => {
                                         className="form-label"
                                         htmlFor="nombre"
                                     >
-                                        Nombre *
+                                        Nombre{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -214,7 +215,8 @@ const FormContacto = () => {
                                 </div>
                                 <div className="col">
                                     <label className="form-label">
-                                        Apellido *
+                                        Apellido{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -230,7 +232,8 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Correo Electrónico *
+                                        Correo Electrónico{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className={`form_input ${emailError ? "is-invalid" : ""}`}
@@ -248,7 +251,8 @@ const FormContacto = () => {
                                 </div>
                                 <div className="col">
                                     <label className="form-label">
-                                        Teléfono *
+                                        Teléfono{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -264,7 +268,8 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Nombre del Negocio *
+                                        Nombre del Negocio{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -279,7 +284,8 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Dedicación del Negocio *
+                                        Dedicación del Negocio{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <textarea
                                         className="form_input form-textarea"
@@ -356,7 +362,8 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Objetivos *
+                                        Objetivos{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <textarea
                                         className="form_input form-textarea"
@@ -371,7 +378,8 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Servicios *
+                                        Servicios{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     {servicios.length > 0 ? (
                                         <div className="row">
