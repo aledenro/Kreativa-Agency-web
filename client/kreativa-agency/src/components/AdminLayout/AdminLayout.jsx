@@ -54,25 +54,14 @@ const itemVariants = {
 
 const AdminLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(true);
-    const [sidebarExpanded, setSidebarExpanded] = useState(false);
+    const [sidebarExpanded, setSidebarExpanded] = useState(true);
     const [showSidebarItems, setShowSidebarItems] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setSidebarExpanded(true);
-        }, 500); // Mostrar íconos después de carga inicial
-        return () => clearTimeout(timeout);
-    }, []);
-
     const toggleSidebar = () => {
-        if (collapsed) {
-            setCollapsed(false);
-            setTimeout(() => setShowSidebarItems(true), 600);
-        } else {
-            setShowSidebarItems(false);
-            setCollapsed(true);
-        }
+        const newState = !collapsed;
+        setCollapsed(newState);
+        setSidebarExpanded(newState);
     };
 
     return (
@@ -81,8 +70,7 @@ const AdminLayout = ({ children }) => {
             <motion.aside
                 className={`sidebar ${collapsed ? "collapsed" : ""}`}
                 initial={false}
-                animate={{ width: collapsed ? "80px" : "250px" }}
-                transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }} // ease más profesional
+                style={{ width: collapsed ? "80px" : "250px" }}
             >
                 <ul>
                     {/* Botón Menú */}
@@ -101,7 +89,7 @@ const AdminLayout = ({ children }) => {
                                 style={{ display: "flex", alignItems: "center", gap: "15px" }}
                             >
                                 <Menu size={24} />
-                                {!collapsed && sidebarExpanded && <span>Menú</span>}
+                                {!collapsed && <span>Menú</span>}
                             </motion.div>
                         </motion.li>
                     </AnimatePresence>
@@ -125,7 +113,7 @@ const AdminLayout = ({ children }) => {
                                     style={{ display: "flex", alignItems: "center", gap: "15px" }}
                                 >
                                     <item.icon size={24} />
-                                    {!collapsed && sidebarExpanded && <span>{item.label}</span>}
+                                    {!collapsed && <span>{item.label}</span>}
                                 </motion.div>
                             </motion.li>
                         ))}
@@ -134,13 +122,13 @@ const AdminLayout = ({ children }) => {
             </motion.aside>
 
             {/* Contenido principal */}
-            <motion.main className="content">
+            <motion.main
+                className="content"
+                animate={{ marginLeft: collapsed ? "80px" : "250px" }}
+                transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}
+            >
                 {/* Header */}
-                <motion.div
-                    className="header"
-                    animate={{ left: collapsed ? "80px" : "250px", width: collapsed ? "calc(100% - 80px)" : "calc(100% - 250px)" }}
-                    transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}
-                >
+                <motion.div className="header">
                     <div className="logo-header">
                         <img src={logo} alt="Kreativa Agency" className="logo-img" />
                     </div>
