@@ -6,15 +6,13 @@ class ReclutacionesService {
         try {
             let cv = [];
 
-            const parent_id = `${data.nombre.trim()}_${data.apellido.trim()}`;
-
             if (files && files.length > 0) {
                 cv = await Promise.all(
                     files.map(async (file) => {
                         return await awsS3Connect.uploadFile(file, {
                             folder: "landingpage",
                             parent: "reclutacion",
-                            parent_id: parent_id,
+                            parent_id: "",
                         });
                     })
                 );
@@ -38,12 +36,10 @@ class ReclutacionesService {
                 throw new Error("Reclutación no encontrada");
             }
 
-            const parent_id = `${reclutacion.nombre.trim()}_${reclutacion.apellido.trim()}`;
-
             const files = await awsS3Connect.generateUrls({
                 folder: "landingpage",
                 parent: "reclutacion",
-                parent_id: parent_id,
+                parent_id: reclutacion._id,
             });
 
             return { ...reclutacion, files };
@@ -56,21 +52,20 @@ class ReclutacionesService {
 
     async getAllReclutaciones() {
         try {
-            const reclutaciones = await Reclutaciones.find().lean();
+            let reclutaciones = await Reclutaciones.find().lean();
 
-            const reclutacionesConCV = await Promise.all(
-                reclutaciones.map(async (reclutacion) => {
-                    const parent_id = `${reclutacion.nombre.trim()}_${reclutacion.apellido.trim()}`;
+            if (reclutaciones.length > 0) {
+                for (let reclutacion of reclutaciones) {
                     const files = await awsS3Connect.generateUrls({
                         folder: "landingpage",
                         parent: "reclutacion",
-                        parent_id: parent_id,
+                        parent_id: reclutacion._id,
                     });
-                    return { ...reclutacion, files };
-                })
-            );
 
-            return reclutacionesConCV;
+                    reclutacion.file = files.length > 0 ? files[0].url : null;
+                }
+            }
+            return reclutaciones;
         } catch (error) {
             throw new Error(
                 "No se pudieron obtener las respuestas al formulario: " +

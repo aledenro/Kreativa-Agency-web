@@ -98,7 +98,6 @@ h3 {
     height: 45px;
     width: 100%;
     border: none;
-    background-color: var(--kreativa-rosado-claro);
     border: 1px solid var(--kreativa-rosado-claro);
     padding-left: 30px;
     padding-right: 30px;
@@ -110,7 +109,8 @@ h3 {
     font-family: var(--kreativa-font);
     transition:
         border 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
 }
 
 .form_input:hover {
@@ -181,12 +181,9 @@ h3 {
 
 .thm-btn:disabled {
     opacity: 0.5;
-    background-color: var(--kreativa-base);
-    border-color: var(--kreativa-base);
 }
 
 .thm-btn:disabled:hover {
-    background-color: var(--kreativa-base);
     transition: none;
 }
 

@@ -27,7 +27,7 @@ const ContactoModel = new mongoose.Schema({
     },
     link_sitio_web: {
         type: String,
-        required: true,
+        required: false,
     },
     redes_sociales: {
         type: [String],
