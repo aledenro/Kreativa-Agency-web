@@ -11,7 +11,7 @@ import {
     faForward,
     faSort,
 } from "@fortawesome/free-solid-svg-icons";
-import ModalResponder from "../components/Contacto/ModalResponder";
+import ModalResponder from "../components/Reclutaciones/ModalResponder";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 
 const RespuestasReclutaciones = () => {

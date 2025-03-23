@@ -58,13 +58,6 @@ const FormReclutaciones = () => {
         }
 
         try {
-            console.log("Enviando datos sin archivos:", {
-                nombre,
-                apellido,
-                correo,
-                telefono,
-            });
-
             const response = await axios.post(
                 "http://localhost:4000/api/reclutaciones",
                 {
@@ -116,6 +109,15 @@ const FormReclutaciones = () => {
                 telefono: "",
                 cv: [],
             });
+
+            if (response.status == 201) {
+                await sendEmailExterno(
+                    formData.correo,
+                    "Tu mensaje ha sido enviado. Pronto un miembro del equipo de Kreativa se pondrá en contacto.",
+                    "Mensaje enviado"
+                );
+            }
+
             setFiles([]);
         } catch (error) {
             console.error(
@@ -146,8 +148,6 @@ const FormReclutaciones = () => {
             setFiles([]);
         }
     };
-
-    const contextValue = useMemo(() => ({ name: "FormReclutaciones" }), []);
 
     return (
         <div>
