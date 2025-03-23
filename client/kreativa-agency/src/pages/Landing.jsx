@@ -1,5 +1,5 @@
 import React from "react";
-import video from "../assets/vid/landing-video.mov";
+// import video from "../assets/vid/landing-video.mov";
 import Navbar from "../components/Navbar/Navbar";
 import ListadoServicios from "./ListadoServicios";
 import FormContacto from "./FormContacto";
@@ -13,7 +13,7 @@ const Landing = () => {
                 <div className="landing-container">
                     <div className="video-section">
                         <video className="video-background" autoPlay loop muted>
-                            <source src={video} type="video/mp4" />
+                            <source type="video/mp4" />
                         </video>
                         <div className="video-overlay"></div>
                         <div className="video-content">
@@ -23,7 +23,7 @@ const Landing = () => {
                                 className="video-logo"
                             />
                             <p className="video-text">
-                                ¡Somos tu solución creativa!
+                                ¡Somos tu solución kreativa!
                             </p>
                         </div>
                     </div>

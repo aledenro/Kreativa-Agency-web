@@ -74,8 +74,8 @@ const FormReclutaciones = () => {
                 try {
                     uploadedFiles = await fileUpload(
                         files,
-                        "reclutaciones",
-                        "cv",
+                        "landingpage",
+                        "reclutacion",
                         reclutacionId
                     );
 

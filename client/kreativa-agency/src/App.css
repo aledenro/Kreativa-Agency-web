@@ -181,12 +181,9 @@ h3 {
 
 .thm-btn:disabled {
     opacity: 0.5;
-    background-color: var(--kreativa-base);
-    border-color: var(--kreativa-base);
 }
 
 .thm-btn:disabled:hover {
-    background-color: var(--kreativa-base);
     transition: none;
 }
 
