@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
@@ -31,32 +31,54 @@ const menuItems = [
 ];
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: (i) => ({
-    opacity: 1,
-    x: 0,
-    transition: {
-      delay: i * 0.06,
-      duration: 0.4,
-      ease: [0.65, 0, 0.35, 1],
-    },
-  }),
-  exit: (i) => ({
-    opacity: 0,
-    x: -20,
-    transition: {
-      delay: i * 0.03,
-      duration: 0.3,
-      ease: [0.65, 0, 0.35, 1],
-    },
-  }),
+    hidden: { opacity: 0, x: -20 },
+    visible: (i) => ({
+        opacity: 1,
+        x: 0,
+        transition: {
+            delay: i * 0.06,
+            duration: 0.4,
+            ease: [0.65, 0, 0.35, 1],
+        },
+    }),
+    exit: (i) => ({
+        opacity: 0,
+        x: -20,
+        transition: {
+            delay: i * 0.03,
+            duration: 0.3,
+            ease: [0.65, 0, 0.35, 1],
+        },
+    }),
 };
 
 const AdminLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(true);
     const [sidebarExpanded, setSidebarExpanded] = useState(true);
     const [showSidebarItems, setShowSidebarItems] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const sidebarRef = useRef(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        const handleClickOutside = (event) => {
+            if (
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target) &&
+                isMobile &&
+                !collapsed
+            ) {
+                setCollapsed(true);
+            }
+        };
+        window.addEventListener("resize", handleResize);
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isMobile, collapsed]);
 
     const toggleSidebar = () => {
         const newState = !collapsed;
@@ -68,7 +90,8 @@ const AdminLayout = ({ children }) => {
         <div className="admin-container">
             {/* Sidebar */}
             <motion.aside
-                className={`sidebar ${collapsed ? "collapsed" : ""}`}
+                ref={sidebarRef}
+                className={`sidebar ${collapsed ? "collapsed" : ""} ${isMobile && !collapsed ? "show" : ""}`}
                 initial={false}
                 style={{ width: collapsed ? "80px" : "250px" }}
             >
@@ -101,7 +124,12 @@ const AdminLayout = ({ children }) => {
                                 key={item.label}
                                 className="menu-item"
                                 whileHover={collapsed ? {} : { backgroundColor: "rgba(255,255,255,0.05)" }}
-                                onClick={() => navigate(item.path)}
+                                onClick={() => {
+                                    navigate(item.path);
+                                    if (isMobile) {
+                                        setCollapsed(true);
+                                    }
+                                }}
                                 custom={index}
                                 initial="hidden"
                                 animate="visible"
@@ -129,6 +157,17 @@ const AdminLayout = ({ children }) => {
             >
                 {/* Header */}
                 <motion.div className="header">
+                    {/* Botón hamburguesa visible solo en móviles */}
+                    {isMobile && (
+                        <button
+                            className="menu-toggle-btn"
+                            onClick={toggleSidebar}
+                            aria-label="Abrir menú"
+                        >
+                            <Menu size={26} />
+                        </button>
+                    )}
+
                     <div className="logo-header">
                         <img src={logo} alt="Kreativa Agency" className="logo-img" />
                     </div>
