@@ -550,7 +550,7 @@ h3 {
     margin: 4px 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 950px) {
     .menu {
         display: none;
         position: absolute;
@@ -1433,7 +1433,8 @@ h3 {
     letter-spacing: 1px;
     opacity: 0;
     transform: translateX(-50px);
-    animation: fadeInTextFromLeft 1.5s ease-out forwards 0.5s; /* Delayed start */
+    animation: fadeInTextFromLeft 1.5s ease-out forwards 0.5s;
+    line-height: normal;
 }
 
 @keyframes fadeInLogo {
@@ -1464,4 +1465,15 @@ h3 {
 
 .pie-chart {
     margin: auto;
+}
+
+.particles-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.particles {
+    background-color: var(--kreativa-black);
+    margin-top: 60px;
 }
