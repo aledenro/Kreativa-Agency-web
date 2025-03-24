@@ -13,7 +13,7 @@ import {
     IdCard,
     SquareKanban,
     FilePlus2,
-    Menu,
+
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
@@ -27,6 +27,11 @@ const menuItems = [
     { icon: IdCard, label: "Empleados", path: "/jerarquia" },
     { icon: Settings, label: "Configuración", path: "/configuracion" },
     { icon: Mail, label: "Contactos", path: "/admin/contacto" },
+    {
+        icon: BriefcaseBusiness,
+        label: "Reclutaciones",
+        path: "/admin/reclutaciones",
+    },
     { icon: LogOut, label: "Salir", path: "/logout" },
 ];
 

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Alert, Spinner } from "react-bootstrap";
+import { Form, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import sendEmailExterno from "../utils/sendEmailExterno";
+import { notification } from "antd";
 
 const FormContacto = () => {
     const [formData, setFormData] = useState({
@@ -20,9 +21,28 @@ const FormContacto = () => {
     });
 
     const [servicios, setServicios] = useState([]);
-    const [mensaje, setMensaje] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [emailError, setEmailError] = useState("");
+
+    const [api, contextHolder] = notification.useNotification();
+
+    const openSuccessNotification = (message) => {
+        api.success({
+            message: "Éxito",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
+
+    const openErrorNotification = (message) => {
+        api.error({
+            message: "Error",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
 
     useEffect(() => {
         const fetchServicios = async () => {
@@ -38,7 +58,7 @@ const FormContacto = () => {
                 }
             } catch (err) {
                 console.error("Error al cargar los servicios:", err);
-                setError("No se pudieron cargar los servicios.");
+                openErrorNotification("No se pudieron cargar los servicios.");
             }
         };
 
@@ -46,9 +66,20 @@ const FormContacto = () => {
     }, []);
 
     const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === "correo") {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value) && value !== "") {
+                setEmailError("Por favor ingrese un correo electrónico válido");
+            } else {
+                setEmailError("");
+            }
+        }
+
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value,
+            [name]: value,
         });
     };
 
@@ -101,16 +132,19 @@ const FormContacto = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (emailError) {
+            return;
+        }
+
         setLoading(true);
-        setMensaje("");
-        setError("");
 
         try {
             const response = await axios.post(
                 "http://localhost:4000/api/contacto",
                 formData
             );
-            setMensaje("Formulario enviado exitosamente");
+            openSuccessNotification("Formulario enviado exitosamente");
             setFormData({
                 nombre: "",
                 apellido: "",
@@ -133,7 +167,7 @@ const FormContacto = () => {
             }
         } catch (error) {
             console.error("Error al enviar el formulario:", error);
-            setError(
+            openErrorNotification(
                 "Hubo un error al enviar el formulario. Inténtalo de nuevo."
             );
         } finally {
@@ -143,29 +177,31 @@ const FormContacto = () => {
 
     return (
         <div>
+            {contextHolder}{" "}
             <div className="container mt-4">
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
                         <div className="section-title text-center">
-                            <h2>Contactá con nosotros</h2>
-                        </div>
-                        <div>
-                            <p className="mb-5 text-center">
-                                "¡Lleva tu negocio al siguiente nivel! Déjanos
+                            <h2 className="main-heading">
+                                Contactá con nosotros
+                            </h2>
+                            <p className="mb-5 text-center subtitle">
+                                ¡Lleva tu negocio al siguiente nivel! Déjanos
                                 tus datos y uno de nuestros expertos en
                                 marketing digital se pondrá en contacto contigo
-                                para ofrecerte una solución personalizada."
+                                para ofrecerte una solución personalizada.
                             </p>
                         </div>
-
-                        {mensaje && <Alert variant="success">{mensaje}</Alert>}
-                        {error && <Alert variant="danger">{error}</Alert>}
 
                         <Form onSubmit={handleSubmit} className="contacto_form">
                             <div className="row">
                                 <div className="col">
-                                    <label className="form-label" for="nombre">
-                                        Nombre
+                                    <label
+                                        className="form-label"
+                                        htmlFor="nombre"
+                                    >
+                                        Nombre{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -179,7 +215,8 @@ const FormContacto = () => {
                                 </div>
                                 <div className="col">
                                     <label className="form-label">
-                                        Apellido
+                                        Apellido{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -195,20 +232,27 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Correo Electrónico
+                                        Correo Electrónico{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
-                                        className="form_input"
+                                        className={`form_input ${emailError ? "is-invalid" : ""}`}
                                         type="email"
                                         name="correo"
                                         value={formData.correo}
                                         onChange={handleChange}
                                         required
                                     />
+                                    {emailError && (
+                                        <div className="invalid-feedback">
+                                            {emailError}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="col">
                                     <label className="form-label">
-                                        Teléfono
+                                        Teléfono{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -224,7 +268,8 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Nombre del Negocio
+                                        Nombre del Negocio{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -239,7 +284,8 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Dedicación del Negocio
+                                        Dedicación del Negocio{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <textarea
                                         className="form_input form-textarea"
@@ -259,12 +305,11 @@ const FormContacto = () => {
                                     </label>
                                     <input
                                         className="form_input"
-                                        type="url"
+                                        type="text"
                                         placeholder="https://..."
                                         name="link_sitio_web"
                                         value={formData.link_sitio_web}
                                         onChange={handleChange}
-                                        required
                                     />
                                 </div>
                             </div>
@@ -281,7 +326,7 @@ const FormContacto = () => {
                                             >
                                                 <input
                                                     className="form_input"
-                                                    type="url"
+                                                    type="text"
                                                     placeholder="https://..."
                                                     value={red}
                                                     onChange={(e) =>
@@ -293,7 +338,6 @@ const FormContacto = () => {
                                                     onFocus={() =>
                                                         handleFocus(index)
                                                     }
-                                                    required
                                                 />
                                                 {index > 0 && (
                                                     <button
@@ -318,7 +362,8 @@ const FormContacto = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Objetivos
+                                        Objetivos{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <textarea
                                         className="form_input form-textarea"
@@ -326,13 +371,15 @@ const FormContacto = () => {
                                         name="objetivos"
                                         value={formData.objetivos}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Servicios
+                                        Servicios{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     {servicios.length > 0 ? (
                                         <div className="row">
@@ -371,7 +418,7 @@ const FormContacto = () => {
                                     className="thm-btn form-btn"
                                     variant="primary"
                                     type="submit"
-                                    disabled={loading}
+                                    disabled={loading || emailError}
                                 >
                                     {loading ? (
                                         <Spinner animation="border" size="sm" />

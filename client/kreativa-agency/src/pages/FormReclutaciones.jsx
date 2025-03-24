@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Form, Alert, Spinner } from "react-bootstrap";
+import React, { useState, useMemo } from "react";
+import { Form, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { InboxOutlined } from "@ant-design/icons";
-import { ConfigProvider, Upload } from "antd";
+import { ConfigProvider, Upload, notification } from "antd";
 import fileUpload from "../utils/fileUpload";
 
 const { Dragger } = Upload;
@@ -16,9 +16,18 @@ const FormReclutaciones = () => {
         cv: [],
     });
     const [files, setFiles] = useState([]);
-    const [mensaje, setMensaje] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+
+    const [api, contextHolder] = notification.useNotification();
+
+    const showNotification = (type, message) => {
+        api[type]({
+            message: type === "success" ? "Éxito" : "Error",
+            description: message,
+            placement: "bottomRight",
+            duration: 3,
+        });
+    };
 
     const handleChange = (e) => {
         setFormData({
@@ -30,8 +39,6 @@ const FormReclutaciones = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setMensaje("");
-        setError("");
 
         const { nombre, apellido, correo, telefono } = formData;
 
@@ -42,20 +49,15 @@ const FormReclutaciones = () => {
             !telefono.trim() ||
             files.length === 0
         ) {
-            setError("Debes completar todos los campos y adjuntar un CV.");
-            setTimeout(() => setError(""), 3000);
+            showNotification(
+                "error",
+                "Debes completar todos los campos y adjuntar un CV."
+            );
             setLoading(false);
             return;
         }
 
         try {
-            console.log("Enviando datos sin archivos:", {
-                nombre,
-                apellido,
-                correo,
-                telefono,
-            });
-
             const response = await axios.post(
                 "http://localhost:4000/api/reclutaciones",
                 {
@@ -74,8 +76,8 @@ const FormReclutaciones = () => {
                 try {
                     uploadedFiles = await fileUpload(
                         files,
-                        "reclutaciones",
-                        "cv",
+                        "landingpage",
+                        "reclutacion",
                         reclutacionId
                     );
 
@@ -90,14 +92,16 @@ const FormReclutaciones = () => {
                         "Error al subir archivos:",
                         error.response?.data || error.message
                     );
-                    setError("No se pudo subir el CV. Inténtalo de nuevo.");
-                    setTimeout(() => setError(""), 3000);
+                    showNotification(
+                        "error",
+                        "No se pudo subir el CV. Inténtalo de nuevo."
+                    );
                     setLoading(false);
                     return;
                 }
             }
 
-            setMensaje("Formulario enviado exitosamente.");
+            showNotification("success", "Formulario enviado exitosamente.");
             setFormData({
                 nombre: "",
                 apellido: "",
@@ -105,29 +109,37 @@ const FormReclutaciones = () => {
                 telefono: "",
                 cv: [],
             });
+
+            if (response.status == 201) {
+                await sendEmailExterno(
+                    formData.correo,
+                    "Tu mensaje ha sido enviado. Pronto un miembro del equipo de Kreativa se pondrá en contacto.",
+                    "Mensaje enviado"
+                );
+            }
+
             setFiles([]);
         } catch (error) {
             console.error(
                 "Error al enviar el formulario:",
                 error.response?.data || error.message
             );
-            setError(
+            showNotification(
+                "error",
                 "Hubo un error al enviar el formulario. Inténtalo de nuevo."
             );
         } finally {
             setLoading(false);
-            setTimeout(() => setMensaje(""), 3000);
         }
     };
 
     const handleFileChange = (info) => {
-        const allowedTypes = ["application/pdf", "application/msword"];
+        const allowedTypes = ["application/pdf"];
 
         if (info.fileList.length > 0) {
             const file = info.fileList[0].originFileObj;
             if (!allowedTypes.includes(file.type)) {
-                setError("Solo se permiten archivos PDF o Word.");
-                setTimeout(() => setError(""), 3000);
+                showNotification("error", "Solo se permiten archivos PDF.");
                 return;
             }
 
@@ -139,14 +151,15 @@ const FormReclutaciones = () => {
 
     return (
         <div>
+            {contextHolder}
             <div className="container mt-4">
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
                         <div className="section-title text-center">
-                            <h2>Estámos contratando</h2>
-                        </div>
-                        <div>
-                            <p className="mb-5 text-center">
+                            <h2 className="main-heading">
+                                Estámos contratando
+                            </h2>
+                            <p className="mb-5 text-center subtitle">
                                 En Kreativa estamos en búsqueda de talento
                                 creativo y apasionado para formar parte de
                                 nuestro equipo de marketing digital. Si te
@@ -157,14 +170,15 @@ const FormReclutaciones = () => {
                             </p>
                         </div>
 
-                        {mensaje && <Alert variant="success">{mensaje}</Alert>}
-                        {error && <Alert variant="danger">{error}</Alert>}
-
                         <Form onSubmit={handleSubmit} className="contacto_form">
                             <div className="row">
                                 <div className="col">
-                                    <label className="form-label" for="nombre">
-                                        Nombre
+                                    <label
+                                        className="form-label"
+                                        htmlFor="nombre"
+                                    >
+                                        Nombre{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -173,11 +187,13 @@ const FormReclutaciones = () => {
                                         onChange={handleChange}
                                         aria-label="Nombre"
                                         className="form_input"
+                                        required
                                     />
                                 </div>
                                 <div className="col">
                                     <label className="form-label">
-                                        Apellido
+                                        Apellido{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -185,6 +201,7 @@ const FormReclutaciones = () => {
                                         name="apellido"
                                         value={formData.apellido}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
@@ -192,7 +209,8 @@ const FormReclutaciones = () => {
                             <div className="row">
                                 <div className="col">
                                     <label className="form-label">
-                                        Correo Electrónico
+                                        Correo Electrónico{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -200,9 +218,11 @@ const FormReclutaciones = () => {
                                         name="correo"
                                         value={formData.correo}
                                         onChange={handleChange}
+                                        required
                                     />
                                     <label className="form-label">
-                                        Teléfono
+                                        Teléfono{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="form_input"
@@ -210,19 +230,20 @@ const FormReclutaciones = () => {
                                         name="telefono"
                                         value={formData.telefono}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                             </div>
                             <div className="row mb-5">
                                 <div className="col">
                                     <label className="form-label">
-                                        Envíanos tu CV
+                                        Envíanos tu CV{" "}
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <ConfigProvider
                                         theme={{
                                             components: {
                                                 Upload: {
-                                                    colorBorder: "#ffebf4",
                                                     lineWidth: "0",
                                                 },
                                             },
@@ -235,6 +256,8 @@ const FormReclutaciones = () => {
                                             beforeUpload={() => false}
                                             onChange={handleFileChange}
                                             className="custom-dragger"
+                                            accept=".pdf"
+                                            maxCount={1}
                                         >
                                             <p className="ant-upload-drag-icon custom-icon">
                                                 <InboxOutlined />
@@ -244,8 +267,8 @@ const FormReclutaciones = () => {
                                                 aquí para subirlo
                                             </p>
                                             <p className="ant-upload-hint">
-                                                Solo se permite subir archivos
-                                                PDF o Word.
+                                                Solo se permite subir un archivo
+                                                PDF.
                                             </p>
                                         </Dragger>
                                     </ConfigProvider>

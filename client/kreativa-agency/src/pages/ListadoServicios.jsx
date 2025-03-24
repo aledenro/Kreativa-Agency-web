@@ -35,6 +35,7 @@ const ListadoServicios = () => {
 
         getServicios();
     }, []);
+
     function handleListadoServicios(id) {
         navigate(`/servicio/${id}`);
     }
@@ -44,98 +45,106 @@ const ListadoServicios = () => {
     }
 
     return (
-        <div>
+        <div className="services-page">
             <div className="container main-container">
                 <div className="services-header">
                     <div className="service-title">
-                        <h2>Nuestros Servicios</h2>
+                        <h2 className="main-heading">Nuestros Servicios</h2>
+                        <p className="subtitle">
+                            Soluciones diseñadas para impulsar tu negocio
+                        </p>
+                        <p>
+                            {rol === "Administrador" && (
+                                <button
+                                    className="thm-btn"
+                                    onClick={() => handleAgregarServicio()}
+                                >
+                                    Nuevo Servicio
+                                </button>
+                            )}
+                        </p>
                     </div>
-                    {rol === "Administrador" ? (
-                        <button
-                            className="new-service-btn thm-btn"
-                            onClick={() => handleAgregarServicio()}
-                        >
-                            Nuevo Servicio
-                        </button>
-                    ) : (
-                        ""
-                    )}
                 </div>
 
-                <div>
-                    {servicios.length > 0 && (
-                        <div className="text-center mt-4">
-                            <p className="fw-bold text-muted">
-                                {servicios.map((servicio, index) => (
-                                    <React.Fragment key={servicio._id}>
-                                        <a
-                                            href={`#servicio-${servicio._id}`}
-                                            className="text-decoration-none mx-2 text-muted"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                document
-                                                    .getElementById(
-                                                        `servicio-${servicio._id}`
-                                                    )
-                                                    ?.scrollIntoView({
-                                                        behavior: "smooth",
-                                                        block: "start",
-                                                    });
-                                            }}
-                                        >
-                                            {servicio.nombre}
-                                        </a>
-                                        {index < servicios.length - 1 && (
-                                            <span className="mx-1">
-                                                &#9679;
-                                            </span>
-                                        )}
-                                    </React.Fragment>
-                                ))}
-                            </p>
-                        </div>
-                    )}
-                </div>
+                {servicios.length > 0 && (
+                    <div className="services-nav">
+                        <p className="fw-bold">
+                            {servicios.map((servicio, index) => (
+                                <React.Fragment key={servicio._id}>
+                                    <a
+                                        href={`#servicio-${servicio._id}`}
+                                        className="service-nav-link"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            document
+                                                .getElementById(
+                                                    `servicio-${servicio._id}`
+                                                )
+                                                ?.scrollIntoView({
+                                                    behavior: "smooth",
+                                                    block: "start",
+                                                });
+                                        }}
+                                    >
+                                        {servicio.nombre}
+                                    </a>
+                                    {index < servicios.length - 1 && (
+                                        <span className="nav-separator">
+                                            &#9679;
+                                        </span>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </p>
+                    </div>
+                )}
+
                 <section className="services">
-                    <div className="container d-flex flex-column align-items-center mt-5 gap-3 w-100">
+                    <div className="services-container">
                         {servicios.length > 0 ? (
                             servicios.map((servicio, index) => (
                                 <div
-                                    key={index}
+                                    key={servicio._id}
                                     id={`servicio-${servicio._id}`}
                                     className={`service-card ${index % 2 !== 0 ? "reverse" : ""}`}
                                 >
-                                    <img
-                                        src={servicio.imagen}
-                                        alt="Servicio"
-                                        onError={(e) => {
-                                            e.target.src =
-                                                "https://placehold.co/600x400";
-                                        }}
-                                    />
-                                    <div>
-                                        <h5 className="mb-1 services-title">
-                                            <a
-                                                onClick={() =>
-                                                    handleListadoServicios(
-                                                        servicio._id
-                                                    )
-                                                }
-                                                className="text-decoration-none"
-                                            >
-                                                {servicio.nombre}
-                                            </a>
-                                        </h5>
-                                        <p className="text-muted mb-1">
-                                            {servicio.descripcion.length > 50
-                                                ? servicio.descripcion.substring(
-                                                      0,
-                                                      50
-                                                  ) + "..."
-                                                : servicio.descripcion}
-                                        </p>
+                                    <div className="service-image-container">
+                                        <img
+                                            src={servicio.imagen}
+                                            alt={servicio.nombre}
+                                            className="service-image"
+                                            onError={(e) => {
+                                                e.target.src =
+                                                    "https://placehold.co/600x400";
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="service-content">
+                                        <div>
+                                            <h3 className="services-title">
+                                                <a
+                                                    onClick={() =>
+                                                        handleListadoServicios(
+                                                            servicio._id
+                                                        )
+                                                    }
+                                                    className="service-title-link"
+                                                >
+                                                    {servicio.nombre}
+                                                </a>
+                                            </h3>
+                                            <p className="service-description">
+                                                {servicio.descripcion.length >
+                                                100
+                                                    ? servicio.descripcion.substring(
+                                                          0,
+                                                          100
+                                                      ) + "..."
+                                                    : servicio.descripcion}
+                                            </p>
+                                        </div>
                                         <button
-                                            className="thm-btn thm-btn-small"
+                                            className="thm-btn thm-btn-small service-btn"
                                             onClick={() =>
                                                 handleListadoServicios(
                                                     servicio._id
@@ -145,15 +154,16 @@ const ListadoServicios = () => {
                                             Ver más{" "}
                                             <FontAwesomeIcon
                                                 icon={faArrowRight}
+                                                className="btn-icon"
                                             />
                                         </button>
                                     </div>
                                 </div>
                             ))
                         ) : (
-                            <p className="text-center mt-4">
-                                No hay servicios por mostrar
-                            </p>
+                            <div className="no-services">
+                                <p>No hay servicios por mostrar</p>
+                            </div>
                         )}
                     </div>
                 </section>

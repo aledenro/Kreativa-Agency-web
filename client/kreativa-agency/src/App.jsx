@@ -43,6 +43,7 @@ import VerDetalleProyecto from "./pages/VerDetalleProyecto";
 import Landing from "./pages/Landing";
 import ListadoPagos from "./pages/ListadoPagos";
 import RespuestasContacto from "./pages/RespuestasContacto";
+import RespuestasReclutaciones from "./pages/RespuestasReclutaciones";
 
 function App() {
     return (
@@ -167,6 +168,10 @@ function App() {
                 <Route
                     path="/admin/contacto"
                     element={<RespuestasContacto />}
+                />
+                <Route
+                    path="/admin/reclutaciones"
+                    element={<RespuestasReclutaciones />}
                 />
             </Routes>
         </Router>
