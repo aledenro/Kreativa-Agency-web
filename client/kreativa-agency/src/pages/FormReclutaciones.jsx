@@ -156,10 +156,10 @@ const FormReclutaciones = () => {
                 <div className="mx-auto align-items-center justify-content-center d-flex">
                     <div className="col-xl-8">
                         <div className="section-title text-center">
-                            <h2>Estámos contratando</h2>
-                        </div>
-                        <div>
-                            <p className="mb-5 text-center">
+                            <h2 className="main-heading">
+                                Estámos contratando
+                            </h2>
+                            <p className="mb-5 text-center subtitle">
                                 En Kreativa estamos en búsqueda de talento
                                 creativo y apasionado para formar parte de
                                 nuestro equipo de marketing digital. Si te
