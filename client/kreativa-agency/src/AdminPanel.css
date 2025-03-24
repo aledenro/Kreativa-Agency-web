@@ -12,7 +12,7 @@
 
 /* Layout principal */
 .admin-container {
-    background: none !important; /* Elimina el fondo gris */
+    background: none !important; 
     padding: 0 !important;
     margin: 0 !important;
 }
@@ -27,9 +27,9 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    height: 100vh; /* Asegura que ocupe toda la pantalla */
-    top: 0; /* Evita espacios en la parte superior */
-    left: 0; /* Se mantiene pegado a la izquierda */
+    height: 100vh; 
+    top: 0; 
+    left: 0; 
     box-shadow: var(--shadow);
     align-items: flex-start;
 }
@@ -70,12 +70,12 @@
 /* Contenido principal */
 .content {
     flex: 1;
-    padding: 0 !important; /* Elimina el padding extra */
-    background: transparent !important; /* Hace el fondo completamente transparente */
-    margin-left: 250px; /* Mantiene el sidebar expandido */
+    padding: 0 !important; 
+    background: transparent !important;
+    margin-left: 250px; 
     transition: margin-left 0.3s ease-in-out;
-    border-radius: 0 !important; /* Quita el borde redondeado */
-    box-shadow: none !important; /* Elimina cualquier sombra */
+    border-radius: 0 !important; 
+    box-shadow: none !important; 
     width: 100%;
 }
 
@@ -246,7 +246,7 @@
     align-items: center;
     justify-content: flex-start;
     height: 100%;
-    padding-left: 1px; /* Ajusta según sea necesario */
+    padding-left: 1px; 
 }
 
 /* Ajuste del tamaño del logo sin deformación */
@@ -259,6 +259,87 @@
 
 /* 🚀 Evita el Scroll Horizontal Global */
 html, body {
-    overflow-x: hidden; /* Evita desbordamiento lateral */
-    width: 100%; /* Asegura que nada sobresalga */
+    overflow-x: hidden; 
+    width: 100%; 
+}
+
+.menu-toggle-inside {
+    color: white;
+    transition: transform 0.2s ease-in-out;
+}
+
+.menu-toggle-inside:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive: Sidebar y contenido principal */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        z-index: 1100;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        width: 250px !important;
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .content {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    .header {
+        left: 0 !important;
+        width: 100% !important;
+    }
+
+    .search-bar {
+        min-width: auto;
+        width: 100%;
+        max-width: 400px;
+    }
+}
+
+/* Ajustes extra pequeños */
+@media (max-width: 480px) {
+    .search-bar input {
+        font-size: 14px;
+    }
+
+    .header-icons {
+        gap: 12px;
+    }
+
+    .metric-card {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .charts-container {
+        gap: 10px;
+    }
+
+    .chart-box {
+        padding: 15px;
+    }
+}
+
+.menu-toggle-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease-in-out;
+    color: var(--primary-color); 
+    font-size: 24px;
+}
+
+.menu-toggle-btn:hover {
+    transform: scale(1.1);
 }
