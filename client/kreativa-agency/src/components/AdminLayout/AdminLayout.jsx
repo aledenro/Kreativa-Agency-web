@@ -13,7 +13,7 @@ import {
     IdCard,
     SquareKanban,
     FilePlus2,
-
+    Menu,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
@@ -27,11 +27,6 @@ const menuItems = [
     { icon: IdCard, label: "Empleados", path: "/jerarquia" },
     { icon: Settings, label: "Configuración", path: "/configuracion" },
     { icon: Mail, label: "Contactos", path: "/admin/contacto" },
-    {
-        icon: BriefcaseBusiness,
-        label: "Reclutaciones",
-        path: "/admin/reclutaciones",
-    },
     { icon: LogOut, label: "Salir", path: "/logout" },
 ];
 
@@ -59,8 +54,6 @@ const itemVariants = {
 
 const AdminLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(true);
-    const [sidebarExpanded, setSidebarExpanded] = useState(true);
-    const [showSidebarItems, setShowSidebarItems] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const sidebarRef = useRef(null);
     const navigate = useNavigate();
@@ -88,7 +81,6 @@ const AdminLayout = ({ children }) => {
     const toggleSidebar = () => {
         const newState = !collapsed;
         setCollapsed(newState);
-        setSidebarExpanded(newState);
     };
 
     return (
@@ -156,12 +148,19 @@ const AdminLayout = ({ children }) => {
 
             {/* Contenido principal */}
             <motion.main
-                className="content"
+                className={`content ${collapsed ? "collapsed" : "expanded"}`}
                 animate={{ marginLeft: collapsed ? "80px" : "250px" }}
                 transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}
             >
                 {/* Header */}
-                <motion.div className="header">
+                <motion.div
+                    className={`header ${isMobile
+                            ? ""
+                            : collapsed
+                                ? "collapsed"
+                                : "expanded"
+                        }`}
+                >
                     {/* Botón hamburguesa visible solo en móviles */}
                     {isMobile && (
                         <button
