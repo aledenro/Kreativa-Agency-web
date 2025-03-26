@@ -14,20 +14,61 @@ import {
     SquareKanban,
     FilePlus2,
     Menu,
+    FileText
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
 
-const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/estadisticas" },
-    { icon: Home, label: "Inicio", path: "/" },
-    { icon: Users, label: "Usuarios", path: "/usuarios" },
-    { icon: SquareKanban, label: "Tareas", path: "/tareas" },
-    { icon: FilePlus2, label: "Cotizaciones", path: "/cotizacion" },
-    { icon: IdCard, label: "Empleados", path: "/jerarquia" },
-    { icon: Settings, label: "Configuración", path: "/configuracion" },
-    { icon: Mail, label: "Contactos", path: "/admin/contacto" },
-    { icon: LogOut, label: "Salir", path: "/logout" },
+const menuStructure = [
+    {
+        title: "Usuarios",
+        items: [
+            { icon: Users, label: "Gestión de usuarios", path: "/usuarios" },
+        ],
+    },
+    {
+        title: "Proyectos",
+        items: [
+            { icon: Settings, label: "Gestión de proyectos", path: "/proyectos/gestion" },
+            { icon: LayoutDashboard, label: "Dashboard proyecto", path: "/proyectos/dashboard" },
+            { icon: FilePlus2, label: "Solicitudes cotización", path: "/proyectos/solicitudes" },
+        ],
+    },
+    {
+        title: "Reportes",
+        items: [
+            { icon: Mail, label: "Dashboard", path: "/reportes/finanzas" },
+        ],
+    },
+    {
+        title: "Empleados",
+        items: [
+            { icon: IdCard, label: "Organigrama", path: "/empleados/organigrama" },
+            { icon: FileText, label: "PTO", path: "/empleados/pto" },
+            { icon: Users, label: "Perfiles", path: "/empleados/perfiles" },
+        ],
+    },
+    {
+        title: "Finanzas",
+        items: [
+            { icon: Mail, label: "Gestión financiera", path: "/finanzas/gestion" },
+            { icon: LayoutDashboard, label: "Estadísticas", path: "/finanzas/estadisticas" },
+        ],
+    },
+    {
+        title: "Landing Page",
+        items: [
+            { icon: Home, label: "Gestión de servicios", path: "/landing/servicios" },
+            { icon: SquareKanban, label: "Gestión de paquetes", path: "/landing/paquetes" },
+            { icon: Settings, label: "Activar y desactivar puestos", path: "/landing/puestos" },
+        ],
+    },
+    {
+        title: "Salir",
+        items: [
+            { icon: LogOut, label: "Cerrar sesión", path: "/logout" },
+        ],
+    },
 ];
 
 const itemVariants = {
@@ -79,8 +120,7 @@ const AdminLayout = ({ children }) => {
     }, [isMobile, collapsed]);
 
     const toggleSidebar = () => {
-        const newState = !collapsed;
-        setCollapsed(newState);
+        setCollapsed(!collapsed);
     };
 
     return (
@@ -114,45 +154,57 @@ const AdminLayout = ({ children }) => {
                         </motion.li>
                     </AnimatePresence>
 
-                    {/* Menú de navegación */}
+                    {/* Menú por módulos */}
                     <AnimatePresence>
-                        {menuItems.map((item, index) => (
-                            <motion.li
-                                key={item.label}
-                                className="menu-item"
-                                onClick={() => {
-                                    navigate(item.path);
-                                    if (isMobile) {
-                                        setCollapsed(true);
-                                    }
-                                }}
-                                custom={index}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                variants={itemVariants}
-                                layout
-                                whileHover={
-                                    collapsed
-                                        ? {}
-                                        : {
-                                              y: -3,
-                                              scale: 1,
-                                              backgroundColor: "rgba(255, 255, 255, 0.04)",
-                                              boxShadow: "0 0 4px rgba(0,0,0,0.03)",
-                                              transition: {
-                                                  duration: 0.2,
-                                                  ease: [0.25, 1, 0.5, 1],
-                                              },
-                                          }
-                                }
-                            >
-                                <motion.div
-                                    style={{ display: "flex", alignItems: "center", gap: "15px" }}
-                                >
-                                    <item.icon size={24} />
-                                    {!collapsed && <span>{item.label}</span>}
-                                </motion.div>
+                        {menuStructure.map((section, sectionIndex) => (
+                            <motion.li key={section.title} layout className="sidebar-module">
+                                <div style={{ width: "100%" }}>
+                                    {!collapsed && (
+                                        <>
+                                            <div className="sidebar-section-title">{section.title}</div>
+                                            <div className="sidebar-divider"></div>
+                                        </>
+                                    )}
+                                    <ul className="sidebar-submenu" style={{ paddingLeft: "0" }}>
+                                        {section.items.map((item, index) => (
+                                            <motion.li
+                                                key={item.label}
+                                                className="menu-item mb-1 text-sm text-white/80"
+                                                onClick={() => {
+                                                    navigate(item.path);
+                                                    if (isMobile) setCollapsed(true);
+                                                }}
+                                                custom={index}
+                                                initial="hidden"
+                                                animate="visible"
+                                                exit="exit"
+                                                variants={itemVariants}
+                                                layout
+                                                whileHover={
+                                                    collapsed
+                                                        ? {}
+                                                        : {
+                                                            y: -3,
+                                                            scale: 1,
+                                                            backgroundColor: "rgba(255, 255, 255, 0.04)",
+                                                            boxShadow: "0 0 4px rgba(0,0,0,0.03)",
+                                                            transition: {
+                                                                duration: 0.2,
+                                                                ease: [0.25, 1, 0.5, 1],
+                                                            },
+                                                        }
+                                                }
+                                            >
+                                                <motion.div
+                                                    style={{ display: "flex", alignItems: "center", gap: "15px" }}
+                                                >
+                                                    <item.icon size={18} />
+                                                    {!collapsed && <span>{item.label}</span>}
+                                                </motion.div>
+                                            </motion.li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </motion.li>
                         ))}
                     </AnimatePresence>
@@ -167,14 +219,8 @@ const AdminLayout = ({ children }) => {
             >
                 {/* Header */}
                 <motion.div
-                    className={`header ${isMobile
-                        ? ""
-                        : collapsed
-                            ? "collapsed"
-                            : "expanded"
-                        }`}
+                    className={`header ${isMobile ? "" : collapsed ? "collapsed" : "expanded"}`}
                 >
-                    {/* Botón hamburguesa visible solo en móviles */}
                     {isMobile && (
                         <button
                             className="menu-toggle-btn"

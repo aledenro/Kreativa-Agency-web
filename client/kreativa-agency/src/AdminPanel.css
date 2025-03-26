@@ -380,3 +380,45 @@ html, body {
         white-space: nowrap;
     }
 }
+
+/* TÍTULOS DEL SIDEBAR */
+.sidebar .sidebar-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    margin: 14px 0 4px 20px;
+    display: block;
+}
+
+/* DIVIDER  */
+.sidebar-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 4px 20px 6px 20px;
+    border: none;
+}
+
+/* ÍTEMS DEL MENÚ */
+.sidebar ul li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    border-radius: 8px;
+    font-size: 0.925rem;
+    width: 100%;
+}
+
+/* ÍCONOS de los ítems del menú */
+.sidebar ul li svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* TEXTO de los ítems */
+.sidebar-submenu .menu-item span {
+    font-size: 0.925rem;
+}
+
