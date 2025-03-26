@@ -120,7 +120,6 @@ const AdminLayout = ({ children }) => {
                             <motion.li
                                 key={item.label}
                                 className="menu-item"
-                                whileHover={collapsed ? {} : { backgroundColor: "rgba(255,255,255,0.05)" }}
                                 onClick={() => {
                                     navigate(item.path);
                                     if (isMobile) {
@@ -133,6 +132,20 @@ const AdminLayout = ({ children }) => {
                                 exit="exit"
                                 variants={itemVariants}
                                 layout
+                                whileHover={
+                                    collapsed
+                                        ? {}
+                                        : {
+                                              y: -3,
+                                              scale: 1,
+                                              backgroundColor: "rgba(255, 255, 255, 0.04)",
+                                              boxShadow: "0 0 4px rgba(0,0,0,0.03)",
+                                              transition: {
+                                                  duration: 0.2,
+                                                  ease: [0.25, 1, 0.5, 1],
+                                              },
+                                          }
+                                }
                             >
                                 <motion.div
                                     style={{ display: "flex", alignItems: "center", gap: "15px" }}
@@ -155,10 +168,10 @@ const AdminLayout = ({ children }) => {
                 {/* Header */}
                 <motion.div
                     className={`header ${isMobile
-                            ? ""
-                            : collapsed
-                                ? "collapsed"
-                                : "expanded"
+                        ? ""
+                        : collapsed
+                            ? "collapsed"
+                            : "expanded"
                         }`}
                 >
                     {/* Botón hamburguesa visible solo en móviles */}
