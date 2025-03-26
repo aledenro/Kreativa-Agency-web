@@ -3,16 +3,16 @@
     --primary-color: #110D27;
     --sidebar-hover: #1A1336;
     --text-color: white;
-    --icon-size: 30px; 
+    --icon-size: 30px;
     --content-bg: #F8F9FA;
     --header-bg: white;
     --shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    --border-radius: 15px; 
+    --border-radius: 15px;
 }
 
 /* Layout principal */
 .admin-container {
-    background: none !important; 
+    background: none !important;
     padding: 0 !important;
     margin: 0 !important;
 }
@@ -27,9 +27,9 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    height: 100vh; 
-    top: 0; 
-    left: 0; 
+    height: 100vh;
+    top: 0;
+    left: 0;
     box-shadow: var(--shadow);
     align-items: flex-start;
 }
@@ -70,17 +70,17 @@
 /* Contenido principal */
 .content {
     flex: 1;
-    padding: 0 !important; 
+    padding: 0 !important;
     background: transparent !important;
-    margin-left: 250px; 
+    margin-left: 250px;
     transition: margin-left 0.3s ease-in-out;
-    border-radius: 0 !important; 
-    box-shadow: none !important; 
+    border-radius: 0 !important;
+    box-shadow: none !important;
     width: 100%;
 }
 
 /* Ajuste cuando el sidebar está colapsado */
-.sidebar.collapsed + .content {
+.sidebar.collapsed+.content {
     margin-left: 80px;
 }
 
@@ -103,7 +103,7 @@
 }
 
 /* Cuando el sidebar está colapsado */
-.sidebar.collapsed ~ .content .header {
+.sidebar.collapsed~.content .header {
     left: 80px;
     width: calc(100% - 80px);
 }
@@ -125,17 +125,17 @@
     border-radius: 25px;
     min-width: 500px;
     max-width: 700px;
-  
+
 }
 
 .search-bar input {
     border: none;
     background: transparent;
     outline: none;
-    font-size: 16px; 
+    font-size: 16px;
     margin-left: 10px;
     width: 100%;
-    flex-grow: 1; 
+    flex-grow: 1;
 }
 
 /*  Iconos en el header */
@@ -162,8 +162,8 @@
     border: 2px solid #FF0072;
     cursor: pointer;
     transition: transform 0.2s, opacity 0.2s;
-    background-color: transparent; 
-    overflow: hidden; 
+    background-color: transparent;
+    overflow: hidden;
     position: relative;
 }
 
@@ -173,7 +173,7 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    opacity: 1; 
+    opacity: 1;
     transition: opacity 0.2s, transform 0.2s;
     position: absolute;
     top: 0;
@@ -191,21 +191,22 @@
     align-items: center;
     justify-content: flex-start;
     height: 100%;
-    padding-left: 1px; 
+    padding-left: 1px;
 }
 
 /* Ajuste del tamaño del logo sin deformación */
 .logo-img {
-    height: 60px; 
-    width: auto; 
-    max-width: 100px; 
-    object-fit: contain; 
+    height: 60px;
+    width: auto;
+    max-width: 100px;
+    object-fit: contain;
 }
 
 /*  Evita el Scroll Horizontal Global */
-html, body {
-    overflow-x: hidden; 
-    width: 100%; 
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
 }
 
 .menu-toggle-inside {
@@ -250,7 +251,8 @@ html, body {
 
     .search-bar {
         width: 100%;
-        max-width: 90px; /* 🔧 antes era 400px */
+        max-width: 90px;
+        /* 🔧 antes era 400px */
         min-width: 150px;
     }
 
@@ -298,7 +300,7 @@ html, body {
     align-items: center;
     justify-content: center;
     transition: transform 0.2s ease-in-out;
-    color: var(--primary-color); 
+    color: var(--primary-color);
     font-size: 24px;
 }
 
@@ -345,7 +347,7 @@ html, body {
 @media (min-width: 769px) and (max-width: 1024px) {
     .header {
         display: flex;
-        flex-direction: row; 
+        flex-direction: row;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
@@ -422,3 +424,117 @@ html, body {
     font-size: 0.925rem;
 }
 
+
+/* Estilos para el módulo del sidebar */
+.sidebar-module {
+    width: 100%;
+}
+
+/* Contenedor del título del módulo */
+.module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    cursor: pointer;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background 0.2s;
+    border-radius: 8px;
+}
+
+.module-header:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Título + ícono */
+.module-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Ícono de flechita (chevron) */
+.chevron-icon {
+    transition: transform 0.3s ease;
+}
+
+/* Lista de subítems (dropdown abierto) */
+.sidebar-submenu {
+    list-style: none;
+    padding-left: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+/* Ítems del dropdown */
+.submenu-item {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.submenu-item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    transform: translateX(2px);
+}
+
+/* Animación de rotación de la flechita cuando está abierta */
+.sidebar-module.open .chevron-icon {
+    transform: rotate(180deg);
+}
+
+
+
+/* Contenedor que envuelve cada módulo y su dropdown */
+.module-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sidebar-submenu .submenu-item {
+    position: relative;
+    padding-left: 25px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+/* Barra lateral izquierda animada */
+.sidebar-submenu .submenu-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 4px;
+    border-radius: 3px;
+    background: #FF0072;
+    opacity: 0;
+    transform: scaleY(0.5);
+    transition: all 0.3s ease;
+}
+
+/* Cuando el ítem está visible, que la barra aparezca */
+.sidebar-submenu .submenu-item:hover::before {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+/* Solo cuando el sidebar está colapsado */
+.sidebar.collapsed .menu-toggle-item {
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+.menu-toggle-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
