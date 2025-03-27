@@ -15,10 +15,24 @@ import {
     FilePlus2,
     Menu,
     FileText,
-    ChevronDown
+    ChevronDown,
+    Banknote
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
+
+const sidebarItemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: (i) => ({
+        opacity: 1,
+        x: 0,
+        transition: {
+            delay: i * 0.07,
+            duration: 0.4,
+            ease: "easeOut",
+        },
+    }),
+};
 
 const menuStructure = [
     {
@@ -41,7 +55,7 @@ const menuStructure = [
         title: "Reportes",
         icon: LayoutDashboard,
         items: [
-            { label: "Dashboard", path: "/reportes/finanzas" },
+            { label: "Dashboard", path: "/estadisticas" },
         ],
     },
     {
@@ -55,7 +69,7 @@ const menuStructure = [
     },
     {
         title: "Finanzas",
-        icon: Mail,
+        icon: Banknote,
         items: [
             { label: "Gestión financiera", path: "/finanzas/gestion" },
             { label: "Estadísticas", path: "/finanzas/estadisticas" },
@@ -123,7 +137,7 @@ const AdminLayout = ({ children }) => {
                 ref={sidebarRef}
                 className={`sidebar ${collapsed ? "collapsed" : ""} ${isMobile && !collapsed ? "show" : ""}`}
                 initial={false}
-                style={{ width: collapsed ? "80px" : "250px" }}
+                style={{ width: collapsed ? "80px" : "250px", overflowY: 'auto' }}
             >
                 <ul>
                     <AnimatePresence>
@@ -143,10 +157,14 @@ const AdminLayout = ({ children }) => {
                         </motion.li>
                     </AnimatePresence>
 
-                    {menuStructure.map((section) => (
-                        <li
+                    {menuStructure.map((section, index) => (
+                        <motion.li
                             key={section.title}
                             className={`sidebar-module ${openSections[section.title] ? "open" : ""}`}
+                            variants={sidebarItemVariants}
+                            initial="hidden"
+                            animate="visible"
+                            custom={index}
                         >
                             <div className="module-container">
                                 <div
@@ -179,20 +197,33 @@ const AdminLayout = ({ children }) => {
                                             transition={{ duration: 0.2 }}
                                         >
                                             {section.items.map((item) => (
-                                                <motion.li
-                                                    key={item.label}
-                                                    className="menu-item submenu-item"
-                                                    onClick={() => navigate(item.path)}
-                                                    layout
-                                                >
-                                                    <span>{item.label}</span>
-                                                </motion.li>
+                                              <motion.li
+                                              key={item.label}
+                                              className="menu-item submenu-item"
+                                              onTouchStart={(e) => {
+                                                  e.currentTarget.classList.add("active-touch");
+                                                  setTimeout(() => {
+                                                      navigate(item.path);
+                                                  }, 150); // da tiempo a que se vea el efecto
+                                              }}
+                                              onClick={(e) => {
+                                                  // Previene que onClick redireccione antes de la animación si ya lo hizo onTouchStart
+                                                  if (e.pointerType === "touch") return;
+                                                  e.currentTarget.classList.add("active-touch");
+                                                  setTimeout(() => {
+                                                      navigate(item.path);
+                                                  }, 150);
+                                              }}
+                                              layout
+                                          >
+                                              <span>{item.label}</span>
+                                          </motion.li>
                                             ))}
                                         </motion.ul>
                                     )}
                                 </AnimatePresence>
                             </div>
-                        </li>
+                        </motion.li>
                     ))}
                 </ul>
             </motion.aside>
