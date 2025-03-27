@@ -98,6 +98,24 @@ class TareasService {
             );
         }
     }
+
+    async commentTarea(id, comment) {
+        try {
+            const tarea = await TareasModel.findById(id);
+
+            if (tarea && !lodash.isEmpty(tarea)) {
+                tarea.comentarios.push(comment);
+
+                await tarea.save();
+            }
+
+            return tarea;
+        } catch (error) {
+            console.error(`Error al agregar el comentario: ${error.message}`);
+
+            throw new Error(`Error al agregar un comentario: ${id}`);
+        }
+    }
 }
 
 module.exports = new TareasService();
