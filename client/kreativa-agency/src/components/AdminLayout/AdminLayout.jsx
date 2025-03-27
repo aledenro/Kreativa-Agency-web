@@ -76,12 +76,12 @@ const menuStructure = [
         ],
     },
     {
-        title: "Landing Page",
+        title: "Landing",
         icon: Home,
         items: [
             { label: "Gestión de servicios", path: "/landing/servicios" },
             { label: "Gestión de paquetes", path: "/landing/paquetes" },
-            { label: "Activar y desactivar puestos", path: "/landing/puestos" },
+            { label: "Gestión Form Puestos", path: "/landing/puestos" },
         ],
     },
     {
