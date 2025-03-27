@@ -66,9 +66,11 @@ class TareasService {
                     fecha_asignacion: 1,
                     fecha_vencimiento: 1,
                     fecha_creacion: 1,
+                    comentarios: 1,
                 })
                 .populate("colaborador_id", "nombre")
-                .populate("proyecto_id", "nombre");
+                .populate("proyecto_id", "nombre")
+                .populate("comentarios.usuario_id", "nombre");
         } catch (error) {
             throw new Error(
                 `Error al obetener todas las tareas: ${error.message}`
@@ -89,6 +91,7 @@ class TareasService {
                     fecha_asignacion: 1,
                     fecha_vencimiento: 1,
                     fecha_creacion: 1,
+                    comentarios: 1,
                 })
                 .populate("colaborador_id", "nombre")
                 .populate("proyecto_id", "nombre");
