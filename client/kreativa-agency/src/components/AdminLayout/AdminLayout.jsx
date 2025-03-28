@@ -13,7 +13,8 @@ import {
     IdCard,
     SquareKanban,
     FilePlus2,
-
+    BriefcaseBusiness,
+    Menu,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
@@ -114,7 +115,11 @@ const AdminLayout = ({ children }) => {
                             layout
                         >
                             <motion.div
-                                style={{ display: "flex", alignItems: "center", gap: "15px" }}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "15px",
+                                }}
                             >
                                 <Menu size={24} />
                                 {!collapsed && <span>Menú</span>}
@@ -128,7 +133,14 @@ const AdminLayout = ({ children }) => {
                             <motion.li
                                 key={item.label}
                                 className="menu-item"
-                                whileHover={collapsed ? {} : { backgroundColor: "rgba(255,255,255,0.05)" }}
+                                whileHover={
+                                    collapsed
+                                        ? {}
+                                        : {
+                                              backgroundColor:
+                                                  "rgba(255,255,255,0.05)",
+                                          }
+                                }
                                 onClick={() => {
                                     navigate(item.path);
                                     if (isMobile) {
@@ -143,7 +155,11 @@ const AdminLayout = ({ children }) => {
                                 layout
                             >
                                 <motion.div
-                                    style={{ display: "flex", alignItems: "center", gap: "15px" }}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "15px",
+                                    }}
                                 >
                                     <item.icon size={24} />
                                     {!collapsed && <span>{item.label}</span>}
@@ -174,7 +190,11 @@ const AdminLayout = ({ children }) => {
                     )}
 
                     <div className="logo-header">
-                        <img src={logo} alt="Kreativa Agency" className="logo-img" />
+                        <img
+                            src={logo}
+                            alt="Kreativa Agency"
+                            className="logo-img"
+                        />
                     </div>
 
                     <div className="search-container">

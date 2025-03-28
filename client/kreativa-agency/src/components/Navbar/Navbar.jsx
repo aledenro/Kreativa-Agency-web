@@ -40,7 +40,6 @@ export default function Navbar() {
                 <li>
                     <Link to="/">Inicio</Link>
                 </li>
-
                 <li className="dropdown">
                     <Link to="#">Empleados</Link>
                     <ul className="dropdown-menu">
@@ -60,7 +59,6 @@ export default function Navbar() {
                         </li>
                     </ul>
                 </li>
-
                 <li className="dropdown">
                     <Link to="#">Proyectos</Link>
                     <ul className="dropdown-menu">
@@ -96,10 +94,13 @@ export default function Navbar() {
                     </ul>
                 </li>
             </ul>
-
             <div>
-                <button className="login-button ">Ir al Dashboard</button>
-                <button className="login-button mx-2">Iniciar Sesión</button>
+                <Link to="/estadisticas" className="login-button">
+                    Ir al Dashboard
+                </Link>
+                <Link to="/login" className="login-button mx-2">
+                    Iniciar Sesión
+                </Link>
             </div>
         </nav>
     );
