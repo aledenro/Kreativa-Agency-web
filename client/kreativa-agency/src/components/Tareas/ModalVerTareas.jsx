@@ -3,12 +3,69 @@ import axios from "axios";
 import lodash from "lodash";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { notification } from "antd";
 
 const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
     const [tarea, setTarea] = useState(tareaModal);
+    const [error, setError] = useState("");
+    const [api, contextHolder] = notification.useNotification();
+
+    const openSuccessNotification = (message) => {
+        api.success({
+            message: "Éxito",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
+
+    const openErrorNotification = (message) => {
+        api.error({
+            message: "Error",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
+
+    const handleAddCommentario = async (event) => {
+        event.preventDefault();
+        const content = event.target.content.value;
+
+        if (lodash.isEmpty(content)) {
+            setError("Debe ingresar un comentario antes de enviar.");
+            setTimeout(() => {
+                setError("");
+            }, 2500);
+            return;
+        }
+
+        try {
+            const user_id = localStorage.getItem("user_id");
+
+            const response = await axios.put(
+                `http://localhost:4000/api/tareas/comment/${tarea._id}`,
+                {
+                    usuario_id: user_id,
+                    contenido: content,
+                    fecha: Date.now(),
+                }
+            );
+
+            if (response.status === 200) {
+                openSuccessNotification("Comentario enviado correctamente.");
+                setTarea(response.data);
+                event.target.reset();
+            }
+        } catch (error) {
+            console.error(error.message);
+            openErrorNotification("Error al enviar su comentario.");
+        }
+    };
 
     return (
         <Modal show={show && !lodash.isEmpty(tarea)} onHide={handleClose}>
+            {contextHolder}
             <Modal.Header closeButton>
                 <Modal.Title>Ver Detalles Tarea</Modal.Title>
             </Modal.Header>
@@ -173,35 +230,36 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
                     ) : (
                         <p>No hay comentarios todavía.</p>
                     )}
-                    <div className="card-footer border-0">
-                        <div className="d-flex flex-start w-100">
-                            <div
-                                data-mdb-input-init
-                                className="form-outline w-100"
-                            >
-                                <textarea
-                                    className="form-control"
-                                    id="textAreaExample"
-                                    rows="4"
-                                ></textarea>
-                                <label
-                                    className="form-label"
-                                    htmlFor="textAreaExample"
+                    <div className="card-footer border-1">
+                        <form onSubmit={handleAddCommentario}>
+                            <div className="d-flex flex-start w-100">
+                                <div
+                                    data-mdb-input-init
+                                    className="form-outline w-100"
                                 >
-                                    Message
-                                </label>
+                                    <textarea
+                                        className="form-input"
+                                        id="content"
+                                        rows="4"
+                                        placeholder="Ingrese un comentario..."
+                                        name="content"
+                                    ></textarea>
+                                    {error && (
+                                        <small className="text-danger">
+                                            {error}
+                                        </small>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                        <div className="float-end mt-2 pt-1">
-                            <button
-                                type="button"
-                                data-mdb-button-init
-                                data-mdb-ripple-init
-                                className="btn btn-primary btn-sm"
-                            >
-                                Post comment
-                            </button>
-                        </div>
+                            <div className="float-end mt-2 pt-1">
+                                <button
+                                    type="submit"
+                                    className="thm-btn thm-btn-small"
+                                >
+                                    Enviar
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
