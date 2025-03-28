@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
+import Svg70 from "../assets/img/70.svg";
+import Circle1 from "../assets/img/Circle1.svg";
+import Circle2 from "../assets/img/Circle2.svg";
+import Circle3 from "../assets/img/Circle3.svg";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -113,6 +117,16 @@ const Login = () => {
 
     return (
         <div className="login-container">
+            <img
+                src={Svg70}
+                alt="Decoración Kreativa"
+                className="svg-decorativo"
+            />
+                 <div className="circles-container">
+                <img src={Circle1} alt="Circle 1" className="circle circle-1" />
+                <img src={Circle2} alt="Circle 2" className="circle circle-2" />
+                <img src={Circle3} alt="Circle 3" className="circle circle-3" />
+            </div>
             <div className="login-card">
                 <div className="login-header">
                     <h2>Bienvenido a Kreativa</h2>

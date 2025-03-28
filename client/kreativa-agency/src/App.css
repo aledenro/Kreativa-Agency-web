@@ -1045,7 +1045,8 @@ h3 {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: var(--kreativa-base-clear);
+    background-color: #FF0072; 
+    overflow: hidden;
 }
 
 .login-card {
@@ -1476,4 +1477,64 @@ h3 {
 .particles {
     background-color: var(--kreativa-black);
     margin-top: 60px;
+}
+
+/* Componentes Ui Login */
+
+.svg-decorativo {
+    position: absolute;
+    bottom: -440px; /* empuja el SVG hacia abajo */
+    left: -110px;  /* empuja el SVG más a la izquierda */
+    width: 900px;
+    pointer-events: none;
+    z-index: 0;
+    animation: rotar 40s linear infinite; /* ← esta línea es clave */
+}
+
+@keyframes rotar {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.circles-container {
+  position: absolute;
+  top: -5px;
+  right: 30px;
+  display: flex;
+  gap: -10px;
+  z-index: 5;
+}
+
+.circle {
+  width: 380px;
+  height: 380px;
+  animation: bounce 1.6s ease-in-out infinite;
+}
+
+.circle-2 {
+  animation-delay: 0.2s;
+  margin-left: -140px;
+}
+.circle-3 {
+  animation-delay: 0.4s;
+  margin-left: -140px;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
