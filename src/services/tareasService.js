@@ -66,9 +66,11 @@ class TareasService {
                     fecha_asignacion: 1,
                     fecha_vencimiento: 1,
                     fecha_creacion: 1,
+                    comentarios: 1,
                 })
                 .populate("colaborador_id", "nombre")
-                .populate("proyecto_id", "nombre");
+                .populate("proyecto_id", "nombre")
+                .populate("comentarios.usuario_id", "nombre");
         } catch (error) {
             throw new Error(
                 `Error al obetener todas las tareas: ${error.message}`
@@ -89,13 +91,36 @@ class TareasService {
                     fecha_asignacion: 1,
                     fecha_vencimiento: 1,
                     fecha_creacion: 1,
+                    comentarios: 1,
                 })
                 .populate("colaborador_id", "nombre")
-                .populate("proyecto_id", "nombre");
+                .populate("proyecto_id", "nombre")
+                .populate("comentarios.usuario_id", "nombre");
         } catch (error) {
             throw new Error(
                 `Error al obetener todas las tareas: ${error.message}`
             );
+        }
+    }
+
+    async commentTarea(id, comment) {
+        try {
+            const tarea = await TareasModel.findById(id)
+                .populate("colaborador_id", "nombre")
+                .populate("proyecto_id", "nombre")
+                .populate("comentarios.usuario_id", "nombre");
+
+            if (tarea && !lodash.isEmpty(tarea)) {
+                tarea.comentarios.push(comment);
+
+                await tarea.save();
+            }
+
+            return tarea;
+        } catch (error) {
+            console.error(`Error al agregar el comentario: ${error.message}`);
+
+            throw new Error(`Error al agregar un comentario: ${id}`);
         }
     }
 }
