@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
-import Svg70 from "../assets/img/70.svg";
 import Svg40 from "../assets/img/40.svg";
 import Svg111 from "../assets/img/111.svg";
 import Mujer1 from "../assets/img/Mujer1.svg";
 import Hombre2 from "../assets/img/Hombre2.svg";
+import Svg107 from "../assets/img/107.svg";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -118,18 +118,18 @@ const Login = () => {
 
     return (
         <div className="kreativa-login-container">
-            <img src={Svg70} alt="Decoración Kreativa" className="svg-decorativo" />
 
             <div className="background-decoracion-login">
                 <img src={Svg40} alt="Decoración fondo" className="svg40-decorativo" />
             </div>
+            <img src={Svg107} alt="Decoración inferior" className="decoracion-login-svg107"/>
             <img src={Svg111} alt="Decoración esquina" className="svg111-bottom-right" />
             <img src={Mujer1} alt="Mujer Kreativa" className="mujer-kreativa-svg" />
             <img src={Hombre2} alt="Hombre Kreativa" className="hombre-kreativa-svg" />
             <h2 className="login-title-francy">¿PARTE DEL EQUIPO KREATIVA?</h2>
             <div className="kreativa-login-wrapper">
                 <div className="kreativa-login-left">
-                    
+
                     <p className="kreativa-login-subtitle">Accedé con tus credenciales</p>
 
                     {error && <div className="alert alert-danger">{error}</div>}

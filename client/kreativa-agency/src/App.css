@@ -1074,19 +1074,22 @@ h3 {
 }
 
 .form-input {
+    background-color: #221c40; /* color más claro que #110d27 */
+    color: #ffffff; /* blanco puro para el texto */
     width: 100%;
-    height: 55px;
-    padding: 12px 20px;
+    height: 60px; /* más alto */
+    padding: 0 30px;
+    margin-bottom: 20px;
     border: none;
     border-radius: var(--kreativa-bdr-radius);
     font-size: 16px;
-  
-    background-color: #1a1633;    /* Color fondo input */
-    color: white;               /* Color texto */
-  
-    box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.05);
+    font-family: var(--kreativa-font);
     transition: all 0.3s ease;
-}
+  }
+
+  .form-input::placeholder {
+    color: #eeeeee; /* placeholder más claro, no gris apagado */
+  }
 
 .login-btn {
     width: 35%;
@@ -1487,40 +1490,6 @@ h3 {
 
 /* Componentes Ui Login */
 
-.svg-decorativo {
-    position: absolute;
-    bottom: -440px; /* empuja el SVG hacia abajo */
-    left: -110px;  /* empuja el SVG más a la izquierda */
-    width: 900px;
-    pointer-events: none;
-    z-index: 0;
-    animation: rotar 40s linear infinite; /* ← esta línea es clave */
-}
-
-@keyframes rotar {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-}
-
-body, html {
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
 .kreativa-login-container {
     position: relative;
     height: 100vh;
@@ -1539,8 +1508,8 @@ body, html {
     justify-content: space-between;
   
     /* Más pequeño */
-    max-width: 700px;  /* Antes: 1100px */
-    width: 90%;        /* O podés usar un valor fijo como 700px */
+    max-width: 1030px;  /* Antes: 1100px */
+    width: 100%;        /* O podés usar un valor fijo como 700px */
   
     /* Tirarlo hacia la izquierda */
     margin-left: -900px; /* Ajustá este valor a tu gusto */
@@ -1554,7 +1523,7 @@ body, html {
     position: relative;
     z-index: 2;
     margin-top: 80px; /* O más si lo querés más arriba */
-    left: 10px; 
+    left: 170px; 
   }
   
   .kreativa-login-left {
@@ -1584,9 +1553,11 @@ body, html {
   }
   
   .kreativa-login-subtitle {
+    color: white;
+    font-weight: normal;
+    text-align: left;
+    margin-bottom: 20px;
     font-size: 16px;
-    color: var(--kreativa-gray);
-    margin-bottom: 30px;
   }
   
   .kreativa-login-form .form-group {
@@ -1594,8 +1565,14 @@ body, html {
   }
   
   .kreativa-login-options {
-    text-align: right;
-    margin-bottom: 20px;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+  .kreativa-login-options a {
+    color: white;
+    font-weight: normal;
+    text-decoration: none;
   }
   
   .kreativa-link {
@@ -1703,4 +1680,12 @@ body, html {
     text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
     letter-spacing: 2px;
     text-transform: uppercase;
+  }
+
+  .decoracion-login-svg107 {
+    position: absolute;
+    top:310px;      /* Sigue controlando la posición vertical */
+    left: 1px;     /* Posición hacia la izquierda */
+    width: 700px;    /* ¡Aquí aumentás el tamaño! */
+    max-width: none; /* Para que no limite el tamaño */
   }
