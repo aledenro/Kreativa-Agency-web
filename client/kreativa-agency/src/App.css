@@ -1076,10 +1076,16 @@ h3 {
 .form-input {
     width: 100%;
     height: 55px;
-    padding: 10px;
-    border: 2px solid var(--kreativa-gray);
+    padding: 12px 20px;
+    border: none;
     border-radius: var(--kreativa-bdr-radius);
     font-size: 16px;
+  
+    background-color: #1a1633;    /* Color fondo input */
+    color: white;               /* Color texto */
+  
+    box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
 }
 
 .login-btn {
@@ -1540,14 +1546,15 @@ body, html {
     margin-left: -900px; /* Ajustá este valor a tu gusto */
   
     /* Estilos originales */
-    background-color: var(--kreativa-white);
+    background-color: transparent;
+   
     border-radius: var(--kreativa-bdr-radius);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-    padding: 20px;     /* También lo bajé un poco para que sea más compacto */
+
+    padding: 40px;     /* También lo bajé un poco para que sea más compacto */
     position: relative;
     z-index: 2;
-    margin-top: 300px; /* O más si lo querés más arriba */
-    left: -50px; 
+    margin-top: 80px; /* O más si lo querés más arriba */
+    left: 10px; 
   }
   
   .kreativa-login-left {
