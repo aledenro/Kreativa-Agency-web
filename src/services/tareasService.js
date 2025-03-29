@@ -107,14 +107,15 @@ class TareasService {
         try {
             const tarea = await TareasModel.findById(id)
                 .populate("colaborador_id", "nombre")
-                .populate("proyecto_id", "nombre estado")
-                .populate("comentarios.usuario_id", "nombre");
+                .populate("proyecto_id", "nombre estado");
 
             if (tarea && !lodash.isEmpty(tarea)) {
                 tarea.comentarios.push(comment);
 
                 await tarea.save();
             }
+
+            await tarea.populate("comentarios.usuario_id", "nombre");
 
             return tarea;
         } catch (error) {
@@ -128,8 +129,7 @@ class TareasService {
         try {
             const tarea = await TareasModel.findById(id)
                 .populate("colaborador_id", "nombre")
-                .populate("proyecto_id", "nombre estado")
-                .populate("comentarios.usuario_id", "nombre");
+                .populate("proyecto_id", "nombre estado");
 
             if (tarea && !lodash.isEmpty(tarea) && tarea.comentarios) {
                 const commUpdated = [];
@@ -146,6 +146,8 @@ class TareasService {
 
                 await tarea.save();
             }
+
+            await tarea.populate("comentarios.usuario_id", "nombre");
 
             return tarea;
         } catch (error) {
