@@ -1074,8 +1074,8 @@ h3 {
 }
 
 .form-input {
-    background-color: #221c40; /* color más claro que #110d27 */
-    color: #ffffff; /* blanco puro para el texto */
+    background-color: white; /* color más claro que #110d27 */
+    color: black; /* blanco puro para el texto */
     width: 100%;
     height: 60px; /* más alto */
     padding: 0 30px;
@@ -1088,7 +1088,7 @@ h3 {
   }
 
   .form-input::placeholder {
-    color: #eeeeee; /* placeholder más claro, no gris apagado */
+    color: grey; /* placeholder más claro, no gris apagado */
   }
 
 .login-btn {
@@ -1508,11 +1508,11 @@ h3 {
     justify-content: space-between;
   
     /* Más pequeño */
-    max-width: 1030px;  /* Antes: 1100px */
+    max-width: 900px;  /* Antes: 1100px */
     width: 100%;        /* O podés usar un valor fijo como 700px */
   
     /* Tirarlo hacia la izquierda */
-    margin-left: -900px; /* Ajustá este valor a tu gusto */
+    margin-left: -1000px; /* Ajustá este valor a tu gusto */
   
     /* Estilos originales */
     background-color: transparent;
@@ -1522,7 +1522,7 @@ h3 {
     padding: 40px;     /* También lo bajé un poco para que sea más compacto */
     position: relative;
     z-index: 2;
-    margin-top: 80px; /* O más si lo querés más arriba */
+    margin-top: 500px; /* O más si lo querés más arriba */
     left: 170px; 
   }
   
