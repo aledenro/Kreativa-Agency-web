@@ -69,7 +69,7 @@ class TareasService {
                     comentarios: 1,
                 })
                 .populate("colaborador_id", "nombre")
-                .populate("proyecto_id", "nombre")
+                .populate("proyecto_id", "nombre estado")
                 .populate("comentarios.usuario_id", "nombre");
         } catch (error) {
             throw new Error(
@@ -94,7 +94,7 @@ class TareasService {
                     comentarios: 1,
                 })
                 .populate("colaborador_id", "nombre")
-                .populate("proyecto_id", "nombre")
+                .populate("proyecto_id", "nombre estado")
                 .populate("comentarios.usuario_id", "nombre");
         } catch (error) {
             throw new Error(
@@ -107,7 +107,7 @@ class TareasService {
         try {
             const tarea = await TareasModel.findById(id)
                 .populate("colaborador_id", "nombre")
-                .populate("proyecto_id", "nombre")
+                .populate("proyecto_id", "nombre estado")
                 .populate("comentarios.usuario_id", "nombre");
 
             if (tarea && !lodash.isEmpty(tarea)) {
@@ -121,6 +121,36 @@ class TareasService {
             console.error(`Error al agregar el comentario: ${error.message}`);
 
             throw new Error(`Error al agregar un comentario: ${id}`);
+        }
+    }
+
+    async editComment(id, comment) {
+        try {
+            const tarea = await TareasModel.findById(id)
+                .populate("colaborador_id", "nombre")
+                .populate("proyecto_id", "nombre estado")
+                .populate("comentarios.usuario_id", "nombre");
+
+            if (tarea && !lodash.isEmpty(tarea) && tarea.comentarios) {
+                const commUpdated = [];
+
+                tarea.comentarios.forEach((comentario) => {
+                    if (comentario._id.toString() === comment._id) {
+                        comentario.contenido = comment.contenido;
+                    }
+
+                    commUpdated.push(comentario);
+                });
+
+                tarea.comentarios = commUpdated;
+
+                await tarea.save();
+            }
+
+            return tarea;
+        } catch (error) {
+            console.error(`Error  al editar el comentario: ${error.message}`);
+            throw new Error("Error  al editar el comentario");
         }
     }
 }
