@@ -4,9 +4,10 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import Svg70 from "../assets/img/70.svg";
-import Circle1 from "../assets/img/Circle1.svg";
-import Circle2 from "../assets/img/Circle2.svg";
-import Circle3 from "../assets/img/Circle3.svg";
+import Svg40 from "../assets/img/40.svg";
+import Svg111 from "../assets/img/111.svg";
+import Mujer1 from "../assets/img/Mujer1.svg";
+import Hombre2 from "../assets/img/Hombre2.svg";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -116,77 +117,67 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <img
-                src={Svg70}
-                alt="Decoración Kreativa"
-                className="svg-decorativo"
-            />
-                 <div className="circles-container">
-                <img src={Circle1} alt="Circle 1" className="circle circle-1" />
-                <img src={Circle2} alt="Circle 2" className="circle circle-2" />
-                <img src={Circle3} alt="Circle 3" className="circle circle-3" />
-            </div>
-            <div className="login-card">
-                <div className="login-header">
-                    <h2>Bienvenido a Kreativa</h2>
-                    <p>Accede con tus credenciales</p>
-                </div>
-                {error && <div className="alert alert-danger">{error}</div>}
-                <form onSubmit={handleSubmit} className="login-form">
-                    <div className="form-group">
-                        <label>Usuario</label>
-                        <input
-                            type="text"
-                            name="usuario"
-                            placeholder="Ingresa tu usuario"
-                            value={formData.usuario}
-                            onChange={handleChange}
-                            className="form-input"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Contraseña</label>
-                        <input
-                            type="password"
-                            name="contraseña"
-                            placeholder="Ingresa tu contraseña"
-                            value={formData.contraseña}
-                            onChange={handleChange}
-                            className="form-input"
-                            required
-                        />
-                    </div>
+        <div className="kreativa-login-container">
+            <img src={Svg70} alt="Decoración Kreativa" className="svg-decorativo" />
 
-                    <div className="login-buttons">
-                        <button
-                            type="button"
-                            className="thm-btn thm-btn-secondary"
-                            onClick={() => navigate("/")}
-                        >
-                            Volver
-                        </button>
-                        <button type="submit" className="thm-btn login-btn">
-                            Iniciar Sesión
-                        </button>
-                    </div>
-                    <span
-                        style={{ display: "inline-block", width: "20px" }}
-                    ></span>
-                    <p style={{ textAlign: "left", marginTop: "10px" }}>
-                        <a
-                            href="/recuperar"
-                            style={{
-                                color: "#ff4081",
-                                textDecoration: "none",
-                                fontWeight: "bold",
-                            }}
-                        >
-                            ¿Olvidaste tu contraseña?
-                        </a>
-                    </p>
-                </form>
+            <div className="background-decoracion-login">
+                <img src={Svg40} alt="Decoración fondo" className="svg40-decorativo" />
+            </div>
+            <img src={Svg111} alt="Decoración esquina" className="svg111-bottom-right" />
+            <img src={Mujer1} alt="Mujer Kreativa" className="mujer-kreativa-svg" />
+            <img src={Hombre2} alt="Hombre Kreativa" className="hombre-kreativa-svg" />
+            <h2 className="login-title-francy">¿PARTE DEL EQUIPO KREATIVA?</h2>
+            <div className="kreativa-login-wrapper">
+                <div className="kreativa-login-left">
+                    
+                    <p className="kreativa-login-subtitle">Accedé con tus credenciales</p>
+
+                    {error && <div className="alert alert-danger">{error}</div>}
+
+                    <form onSubmit={handleSubmit} className="kreativa-login-form">
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                name="usuario"
+                                placeholder="Usuario"
+                                value={formData.usuario}
+                                onChange={handleChange}
+                                className="form-input"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                name="contraseña"
+                                placeholder="Contraseña"
+                                value={formData.contraseña}
+                                onChange={handleChange}
+                                className="form-input"
+                                required
+                            />
+                        </div>
+
+                        <div className="kreativa-login-options">
+                            <a href="/recuperar" className="kreativa-link">
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
+
+                        <div className="login-buttons">
+                            <button
+                                type="button"
+                                className="thm-btn btn-volver"
+                                onClick={() => navigate("/")}
+                            >
+                                Volver
+                            </button>
+                            <button type="submit" className="thm-btn btn-kreativa">
+                                Iniciar Sesión
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );

@@ -1506,30 +1506,6 @@ body, html {
     overflow: hidden;
 }
 
-.circles-container {
-  position: absolute;
-  top: -5px;
-  right: 30px;
-  display: flex;
-  gap: -10px;
-  z-index: 5;
-}
-
-.circle {
-  width: 380px;
-  height: 380px;
-  animation: bounce 1.6s ease-in-out infinite;
-}
-
-.circle-2 {
-  animation-delay: 0.2s;
-  margin-left: -140px;
-}
-.circle-3 {
-  animation-delay: 0.4s;
-  margin-left: -140px;
-}
-
 @keyframes bounce {
   0%, 100% {
     transform: translateY(0);
@@ -1538,3 +1514,186 @@ body, html {
     transform: translateY(-20px);
   }
 }
+
+.kreativa-login-container {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    background-color: #181ddb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 20px;
+  }
+  
+  .kreativa-login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    /* Más pequeño */
+    max-width: 700px;  /* Antes: 1100px */
+    width: 90%;        /* O podés usar un valor fijo como 700px */
+  
+    /* Tirarlo hacia la izquierda */
+    margin-left: -900px; /* Ajustá este valor a tu gusto */
+  
+    /* Estilos originales */
+    background-color: var(--kreativa-white);
+    border-radius: var(--kreativa-bdr-radius);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    padding: 20px;     /* También lo bajé un poco para que sea más compacto */
+    position: relative;
+    z-index: 2;
+    margin-top: 300px; /* O más si lo querés más arriba */
+    left: -50px; 
+  }
+  
+  .kreativa-login-left {
+    width: 60%;
+  }
+  
+  .kreativa-login-right {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .kreativa-login-image {
+    width: 100%;
+    max-width: 350px;
+    border-radius: var(--kreativa-bdr-radius);
+  }
+  
+  .kreativa-login-title {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--btn-amarillo);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-family: var(--kreativa-title);
+  }
+  
+  .kreativa-login-subtitle {
+    font-size: 16px;
+    color: var(--kreativa-gray);
+    margin-bottom: 30px;
+  }
+  
+  .kreativa-login-form .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .kreativa-login-options {
+    text-align: right;
+    margin-bottom: 20px;
+  }
+  
+  .kreativa-link {
+    color: var(--kreativa-base);
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .kreativa-link:hover {
+    text-decoration: underline;
+  }
+  
+  @media screen and (max-width: 900px) {
+    .kreativa-login-wrapper {
+      flex-direction: column;
+      padding: 30px;
+    }
+  
+    .kreativa-login-left,
+    .kreativa-login-right {
+      width: 100%;
+      text-align: center;
+    }
+  
+    .kreativa-login-title {
+      text-align: center;
+    }
+  
+    .kreativa-login-right {
+      margin-top: 30px;
+    }
+  
+    .login-buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .login-btn {
+      width: 100% !important;
+    }
+  }
+
+  .background-decoracion-login {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 0;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  .svg40-decorativo {
+    position: absolute;
+    bottom: 347px;         /* Puedes subirlo o bajarlo ajustando este valor */
+    left: -768px;           /* Para moverlo hacia la izquierda */
+    height: auto;
+    width: 1220px;          /* Aumentamos el tamaño (ajustable) */
+    transform: rotate(-210deg); /* Rotación */
+    z-index: 0;             /* Asegura que esté detrás del contenido */
+    pointer-events: none;   /* Para que no interfiera con clics */
+  }
+
+  .svg111-bottom-right {
+    position: absolute;
+    bottom: 190px;
+    right: 0;
+    width: 900px;        /* Ajustalo a tu gusto */
+    height: auto;
+    z-index: 0;
+    pointer-events: none;
+    left: 1px; /* Mueve hacia el centro */
+    transform: rotate(-180deg);
+  }
+
+  .mujer-kreativa-svg {
+    position: absolute;
+    top: 80px; /* Mueve hacia abajo */
+    left: 505px; /* Mueve hacia el centro */
+    width: 990px;
+    height: auto;
+    z-index: 1;
+    pointer-events: none; /* Para evitar clics accidentales */
+  }
+
+  .hombre-kreativa-svg {
+    position: absolute;
+    top: 220px; /* Ajustalo según tu necesidad */
+    left: 1015px; /* Posición relativa a la figura 40 */
+    width: 990px;
+    height: auto;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .login-title-francy {
+    position: absolute;
+    top: 80px; /* Ajustalo según tu diseño */
+    left: 100px; /* Podés moverlo más o menos según lo centrado que lo querás */
+    font-family: "Francy";
+    font-size: 48px;
+    color: var(--kreativa-white);
+    z-index: 3;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
