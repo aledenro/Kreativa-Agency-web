@@ -9,12 +9,13 @@ import Mujer1 from "../assets/img/Mujer1.svg";
 import Hombre2 from "../assets/img/Hombre2.svg";
 import Svg107 from "../assets/img/107.svg";
 
+// Íconos minimalistas
+import { UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+
 const Login = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        usuario: "",
-        contraseña: "",
-    });
+    const [formData, setFormData] = useState({ usuario: "", contraseña: "" });
+    const [mostrarContrasena, setMostrarContrasena] = useState(false);
     const [error, setError] = useState("");
 
     const handleChange = (e) => {
@@ -27,12 +28,7 @@ const Login = () => {
         setError("");
 
         try {
-            const response = await axios.post(
-                "http://localhost:4000/api/login",
-                formData
-            );
-            console.log("Respuesta del servidor:", response.data);
-
+            const response = await axios.post("http://localhost:4000/api/login", formData);
             const { token } = response.data;
 
             if (!token) {
@@ -46,10 +42,7 @@ const Login = () => {
             }
 
             localStorage.setItem("token", token);
-
             const decodedToken = jwtDecode(token);
-            console.log("Token decodificado:", decodedToken);
-
             localStorage.setItem("tipo_usuario", decodedToken.tipo_usuario);
             localStorage.setItem("user_id", decodedToken.id);
 
@@ -61,64 +54,40 @@ const Login = () => {
             });
 
             setTimeout(() => {
-                if (decodedToken.tipo_usuario === "Administrador") {
-                    navigate("/usuarios");
-                } else if (decodedToken.tipo_usuario === "Colaborador") {
-                    navigate("/vista-colaborador");
-                } else if (decodedToken.tipo_usuario === "Cliente") {
-                    navigate("/vista-clientes");
-                } else {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Acceso restringido",
-                        text: "No tienes permisos para acceder.",
-                        confirmButtonColor: "#E91E63",
-                    });
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("tipo_usuario");
+                switch (decodedToken.tipo_usuario) {
+                    case "Administrador":
+                        navigate("/usuarios");
+                        break;
+                    case "Colaborador":
+                        navigate("/vista-colaborador");
+                        break;
+                    case "Cliente":
+                        navigate("/vista-clientes");
+                        break;
+                    default:
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Acceso restringido",
+                            text: "No tienes permisos para acceder.",
+                            confirmButtonColor: "#E91E63",
+                        });
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("tipo_usuario");
                 }
             }, 1500);
         } catch (error) {
-            console.error(
-                "Error al iniciar sesión:",
-                error.response?.data || error
-            );
-
-            if (error.response) {
-                const mensajeError = error.response.data.mensaje;
-
-                if (
-                    mensajeError ===
-                    "Tu cuenta está inactiva. Contacta al administrador."
-                ) {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Cuenta inactiva",
-                        text: "Tu cuenta está inactiva. Contacta al administrador.",
-                        confirmButtonColor: "#E91E63",
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "Usuario o contraseña incorrectos",
-                        confirmButtonColor: "#E91E63",
-                    });
-                }
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Error de conexión con el servidor",
-                    confirmButtonColor: "#E91E63",
-                });
-            }
+            const mensajeError = error.response?.data?.mensaje;
+            Swal.fire({
+                icon: error.response ? "error" : "warning",
+                title: error.response ? "Error" : "Error de conexión",
+                text: mensajeError || "Usuario o contraseña incorrectos",
+                confirmButtonColor: "#E91E63",
+            });
         }
     };
 
     return (
         <div className="kreativa-login-container">
-
             <div className="background-decoracion-login">
                 <img src={Svg40} alt="Decoración fondo" className="svg40-decorativo" />
             </div>
@@ -126,19 +95,22 @@ const Login = () => {
             <img src={Svg111} alt="Decoración esquina" className="svg111-bottom-right" />
             <img src={Mujer1} alt="Mujer Kreativa" className="mujer-kreativa-svg" />
             <img src={Hombre2} alt="Hombre Kreativa" className="hombre-kreativa-svg" />
+
             <h2 className="login-title-francy">¿PARTE DEL EQUIPO KREATIVA?</h2>
             <h3 className="bienvenida-kreativa">
                 Bienvenidos a<br />
                 Kreativa Agency
             </h3>
+
             <div className="kreativa-login-wrapper">
                 <div className="kreativa-login-left">
                     <p className="kreativa-login-subtitle">Accedé con tus credenciales</p>
-
                     {error && <div className="alert alert-danger">{error}</div>}
 
                     <form onSubmit={handleSubmit} className="kreativa-login-form">
-                        <div className="form-group">
+                        {/* Usuario */}
+                        <div className="form-group input-icon-wrapper">
+                            <UserIcon className="input-icon-min" />
                             <input
                                 type="text"
                                 name="usuario"
@@ -149,9 +121,12 @@ const Login = () => {
                                 required
                             />
                         </div>
-                        <div className="form-group">
+
+                        {/* Contraseña */}
+                        <div className="form-group input-icon-wrapper">
+                            <LockClosedIcon className="input-icon-min" />
                             <input
-                                type="password"
+                                type={mostrarContrasena ? "text" : "password"}
                                 name="contraseña"
                                 placeholder="Contraseña"
                                 value={formData.contraseña}
@@ -159,6 +134,16 @@ const Login = () => {
                                 className="form-input"
                                 required
                             />
+                            <span
+                                className="eye-icon"
+                                onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                            >
+                                {mostrarContrasena ? (
+                                    <EyeSlashIcon className="icon-eye" />
+                                ) : (
+                                    <EyeIcon className="icon-eye" />
+                                )}
+                            </span>
                         </div>
 
                         <div className="kreativa-login-options">

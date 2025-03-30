@@ -1078,7 +1078,6 @@ h3 {
 
 .form-input {
     background-color: white;
-    /* color más claro que #110d27 */
     color: black;
     /* blanco puro para el texto */
     width: 100%;
@@ -1091,12 +1090,13 @@ h3 {
     font-size: 16px;
     font-family: var(--kreativa-font);
     transition: all 0.3s ease;
+
 }
 
 .form-input::placeholder {
     color: grey;
-    /* placeholder más claro, no gris apagado */
 }
+
 
 .login-btn {
     width: 35%;
@@ -1538,7 +1538,7 @@ h3 {
     /* También lo bajé un poco para que sea más compacto */
     position: relative;
     z-index: 2;
-    margin-top: 500px;
+    margin-top: 590px;
     /* O más si lo querés más arriba */
     left: 170px;
 }
@@ -1728,7 +1728,8 @@ h3 {
 
 .bienvenida-kreativa {
     position: absolute;
-    top: 450px; /* Ajustá verticalmente según lo necesités */
+    top: 450px;
+    /* Ajustá verticalmente según lo necesités */
     left: 20%;
     transform: translateX(-50%);
     text-align: center;
@@ -1737,5 +1738,41 @@ h3 {
     line-height: 1.1;
     color: white;
     z-index: 10;
-    width: 100%; /* Esto ayuda a mantenerlo centrado dentro del layout */
+    width: 100%;
+    /* Esto ayuda a mantenerlo centrado dentro del layout */
+}
+
+.input-icon-wrapper {
+    position: relative;
   }
+  
+  .input-icon-min {
+    position: absolute;
+    left: 16px;
+    top: 40%; /* SUBIDO un poco más arriba */
+    width: 25px;  /* MÁS GRANDE */
+    height: 22px; /* MÁS GRANDE */
+    color: #ccc;
+    transform: translateY(-50%);
+  }
+  
+  .eye-icon {
+    position: absolute;
+    right: 16px;
+    top: 40%; /* Subido también */
+    cursor: pointer;
+    top: 25%;
+  }
+  
+  .icon-eye {
+    width: 22px;  /* MÁS GRANDE */
+    height: 22px;
+    color: #ccc;
+  }
+  
+  .form-input {
+    padding-left: 52px; /* Más espacio por el ícono más grande */
+    padding-right: 50px; /* Para el ojito */
+  }
+
+ 
