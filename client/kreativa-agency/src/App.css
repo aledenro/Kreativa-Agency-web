@@ -29,6 +29,8 @@
 @font-face {
     font-family: Francy;
     src: url(assets/fonts/Francy.otf);
+    font-weight: normal;
+    font-style: normal;
 }
 
 * {
@@ -899,6 +901,7 @@ h3 {
         font-size: 26px;
     }
 }
+
 /* ---------- botones de colores --------------*/
 .btn-verde {
     background-color: var(--kreativa-white);
@@ -1045,7 +1048,7 @@ h3 {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #FF0072; 
+    background-color: #FF0072;
     overflow: hidden;
 }
 
@@ -1074,10 +1077,13 @@ h3 {
 }
 
 .form-input {
-    background-color: white; /* color más claro que #110d27 */
-    color: black; /* blanco puro para el texto */
+    background-color: white;
+    /* color más claro que #110d27 */
+    color: black;
+    /* blanco puro para el texto */
     width: 100%;
-    height: 60px; /* más alto */
+    height: 60px;
+    /* más alto */
     padding: 0 30px;
     margin-bottom: 20px;
     border: none;
@@ -1085,11 +1091,12 @@ h3 {
     font-size: 16px;
     font-family: var(--kreativa-font);
     transition: all 0.3s ease;
-  }
+}
 
-  .form-input::placeholder {
-    color: grey; /* placeholder más claro, no gris apagado */
-  }
+.form-input::placeholder {
+    color: grey;
+    /* placeholder más claro, no gris apagado */
+}
 
 .login-btn {
     width: 35%;
@@ -1183,6 +1190,7 @@ h3 {
     font-size: 16px;
     color: var(--kreativa-black);
 }
+
 /* Evitar el cambio de color en hover */
 .no-hover tbody tr:hover {
     background-color: transparent !important;
@@ -1245,7 +1253,8 @@ h3 {
 .full-width-container {
     width: 20%;
     max-width: 10px;
-    margin: 60px auto; /* Centrarlo */
+    margin: 60px auto;
+    /* Centrarlo */
     padding: 20px;
     box-sizing: border-box;
 }
@@ -1296,6 +1305,7 @@ h3 {
     .full-width-container {
         width: 95%;
     }
+
     .kreativa-table {
         font-size: 16px;
     }
@@ -1452,6 +1462,7 @@ h3 {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1463,6 +1474,7 @@ h3 {
         opacity: 0;
         transform: translateX(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -1500,122 +1512,127 @@ h3 {
     justify-content: center;
     overflow: hidden;
     padding: 20px;
-  }
-  
-  .kreativa-login-wrapper {
+}
+
+.kreativa-login-wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  
+
     /* Más pequeño */
-    max-width: 900px;  /* Antes: 1100px */
-    width: 100%;        /* O podés usar un valor fijo como 700px */
-  
+    max-width: 900px;
+    /* Antes: 1100px */
+    width: 100%;
+    /* O podés usar un valor fijo como 700px */
+
     /* Tirarlo hacia la izquierda */
-    margin-left: -1000px; /* Ajustá este valor a tu gusto */
-  
+    margin-left: -1000px;
+    /* Ajustá este valor a tu gusto */
+
     /* Estilos originales */
     background-color: transparent;
-   
+
     border-radius: var(--kreativa-bdr-radius);
 
-    padding: 40px;     /* También lo bajé un poco para que sea más compacto */
+    padding: 40px;
+    /* También lo bajé un poco para que sea más compacto */
     position: relative;
     z-index: 2;
-    margin-top: 500px; /* O más si lo querés más arriba */
-    left: 170px; 
-  }
-  
-  .kreativa-login-left {
+    margin-top: 500px;
+    /* O más si lo querés más arriba */
+    left: 170px;
+}
+
+.kreativa-login-left {
     width: 60%;
-  }
-  
-  .kreativa-login-right {
+}
+
+.kreativa-login-right {
     width: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
-  .kreativa-login-image {
+}
+
+.kreativa-login-image {
     width: 100%;
     max-width: 350px;
     border-radius: var(--kreativa-bdr-radius);
-  }
-  
-  .kreativa-login-title {
+}
+
+.kreativa-login-title {
     font-size: 36px;
     font-weight: 900;
     color: var(--btn-amarillo);
     text-transform: uppercase;
     margin-bottom: 10px;
     font-family: var(--kreativa-title);
-  }
-  
-  .kreativa-login-subtitle {
+}
+
+.kreativa-login-subtitle {
     color: white;
     font-weight: normal;
     text-align: left;
     margin-bottom: 20px;
     font-size: 16px;
-  }
-  
-  .kreativa-login-form .form-group {
+}
+
+.kreativa-login-form .form-group {
     margin-bottom: 20px;
-  }
-  
-  .kreativa-login-options {
+}
+
+.kreativa-login-options {
     text-align: left;
     margin-bottom: 10px;
-  }
+}
 
-  .kreativa-login-options a {
+.kreativa-login-options a {
     color: white;
     font-weight: normal;
     text-decoration: none;
-  }
-  
-  .kreativa-link {
+}
+
+.kreativa-link {
     color: var(--kreativa-base);
     font-weight: bold;
     text-decoration: none;
-  }
-  
-  .kreativa-link:hover {
+}
+
+.kreativa-link:hover {
     text-decoration: underline;
-  }
-  
-  @media screen and (max-width: 900px) {
+}
+
+@media screen and (max-width: 900px) {
     .kreativa-login-wrapper {
-      flex-direction: column;
-      padding: 30px;
+        flex-direction: column;
+        padding: 30px;
     }
-  
+
     .kreativa-login-left,
     .kreativa-login-right {
-      width: 100%;
-      text-align: center;
+        width: 100%;
+        text-align: center;
     }
-  
-    .kreativa-login-title {
-      text-align: center;
-    }
-  
-    .kreativa-login-right {
-      margin-top: 30px;
-    }
-  
-    .login-buttons {
-      flex-direction: column;
-      gap: 10px;
-    }
-  
-    .login-btn {
-      width: 100% !important;
-    }
-  }
 
-  .background-decoracion-login {
+    .kreativa-login-title {
+        text-align: center;
+    }
+
+    .kreativa-login-right {
+        margin-top: 30px;
+    }
+
+    .login-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .login-btn {
+        width: 100% !important;
+    }
+}
+
+.background-decoracion-login {
     position: absolute;
     right: 0;
     top: 0;
@@ -1624,68 +1641,101 @@ h3 {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-  }
-  
-  .svg40-decorativo {
-    position: absolute;
-    bottom: 347px;         /* Puedes subirlo o bajarlo ajustando este valor */
-    left: -768px;           /* Para moverlo hacia la izquierda */
-    height: auto;
-    width: 1220px;          /* Aumentamos el tamaño (ajustable) */
-    transform: rotate(-210deg); /* Rotación */
-    z-index: 0;             /* Asegura que esté detrás del contenido */
-    pointer-events: none;   /* Para que no interfiera con clics */
-  }
+}
 
-  .svg111-bottom-right {
+.svg40-decorativo {
+    position: absolute;
+    bottom: 347px;
+    /* Puedes subirlo o bajarlo ajustando este valor */
+    left: -768px;
+    /* Para moverlo hacia la izquierda */
+    height: auto;
+    width: 1220px;
+    /* Aumentamos el tamaño (ajustable) */
+    transform: rotate(-210deg);
+    /* Rotación */
+    z-index: 0;
+    /* Asegura que esté detrás del contenido */
+    pointer-events: none;
+    /* Para que no interfiera con clics */
+}
+
+.svg111-bottom-right {
     position: absolute;
     bottom: 190px;
     right: 0;
-    width: 900px;        /* Ajustalo a tu gusto */
+    width: 900px;
+    /* Ajustalo a tu gusto */
     height: auto;
     z-index: 0;
     pointer-events: none;
-    left: 1px; /* Mueve hacia el centro */
+    left: 1px;
+    /* Mueve hacia el centro */
     transform: rotate(-180deg);
-  }
+}
 
-  .mujer-kreativa-svg {
+.mujer-kreativa-svg {
     position: absolute;
-    top: 80px; /* Mueve hacia abajo */
-    left: 505px; /* Mueve hacia el centro */
-    width: 990px;
-    height: auto;
-    z-index: 1;
-    pointer-events: none; /* Para evitar clics accidentales */
-  }
-
-  .hombre-kreativa-svg {
-    position: absolute;
-    top: 220px; /* Ajustalo según tu necesidad */
-    left: 1015px; /* Posición relativa a la figura 40 */
+    top: 80px;
+    /* Mueve hacia abajo */
+    left: 505px;
+    /* Mueve hacia el centro */
     width: 990px;
     height: auto;
     z-index: 1;
     pointer-events: none;
-  }
+    /* Para evitar clics accidentales */
+}
 
-  .login-title-francy {
+.hombre-kreativa-svg {
     position: absolute;
-    top: 80px; /* Ajustalo según tu diseño */
-    left: 100px; /* Podés moverlo más o menos según lo centrado que lo querás */
+    top: 220px;
+    /* Ajustalo según tu necesidad */
+    left: 1015px;
+    /* Posición relativa a la figura 40 */
+    width: 990px;
+    height: auto;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.login-title-francy {
+    position: absolute;
+    top: 80px;
+    /* Ajustalo según tu diseño */
+    left: 100px;
+    /* Podés moverlo más o menos según lo centrado que lo querás */
     font-family: "Francy";
     font-size: 48px;
     color: var(--kreativa-white);
     z-index: 3;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
     letter-spacing: 2px;
     text-transform: uppercase;
-  }
+}
 
-  .decoracion-login-svg107 {
+.decoracion-login-svg107 {
     position: absolute;
-    top:310px;      /* Sigue controlando la posición vertical */
-    left: 1px;     /* Posición hacia la izquierda */
-    width: 700px;    /* ¡Aquí aumentás el tamaño! */
-    max-width: none; /* Para que no limite el tamaño */
+    top: 310px;
+    /* Sigue controlando la posición vertical */
+    left: 1px;
+    /* Posición hacia la izquierda */
+    width: 700px;
+    /* ¡Aquí aumentás el tamaño! */
+    max-width: none;
+    /* Para que no limite el tamaño */
+}
+
+.bienvenida-kreativa {
+    position: absolute;
+    top: 450px; /* Ajustá verticalmente según lo necesités */
+    left: 20%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-family: 'Francy', sans-serif;
+    font-size: 60px;
+    line-height: 1.1;
+    color: white;
+    z-index: 10;
+    width: 100%; /* Esto ayuda a mantenerlo centrado dentro del layout */
   }

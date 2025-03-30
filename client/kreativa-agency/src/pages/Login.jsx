@@ -122,14 +122,17 @@ const Login = () => {
             <div className="background-decoracion-login">
                 <img src={Svg40} alt="Decoración fondo" className="svg40-decorativo" />
             </div>
-            <img src={Svg107} alt="Decoración inferior" className="decoracion-login-svg107"/>
+            <img src={Svg107} alt="Decoración inferior" className="decoracion-login-svg107" />
             <img src={Svg111} alt="Decoración esquina" className="svg111-bottom-right" />
             <img src={Mujer1} alt="Mujer Kreativa" className="mujer-kreativa-svg" />
             <img src={Hombre2} alt="Hombre Kreativa" className="hombre-kreativa-svg" />
             <h2 className="login-title-francy">¿PARTE DEL EQUIPO KREATIVA?</h2>
+            <h3 className="bienvenida-kreativa">
+                Bienvenidos a<br />
+                Kreativa Agency
+            </h3>
             <div className="kreativa-login-wrapper">
                 <div className="kreativa-login-left">
-
                     <p className="kreativa-login-subtitle">Accedé con tus credenciales</p>
 
                     {error && <div className="alert alert-danger">{error}</div>}
