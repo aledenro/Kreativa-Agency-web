@@ -72,6 +72,11 @@ export default function Navbar() {
                                 Ver Detalle Proyecto
                             </Link>
                         </li>
+                        <li>
+                            <Link to="/proyecto/editar/67cc94cf9ee53834562aa6d4">
+                                Editar Proyecto
+                            </Link>
+                        </li>
                     </ul>
                 </li>
 
