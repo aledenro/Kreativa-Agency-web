@@ -18,96 +18,45 @@ export default function Navbar() {
         };
     }, []);
 
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
+    // Function to handle smooth scrolling to sections
+    const scrollToSection = (sectionId, event) => {
+        event.preventDefault();
+        const element = document.getElementById(sectionId);
+        if (element) {
+            if (location.pathname !== "/") {
+                window.location.href = "/#" + sectionId;
+                return;
+            }
+
+            const navbarHeight =
+                document.querySelector(".navigation").offsetHeight;
+
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition =
+                elementPosition + window.pageYOffset - navbarHeight;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth",
+            });
+
+            if (menuOpen) {
+                setMenuOpen(false);
+                const offcanvasElement =
+                    document.getElementById("offcanvasNavbar2");
+                if (offcanvasElement) {
+                    const bsOffcanvas =
+                        bootstrap.Offcanvas.getInstance(offcanvasElement);
+                    if (bsOffcanvas) {
+                        bsOffcanvas.hide();
+                    }
+                }
+            }
+        }
     };
 
     return (
         <div>
-            {/* <nav
-                classNameName={`navbar ${isScrolled ? "navbar-scrolled" : "navbar-fixed"} ${
-                    location.pathname === "/" ? "navbar-transparent" : ""
-                }`}
-            >
-                <div classNameName="hamburger" onClick={toggleMenu}>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-                <div classNameName="logo">
-                    <img src="/src/assets/img/logo.png" alt="Logo" />
-                </div>
-                <ul classNameName={`menu ${menuOpen ? "active" : ""}`}>
-                    <li>
-                        <Link to="/">Inicio</Link>
-                    </li>
-                    <li classNameName="dropdown">
-                        <Link to="#">Empleados</Link>
-                        <ul classNameName="dropdown-menu">
-                            <li>
-                                <Link to="/agregar-pto">Agregar PTO</Link>
-                            </li>
-                            <li>
-                                <Link to="/ver-pto-empleados">
-                                    Ver PTO Empleado
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/jerarquia">Jerarquía</Link>
-                            </li>
-                            <li>
-                                <Link to="/perfil">Perfil</Link>
-                            </li>
-                        </ul>
-                    </li>
-                    <li classNameName="dropdown">
-                        <Link to="#">Proyectos</Link>
-                        <ul classNameName="dropdown-menu">
-                            <li>
-                                <Link to="/proyecto/agregar">
-                                    Agregar Proyecto
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/proyecto/67cc94cf9ee53834562aa6d4">
-                                    Ver Detalle Proyecto
-                                </Link>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li classNameName="dropdown">
-                        <Link to="#">Contabilidad</Link>
-                        <ul classNameName="dropdown-menu">
-                            <li>
-                                <Link to="/egresos">Ver Egresos</Link>
-                            </li>
-                            <li>
-                                <Link to="/egreso/agregar">Agregar Egreso</Link>
-                            </li>
-                            <li>
-                                <Link to="/ingresos">Ver Ingresos</Link>
-                            </li>
-                            <li>
-                                <Link to="/ingreso/agregar">
-                                    Agregar Ingreso
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/pagos/">Pagos</Link>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <div>
-                    <Link to="/estadisticas" classNameName="login-button">
-                        Ir al Dashboard
-                    </Link>
-                    <Link to="/login" classNameName="login-button mx-2">
-                        Iniciar Sesión
-                    </Link>
-                </div>
-            </nav> */}
             <header className="navigation position-absolute w-100 bg-body-tertiary shadow border-bottom border-light border-opacity-10 rounded-bottom-3 rounded-bottom-sm-4">
                 <nav
                     className={`navbar-expand-xl navbar ${isScrolled ? "navbar-scrolled" : "navbar-fixed"} ${
@@ -132,6 +81,7 @@ export default function Navbar() {
                             aria-controls="offcanvasNavbar2"
                             aria-label="Toggle navigation"
                             style={{ color: "#ff0072" }}
+                            onClick={() => setMenuOpen(!menuOpen)}
                         >
                             <span
                                 className="navbar-toggler-icon"
@@ -157,7 +107,7 @@ export default function Navbar() {
                                     className="offcanvas-title m-0"
                                     id="offcanvasNavbar2Label"
                                 >
-                                    <a className="navbar-brand" href="#">
+                                    <a className="navbar-brand" href="/">
                                         <img
                                             src="/src/assets/img/logo.png"
                                             height="32"
@@ -189,18 +139,24 @@ export default function Navbar() {
                                     </li>
 
                                     <li className="nav-item">
-                                        <Link
-                                            href="#servicios"
+                                        <a
+                                            href="/"
                                             className="px-3 nav-link rounded-3 text-base leading-6 link"
+                                            onClick={(e) =>
+                                                scrollToSection("servicios", e)
+                                            }
                                         >
                                             Servicios
-                                        </Link>
+                                        </a>
                                     </li>
 
                                     <li className="nav-item">
                                         <a
-                                            href="#contacto"
+                                            href="/"
                                             className="px-3 nav-link rounded-3 text-base leading-6 link"
+                                            onClick={(e) =>
+                                                scrollToSection("contacto", e)
+                                            }
                                         >
                                             Contacto
                                         </a>
@@ -208,10 +164,16 @@ export default function Navbar() {
 
                                     <li className="nav-item">
                                         <a
-                                            href="#reclutaciones"
+                                            href="/"
                                             className="px-3 nav-link rounded-3 text-base leading-6 link"
+                                            onClick={(e) =>
+                                                scrollToSection(
+                                                    "reclutaciones",
+                                                    e
+                                                )
+                                            }
                                         >
-                                            Reclutacion
+                                            Reclutación
                                         </a>
                                     </li>
 

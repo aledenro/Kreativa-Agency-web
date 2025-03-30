@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Form, Alert, Modal, Button } from "react-bootstrap";
+import { Form, Alert, Modal } from "react-bootstrap";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
 
 const ModificarServicio = () => {
     const { id } = useParams();
@@ -92,121 +92,125 @@ const ModificarServicio = () => {
 
     return (
         <div>
-            <Navbar />
-            <div className="container main-container">
-                <div className="section-title text-center">
-                    <h2>Modificar Servicio</h2>
-                </div>
-                <div className="mx-auto align-items-center justify-content-center d-flex">
-                    <div className="col-xl-8">
-                        {showAlert && (
-                            <Alert
-                                variant={alertVariant}
-                                onClose={() => setShowAlert(false)}
-                                dismissible
+            <AdminLayout>
+                <div className="container main-container">
+                    <div className="section-title text-center">
+                        <h2>Modificar Servicio</h2>
+                    </div>
+                    <div className="mx-auto align-items-center justify-content-center d-flex">
+                        <div className="col-xl-8">
+                            {showAlert && (
+                                <Alert
+                                    variant={alertVariant}
+                                    onClose={() => setShowAlert(false)}
+                                    dismissible
+                                >
+                                    {alertMessage}
+                                </Alert>
+                            )}
+                            <Form
+                                onSubmit={handleSubmit}
+                                className="servicio_form"
                             >
-                                {alertMessage}
-                            </Alert>
-                        )}
-                        <Form onSubmit={handleSubmit} className="servicio_form">
-                            <div className="row">
-                                <div className="">
-                                    <label
-                                        htmlFor="nombre"
-                                        className="form-label"
-                                    >
-                                        Nombre del servicio
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="nombre"
-                                        className="form_input"
-                                        value={servicio.nombre}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="col">
-                                    <label
-                                        htmlFor="categoria"
-                                        className="form-label"
-                                    >
-                                        Categoría
-                                    </label>
-                                    <Form.Select
-                                        name="categoria_id"
-                                        className="form_input"
-                                        value={servicio.categoria_id}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="">
-                                            Seleccione una categoría
-                                        </option>
-
-                                        {categorias.map((cat) => (
-                                            <option
-                                                key={cat._id}
-                                                value={cat._id}
-                                            >
-                                                {cat.nombre}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col">
-                                    <label
-                                        htmlFor="descripcion"
-                                        className="form-label"
-                                    >
-                                        Descripción
-                                    </label>
-                                    <textarea
-                                        name="descripcion"
-                                        className="form_input form-textarea"
-                                        value={servicio.descripcion}
-                                        onChange={handleChange}
-                                        required
-                                    ></textarea>
-                                    <div className="d-flex justify-content-center mt-3">
-                                        <button
-                                            type="submit"
-                                            className="thm-btn form-btn"
+                                <div className="row">
+                                    <div className="">
+                                        <label
+                                            htmlFor="nombre"
+                                            className="form-label"
                                         >
-                                            Modificar
-                                        </button>
+                                            Nombre del servicio
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="nombre"
+                                            className="form_input"
+                                            value={servicio.nombre}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <label
+                                            htmlFor="categoria"
+                                            className="form-label"
+                                        >
+                                            Categoría
+                                        </label>
+                                        <Form.Select
+                                            name="categoria_id"
+                                            className="form_input"
+                                            value={servicio.categoria_id}
+                                            onChange={handleChange}
+                                            required
+                                        >
+                                            <option value="">
+                                                Seleccione una categoría
+                                            </option>
+
+                                            {categorias.map((cat) => (
+                                                <option
+                                                    key={cat._id}
+                                                    value={cat._id}
+                                                >
+                                                    {cat.nombre}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
                                     </div>
                                 </div>
-                            </div>
-                        </Form>
+                                <div className="row">
+                                    <div className="col">
+                                        <label
+                                            htmlFor="descripcion"
+                                            className="form-label"
+                                        >
+                                            Descripción
+                                        </label>
+                                        <textarea
+                                            name="descripcion"
+                                            className="form_input form-textarea"
+                                            value={servicio.descripcion}
+                                            onChange={handleChange}
+                                            required
+                                        ></textarea>
+                                        <div className="d-flex justify-content-center mt-3">
+                                            <button
+                                                type="submit"
+                                                className="thm-btn form-btn"
+                                            >
+                                                Modificar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Form>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirmación</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    ¿Está seguro que desea modificar este servicio?
-                </Modal.Body>
-                <Modal.Footer>
-                    <button
-                        className="thm-btn thm-btn-small btn-rojo"
-                        onClick={() => setShowModal(false)}
-                    >
-                        No
-                    </button>
-                    <button
-                        className="thm-btn thm-btn-small"
-                        onClick={handleConfirm}
-                    >
-                        Sí
-                    </button>
-                </Modal.Footer>
-            </Modal>
+                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirmación</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        ¿Está seguro que desea modificar este servicio?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button
+                            className="thm-btn thm-btn-small btn-rojo"
+                            onClick={() => setShowModal(false)}
+                        >
+                            No
+                        </button>
+                        <button
+                            className="thm-btn thm-btn-small"
+                            onClick={handleConfirm}
+                        >
+                            Sí
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+            </AdminLayout>
         </div>
     );
 };
