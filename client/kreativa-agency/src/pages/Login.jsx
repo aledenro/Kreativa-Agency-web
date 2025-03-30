@@ -8,6 +8,9 @@ import Svg111 from "../assets/img/111.svg";
 import Mujer1 from "../assets/img/Mujer1.svg";
 import Hombre2 from "../assets/img/Hombre2.svg";
 import Svg107 from "../assets/img/107.svg";
+import Svg112 from "../assets/img/112.svg";
+import Svg95 from "../assets/img/95.svg";
+import Svg96 from "../assets/img/96.svg";
 
 // Íconos minimalistas
 import { UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
@@ -95,6 +98,9 @@ const Login = () => {
             <img src={Svg111} alt="Decoración esquina" className="svg111-bottom-right" />
             <img src={Mujer1} alt="Mujer Kreativa" className="mujer-kreativa-svg" />
             <img src={Hombre2} alt="Hombre Kreativa" className="hombre-kreativa-svg" />
+            <img src={Svg112} alt="Decoración adicional" className="svg112" />
+            <img src={Svg95} alt="Decoración izquierda" className="svg95" />
+            <img src={Svg96} alt="Decoración derecha" className="svg96" />
             <h2 className="titulo-francy-kreativa">TU ESPACIO KREATIVO</h2>
             <p className="subtitulo-francy-kreativa">
                 Tu punto de acceso para gestionar todo en un solo lugar.

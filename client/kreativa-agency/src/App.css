@@ -1043,88 +1043,6 @@ h3 {
     stroke: #121923;
 }
 
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #FF0072;
-    overflow: hidden;
-}
-
-.login-card {
-    width: 550px;
-    padding: 40px;
-    background-color: var(--kreativa-white);
-    border-radius: var(--kreativa-bdr-radius);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-}
-
-.login-header h2 {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--kreativa-black);
-}
-
-.login-header p {
-    font-size: 16px;
-    color: var(--kreativa-gray);
-}
-
-.login-form .form-group {
-    margin-bottom: 20px;
-}
-
-.form-input {
-    background-color: white;
-    color: black;
-    /* blanco puro para el texto */
-    width: 100%;
-    height: 60px;
-    /* más alto */
-    padding: 0 30px;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: var(--kreativa-bdr-radius);
-    font-size: 16px;
-    font-family: var(--kreativa-font);
-    transition: all 0.3s ease;
-
-}
-
-.form-input::placeholder {
-    color: grey;
-}
-
-
-.login-btn {
-    width: 35%;
-    padding: 1px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.login-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.swal-button-kreativa {
-    background-color: #e91e63 !important;
-    color: white !important;
-    font-weight: bold;
-    border-radius: var(--kreativa-bdr-radius);
-}
-
-.swal-button-kreativa:hover {
-    background-color: #c2185b !important;
-}
-
-.w-10 {
-    width: 8%;
-}
 
 /* Jerarquía de Usuarios */
 .jerarquia-section {
@@ -1500,7 +1418,92 @@ h3 {
     margin-top: 60px;
 }
 
-/* CSS Login */
+/* =================== */
+/* ESTILOS PARA LOGIN  */
+/* =================== */
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #FF0072;
+    overflow: hidden;
+}
+
+.login-card {
+    width: 550px;
+    padding: 40px;
+    background-color: var(--kreativa-white);
+    border-radius: var(--kreativa-bdr-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.login-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--kreativa-black);
+}
+
+.login-header p {
+    font-size: 16px;
+    color: var(--kreativa-gray);
+}
+
+.login-form .form-group {
+    margin-bottom: 20px;
+}
+
+.form-input {
+    background-color: white;
+    color: black;
+    /* blanco puro para el texto */
+    width: 100%;
+    height: 60px;
+    /* más alto */
+    padding: 0 30px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: var(--kreativa-bdr-radius);
+    font-size: 16px;
+    font-family: var(--kreativa-font);
+    transition: all 0.3s ease;
+
+}
+
+.form-input::placeholder {
+    color: grey;
+}
+
+
+.login-btn {
+    width: 35%;
+    padding: 1px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.login-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.swal-button-kreativa {
+    background-color: #e91e63 !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: var(--kreativa-bdr-radius);
+}
+
+.swal-button-kreativa:hover {
+    background-color: #c2185b !important;
+}
+
+.w-10 {
+    width: 8%;
+}
 
 .kreativa-login-container {
     position: relative;
@@ -1518,28 +1521,15 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    /* Más pequeño */
     max-width: 900px;
-    /* Antes: 1100px */
     width: 100%;
-    /* O podés usar un valor fijo como 700px */
-
-    /* Tirarlo hacia la izquierda */
     margin-left: -1000px;
-    /* Ajustá este valor a tu gusto */
-
-    /* Estilos originales */
     background-color: transparent;
-
     border-radius: var(--kreativa-bdr-radius);
-
     padding: 40px;
-    /* También lo bajé un poco para que sea más compacto */
     position: relative;
     z-index: 2;
     margin-top: 590px;
-    /* O más si lo querés más arriba */
     left: 170px;
 }
 
@@ -1646,18 +1636,12 @@ h3 {
 .svg40-decorativo {
     position: absolute;
     bottom: 347px;
-    /* Puedes subirlo o bajarlo ajustando este valor */
     left: -768px;
-    /* Para moverlo hacia la izquierda */
     height: auto;
     width: 1220px;
-    /* Aumentamos el tamaño (ajustable) */
     transform: rotate(-210deg);
-    /* Rotación */
     z-index: 0;
-    /* Asegura que esté detrás del contenido */
     pointer-events: none;
-    /* Para que no interfiera con clics */
 }
 
 .svg111-bottom-right {
@@ -1665,34 +1649,27 @@ h3 {
     bottom: 190px;
     right: 0;
     width: 900px;
-    /* Ajustalo a tu gusto */
     height: auto;
     z-index: 0;
     pointer-events: none;
     left: 1px;
-    /* Mueve hacia el centro */
     transform: rotate(-180deg);
 }
 
 .mujer-kreativa-svg {
     position: absolute;
     top: 80px;
-    /* Mueve hacia abajo */
     left: 505px;
-    /* Mueve hacia el centro */
     width: 990px;
     height: auto;
     z-index: 1;
     pointer-events: none;
-    /* Para evitar clics accidentales */
 }
 
 .hombre-kreativa-svg {
     position: absolute;
     top: 220px;
-    /* Ajustalo según tu necesidad */
     left: 1015px;
-    /* Posición relativa a la figura 40 */
     width: 990px;
     height: auto;
     z-index: 1;
@@ -1702,9 +1679,7 @@ h3 {
 .login-title-francy {
     position: absolute;
     top: 80px;
-    /* Ajustalo según tu diseño */
     left: 100px;
-    /* Podés moverlo más o menos según lo centrado que lo querás */
     font-family: "Francy";
     font-size: 48px;
     color: var(--kreativa-white);
@@ -1717,19 +1692,14 @@ h3 {
 .decoracion-login-svg107 {
     position: absolute;
     top: 310px;
-    /* Sigue controlando la posición vertical */
     left: 1px;
-    /* Posición hacia la izquierda */
     width: 700px;
-    /* ¡Aquí aumentás el tamaño! */
     max-width: none;
-    /* Para que no limite el tamaño */
 }
 
 .bienvenida-kreativa {
     position: absolute;
     top: 450px;
-    /* Ajustá verticalmente según lo necesités */
     left: 20%;
     transform: translateX(-50%);
     text-align: center;
@@ -1739,7 +1709,6 @@ h3 {
     color: white;
     z-index: 10;
     width: 100%;
-    /* Esto ayuda a mantenerlo centrado dentro del layout */
 }
 
 .input-icon-wrapper {
@@ -1750,11 +1719,8 @@ h3 {
     position: absolute;
     left: 16px;
     top: 40%;
-    /* SUBIDO un poco más arriba */
     width: 25px;
-    /* MÁS GRANDE */
     height: 22px;
-    /* MÁS GRANDE */
     color: #ccc;
     transform: translateY(-50%);
 }
@@ -1763,23 +1729,19 @@ h3 {
     position: absolute;
     right: 16px;
     top: 40%;
-    /* Subido también */
     cursor: pointer;
     top: 25%;
 }
 
 .icon-eye {
     width: 22px;
-    /* MÁS GRANDE */
     height: 22px;
     color: #ccc;
 }
 
 .form-input {
     padding-left: 52px;
-    /* Más espacio por el ícono más grande */
     padding-right: 50px;
-    /* Para el ojito */
 }
 
 
@@ -1792,7 +1754,6 @@ h3 {
     font-size: 90px;
     color: white;
     font-weight: bold;
-    /* 👈🏼 ¡Esta línea lo hace bold! */
     z-index: 10;
     letter-spacing: 3px;
     text-align: center;
@@ -1801,7 +1762,6 @@ h3 {
 .subtitulo-francy-kreativa {
     position: absolute;
     top: 100px;
-    /* Ajustá según la altura de tu título */
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Francy', sans-serif;
@@ -1811,3 +1771,35 @@ h3 {
     z-index: 10;
     opacity: 0.9;
 }
+
+.svg112 {
+    position: absolute;
+    top: 130px;
+    left: 500px;
+    width: 300px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.svg95 {
+    position: absolute;
+    left: 1200px;
+    top: 440px;
+    transform: translateY(-50%);
+    width: 200px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.svg96 {
+    position: absolute;
+    left: -30px;
+    top: 300px;
+    right: 30px;
+    width: 200px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+
+
