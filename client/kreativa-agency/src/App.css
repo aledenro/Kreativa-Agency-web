@@ -1531,6 +1531,10 @@ h3 {
     z-index: 2;
     margin-top: 590px;
     left: 170px;
+
+    animation: subirSuaveY 1s ease-out forwards;
+    animation-delay: 0.8s;
+    opacity: 0;
 }
 
 .kreativa-login-left {
@@ -1676,6 +1680,23 @@ h3 {
     pointer-events: none;
 }
 
+@keyframes entrarDesdeDerecha {
+    from {
+        transform: translateX(200px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.mujer-kreativa-svg,
+.hombre-kreativa-svg {
+    animation: entrarDesdeDerecha 1.2s ease-out forwards;
+}
+
 .login-title-francy {
     position: absolute;
     top: 80px;
@@ -1695,6 +1716,9 @@ h3 {
     left: 1px;
     width: 700px;
     max-width: none;
+    animation: subirSuaveY 1s ease-out forwards;
+    animation-delay: 0.6s;
+    opacity: 0;
 }
 
 .bienvenida-kreativa {
@@ -1709,6 +1733,10 @@ h3 {
     color: white;
     z-index: 10;
     width: 100%;
+    animation: animarBienvenidaTitulo 1.2s ease-out forwards;
+    animation-delay: 0.8s;
+    opacity: 0;
+
 }
 
 .input-icon-wrapper {
@@ -1801,5 +1829,25 @@ h3 {
     pointer-events: none;
 }
 
+@keyframes subirSuaveY {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
 
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
+@keyframes animarBienvenidaTitulo {
+    from {
+      transform: translateX(-50%) translateY(60px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  }
