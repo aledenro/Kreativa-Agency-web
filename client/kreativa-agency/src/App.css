@@ -398,8 +398,7 @@ h3 {
     }
 }
 
-/*---------------NAVBAR---------------*/
-
+/* ---------------NAVBAR---------------  */
 .navbar {
     display: flex;
     height: 60px;
@@ -461,34 +460,31 @@ h3 {
     position: relative;
 }
 
-.menu a {
+.navbar .link {
     color: var(--kreativa-white);
     text-decoration: none;
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 1px;
-    font-weight: 600;
+    font-weight: 500;
     transition: var(--kreativa-transition);
 }
 
-.menu a:hover,
-.menu a.active {
+.navbar .link:hover,
+.navbar .link.active {
     color: var(--kreativa-rosado);
-    transition: all 0.3s linear;
 }
 
-.menu a:hover:after {
+.navbar a:hover:after {
     width: 100%;
 }
 
-.menu a::after {
+.navbar .link::after {
     content: "";
     position: absolute;
     width: 0;
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: var(--kreativa-rosado);
-    transition: var(--kreativa-transition);
 }
 
 .dropdown-menu {
@@ -550,7 +546,7 @@ h3 {
     margin: 4px 0;
 }
 
-@media (max-width: 950px) {
+/* @media (max-width: 950px) {
     .menu {
         display: none;
         position: absolute;
@@ -601,7 +597,7 @@ h3 {
 .pink-icon {
     color: var(--kreativa-base);
     padding-right: 10px;
-}
+} */
 
 /* Botones pequeños */
 .thm-btn-small {

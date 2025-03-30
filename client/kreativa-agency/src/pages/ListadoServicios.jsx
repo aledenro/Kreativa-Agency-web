@@ -33,7 +33,6 @@ const EmblaCarousel = (props) => {
                 <div className="embla__container">
                     {servicios.map((servicio) => (
                         <div className="embla__slide" key={servicio._id}>
-                            {/* Slide content remains the same */}
                             <div className="embla__slide__content">
                                 <img
                                     src={servicio.imagen}
