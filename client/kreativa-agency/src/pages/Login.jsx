@@ -95,8 +95,10 @@ const Login = () => {
             <img src={Svg111} alt="Decoración esquina" className="svg111-bottom-right" />
             <img src={Mujer1} alt="Mujer Kreativa" className="mujer-kreativa-svg" />
             <img src={Hombre2} alt="Hombre Kreativa" className="hombre-kreativa-svg" />
-
-            <h2 className="login-title-francy">¿PARTE DEL EQUIPO KREATIVA?</h2>
+            <h2 className="titulo-francy-kreativa">TU ESPACIO KREATIVO</h2>
+            <p className="subtitulo-francy-kreativa">
+                Tu punto de acceso para gestionar todo en un solo lugar.
+            </p>
             <h3 className="bienvenida-kreativa">
                 Bienvenidos a<br />
                 Kreativa Agency
