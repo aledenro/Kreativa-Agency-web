@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import "../App.css"; 
+import { LockClosedIcon } from "@heroicons/react/24/outline";
+import LogoKreativa from "../assets/img/logo.png";
 
 const RestablecerContraseña = () => {
     const { token } = useParams();
     const navigate = useNavigate();
     const [nuevaContraseña, setNuevaContraseña] = useState("");
     const [confirmarContraseña, setConfirmarContraseña] = useState("");
-    const [error, setError] = useState(""); 
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,9 +18,8 @@ const RestablecerContraseña = () => {
         if (nuevaContraseña !== confirmarContraseña) {
             setError("Las contraseñas no coinciden");
             return;
-        } else {
-            setError(""); 
         }
+        setError("");
 
         try {
             const response = await axios.post("http://localhost:4000/api/restablecer", {
@@ -38,7 +38,6 @@ const RestablecerContraseña = () => {
             }).then(() => {
                 navigate("/login");
             });
-
         } catch (error) {
             Swal.fire({
                 title: "Error",
@@ -53,15 +52,16 @@ const RestablecerContraseña = () => {
     };
 
     return (
-        <div className="login-container">
-            <div className="login-card">
-                <div className="login-header">
-                    <h2>Restablecer Contraseña</h2>
-                    <p>Ingresa y confirma tu nueva contraseña.</p>
+        <div className="login-split-container">
+            <div className="login-left">
+                <div className="logo-container">
+                    <img src={LogoKreativa} alt="Logo Kreativa" className="logo-kreativa" />
                 </div>
+                <h2 className="login-title">Restablecer Contraseña</h2>
+                <p className="login-subtitle">Ingresa y confirma tu nueva contraseña.</p>
                 <form className="login-form" onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label className="form-label">Nueva Contraseña</label>
+                    <div className="form-group input-icon-wrapper">
+                        <LockClosedIcon className="input-icon-min" />
                         <input
                             type="password"
                             className="form-input"
@@ -71,8 +71,8 @@ const RestablecerContraseña = () => {
                             required
                         />
                     </div>
-                    <div className="form-group">
-                        <label className="form-label">Confirmar Contraseña</label>
+                    <div className="form-group input-icon-wrapper">
+                        <LockClosedIcon className="input-icon-min" />
                         <input
                             type="password"
                             className={`form-input ${error ? "input-error" : ""}`}
@@ -83,8 +83,14 @@ const RestablecerContraseña = () => {
                         />
                         {error && <p className="error-message">{error}</p>}
                     </div>
-                    <button type="submit" className="thm-btn">Restablecer</button>
+                    <div className="login-buttons">
+                        <button type="submit" className="thm-btn btn-kreativa">Restablecer</button>
+                    </div>
                 </form>
+            </div>
+            <div className="login-right">
+                <h2 className="welcome-text">TU ESPACIO KREATIVO</h2>
+                <p className="slogan-text">El punto de acceso para gestionar todo en un solo lugar.</p>
             </div>
         </div>
     );
