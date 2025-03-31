@@ -1515,11 +1515,8 @@ h3 {
     flex: 1;
     background: linear-gradient(135deg,
             #ff0072 0%,
-            /* Rosado Kreativa */
             #8d25fc 50%,
-            /* Morado vibrante */
             #181ddb 100%
-            /* Azul eléctrico */
         );
     color: white;
     padding: 60px 40px;
@@ -1539,7 +1536,7 @@ h3 {
     font-family: 'Francy';
     margin-bottom: 10px;
     color: white;
-    /* Aseguramos que sea blanco */
+
 }
 
 .slogan-text {
@@ -1608,7 +1605,6 @@ h3 {
 /*     LOGIN RESPONSIVE    */
 /* ======================= */
 
-/* Tablets (landscape y vertical) */
 @media screen and (max-width: 1024px) {
     .login-split-container {
       flex-direction: column;
@@ -1675,7 +1671,6 @@ h3 {
     }
   }
   
-  /* Celulares */
   @media screen and (max-width: 768px) {
     .login-split-container {
       flex-direction: column;
@@ -1737,7 +1732,6 @@ h3 {
     }
   }
   
-  /* Celulares pequeños */
   @media screen and (max-width: 480px) {
     .login-title {
       font-size: 24px;
