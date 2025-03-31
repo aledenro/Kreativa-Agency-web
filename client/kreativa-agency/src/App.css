@@ -1527,7 +1527,7 @@ h3 {
     text-align: center;
     position: relative;
     z-index: 1;
-
+    overflow: hidden;
 }
 
 .welcome-text {
@@ -1567,10 +1567,10 @@ h3 {
 .login-right::before {
     content: "";
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-image: radial-gradient(white 1.2px, transparent 1.2px);
     background-size: 20px 20px;
     animation: waveParticles 40s ease-in-out infinite;
@@ -1581,26 +1581,25 @@ h3 {
 
 @keyframes waveParticles {
     0% {
-        transform: translate(0, 0) scale(1);
+        transform: translate(0px, 0px) scale(1.15);
     }
 
     25% {
-        transform: translate(40px, -30px) scale(1.1);
+        transform: translate(15px, -10px) scale(1.17);
     }
 
     50% {
-        transform: translate(80px, 40px) scale(1);
+        transform: translate(30px, 15px) scale(1.15);
     }
 
     75% {
-        transform: translate(40px, 60px) scale(0.95);
+        transform: translate(15px, 25px) scale(1.13);
     }
 
     100% {
-        transform: translate(0, 0) scale(1);
+        transform: translate(0px, 0px) scale(1.15);
     }
 }
-
 /* ======================= */
 /*     LOGIN RESPONSIVE    */
 /* ======================= */
