@@ -1516,8 +1516,7 @@ h3 {
     background: linear-gradient(135deg,
             #ff0072 0%,
             #8d25fc 50%,
-            #181ddb 100%
-        );
+            #181ddb 100%);
     color: white;
     padding: 60px 40px;
     display: flex;
@@ -1600,194 +1599,252 @@ h3 {
         transform: translate(0px, 0px) scale(1.15);
     }
 }
+
+/* =================== */
+/* ANIMACIONES LOG-IN  */
+/* =================== */
+
+@keyframes slideFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-60px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.logo-kreativa {
+    animation: slideFromTop 1.2s ease-out forwards;
+    animation-delay: 0.2s;
+    animation-fill-mode: both;
+}
+
+.welcome-text {
+    animation: zoomIn 1.3s ease-out forwards;
+    animation-delay: 0.4s;
+    animation-fill-mode: both;
+}
+
+.slogan-text {
+    animation: slideFromLeft 1.4s ease-out forwards;
+    animation-delay: 0.6s;
+    animation-fill-mode: both;
+}
+
 /* ======================= */
 /*     LOGIN RESPONSIVE    */
 /* ======================= */
 
 @media screen and (max-width: 1024px) {
     .login-split-container {
-      flex-direction: column;
-      height: auto;
+        flex-direction: column;
+        height: auto;
     }
-  
+
     .login-left,
     .login-right {
-      width: 100%;
-      padding: 50px 30px;
-      text-align: center;
+        width: 100%;
+        padding: 50px 30px;
+        text-align: center;
     }
-  
+
     .login-right {
-      height: auto;
-      padding-top: 40px;
-      padding-bottom: 40px;
-      justify-content: center;
+        height: auto;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        justify-content: center;
     }
-  
+
     .logo-kreativa {
-      width: 240px;
-      margin: 0 auto 20px auto;
+        width: 240px;
+        margin: 0 auto 20px auto;
     }
-  
+
     .login-title {
-      font-size: 32px;
+        font-size: 32px;
     }
-  
+
     .login-subtitle {
-      font-size: 16px;
+        font-size: 16px;
     }
-  
+
     .form-input {
-      padding: 14px 48px;
-      font-size: 15px;
+        padding: 14px 48px;
+        font-size: 15px;
     }
-  
+
     .login-buttons {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 15px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
     }
-  
+
     .login-buttons button {
-      min-width: 140px;
-      font-size: 15px;
-      padding: 12px 20px;
+        min-width: 140px;
+        font-size: 15px;
+        padding: 12px 20px;
     }
-  
+
     .login-footer {
-      justify-content: center;
+        justify-content: center;
     }
-  
+
     .welcome-text {
-      font-size: 50px;
+        font-size: 50px;
     }
-  
+
     .slogan-text {
-      font-size: 18px;
-      margin-top: 0;
-      white-space: normal;
+        font-size: 18px;
+        margin-top: 0;
+        white-space: normal;
     }
-  }
-  
-  @media screen and (max-width: 768px) {
+}
+
+@media screen and (max-width: 768px) {
     .login-split-container {
-      flex-direction: column;
-      height: auto;
+        flex-direction: column;
+        height: auto;
     }
-  
+
     .login-left,
     .login-right {
-      padding: 40px 20px;
-      text-align: center;
+        padding: 40px 20px;
+        text-align: center;
     }
-  
+
     .logo-kreativa {
-      width: 200px;
-      margin-bottom: 10px;
+        width: 200px;
+        margin-bottom: 10px;
     }
-  
+
     .login-title {
-      font-size: 28px;
+        font-size: 28px;
     }
-  
+
     .login-subtitle {
-      font-size: 14px;
+        font-size: 14px;
     }
-  
+
     .form-input {
-      padding: 12px 45px;
-      font-size: 14px;
+        padding: 12px 45px;
+        font-size: 14px;
     }
-  
+
     .login-buttons {
-      flex-direction: column;
-      gap: 10px;
+        flex-direction: column;
+        gap: 10px;
     }
-  
+
     .welcome-text {
-      font-size: 36px;
+        font-size: 36px;
     }
-  
+
     .slogan-text {
-      font-size: 16px;
+        font-size: 16px;
     }
-  
+
     .input-icon-min,
     .icon-eye {
-      width: 18px;
-      height: 18px;
+        width: 18px;
+        height: 18px;
     }
-  
+
     .login-right {
-      height: auto;
-      padding-top: 30px;
-      padding-bottom: 30px;
+        height: auto;
+        padding-top: 30px;
+        padding-bottom: 30px;
     }
-  
+
     .login-right::before {
-      background-size: 15px 15px;
-      opacity: 0.15;
+        background-size: 15px 15px;
+        opacity: 0.15;
     }
-  }
-  
-  @media screen and (max-width: 480px) {
+}
+
+@media screen and (max-width: 480px) {
     .login-title {
-      font-size: 24px;
+        font-size: 24px;
     }
-  
+
     .login-subtitle {
-      font-size: 13px;
+        font-size: 13px;
     }
-  
+
     .welcome-text {
-      font-size: 28px;
+        font-size: 28px;
     }
-  
+
     .slogan-text {
-      font-size: 14px;
+        font-size: 14px;
     }
-  
+
     .logo-kreativa {
-      width: 160px;
+        width: 160px;
     }
-  
+
     .form-input {
-      font-size: 13px;
-      padding: 10px 35px;
+        font-size: 13px;
+        padding: 10px 35px;
     }
-  
+
     .login-buttons button {
-      font-size: 14px;
-      padding: 10px;
-      width: 100%;
+        font-size: 14px;
+        padding: 10px;
+        width: 100%;
     }
-  }
+}
 
-  @media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .input-icon-wrapper {
-      position: relative;
+        position: relative;
     }
-  
-    .input-icon-min {
-      top: 33%;
-      left: 10px;
-      transform: translateY(-50%);
-      width: 18px;
-      height: 18px;
-    }
-  
-    .eye-icon {
-      top: 30%;
-      right: 14px;
-      transform: translateY(-50%);
-      width: 20px;
-      height: 20px;
-    }
-  
-    .icon-eye {
-      width: 20px;
-      height: 20px;
-    }
-  }
 
+    .input-icon-min {
+        top: 33%;
+        left: 10px;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+    }
+
+    .eye-icon {
+        top: 30%;
+        right: 14px;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+    }
+
+    .icon-eye {
+        width: 20px;
+        height: 20px;
+    }
+}
