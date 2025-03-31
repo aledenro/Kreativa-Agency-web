@@ -1422,321 +1422,44 @@ h3 {
 /* ESTILOS PARA LOGIN  */
 /* =================== */
 
-.login-container {
+
+.login-split-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
-    background-color: #FF0072;
+    width: 100%;
     overflow: hidden;
+    font-family: var(--kreativa-font);
 }
 
-.login-card {
-    width: 550px;
-    padding: 40px;
-    background-color: var(--kreativa-white);
-    border-radius: var(--kreativa-bdr-radius);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
+.login-left {
+    flex: 1;
+    background-color: white;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.login-header h2 {
-    font-size: 28px;
-    font-weight: 700;
+.login-title {
+    font-family: 'Francy';
+    font-size: 36px;
     color: var(--kreativa-black);
+    margin-bottom: 10px;
 }
 
-.login-header p {
+.login-subtitle {
     font-size: 16px;
     color: var(--kreativa-gray);
-}
-
-.login-form .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .form-input {
-    background-color: white;
-    color: black;
-    /* blanco puro para el texto */
     width: 100%;
-    height: 60px;
-    /* más alto */
-    padding: 0 30px;
-    margin-bottom: 20px;
-    border: none;
+    padding: 15px 50px 15px 50px;
+    border: 1px solid #ddd;
     border-radius: var(--kreativa-bdr-radius);
     font-size: 16px;
-    font-family: var(--kreativa-font);
-    transition: all 0.3s ease;
-
-}
-
-.form-input::placeholder {
-    color: grey;
-}
-
-
-.login-btn {
-    width: 35%;
-    padding: 1px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.login-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.swal-button-kreativa {
-    background-color: #e91e63 !important;
-    color: white !important;
-    font-weight: bold;
-    border-radius: var(--kreativa-bdr-radius);
-}
-
-.swal-button-kreativa:hover {
-    background-color: #c2185b !important;
-}
-
-.w-10 {
-    width: 8%;
-}
-
-.kreativa-login-container {
-    position: relative;
-    height: 100vh;
-    width: 100%;
-    background-color: #181ddb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 20px;
-}
-
-.kreativa-login-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 900px;
-    width: 100%;
-    margin-left: -1000px;
-    background-color: transparent;
-    border-radius: var(--kreativa-bdr-radius);
-    padding: 40px;
-    position: relative;
-    z-index: 2;
-    margin-top: 590px;
-    left: 170px;
-
-    animation: subirSuaveY 1s ease-out forwards;
-    animation-delay: 0.8s;
-    opacity: 0;
-}
-
-.kreativa-login-left {
-    width: 60%;
-}
-
-.kreativa-login-right {
-    width: 40%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.kreativa-login-image {
-    width: 100%;
-    max-width: 350px;
-    border-radius: var(--kreativa-bdr-radius);
-}
-
-.kreativa-login-title {
-    font-size: 36px;
-    font-weight: 900;
-    color: var(--btn-amarillo);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    font-family: var(--kreativa-title);
-}
-
-.kreativa-login-subtitle {
-    color: white;
-    font-weight: normal;
-    text-align: left;
     margin-bottom: 20px;
-    font-size: 16px;
-}
-
-.kreativa-login-form .form-group {
-    margin-bottom: 20px;
-}
-
-.kreativa-login-options {
-    text-align: left;
-    margin-bottom: 10px;
-}
-
-.kreativa-login-options a {
-    color: white;
-    font-weight: normal;
-    text-decoration: none;
-}
-
-.kreativa-link {
-    color: var(--kreativa-base);
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.kreativa-link:hover {
-    text-decoration: underline;
-}
-
-@media screen and (max-width: 900px) {
-    .kreativa-login-wrapper {
-        flex-direction: column;
-        padding: 30px;
-    }
-
-    .kreativa-login-left,
-    .kreativa-login-right {
-        width: 100%;
-        text-align: center;
-    }
-
-    .kreativa-login-title {
-        text-align: center;
-    }
-
-    .kreativa-login-right {
-        margin-top: 30px;
-    }
-
-    .login-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .login-btn {
-        width: 100% !important;
-    }
-}
-
-.background-decoracion-login {
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 0;
-    height: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.svg40-decorativo {
-    position: absolute;
-    bottom: 347px;
-    left: -768px;
-    height: auto;
-    width: 1220px;
-    transform: rotate(-210deg);
-    z-index: 0;
-    pointer-events: none;
-}
-
-.svg111-bottom-right {
-    position: absolute;
-    bottom: 190px;
-    right: 0;
-    width: 900px;
-    height: auto;
-    z-index: 0;
-    pointer-events: none;
-    left: 1px;
-    transform: rotate(-180deg);
-}
-
-.mujer-kreativa-svg {
-    position: absolute;
-    top: 80px;
-    left: 505px;
-    width: 990px;
-    height: auto;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.hombre-kreativa-svg {
-    position: absolute;
-    top: 220px;
-    left: 1015px;
-    width: 990px;
-    height: auto;
-    z-index: 1;
-    pointer-events: none;
-}
-
-@keyframes entrarDesdeDerecha {
-    from {
-        transform: translateX(200px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-.mujer-kreativa-svg,
-.hombre-kreativa-svg {
-    animation: entrarDesdeDerecha 1.2s ease-out forwards;
-}
-
-.login-title-francy {
-    position: absolute;
-    top: 80px;
-    left: 100px;
-    font-family: "Francy";
-    font-size: 48px;
-    color: var(--kreativa-white);
-    z-index: 3;
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.decoracion-login-svg107 {
-    position: absolute;
-    top: 310px;
-    left: 1px;
-    width: 700px;
-    max-width: none;
-    animation: subirSuaveY 1s ease-out forwards;
-    animation-delay: 0.6s;
-    opacity: 0;
-}
-
-.bienvenida-kreativa {
-    position: absolute;
-    top: 450px;
-    left: 20%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-family: 'Francy', sans-serif;
-    font-size: 60px;
-    line-height: 1.1;
-    color: white;
-    z-index: 10;
-    width: 100%;
-    animation: animarBienvenidaTitulo 1.2s ease-out forwards;
-    animation-delay: 0.8s;
-    opacity: 0;
-
 }
 
 .input-icon-wrapper {
@@ -1746,112 +1469,332 @@ h3 {
 .input-icon-min {
     position: absolute;
     left: 16px;
-    top: 40%;
-    width: 25px;
-    height: 22px;
-    color: #ccc;
+    top: 38%;
     transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: #aaa;
 }
 
 .eye-icon {
     position: absolute;
     right: 16px;
-    top: 40%;
+    top: 38%;
+    transform: translateY(-50%);
     cursor: pointer;
-    top: 25%;
 }
 
 .icon-eye {
     width: 22px;
     height: 22px;
-    color: #ccc;
+    color: #aaa;
 }
 
-.form-input {
-    padding-left: 52px;
-    padding-right: 50px;
+.login-footer {
+    text-align: right;
+    margin-bottom: 20px;
 }
 
+.kreativa-link {
+    font-size: 14px;
+    color: var(--kreativa-base);
+    text-decoration: none;
+}
 
-.titulo-francy-kreativa {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Francy', sans-serif;
-    font-size: 90px;
+.kreativa-link:hover {
+    text-decoration: underline;
+}
+
+.login-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.login-right {
+    flex: 1;
+    background: linear-gradient(135deg,
+            #ff0072 0%,
+            /* Rosado Kreativa */
+            #8d25fc 50%,
+            /* Morado vibrante */
+            #181ddb 100%
+            /* Azul eléctrico */
+        );
     color: white;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+
+}
+
+.welcome-text {
+    font-size: 80px;
     font-weight: bold;
-    z-index: 10;
-    letter-spacing: 3px;
-    text-align: center;
-}
-
-.subtitulo-francy-kreativa {
-    position: absolute;
-    top: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Francy', sans-serif;
-    font-size: 20px;
+    font-family: 'Francy';
+    margin-bottom: 10px;
     color: white;
-    text-align: center;
-    z-index: 10;
-    opacity: 0.9;
+    /* Aseguramos que sea blanco */
 }
 
-.svg112 {
-    position: absolute;
-    top: 130px;
-    left: 500px;
+.slogan-text {
+    font-size: 20px;
+    font-weight: 400;
+    max-width: none;
+    white-space: nowrap;
+    margin-top: -25px;
+}
+
+.login-footer {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+
+.logo-kreativa {
     width: 300px;
-    z-index: 1;
-    pointer-events: none;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    margin-top: -200px;
+    margin-bottom: 10px;
 }
 
-.svg95 {
+.login-right::before {
+    content: "";
     position: absolute;
-    left: 1200px;
-    top: 440px;
-    transform: translateY(-50%);
-    width: 200px;
-    z-index: 1;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: radial-gradient(white 1.2px, transparent 1.2px);
+    background-size: 20px 20px;
+    animation: waveParticles 40s ease-in-out infinite;
+    opacity: 0.3;
+    z-index: 0;
     pointer-events: none;
 }
 
-.svg96 {
-    position: absolute;
-    left: -30px;
-    top: 300px;
-    right: 30px;
-    width: 200px;
-    z-index: 1;
-    pointer-events: none;
-}
-
-@keyframes subirSuaveY {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
+@keyframes waveParticles {
+    0% {
+        transform: translate(0, 0) scale(1);
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes animarBienvenidaTitulo {
-    from {
-        transform: translateX(-50%) translateY(60px);
-        opacity: 0;
+    25% {
+        transform: translate(40px, -30px) scale(1.1);
     }
 
-    to {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
+    50% {
+        transform: translate(80px, 40px) scale(1);
+    }
+
+    75% {
+        transform: translate(40px, 60px) scale(0.95);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
     }
 }
 
+/* ======================= */
+/*     LOGIN RESPONSIVE    */
+/* ======================= */
 
+/* Tablets (landscape y vertical) */
+@media screen and (max-width: 1024px) {
+    .login-split-container {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .login-left,
+    .login-right {
+      width: 100%;
+      padding: 50px 30px;
+      text-align: center;
+    }
+  
+    .login-right {
+      height: auto;
+      padding-top: 40px;
+      padding-bottom: 40px;
+      justify-content: center;
+    }
+  
+    .logo-kreativa {
+      width: 240px;
+      margin: 0 auto 20px auto;
+    }
+  
+    .login-title {
+      font-size: 32px;
+    }
+  
+    .login-subtitle {
+      font-size: 16px;
+    }
+  
+    .form-input {
+      padding: 14px 48px;
+      font-size: 15px;
+    }
+  
+    .login-buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 15px;
+    }
+  
+    .login-buttons button {
+      min-width: 140px;
+      font-size: 15px;
+      padding: 12px 20px;
+    }
+  
+    .login-footer {
+      justify-content: center;
+    }
+  
+    .welcome-text {
+      font-size: 50px;
+    }
+  
+    .slogan-text {
+      font-size: 18px;
+      margin-top: 0;
+      white-space: normal;
+    }
+  }
+  
+  /* Celulares */
+  @media screen and (max-width: 768px) {
+    .login-split-container {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .login-left,
+    .login-right {
+      padding: 40px 20px;
+      text-align: center;
+    }
+  
+    .logo-kreativa {
+      width: 200px;
+      margin-bottom: 10px;
+    }
+  
+    .login-title {
+      font-size: 28px;
+    }
+  
+    .login-subtitle {
+      font-size: 14px;
+    }
+  
+    .form-input {
+      padding: 12px 45px;
+      font-size: 14px;
+    }
+  
+    .login-buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .welcome-text {
+      font-size: 36px;
+    }
+  
+    .slogan-text {
+      font-size: 16px;
+    }
+  
+    .input-icon-min,
+    .icon-eye {
+      width: 18px;
+      height: 18px;
+    }
+  
+    .login-right {
+      height: auto;
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+  
+    .login-right::before {
+      background-size: 15px 15px;
+      opacity: 0.15;
+    }
+  }
+  
+  /* Celulares pequeños */
+  @media screen and (max-width: 480px) {
+    .login-title {
+      font-size: 24px;
+    }
+  
+    .login-subtitle {
+      font-size: 13px;
+    }
+  
+    .welcome-text {
+      font-size: 28px;
+    }
+  
+    .slogan-text {
+      font-size: 14px;
+    }
+  
+    .logo-kreativa {
+      width: 160px;
+    }
+  
+    .form-input {
+      font-size: 13px;
+      padding: 10px 35px;
+    }
+  
+    .login-buttons button {
+      font-size: 14px;
+      padding: 10px;
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .input-icon-wrapper {
+      position: relative;
+    }
+  
+    .input-icon-min {
+      top: 33%;
+      left: 10px;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+    }
+  
+    .eye-icon {
+      top: 30%;
+      right: 14px;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+    }
+  
+    .icon-eye {
+      width: 20px;
+      height: 20px;
+    }
+  }
 
