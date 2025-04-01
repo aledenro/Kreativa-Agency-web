@@ -13,7 +13,8 @@
     --kreativa-rosado: #ff0072;
     --kreativa-rosado-claro: #ffebf4;
     --kreativa-azul: #110d27;
-    --kreativa-azul: #b8b3cf;
+    --kreativa-azul-medio: #8788ab;
+    --kreativa-azul-claro: #b8b3cf;
     --btn-azul: #007bff;
     --btn-azul-claro: #d6e9ff;
     --btn-verde: #28a745;
@@ -104,7 +105,7 @@ h3 {
     height: 45px;
     width: 100%;
     border: none;
-    border: 1px solid var(--kreativa-rosado-claro);
+    border: 1px solid var(--kreativa-azul-medio);
     padding-left: 30px;
     padding-right: 30px;
     margin-bottom: 10px;
@@ -120,12 +121,12 @@ h3 {
 }
 
 .form_input:hover {
-    border: 1px solid var(--kreativa-rosado);
+    border: 1px solid var(--kreativa-azul);
 }
 
 .form_input:focus {
-    border: 1px solid var(--kreativa-rosado);
-    box-shadow: 0 0 1px 2px var(--kreativa-rosado-claro);
+    border: 1px solid var(--kreativa-azul);
+    box-shadow: 0 0 1px 2px var(--kreativa-azul-claro);
     outline: none;
 }
 
@@ -215,7 +216,7 @@ h3 {
     border-radius: var(--kreativa-bdr-radius);
     outline: none;
     border: none;
-    background-color: var(--kreativa-base);
+    background-color: var(--kreativa-azul);
     color: var(--kreativa-white);
 }
 
@@ -224,7 +225,7 @@ h3 {
     width: 20px;
     height: 20px;
     appearance: none;
-    border: 2px solid var(--kreativa-rosado-claro);
+    border: 1px solid var(--kreativa-azul-medio);
     border-radius: 5px;
     outline: none;
     cursor: pointer;
@@ -234,16 +235,16 @@ h3 {
 }
 
 .custom-checkbox input[type="checkbox"]:hover {
-    border: 1px solid var(--kreativa-rosado);
+    border: 1px solid var(--kreativa-azul);
 }
 
 .custom-checkbox input[type="checkbox"]:checked {
-    background-color: var(--kreativa-rosado);
-    border: 1px solid var(--kreativa-rosado);
+    background-color: var(--kreativa-azul);
+    border: 1px solid var(--kreativa-azul);
 }
 
 .custom-checkbox input[type="checkbox"]:focus {
-    box-shadow: 0 0 1px 2px var(--kreativa-rosado-claro);
+    box-shadow: 0 0 1px 2px var(--kreativa-azul-claro);
 }
 
 .form-textarea {
@@ -272,7 +273,19 @@ h3 {
 }
 
 .custom-icon svg {
-    color: var(--kreativa-rosado) !important;
+    color: var(--kreativa-azul) !important;
+}
+
+.ant-upload-text {
+    color: var(--kreativa-azul) !important;
+}
+
+.ant-upload-hint {
+    color: var(--kreativa-azul-medio) !important;
+}
+
+.custom-dragger {
+    background-color: transparent !important;
 }
 
 .section-title {
