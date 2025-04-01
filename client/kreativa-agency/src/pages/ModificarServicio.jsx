@@ -6,7 +6,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
-import fileUpload from "../utils/fileUpload";
+import uploadFile from "../utils/fileUpload";
 
 const ModificarServicio = () => {
     const { id } = useParams();
@@ -134,29 +134,33 @@ const ModificarServicio = () => {
     const handleConfirm = async () => {
         setIsLoading(true);
         try {
-            await axios.put(
-                `http://localhost:4000/api/servicios/modificar/${id}`,
-                servicio
-            );
-
-            let imagenActualizada = false;
+            // First, handle file upload if there's a new file
             if (fileList.length > 0 && fileList[0].originFileObj) {
                 try {
                     const file = fileList[0].originFileObj;
 
                     if (file) {
-                        const imagenes = await fileUpload(
+                        // This uploads the file to S3 and returns the file IDs
+                        const imagenes = await uploadFile(
                             [file],
                             "landingpage",
                             "servicios",
                             id
                         );
 
-                        await axios.put(
+                        console.log("Uploaded image IDs:", imagenes);
+
+                        // Update the service with the new image IDs
+                        // Important: Send only imagenes here to update just that field
+                        const imageUpdateResponse = await axios.put(
                             `http://localhost:4000/api/servicios/modificar/${id}`,
                             { imagenes }
                         );
-                        imagenActualizada = true;
+
+                        console.log(
+                            "Image update response:",
+                            imageUpdateResponse.data
+                        );
                     }
                 } catch (error) {
                     console.error("Error al subir archivos:", error);
@@ -167,8 +171,22 @@ const ModificarServicio = () => {
                 }
             }
 
+            // Update the service general information (separate from image update)
+            const serviceData = {
+                nombre: servicio.nombre,
+                descripcion: servicio.descripcion,
+                categoria_id: servicio.categoria_id,
+            };
+
+            const updateResponse = await axios.put(
+                `http://localhost:4000/api/servicios/modificar/${id}`,
+                serviceData
+            );
+
+            console.log("Service update response:", updateResponse.data);
+
             openSuccessNotification(
-                `Servicio modificado exitosamente${imagenActualizada ? " con nueva imagen" : ""}`
+                `Servicio modificado exitosamente${fileList.length > 0 && fileList[0].originFileObj ? " con nueva imagen" : ""}`
             );
             setConfirmModal(false);
             setTimeout(() => navigate("/servicios"), 2000);

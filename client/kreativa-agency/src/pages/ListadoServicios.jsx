@@ -35,7 +35,7 @@ const EmblaCarousel = (props) => {
                         <div className="embla__slide" key={servicio._id}>
                             <div className="embla__slide__content">
                                 <img
-                                    src={servicio.imagen}
+                                    src={servicio.imagenMostrar}
                                     alt={servicio.nombre}
                                     className="embla__slide__image"
                                     onError={(e) => {
@@ -106,11 +106,21 @@ const ListadoServicios = () => {
                 );
 
                 if (Array.isArray(response.data)) {
-                    const serviciosActivos = response.data.map((servicio) => ({
-                        ...servicio,
-                        imagen:
-                            servicio.imagen || "https://placehold.co/600x400",
-                    }));
+                    const serviciosActivos = response.data.map((servicio) => {
+                        let imagenMostrar = "https://placehold.co/600x400";
+
+                        if (servicio.imagenes && servicio.imagenes.length > 0) {
+                            imagenMostrar =
+                                servicio.imagenes[servicio.imagenes.length - 1];
+                        } else if (servicio.imagen) {
+                            imagenMostrar = servicio.imagen;
+                        }
+
+                        return {
+                            ...servicio,
+                            imagenMostrar,
+                        };
+                    });
 
                     setServicios(serviciosActivos);
                 } else {
