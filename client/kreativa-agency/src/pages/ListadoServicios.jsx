@@ -106,21 +106,28 @@ const ListadoServicios = () => {
                 );
 
                 if (Array.isArray(response.data)) {
-                    const serviciosActivos = response.data.map((servicio) => {
-                        let imagenMostrar = "https://placehold.co/600x400";
+                    const serviciosActivos = response.data
+                        .filter((servicio) => servicio.activo === true)
+                        .map((servicio) => {
+                            let imagenMostrar = "https://placehold.co/600x400";
 
-                        if (servicio.imagenes && servicio.imagenes.length > 0) {
-                            imagenMostrar =
-                                servicio.imagenes[servicio.imagenes.length - 1];
-                        } else if (servicio.imagen) {
-                            imagenMostrar = servicio.imagen;
-                        }
+                            if (
+                                servicio.imagenes &&
+                                servicio.imagenes.length > 0
+                            ) {
+                                imagenMostrar =
+                                    servicio.imagenes[
+                                        servicio.imagenes.length - 1
+                                    ];
+                            } else if (servicio.imagen) {
+                                imagenMostrar = servicio.imagen;
+                            }
 
-                        return {
-                            ...servicio,
-                            imagenMostrar,
-                        };
-                    });
+                            return {
+                                ...servicio,
+                                imagenMostrar,
+                            };
+                        });
 
                     setServicios(serviciosActivos);
                 } else {
