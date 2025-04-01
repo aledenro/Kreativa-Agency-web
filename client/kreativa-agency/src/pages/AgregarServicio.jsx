@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Upload, Image, notification } from "antd";
+import { ConfigProvider, Upload, Image, notification } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
@@ -16,8 +16,12 @@ const AgregarServicio = () => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
     const [fileList, setFileList] = useState([]);
+    const [isHovered, setIsHovered] = useState(false);
 
     const [api, contextHolder] = notification.useNotification();
+
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
 
     const openSuccessNotification = (message) => {
         api.success({
@@ -274,54 +278,90 @@ const AgregarServicio = () => {
                                             Imagen del servicio (solo PNG o JPG)
                                         </label>
                                         <div className="mt-2">
-                                            <Upload
-                                                listType="picture-card"
-                                                fileList={fileList}
-                                                onPreview={handlePreview}
-                                                onChange={handleChange}
-                                                beforeUpload={(file) => {
-                                                    const isJpgOrPng =
-                                                        file.type ===
-                                                            "image/jpeg" ||
-                                                        file.type ===
-                                                            "image/png";
-                                                    if (!isJpgOrPng) {
-                                                        openErrorNotification(
-                                                            "Solo puedes subir archivos JPG o PNG"
-                                                        );
-                                                    }
-                                                    return isJpgOrPng
-                                                        ? false
-                                                        : Upload.LIST_IGNORE;
+                                            <ConfigProvider
+                                                theme={{
+                                                    components: {
+                                                        Upload: {
+                                                            lineWidth: "1px",
+                                                            lineType: "solid",
+                                                            colorBorder:
+                                                                "#8788ab",
+                                                            colorBgContainer:
+                                                                "transparent",
+                                                        },
+                                                    },
                                                 }}
-                                                maxCount={1}
                                             >
-                                                {fileList.length >= 1
-                                                    ? null
-                                                    : uploadButton}
-                                            </Upload>
-                                            {previewImage && (
-                                                <Image
-                                                    wrapperStyle={{
-                                                        display: "none",
+                                                <Upload
+                                                    listType="picture-card"
+                                                    fileList={fileList}
+                                                    onPreview={handlePreview}
+                                                    onChange={handleChange}
+                                                    beforeUpload={(file) => {
+                                                        const isJpgOrPng =
+                                                            file.type ===
+                                                                "image/jpeg" ||
+                                                            file.type ===
+                                                                "image/png";
+                                                        if (!isJpgOrPng) {
+                                                            openErrorNotification(
+                                                                "Solo puedes subir archivos JPG o PNG"
+                                                            );
+                                                        }
+                                                        return isJpgOrPng
+                                                            ? false
+                                                            : Upload.LIST_IGNORE;
                                                     }}
-                                                    preview={{
-                                                        visible: previewOpen,
-                                                        onVisibleChange: (
-                                                            visible
-                                                        ) =>
-                                                            setPreviewOpen(
+                                                    maxCount={1}
+                                                    onMouseEnter={
+                                                        handleMouseEnter
+                                                    }
+                                                    onMouseLeave={
+                                                        handleMouseLeave
+                                                    }
+                                                    style={{
+                                                        borderRadius: "12px",
+                                                        borderColor: isHovered
+                                                            ? "#110d27"
+                                                            : "#8788ab",
+                                                        borderWidth: "1px",
+                                                        borderStyle: "solid",
+                                                        backgroundColor:
+                                                            "transparent",
+                                                        transition:
+                                                            "border-color 0.3s",
+                                                    }}
+                                                >
+                                                    {fileList.length >= 1
+                                                        ? null
+                                                        : uploadButton}
+                                                </Upload>
+                                                {previewImage && (
+                                                    <Image
+                                                        wrapperStyle={{
+                                                            display: "none",
+                                                        }}
+                                                        preview={{
+                                                            visible:
+                                                                previewOpen,
+                                                            onVisibleChange: (
                                                                 visible
-                                                            ),
-                                                        afterOpenChange: (
-                                                            visible
-                                                        ) =>
-                                                            !visible &&
-                                                            setPreviewImage(""),
-                                                    }}
-                                                    src={previewImage}
-                                                />
-                                            )}
+                                                            ) =>
+                                                                setPreviewOpen(
+                                                                    visible
+                                                                ),
+                                                            afterOpenChange: (
+                                                                visible
+                                                            ) =>
+                                                                !visible &&
+                                                                setPreviewImage(
+                                                                    ""
+                                                                ),
+                                                        }}
+                                                        src={previewImage}
+                                                    />
+                                                )}
+                                            </ConfigProvider>
                                         </div>
                                     </div>
                                 </div>
