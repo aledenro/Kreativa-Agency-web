@@ -32,7 +32,6 @@ import VistaClientes from "./pages/VistaClientes";
 import VistaColaborador from "./pages/VistaColaborador";
 import Recuperar from "./pages/Recuperar";
 import Restablecer from "./pages/Restablecer";
-import RestablecerContraseña from "./pages/RestablecerContraseña";
 import ListadoTareas from "./pages/ListadoTareas";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
 import AgregarPTO from "./pages/AgregarPTO";
@@ -138,10 +137,6 @@ function App() {
                 <Route
                     path="/restablecer/:token"
                     element={<Restablecer />}
-                ></Route>
-                <Route
-                    path="/restablecer/:token"
-                    element={<RestablecerContraseña />}
                 ></Route>
                 <Route path="/tareas" element={<ListadoTareas />}></Route>
                 <Route
