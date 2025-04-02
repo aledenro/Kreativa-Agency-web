@@ -540,16 +540,38 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
-  }
+}
 
-  .sidebar.collapsed ul li svg {
+.sidebar.collapsed ul li svg {
     width: 24px !important;
     height: 24px !important;
 }
 
 @media (hover: none) and (pointer: coarse) {
     .submenu-item:active {
-      background-color: rgba(255, 0, 114, 0.15); /* Un rosadito un poquito más fuerte en touch */
-      transform: scale(0.98); 
+        background-color: rgba(255, 0, 114, 0.15);
+        transform: scale(0.98);
     }
-  }
+}
+
+
+.suggestions-dropdown {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.suggestion-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background-color: #f3f4f6;
+}

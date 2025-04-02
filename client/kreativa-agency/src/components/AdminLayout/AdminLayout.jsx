@@ -4,17 +4,13 @@ import {
     LayoutDashboard,
     Home,
     Users,
-    Settings,
     LogOut,
     Bell,
     MessageCircle,
     Search,
-    Mail,
     IdCard,
     SquareKanban,
-    FilePlus2,
     Menu,
-    FileText,
     ChevronDown,
     Banknote
 } from "lucide-react";
@@ -35,80 +31,51 @@ const sidebarItemVariants = {
 };
 
 const menuStructure = [
+    { title: "Usuarios", icon: Users, items: [{ label: "Gestión de usuarios", path: "/usuarios" }] },
     {
-        title: "Usuarios",
-        icon: Users,
-        items: [
-            { label: "Gestión de usuarios", path: "/usuarios" },
-        ],
-    },
-    {
-        title: "Proyectos",
-        icon: SquareKanban,
-        items: [
+        title: "Proyectos", icon: SquareKanban, items: [
             { label: "Gestión de proyectos", path: "/proyectos/gestion" },
             { label: "Dashboard proyecto", path: "/proyectos/dashboard" },
             { label: "Solicitudes cotización", path: "/proyectos/solicitudes" },
-        ],
+        ]
     },
+    { title: "Reportes", icon: LayoutDashboard, items: [{ label: "Dashboard", path: "/estadisticas" }] },
     {
-        title: "Reportes",
-        icon: LayoutDashboard,
-        items: [
-            { label: "Dashboard", path: "/estadisticas" },
-        ],
-    },
-    {
-        title: "Empleados",
-        icon: IdCard,
-        items: [
+        title: "Empleados", icon: IdCard, items: [
             { label: "Organigrama", path: "/empleados/organigrama" },
             { label: "PTO", path: "/empleados/pto" },
             { label: "Perfiles", path: "/empleados/perfiles" },
-        ],
+        ]
     },
     {
-        title: "Finanzas",
-        icon: Banknote,
-        items: [
+        title: "Finanzas", icon: Banknote, items: [
             { label: "Gestión financiera", path: "/finanzas/gestion" },
             { label: "Estadísticas", path: "/finanzas/estadisticas" },
-        ],
+        ]
     },
     {
-        title: "Landing",
-        icon: Home,
-        items: [
+        title: "Landing", icon: Home, items: [
             { label: "Gestión de servicios", path: "/landing/servicios" },
             { label: "Gestión de paquetes", path: "/landing/paquetes" },
             { label: "Gestión Form Puestos", path: "/landing/puestos" },
-        ],
+        ]
     },
-    {
-        title: "Salir",
-        icon: LogOut,
-        items: [
-            { label: "Cerrar sesión", path: "/logout" },
-        ],
-    },
+    { title: "Salir", icon: LogOut, items: [{ label: "Cerrar sesión", path: "/logout" }] },
 ];
 
 const AdminLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [openSections, setOpenSections] = useState({});
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredSuggestions, setFilteredSuggestions] = useState([]);
     const sidebarRef = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
         const handleClickOutside = (event) => {
-            if (
-                sidebarRef.current &&
-                !sidebarRef.current.contains(event.target) &&
-                isMobile &&
-                !collapsed
-            ) {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target) && isMobile && !collapsed) {
                 setCollapsed(true);
             }
         };
@@ -129,6 +96,19 @@ const AdminLayout = ({ children }) => {
             ...prev,
             [title]: !prev[title],
         }));
+    };
+
+    const handleSearchChange = (value) => {
+        setSearchTerm(value);
+        const suggestions = [];
+        for (const section of menuStructure) {
+            for (const item of section.items) {
+                if (item.label.toLowerCase().includes(value.toLowerCase())) {
+                    suggestions.push(item);
+                }
+            }
+        }
+        setFilteredSuggestions(suggestions);
     };
 
     return (
@@ -167,10 +147,7 @@ const AdminLayout = ({ children }) => {
                             custom={index}
                         >
                             <div className="module-container">
-                                <div
-                                    className="menu-item module-header"
-                                    onClick={() => toggleSection(section.title)}
-                                >
+                                <div className="menu-item module-header" onClick={() => toggleSection(section.title)}>
                                     <div className="module-title">
                                         <section.icon size={20} />
                                         {!collapsed && <span>{section.title}</span>}
@@ -179,45 +156,23 @@ const AdminLayout = ({ children }) => {
                                         <ChevronDown
                                             size={16}
                                             className="chevron-icon"
-                                            style={{
-                                                transition: "transform 0.3s",
-                                                transform: openSections[section.title] ? "rotate(180deg)" : "rotate(0)"
-                                            }}
+                                            style={{ transition: "transform 0.3s", transform: openSections[section.title] ? "rotate(180deg)" : "rotate(0)" }}
                                         />
                                     )}
                                 </div>
 
                                 <AnimatePresence>
                                     {!collapsed && openSections[section.title] && (
-                                        <motion.ul
-                                            className="sidebar-submenu"
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: "auto", opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.2 }}
-                                        >
+                                        <motion.ul className="sidebar-submenu" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}>
                                             {section.items.map((item) => (
-                                              <motion.li
-                                              key={item.label}
-                                              className="menu-item submenu-item"
-                                              onTouchStart={(e) => {
-                                                  e.currentTarget.classList.add("active-touch");
-                                                  setTimeout(() => {
-                                                      navigate(item.path);
-                                                  }, 150); // da tiempo a que se vea el efecto
-                                              }}
-                                              onClick={(e) => {
-                                                  // Previene que onClick redireccione antes de la animación si ya lo hizo onTouchStart
-                                                  if (e.pointerType === "touch") return;
-                                                  e.currentTarget.classList.add("active-touch");
-                                                  setTimeout(() => {
-                                                      navigate(item.path);
-                                                  }, 150);
-                                              }}
-                                              layout
-                                          >
-                                              <span>{item.label}</span>
-                                          </motion.li>
+                                                <motion.li
+                                                    key={item.label}
+                                                    className="menu-item submenu-item"
+                                                    onClick={() => navigate(item.path)}
+                                                    layout
+                                                >
+                                                    <span>{item.label}</span>
+                                                </motion.li>
                                             ))}
                                         </motion.ul>
                                     )}
@@ -228,18 +183,10 @@ const AdminLayout = ({ children }) => {
                 </ul>
             </motion.aside>
 
-            <motion.main
-                className={`content ${collapsed ? "collapsed" : "expanded"}`}
-                animate={{ marginLeft: collapsed ? "80px" : "250px" }}
-                transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}
-            >
+            <motion.main className={`content ${collapsed ? "collapsed" : "expanded"}`} animate={{ marginLeft: collapsed ? "80px" : "250px" }} transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}>
                 <motion.div className={`header ${isMobile ? "" : collapsed ? "collapsed" : "expanded"}`}>
                     {isMobile && (
-                        <button
-                            className="menu-toggle-btn"
-                            onClick={toggleSidebar}
-                            aria-label="Abrir menú"
-                        >
+                        <button className="menu-toggle-btn" onClick={toggleSidebar} aria-label="Abrir menú">
                             <Menu size={26} />
                         </button>
                     )}
@@ -251,7 +198,29 @@ const AdminLayout = ({ children }) => {
                     <div className="search-container">
                         <div className="search-bar">
                             <Search size={18} className="search-icon" />
-                            <input type="text" placeholder="Buscar..." />
+                            <input
+                                type="text"
+                                placeholder="Buscar..."
+                                value={searchTerm}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                            />
+                            {filteredSuggestions.length > 0 && (
+                                <div className="suggestions-dropdown">
+                                    {filteredSuggestions.map((suggestion, index) => (
+                                        <div
+                                            key={index}
+                                            className="suggestion-item"
+                                            onClick={() => {
+                                                navigate(suggestion.path);
+                                                setSearchTerm("");
+                                                setFilteredSuggestions([]);
+                                            }}
+                                        >
+                                            {suggestion.label}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -259,10 +228,7 @@ const AdminLayout = ({ children }) => {
                         <Bell size={22} className="header-icon" />
                         <MessageCircle size={22} className="header-icon" />
                         <div className="header-avatar">
-                            <img
-                                src="https://i.pravatar.cc/150?u=a04258114e29026702d"
-                                alt="Perfil"
-                            />
+                            <img src="https://i.pravatar.cc/150?u=a04258114e29026702d" alt="Perfil" />
                         </div>
                     </div>
                 </motion.div>
