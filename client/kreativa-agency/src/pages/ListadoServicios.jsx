@@ -1,8 +1,97 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import {
+    DotButton,
+    useDotButton,
+} from "../components/ui/EmblaCarouselDotButton";
+import {
+    PrevButton,
+    NextButton,
+    usePrevNextButtons,
+} from "../components/ui/EmblaCarouselArrowButtons";
+import useEmblaCarousel from "embla-carousel-react";
+
+const EmblaCarousel = (props) => {
+    const { servicios, options, onClickServicio } = props;
+    const [emblaRef, emblaApi] = useEmblaCarousel(options);
+    const { selectedIndex, scrollSnaps, onDotButtonClick } =
+        useDotButton(emblaApi);
+
+    const {
+        prevBtnDisabled,
+        nextBtnDisabled,
+        onPrevButtonClick,
+        onNextButtonClick,
+    } = usePrevNextButtons(emblaApi);
+
+    return (
+        <section className="embla">
+            <div className="embla__viewport" ref={emblaRef}>
+                <div className="embla__container">
+                    {servicios.map((servicio) => (
+                        <div className="embla__slide" key={servicio._id}>
+                            <div className="embla__slide__content">
+                                <img
+                                    src={servicio.imagenMostrar}
+                                    alt={servicio.nombre}
+                                    className="embla__slide__image"
+                                    onError={(e) => {
+                                        e.target.src =
+                                            "https://placehold.co/600x400";
+                                    }}
+                                />
+                                <div className="embla__slide__overlay">
+                                    <div className="embla__slide__overlay-row">
+                                        <h3 className="embla__slide__title">
+                                            {servicio.nombre}
+                                        </h3>
+                                        <FontAwesomeIcon
+                                            icon={faArrowRight}
+                                            className="arrow-icon"
+                                            onClick={() =>
+                                                onClickServicio(servicio._id)
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="embla__controls">
+                <div className="embla__buttons">
+                    <PrevButton
+                        onClick={onPrevButtonClick}
+                        disabled={prevBtnDisabled}
+                    />
+                    <NextButton
+                        onClick={onNextButtonClick}
+                        disabled={nextBtnDisabled}
+                    />
+                </div>
+
+                <div className="embla__dots">
+                    {scrollSnaps.map((_, index) => (
+                        <DotButton
+                            key={index}
+                            onClick={() => onDotButtonClick(index)}
+                            className={"embla__dot".concat(
+                                index === selectedIndex
+                                    ? " embla__dot--selected"
+                                    : ""
+                            )}
+                        />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
 
 const ListadoServicios = () => {
     const [servicios, setServicios] = useState([]);
@@ -17,11 +106,28 @@ const ListadoServicios = () => {
                 );
 
                 if (Array.isArray(response.data)) {
-                    const serviciosActivos = response.data.map((servicio) => ({
-                        ...servicio,
-                        imagen:
-                            servicio.imagen || "https://placehold.co/600x400",
-                    }));
+                    const serviciosActivos = response.data
+                        .filter((servicio) => servicio.activo === true)
+                        .map((servicio) => {
+                            let imagenMostrar = "https://placehold.co/600x400";
+
+                            if (
+                                servicio.imagenes &&
+                                servicio.imagenes.length > 0
+                            ) {
+                                imagenMostrar =
+                                    servicio.imagenes[
+                                        servicio.imagenes.length - 1
+                                    ];
+                            } else if (servicio.imagen) {
+                                imagenMostrar = servicio.imagen;
+                            }
+
+                            return {
+                                ...servicio,
+                                imagenMostrar,
+                            };
+                        });
 
                     setServicios(serviciosActivos);
                 } else {
@@ -43,6 +149,9 @@ const ListadoServicios = () => {
     function handleAgregarServicio() {
         navigate(`/servicio/agregar`);
     }
+
+    // Carousel options
+    const OPTIONS = { loop: true, dragFree: true };
 
     return (
         <div className="services-page">
@@ -74,17 +183,9 @@ const ListadoServicios = () => {
                                     <a
                                         href={`#servicio-${servicio._id}`}
                                         className="service-nav-link"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            document
-                                                .getElementById(
-                                                    `servicio-${servicio._id}`
-                                                )
-                                                ?.scrollIntoView({
-                                                    behavior: "smooth",
-                                                    block: "start",
-                                                });
-                                        }}
+                                        onClick={() =>
+                                            handleListadoServicios(servicio._id)
+                                        }
                                     >
                                         {servicio.nombre}
                                     </a>
@@ -99,74 +200,13 @@ const ListadoServicios = () => {
                     </div>
                 )}
 
-                <section className="services">
-                    <div className="services-container">
-                        {servicios.length > 0 ? (
-                            servicios.map((servicio, index) => (
-                                <div
-                                    key={servicio._id}
-                                    id={`servicio-${servicio._id}`}
-                                    className={`service-card ${index % 2 !== 0 ? "reverse" : ""}`}
-                                >
-                                    <div className="service-image-container">
-                                        <img
-                                            src={servicio.imagen}
-                                            alt={servicio.nombre}
-                                            className="service-image"
-                                            onError={(e) => {
-                                                e.target.src =
-                                                    "https://placehold.co/600x400";
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="service-content">
-                                        <div>
-                                            <h3 className="services-title">
-                                                <a
-                                                    onClick={() =>
-                                                        handleListadoServicios(
-                                                            servicio._id
-                                                        )
-                                                    }
-                                                    className="service-title-link"
-                                                >
-                                                    {servicio.nombre}
-                                                </a>
-                                            </h3>
-                                            <p className="service-description">
-                                                {servicio.descripcion.length >
-                                                100
-                                                    ? servicio.descripcion.substring(
-                                                          0,
-                                                          100
-                                                      ) + "..."
-                                                    : servicio.descripcion}
-                                            </p>
-                                        </div>
-                                        <button
-                                            className="thm-btn thm-btn-small service-btn"
-                                            onClick={() =>
-                                                handleListadoServicios(
-                                                    servicio._id
-                                                )
-                                            }
-                                        >
-                                            Ver más{" "}
-                                            <FontAwesomeIcon
-                                                icon={faArrowRight}
-                                                className="btn-icon"
-                                            />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="no-services">
-                                <p>No hay servicios por mostrar</p>
-                            </div>
-                        )}
-                    </div>
-                </section>
+                {servicios.length > 0 && (
+                    <EmblaCarousel
+                        servicios={servicios}
+                        options={OPTIONS}
+                        onClickServicio={handleListadoServicios}
+                    />
+                )}
             </div>
         </div>
     );
