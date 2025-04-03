@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Swal from "sweetalert2";
 import {
     LayoutDashboard,
     Home,
@@ -114,7 +115,6 @@ const AdminLayout = ({ children }) => {
         setFilteredSuggestions(suggestions);
     };
 
-    // ✅ Abrir Outlook al hacer clic en el ícono de mensajes
     const handleOpenOutlook = () => {
         window.open(
             "https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=174&ct=1743640803&rver=7.5.2211.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26cobrandid%3dab0455a0-8d03-46b9-b18b-df2f57b9e44c%26culture%3des-es%26country%3des%26RpsCsrfState%3d2e94afef-ff0a-ba50-202f-b2a396866903&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=ab0455a0-8d03-46b9-b18b-df2f57b9e44c",
@@ -240,10 +240,23 @@ const AdminLayout = ({ children }) => {
                             size={22}
                             className="header-icon"
                             onClick={() => {
-                                localStorage.removeItem("token");
-                                localStorage.removeItem("tipo_usuario");
-                                localStorage.removeItem("user_id");
-                                window.location.href = "http://localhost:5173/";
+                                Swal.fire({
+                                    title: "¿Cerrar sesión?",
+                                    text: "¿Estás seguro que deseas cerrar tu sesión?",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#FF0072",
+                                    cancelButtonColor: "#888",
+                                    confirmButtonText: "Sí, cerrar sesión",
+                                    cancelButtonText: "Cancelar"
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        localStorage.removeItem("token");
+                                        localStorage.removeItem("tipo_usuario");
+                                        localStorage.removeItem("user_id");
+                                        window.location.href = "http://localhost:5173/";
+                                    }
+                                });
                             }}
                             style={{ cursor: "pointer" }}
                             title="Cerrar sesión"
