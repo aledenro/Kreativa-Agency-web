@@ -19,6 +19,10 @@ const FormReclutaciones = () => {
     const [loading, setLoading] = useState(false);
 
     const [api, contextHolder] = notification.useNotification();
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
 
     const showNotification = (type, message) => {
         api[type]({
@@ -244,7 +248,11 @@ const FormReclutaciones = () => {
                                         theme={{
                                             components: {
                                                 Upload: {
-                                                    lineWidth: "0",
+                                                    lineWidth: "1px",
+                                                    lineType: "solid",
+                                                    colorBorder: "#8788ab",
+                                                    colorBgContainer:
+                                                        "transparent",
                                                 },
                                             },
                                         }}
@@ -258,9 +266,29 @@ const FormReclutaciones = () => {
                                             className="custom-dragger"
                                             accept=".pdf"
                                             maxCount={1}
+                                            style={{
+                                                borderRadius: "12px",
+                                                borderColor: isHovered
+                                                    ? "#110d27"
+                                                    : "#8788ab",
+                                                borderWidth: "1px",
+                                                borderStyle: "solid",
+                                                backgroundColor: "transparent",
+                                                transition: "border-color 0.3s",
+                                            }}
+                                            onMouseEnter={handleMouseEnter}
+                                            onMouseLeave={handleMouseLeave}
                                         >
                                             <p className="ant-upload-drag-icon custom-icon">
-                                                <InboxOutlined />
+                                                <InboxOutlined
+                                                    style={{
+                                                        color: isHovered
+                                                            ? "#110d27"
+                                                            : "#8788ab",
+                                                        transition:
+                                                            "color 0.3s",
+                                                    }}
+                                                />
                                             </p>
                                             <p className="ant-upload-text">
                                                 Haz clic o arrastra tu archivo
@@ -281,6 +309,9 @@ const FormReclutaciones = () => {
                                     variant="primary"
                                     type="submit"
                                     disabled={loading}
+                                    style={{
+                                        margin: "20px",
+                                    }}
                                 >
                                     {loading ? (
                                         <Spinner animation="border" size="sm" />

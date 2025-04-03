@@ -4,11 +4,18 @@ import lodash from "lodash";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { notification } from "antd";
+import { Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
 const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
     const [tarea, setTarea] = useState(tareaModal);
     const [error, setError] = useState("");
+    const [editando, setEditando] = useState(false);
+    const [commentEdit, setCommentEdit] = useState({});
     const [api, contextHolder] = notification.useNotification();
+    const user_id = localStorage.getItem("user_id");
+    const [contenido, setContenido] = useState("");
 
     const openSuccessNotification = (message) => {
         api.success({
@@ -28,9 +35,19 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
         });
     };
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCommentEdit((prevCommentEdit) => ({
+            ...prevCommentEdit,
+            [name]: value,
+        }));
+
+        setContenido(e.target.value);
+    };
+
     const handleAddCommentario = async (event) => {
         event.preventDefault();
-        const content = event.target.content.value;
+        const content = event.target.contenido.value;
 
         if (lodash.isEmpty(content)) {
             setError("Debe ingresar un comentario antes de enviar.");
@@ -40,22 +57,26 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
             return;
         }
 
-        try {
-            const user_id = localStorage.getItem("user_id");
+        const url = `http://localhost:4000/api/tareas/comment/${editando ? "edit/" : ""}`;
+        const data = editando
+            ? commentEdit
+            : {
+                  usuario_id: user_id,
+                  contenido: content,
+                  fecha: Date.now(),
+              };
 
-            const response = await axios.put(
-                `http://localhost:4000/api/tareas/comment/${tarea._id}`,
-                {
-                    usuario_id: user_id,
-                    contenido: content,
-                    fecha: Date.now(),
-                }
-            );
+        try {
+            const response = await axios.put(`${url}${tarea._id}`, data);
 
             if (response.status === 200) {
                 openSuccessNotification("Comentario enviado correctamente.");
                 setTarea(response.data);
-                event.target.reset();
+                if (editando) {
+                    setCommentEdit({});
+                    setEditando(false);
+                }
+                setContenido("");
             }
         } catch (error) {
             console.error(error.message);
@@ -218,6 +239,28 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
                                                           .split("T")[0]
                                                     : ""}
                                             </small>
+                                            {comentario.usuario_id._id ===
+                                                user_id &&
+                                            tarea.proyecto_id.estado !=
+                                                "Finalizado" &&
+                                            tarea.proyecto_id.estado !=
+                                                "Cancelado" ? (
+                                                <Button
+                                                    className="thm-btn thm-btn-small btn-azul col"
+                                                    onClick={() => {
+                                                        setCommentEdit(
+                                                            comentario
+                                                        );
+                                                        setEditando(true);
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faPencil}
+                                                    />
+                                                </Button>
+                                            ) : (
+                                                ""
+                                            )}
                                         </div>
                                     </div>
                                     <hr />
@@ -239,10 +282,16 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
                                 >
                                     <textarea
                                         className="form-input"
-                                        id="content"
+                                        id="contenido"
                                         rows="4"
                                         placeholder="Ingrese un comentario..."
-                                        name="content"
+                                        name="contenido"
+                                        value={
+                                            editando
+                                                ? commentEdit.contenido
+                                                : contenido
+                                        }
+                                        onChange={handleChange}
                                     ></textarea>
                                     {error && (
                                         <small className="text-danger">
@@ -256,7 +305,7 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
                                     type="submit"
                                     className="thm-btn thm-btn-small"
                                 >
-                                    Enviar
+                                    {editando ? "Guardar Cambios" : "Enviar"}
                                 </button>
                             </div>
                         </form>

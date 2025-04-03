@@ -40,7 +40,15 @@ class ServiciosService {
                         parent_id: servicio._id,
                     });
 
-                    servicio.imagen = files.length > 0 ? files[0].url : null;
+                    const sortedFiles = files.sort((a, b) => {
+                        const timestampA = a.key.split("/")[3].split("-")[0];
+                        const timestampB = b.key.split("/")[3].split("-")[0];
+
+                        return parseInt(timestampB) - parseInt(timestampA);
+                    });
+
+                    servicio.imagen =
+                        sortedFiles.length > 0 ? sortedFiles[0].url : null;
                 }
             }
 
@@ -66,7 +74,17 @@ class ServiciosService {
                 parent_id: servicio._id,
             });
 
-            servicio.imagen = files.length > 0 ? files[0].url : null;
+            const sortedFiles = files.sort((a, b) => {
+                const timestampA = a.key.split("/")[3].split("-")[0];
+                const timestampB = b.key.split("/")[3].split("-")[0];
+
+                return parseInt(timestampB) - parseInt(timestampA);
+            });
+
+            servicio.imagen =
+                sortedFiles.length > 0 ? sortedFiles[0].url : null;
+
+            servicio.imagenesUrls = sortedFiles.map((file) => file.url);
 
             return servicio;
         } catch (error) {
@@ -75,7 +93,6 @@ class ServiciosService {
             );
         }
     }
-    Mejoras;
 
     async getServiciosNombres() {
         try {
@@ -90,26 +107,66 @@ class ServiciosService {
         }
     }
 
-    async modificarServicioById(id, datosActualizados) {
+    async modificarServicioById(id, datosActualizados, files) {
         try {
+            const servicioExistente = await Servicios.findById(id);
+            if (!servicioExistente) {
+                throw new Error(`No se encontró el servicio ${id}`);
+            }
+
+            if (files && files.length > 0) {
+                const nuevasImagenes = await Promise.all(
+                    files.map(async (file) => {
+                        return await awsS3Connect.uploadFile(file, {
+                            folder: "landingpage",
+                            parent: "servicios",
+                            parent_id: id,
+                        });
+                    })
+                );
+
+                datosActualizados.imagenes = nuevasImagenes;
+            }
+
+            if (
+                datosActualizados.imagenes &&
+                Object.keys(datosActualizados).length === 1
+            ) {
+                await Servicios.updateOne(
+                    { _id: id },
+                    { $set: { imagenes: datosActualizados.imagenes } }
+                );
+            }
+
             const servicioActualizado = await Servicios.findByIdAndUpdate(
                 id,
                 datosActualizados,
                 {
                     new: true,
+                    runValidators: true,
                 }
-            );
+            ).lean();
 
-            console.log(datosActualizados);
+            const imagenesConUrls = await awsS3Connect.generateUrls({
+                folder: "landingpage",
+                parent: "servicios",
+                parent_id: servicioActualizado._id,
+            });
+
+            servicioActualizado.imagen =
+                imagenesConUrls.length > 0 ? imagenesConUrls[0].url : null;
+
+            servicioActualizado.imagenesUrls = imagenesConUrls.map(
+                (file) => file.url
+            );
 
             return servicioActualizado;
         } catch (error) {
             throw new Error(
-                `No se pudo modificar el servicio ${id}: ` + error.message
+                `No se pudo modificar el servicio ${id}: ${error.message}`
             );
         }
     }
-
     async desactivarServicioById(id) {
         try {
             const servicioDesactivado = await Servicios.findByIdAndUpdate(
