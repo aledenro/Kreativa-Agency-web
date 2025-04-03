@@ -6,7 +6,6 @@ import {
     Home,
     Users,
     LogOut,
-    Bell,
     MessageCircle,
     Search,
     IdCard,
