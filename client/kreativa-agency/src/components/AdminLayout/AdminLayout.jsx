@@ -236,7 +236,18 @@ const AdminLayout = ({ children }) => {
                     </div>
 
                     <div className="header-icons">
-                        <Bell size={22} className="header-icon" />
+                        <LogOut
+                            size={22}
+                            className="header-icon"
+                            onClick={() => {
+                                localStorage.removeItem("token");
+                                localStorage.removeItem("tipo_usuario");
+                                localStorage.removeItem("user_id");
+                                window.location.href = "http://localhost:5173/";
+                            }}
+                            style={{ cursor: "pointer" }}
+                            title="Cerrar sesión"
+                        />
                         <MessageCircle
                             size={22}
                             className="header-icon"
