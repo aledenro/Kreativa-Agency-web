@@ -14,6 +14,7 @@ import {
     faSort,
     faPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { Modal } from "react-bootstrap";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 
@@ -24,6 +25,10 @@ const GestionServicios = () => {
     const [sortField, setSortField] = useState("nombre");
     const [sortOrder, setSortOrder] = useState("asc");
     const navigate = useNavigate();
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedServicio, setSelectedServicio] = useState(null);
+    const [modalAction, setModalAction] = useState(""); // "activar" or "desactivar"
 
     useEffect(() => {
         const fetchServicios = async () => {
@@ -56,7 +61,17 @@ const GestionServicios = () => {
         navigate(`/servicio/agregar`);
     };
 
-    const toggleEstadoServicio = async (id, estadoActual) => {
+    const confirmToggleEstadoServicio = (id, estadoActual) => {
+        setSelectedServicio({ id, estadoActual });
+        setModalAction(estadoActual ? "desactivar" : "activar");
+        setShowModal(true);
+    };
+
+    const toggleEstadoServicio = async () => {
+        if (!selectedServicio) return;
+
+        const { id, estadoActual } = selectedServicio;
+
         try {
             const endpoint = estadoActual
                 ? `http://localhost:4000/api/servicios/${id}/desactivar`
@@ -71,8 +86,11 @@ const GestionServicios = () => {
                         : servicio
                 )
             );
+
+            setShowModal(false);
         } catch (error) {
             console.error("Error al cambiar el estado del servicio:", error);
+            setShowModal(false);
         }
     };
 
@@ -208,7 +226,7 @@ const GestionServicios = () => {
                                                 <button
                                                     className={`thm-btn thm-btn-small ${servicio.activo ? "btn-verde" : "btn-rojo"}`}
                                                     onClick={() =>
-                                                        toggleEstadoServicio(
+                                                        confirmToggleEstadoServicio(
                                                             servicio._id,
                                                             servicio.activo
                                                         )
@@ -288,6 +306,29 @@ const GestionServicios = () => {
                         <FontAwesomeIcon icon={faForward} />
                     </button>
                 </div>
+
+                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirmar Acción</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        ¿Seguro que desea {modalAction} este servicio?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button
+                            className="thm-btn thm-btn-small btn-rojo"
+                            onClick={() => setShowModal(false)}
+                        >
+                            No
+                        </button>
+                        <button
+                            className="thm-btn thm-btn-small"
+                            onClick={toggleEstadoServicio}
+                        >
+                            Sí
+                        </button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </AdminLayout>
     );
