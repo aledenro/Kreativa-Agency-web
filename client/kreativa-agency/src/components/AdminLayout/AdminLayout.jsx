@@ -266,15 +266,24 @@ const AdminLayout = ({ children }) => {
                             onClick={handleOpenOutlook}
                             style={{ cursor: "pointer" }}
                         />
-                        <div className="header-avatar" style={{
-                            backgroundColor: "#FF0072",
-                            color: "white",
-                            fontWeight: "bold",
-                            fontSize: "18px",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }}>
+                        <div
+                            className="header-avatar"
+                            onClick={() => navigate("/perfil")} 
+                            style={{
+                                backgroundColor: "#FF0072",
+                                color: "white",
+                                fontWeight: "bold",
+                                fontSize: "18px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                cursor: "pointer", 
+                                borderRadius: "50%",
+                                width: "36px",
+                                height: "36px"
+                            }}
+                            title="Ver perfil"
+                        >
                             {userInitial}
                         </div>
                     </div>
