@@ -6,8 +6,6 @@ import {
     Users,
     Settings,
     LogOut,
-    Bell,
-    MessageCircle,
     Search,
     Mail,
     IdCard,
@@ -15,7 +13,6 @@ import {
     FilePlus2,
     Menu,
 } from "lucide-react";
-import { Avatar } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import "../AdminPanel.css";
 import logo from "../assets/img/logo.png";
@@ -50,6 +47,13 @@ const AdminPanel = () => {
     const [collapsed, setCollapsed] = useState(true);
     const navigate = useNavigate();
 
+    const handleOpenOutlook = () => {
+        window.open(
+            "https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=174&ct=1743640803&rver=7.5.2211.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f",
+            "_blank"
+        );
+    };
+
     return (
         <div className="admin-container">
             {/* Sidebar */}
@@ -59,7 +63,7 @@ const AdminPanel = () => {
                 transition={{ duration: 0.3, ease: "easeInOut" }}
             >
                 <ul>
-                    {/* Ícono de menú como primer ítem del sidebar */}
+                    {/* Menú */}
                     <motion.li
                         whileHover={{ scale: 1.1 }}
                         className="menu-item"
@@ -68,7 +72,7 @@ const AdminPanel = () => {
                         <Menu size={24} />
                         {!collapsed && (
                             <motion.span
-                                animate={{ opacity: 1, display: "inline-block" }}
+                                animate={{ opacity: 1 }}
                                 transition={{ duration: 0.2 }}
                             >
                                 Menú
@@ -76,7 +80,7 @@ const AdminPanel = () => {
                         )}
                     </motion.li>
 
-                    {/* Resto del menú */}
+                    {/* Menú items */}
                     {[
                         { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
                         { icon: Home, label: "Inicio", path: "/" },
@@ -97,7 +101,7 @@ const AdminPanel = () => {
                             <item.icon size={24} />
                             {!collapsed && (
                                 <motion.span
-                                    animate={{ opacity: 1, display: "inline-block" }}
+                                    animate={{ opacity: 1 }}
                                     transition={{ duration: 0.2 }}
                                 >
                                     {item.label}
@@ -114,17 +118,13 @@ const AdminPanel = () => {
                 animate={{ marginLeft: collapsed ? "80px" : "250px" }}
                 transition={{ duration: 0.3 }}
             >
+                {/* Header */}
                 <div className="header">
-                    {/* Logo de Kreativa */}
                     <div className="logo-header">
-                        <img
-                            src={logo}
-                            alt="Kreativa Agency"
-                            className="logo-img"
-                        />
+                        <img src={logo} alt="Kreativa Agency" className="logo-img" />
                     </div>
 
-                    {/* Barra de búsqueda */}
+                    {/* Buscador */}
                     <div className="search-container">
                         <div className="search-bar">
                             <Search size={18} className="search-icon" />
@@ -132,10 +132,20 @@ const AdminPanel = () => {
                         </div>
                     </div>
 
-                    {/* Iconos derecha */}
+                    {/* Íconos del header */}
                     <div className="header-icons">
-                        <Bell size={22} className="header-icon" />
-                        <MessageCircle size={22} className="header-icon" />
+                        <Mail
+                            size={22}
+                            className="header-icon"
+                            onClick={() =>
+                                window.open(
+                                    "https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=174&ct=1743640803&rver=7.5.2211.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f",
+                                    "_blank"
+                                )
+                            }
+                            style={{ cursor: "pointer" }}
+                            title="Ir a Outlook"
+                        />
                         <div className="header-avatar">
                             <img
                                 src="https://i.pravatar.cc/150?u=a04258114e29026702d"

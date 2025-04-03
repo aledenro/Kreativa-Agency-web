@@ -6,7 +6,7 @@ import {
     Home,
     Users,
     LogOut,
-    MessageCircle,
+    Mail,
     Search,
     IdCard,
     SquareKanban,
@@ -260,15 +260,16 @@ const AdminLayout = ({ children }) => {
                             style={{ cursor: "pointer" }}
                             title="Cerrar sesión"
                         />
-                        <MessageCircle
+                        <Mail
                             size={22}
                             className="header-icon"
                             onClick={handleOpenOutlook}
                             style={{ cursor: "pointer" }}
+                            title="Ir a Outlook"
                         />
                         <div
                             className="header-avatar"
-                            onClick={() => navigate("/perfil")} 
+                            onClick={() => navigate("/perfil")}
                             style={{
                                 backgroundColor: "#FF0072",
                                 color: "white",
@@ -277,7 +278,7 @@ const AdminLayout = ({ children }) => {
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                cursor: "pointer", 
+                                cursor: "pointer",
                                 borderRadius: "50%",
                                 width: "36px",
                                 height: "36px"
