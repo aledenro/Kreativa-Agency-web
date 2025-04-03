@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LayoutDashboard,
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
+import { AuthContext } from "../../context/AuthContext";
 
 const sidebarItemVariants = {
     hidden: { opacity: 0, x: -20 },
@@ -71,6 +72,8 @@ const AdminLayout = ({ children }) => {
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
     const sidebarRef = useRef(null);
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
+    const userInitial = user?.nombre?.charAt(0).toUpperCase() || "U";
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -227,8 +230,16 @@ const AdminLayout = ({ children }) => {
                     <div className="header-icons">
                         <Bell size={22} className="header-icon" />
                         <MessageCircle size={22} className="header-icon" />
-                        <div className="header-avatar">
-                            <img src="https://i.pravatar.cc/150?u=a04258114e29026702d" alt="Perfil" />
+                        <div className="header-avatar" style={{
+                            backgroundColor: "#FF0072",
+                            color: "white",
+                            fontWeight: "bold",
+                            fontSize: "18px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}>
+                            {userInitial}
                         </div>
                     </div>
                 </motion.div>

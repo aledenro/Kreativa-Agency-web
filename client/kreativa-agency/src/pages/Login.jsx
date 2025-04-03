@@ -3,9 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
     const [formData, setFormData] = useState({
         usuario: "",
         contraseña: "",
@@ -44,7 +48,13 @@ const Login = () => {
 
             const decodedToken = jwtDecode(token);
             console.log("Token decodificado:", decodedToken);
-
+            // Contexto usuario 
+            login({
+                nombre: decodedToken.usuario, 
+                email: decodedToken.email || "", 
+                tipo_usuario: decodedToken.tipo_usuario,
+                id: decodedToken.id,
+              });
             localStorage.setItem("tipo_usuario", decodedToken.tipo_usuario);
             localStorage.setItem("user_id", decodedToken.id);
 
