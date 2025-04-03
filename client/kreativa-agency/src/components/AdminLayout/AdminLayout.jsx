@@ -116,7 +116,7 @@ const AdminLayout = ({ children }) => {
 
     const handleOpenOutlook = () => {
         window.open(
-            "https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=174&ct=1743640803&rver=7.5.2211.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fnlp%3d1%26cobrandid%3dab0455a0-8d03-46b9-b18b-df2f57b9e44c%26culture%3des-es%26country%3des%26RpsCsrfState%3d2e94afef-ff0a-ba50-202f-b2a396866903&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=ab0455a0-8d03-46b9-b18b-df2f57b9e44c",
+            "https://outlook.live.com/owa/",
             "_blank"
         );
     };
@@ -235,57 +235,63 @@ const AdminLayout = ({ children }) => {
                     </div>
 
                     <div className="header-icons">
-                        <LogOut
-                            size={22}
-                            className="header-icon"
-                            onClick={() => {
-                                Swal.fire({
-                                    title: "¿Cerrar sesión?",
-                                    text: "¿Estás seguro que deseas cerrar tu sesión?",
-                                    icon: "warning",
-                                    showCancelButton: true,
-                                    confirmButtonColor: "#FF0072",
-                                    cancelButtonColor: "#888",
-                                    confirmButtonText: "Sí, cerrar sesión",
-                                    cancelButtonText: "Cancelar"
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        localStorage.removeItem("token");
-                                        localStorage.removeItem("tipo_usuario");
-                                        localStorage.removeItem("user_id");
-                                        window.location.href = "http://localhost:5173/";
-                                    }
-                                });
-                            }}
-                            style={{ cursor: "pointer" }}
-                            title="Cerrar sesión"
-                        />
-                        <Mail
-                            size={22}
-                            className="header-icon"
-                            onClick={handleOpenOutlook}
-                            style={{ cursor: "pointer" }}
-                            title="Ir a Outlook"
-                        />
+                        <div className="tooltip-wrapper" data-tooltip="Cerrar sesión">
+                            <LogOut
+                                size={22}
+                                className="header-icon"
+                                onClick={() => {
+                                    Swal.fire({
+                                        title: "¿Cerrar sesión?",
+                                        text: "¿Estás seguro que deseas cerrar tu sesión?",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#FF0072",
+                                        cancelButtonColor: "#888",
+                                        confirmButtonText: "Sí, cerrar sesión",
+                                        cancelButtonText: "Cancelar"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            localStorage.removeItem("token");
+                                            localStorage.removeItem("tipo_usuario");
+                                            localStorage.removeItem("user_id");
+                                            window.location.href = "http://localhost:5173/";
+                                        }
+                                    });
+                                }}
+                            />
+                        </div>
+
+                        <div className="tooltip-wrapper" data-tooltip="Ir a Outlook">
+                            <Mail
+                                size={22}
+                                className="header-icon"
+                                onClick={handleOpenOutlook}
+                            />
+                        </div>
+
                         <div
-                            className="header-avatar"
+                            className="tooltip-wrapper"
+                            data-tooltip="Ver perfil"
                             onClick={() => navigate("/perfil")}
-                            style={{
-                                backgroundColor: "#FF0072",
-                                color: "white",
-                                fontWeight: "bold",
-                                fontSize: "18px",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                cursor: "pointer",
-                                borderRadius: "50%",
-                                width: "36px",
-                                height: "36px"
-                            }}
-                            title="Ver perfil"
                         >
-                            {userInitial}
+                            <div
+                                className="header-avatar"
+                                style={{
+                                    backgroundColor: "#FF0072",
+                                    color: "white",
+                                    fontWeight: "bold",
+                                    fontSize: "18px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    cursor: "pointer",
+                                    borderRadius: "50%",
+                                    width: "36px",
+                                    height: "36px"
+                                }}
+                            >
+                                {userInitial}
+                            </div>
                         </div>
                     </div>
                 </motion.div>

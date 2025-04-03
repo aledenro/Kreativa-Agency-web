@@ -575,3 +575,33 @@ body {
 .suggestion-item:hover {
     background-color: #f3f4f6;
 }
+
+
+/* Tooltips personalizados */
+.tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-wrapper::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #110D27;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 9999;
+}
+
+.tooltip-wrapper:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(2px);
+}
