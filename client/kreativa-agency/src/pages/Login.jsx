@@ -17,7 +17,7 @@ const Login = () => {
     });
 
     const [error, setError] = useState("");
-
+    const [mostrarContrasena, setMostrarContrasena] = useState(false);
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
