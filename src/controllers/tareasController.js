@@ -106,6 +106,48 @@ class TareasController {
             });
         }
     }
+
+    async commentTarea(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+
+            const tarea = await TareasService.commentTarea(id, data);
+
+            if (!tarea || lodash.isEmpty(tarea)) {
+                return res.status(404).json({
+                    error: `No se encontro la tarea.`,
+                });
+            }
+
+            return res.json(tarea);
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error al agregar el comentario.`,
+            });
+        }
+    }
+
+    async editComment(req, res) {
+        try {
+            const id = req.params.id;
+            const data = req.body;
+
+            const tarea = await TareasService.editComment(id, data);
+
+            if (!tarea || lodash.isEmpty(tarea)) {
+                return res.status(404).json({
+                    error: `No se encontro la tarea.`,
+                });
+            }
+
+            return res.json(tarea);
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error al editar el comentario.`,
+            });
+        }
+    }
 }
 
 module.exports = new TareasController();

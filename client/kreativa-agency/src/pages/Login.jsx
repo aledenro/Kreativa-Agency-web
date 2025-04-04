@@ -5,7 +5,8 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-
+import { UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import LogoKreativa from "../assets/img/logo.png";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Login = () => {
         usuario: "",
         contraseña: "",
     });
+
     const [error, setError] = useState("");
 
     const handleChange = (e) => {
@@ -24,28 +26,12 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-
         try {
-            const response = await axios.post(
-                "http://localhost:4000/api/login",
-                formData
-            );
-            console.log("Respuesta del servidor:", response.data);
-
+            const response = await axios.post("http://localhost:4000/api/login", formData);
             const { token } = response.data;
-
-            if (!token) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "No se recibió token del servidor",
-                    confirmButtonColor: "#E91E63",
-                });
-                return;
-            }
+            if (!token) return;
 
             localStorage.setItem("token", token);
-
             const decodedToken = jwtDecode(token);
             console.log("Token decodificado:", decodedToken);
             // Contexto usuario 
@@ -58,131 +44,75 @@ const Login = () => {
             localStorage.setItem("tipo_usuario", decodedToken.tipo_usuario);
             localStorage.setItem("user_id", decodedToken.id);
 
-            Swal.fire({
-                icon: "success",
-                title: "Inicio de sesión exitoso",
-                showConfirmButton: false,
-                timer: 1500,
-            });
+            Swal.fire({ icon: "success", title: "Inicio de sesión exitoso", showConfirmButton: false, timer: 1500 });
 
             setTimeout(() => {
-                if (decodedToken.tipo_usuario === "Administrador") {
-                    navigate("/usuarios");
-                } else if (decodedToken.tipo_usuario === "Colaborador") {
-                    navigate("/vista-colaborador");
-                } else if (decodedToken.tipo_usuario === "Cliente") {
-                    navigate("/vista-clientes");
-                } else {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Acceso restringido",
-                        text: "No tienes permisos para acceder.",
-                        confirmButtonColor: "#E91E63",
-                    });
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("tipo_usuario");
+                switch (decodedToken.tipo_usuario) {
+                    case "Administrador": navigate("/usuarios"); break;
+                    case "Colaborador": navigate("/vista-colaborador"); break;
+                    case "Cliente": navigate("/vista-clientes"); break;
+                    default:
+                        Swal.fire({ icon: "warning", title: "Acceso restringido", text: "No tienes permisos para acceder." });
+                        localStorage.clear();
                 }
             }, 1500);
         } catch (error) {
-            console.error(
-                "Error al iniciar sesión:",
-                error.response?.data || error
-            );
-
-            if (error.response) {
-                const mensajeError = error.response.data.mensaje;
-
-                if (
-                    mensajeError ===
-                    "Tu cuenta está inactiva. Contacta al administrador."
-                ) {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Cuenta inactiva",
-                        text: "Tu cuenta está inactiva. Contacta al administrador.",
-                        confirmButtonColor: "#E91E63",
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "Usuario o contraseña incorrectos",
-                        confirmButtonColor: "#E91E63",
-                    });
-                }
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Error de conexión con el servidor",
-                    confirmButtonColor: "#E91E63",
-                });
-            }
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.response?.data?.mensaje || "Usuario o contraseña incorrectos",
+            });
         }
     };
 
     return (
-        <div className="login-container">
-            <div className="login-card">
-                <div className="login-header">
-                    <h2>Bienvenido a Kreativa</h2>
-                    <p>Accede con tus credenciales</p>
+        <div className="login-split-container">
+            <div className="login-left">
+                <div className="logo-container">
+                    <img src={LogoKreativa} alt="Logo Kreativa" className="logo-kreativa" />
                 </div>
-                {error && <div className="alert alert-danger">{error}</div>}
+                <h2 className="login-title">Iniciar Sesión</h2>
+                <p className="login-subtitle">Accedé con tus credenciales</p>
                 <form onSubmit={handleSubmit} className="login-form">
-                    <div className="form-group">
-                        <label>Usuario</label>
+                    <div className="form-group input-icon-wrapper">
+                        <UserIcon className="input-icon-min" />
                         <input
                             type="text"
                             name="usuario"
-                            placeholder="Ingresa tu usuario"
+                            placeholder="Usuario"
                             value={formData.usuario}
                             onChange={handleChange}
                             className="form-input"
                             required
                         />
                     </div>
-                    <div className="form-group">
-                        <label>Contraseña</label>
+                    <div className="form-group input-icon-wrapper">
+                        <LockClosedIcon className="input-icon-min" />
                         <input
-                            type="password"
+                            type={mostrarContrasena ? "text" : "password"}
                             name="contraseña"
-                            placeholder="Ingresa tu contraseña"
+                            placeholder="Contraseña"
                             value={formData.contraseña}
                             onChange={handleChange}
                             className="form-input"
                             required
                         />
+                        <span className="eye-icon" onClick={() => setMostrarContrasena(!mostrarContrasena)}>
+                            {mostrarContrasena ? <EyeSlashIcon className="icon-eye" /> : <EyeIcon className="icon-eye" />}
+                        </span>
                     </div>
-
+                    <div className="login-footer">
+                        <a href="/recuperar" className="kreativa-link">¿Olvidaste tu contraseña?</a>
+                    </div>
                     <div className="login-buttons">
-                        <button
-                            type="button"
-                            className="thm-btn thm-btn-secondary"
-                            onClick={() => navigate("/")}
-                        >
-                            Volver
-                        </button>
-                        <button type="submit" className="thm-btn login-btn">
-                            Iniciar Sesión
-                        </button>
+                        <button type="button" className="thm-btn btn-volver" onClick={() => navigate("/")}>Volver</button>
+                        <button type="submit" className="thm-btn btn-kreativa">Iniciar Sesión</button>
                     </div>
-                    <span
-                        style={{ display: "inline-block", width: "20px" }}
-                    ></span>
-                    <p style={{ textAlign: "left", marginTop: "10px" }}>
-                        <a
-                            href="/recuperar"
-                            style={{
-                                color: "#ff4081",
-                                textDecoration: "none",
-                                fontWeight: "bold",
-                            }}
-                        >
-                            ¿Olvidaste tu contraseña?
-                        </a>
-                    </p>
                 </form>
+            </div>
+            <div className="login-right">
+                <h2 className="welcome-text">TU ESPACIO KREATIVO</h2>
+                <p className="slogan-text">El punto de acceso para gestionar todo en un solo lugar.</p>
             </div>
         </div>
     );

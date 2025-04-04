@@ -12,7 +12,9 @@ import {
     SquareKanban,
     Menu,
     ChevronDown,
-    Banknote
+    Banknote,
+    FilePlus2,
+    BriefcaseBusiness,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
@@ -190,6 +192,7 @@ const AdminLayout = ({ children }) => {
                             </div>
                         </motion.li>
                     ))}
+
                 </ul>
             </motion.aside>
 
@@ -202,7 +205,11 @@ const AdminLayout = ({ children }) => {
                     )}
 
                     <div className="logo-header">
-                        <img src={logo} alt="Kreativa Agency" className="logo-img" />
+                        <img
+                            src={logo}
+                            alt="Kreativa Agency"
+                            className="logo-img"
+                        />
                     </div>
 
                     <div className="search-container">

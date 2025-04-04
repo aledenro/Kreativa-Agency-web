@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import video from "../assets/vid/landing-video.mov";
 import Navbar from "../components/Navbar/Navbar";
 import ListadoServicios from "./ListadoServicios";
 import FormContacto from "./FormContacto";
@@ -14,7 +13,11 @@ const Landing = () => {
                 <div className="landing-container">
                     <div className="video-section">
                         <video className="video-background" autoPlay loop muted>
-                            <source src={video} type="video/mp4" /> 
+
+                            <source
+                                src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/landing-video.mov"
+                                type="video/mp4"
+                            />
                         </video>
                         <div className="video-overlay"></div>
                         <div className="video-content">

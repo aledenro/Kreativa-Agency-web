@@ -50,9 +50,10 @@ class ServiciosController {
         try {
             const id = req.params.id;
             const data = req.body;
+            const files = req.files;
 
             const servicioActualizado =
-                await ServiciosService.modificarServicioById(id, data);
+                await ServiciosService.modificarServicioById(id, data, files);
 
             return res.status(200).json(servicioActualizado);
         } catch (error) {
