@@ -2146,30 +2146,169 @@ h3 {
     letter-spacing: 1.5px;
 }
 
-.arrow-icon {
-    flex: 0 0 25%;
-    color: var(--kreativa-white);
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    text-align: right;
-    padding-right: 1rem;
+
+/* =========================== */
+/* GESTIÓN USUARIOS RESPONSIVE */
+/* =========================== */
+
+
+/* Estructura base */
+.full-width-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.arrow-icon:hover {
-    transform: translateX(5px);
+/* Asegurar que todos los filtros se alineen bien */
+.d-flex.justify-content-between.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
 }
 
-.embla__button__svg {
-    width: 35%;
-    height: 35%;
+/* Botones de acción pequeños y paginación */
+.thm-btn-small,
+.btn-volver {
+    min-width: 90px;
+    text-align: center;
 }
 
-.embla__slide__image {
-    transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+/* Corrección para los contenedores de búsqueda y select */
+.search-container,
+.select-container {
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
 }
 
-.embla__slide__content:hover .embla__slide__image {
-    transform: scale(1.05);
+/* Tabla responsive general */
+.kreativa-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 16px;
 }
 
+/* ============================ */
+/* 📱 Móviles (hasta 767px) */
+/* ============================ */
+@media (max-width: 767px) {
+    .full-width-container {
+        padding: 10px;
+    }
+
+    .kreativa-table thead {
+        display: none;
+    }
+
+    .kreativa-table tbody tr {
+        display: block;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: var(--kreativa-bdr-radius);
+        background-color: #fff;
+        padding: 10px;
+    }
+
+    .kreativa-table tbody td {
+        display: block;
+        text-align: left;
+        padding: 10px 10px 10px 40%;
+        position: relative;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+    }
+
+    .kreativa-table tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-weight: bold;
+        color: var(--kreativa-base);
+        width: 35%;
+        white-space: nowrap;
+    }
+
+    .botones-grupo {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .thm-btn-small {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .search-container,
+    .select-container {
+        max-width: 100%;
+    }
+
+    .btn-volver {
+        width: 100%;
+    }
+}
+
+/* ============================ */
+/* 📱 Tablets y pantallas medianas (768–1023px) */
+/* ============================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .kreativa-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .d-flex.justify-content-between.flex-wrap {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-container,
+    .select-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .botones-grupo {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .thm-btn-small {
+        min-width: 120px;
+        margin-bottom: 5px;
+    }
+
+    .btn-volver {
+        min-width: 60px;
+        padding: 10px 15px;
+    }
+}
+
+/* ============================ */
+/* 🖥️ Pantallas intermedias grandes (1024–1399px) */
+/* ============================ */
+@media (min-width: 1024px) and (max-width: 1399px) {
+    .full-width-container {
+        padding: 20px 30px;
+    }
+
+    .kreativa-table {
+        font-size: 15px;
+    }
+
+    .search-container,
+    .select-container {
+        max-width: 250px;
+    }
+
+    .thm-btn-small {
+        font-size: 13px;
+    }
+}
