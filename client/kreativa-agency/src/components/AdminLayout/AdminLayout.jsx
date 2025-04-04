@@ -34,36 +34,57 @@ const sidebarItemVariants = {
 };
 
 const menuStructure = [
-    { title: "Usuarios", icon: Users, items: [{ label: "Gestión de usuarios", path: "/usuarios" }] },
     {
-        title: "Proyectos", icon: SquareKanban, items: [
+        title: "Usuarios",
+        icon: Users,
+        items: [{ label: "Gestión de usuarios", path: "/usuarios" }],
+    },
+    {
+        title: "Proyectos",
+        icon: SquareKanban,
+        items: [
             { label: "Gestión de proyectos", path: "/proyectos/gestion" },
             { label: "Dashboard proyecto", path: "/proyectos/dashboard" },
             { label: "Solicitudes cotización", path: "/proyectos/solicitudes" },
-        ]
+        ],
     },
-    { title: "Reportes", icon: LayoutDashboard, items: [{ label: "Dashboard", path: "/estadisticas" }] },
     {
-        title: "Empleados", icon: IdCard, items: [
+        title: "Reportes",
+        icon: LayoutDashboard,
+        items: [{ label: "Dashboard", path: "/estadisticas" }],
+    },
+    {
+        title: "Empleados",
+        icon: IdCard,
+        items: [
             { label: "Organigrama", path: "/empleados/organigrama" },
             { label: "PTO", path: "/empleados/pto" },
             { label: "Perfiles", path: "/empleados/perfiles" },
-        ]
+        ],
     },
     {
-        title: "Finanzas", icon: Banknote, items: [
+        title: "Finanzas",
+        icon: Banknote,
+        items: [
             { label: "Gestión financiera", path: "/finanzas/gestion" },
             { label: "Estadísticas", path: "/finanzas/estadisticas" },
-        ]
+        ],
     },
     {
-        title: "Landing", icon: Home, items: [
-            { label: "Gestión de servicios", path: "/landing/servicios" },
-            { label: "Gestión de paquetes", path: "/landing/paquetes" },
-            { label: "Gestión Form Puestos", path: "/landing/puestos" },
-        ]
+        title: "Landing",
+        icon: Home,
+        items: [
+            { label: "Gestión de servicios", path: "/admin/servicios" },
+            { label: "Gestión de paquetes", path: "/admin/paquetes" },
+            { label: "Gestión Form Puestos", path: "/admin/reclutaciones" },
+            { label: "Gestión Form Contacto", path: "/admin/contacto" },
+        ],
     },
-    { title: "Salir", icon: LogOut, items: [{ label: "Cerrar sesión", path: "/logout" }] },
+    {
+        title: "Salir",
+        icon: LogOut,
+        items: [{ label: "Cerrar sesión", path: "/logout" }],
+    },
 ];
 
 const AdminLayout = ({ children }) => {
@@ -80,7 +101,12 @@ const AdminLayout = ({ children }) => {
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
         const handleClickOutside = (event) => {
-            if (sidebarRef.current && !sidebarRef.current.contains(event.target) && isMobile && !collapsed) {
+            if (
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target) &&
+                isMobile &&
+                !collapsed
+            ) {
                 setCollapsed(true);
             }
         };
@@ -117,10 +143,7 @@ const AdminLayout = ({ children }) => {
     };
 
     const handleOpenOutlook = () => {
-        window.open(
-            "https://outlook.live.com/owa/",
-            "_blank"
-        );
+        window.open("https://outlook.live.com/owa/", "_blank");
     };
 
     return (
@@ -129,7 +152,10 @@ const AdminLayout = ({ children }) => {
                 ref={sidebarRef}
                 className={`sidebar ${collapsed ? "collapsed" : ""} ${isMobile && !collapsed ? "show" : ""}`}
                 initial={false}
-                style={{ width: collapsed ? "80px" : "250px", overflowY: 'auto' }}
+                style={{
+                    width: collapsed ? "80px" : "250px",
+                    overflowY: "auto",
+                }}
             >
                 <ul>
                     <AnimatePresence>
@@ -159,47 +185,85 @@ const AdminLayout = ({ children }) => {
                             custom={index}
                         >
                             <div className="module-container">
-                                <div className="menu-item module-header" onClick={() => toggleSection(section.title)}>
+                                <div
+                                    className="menu-item module-header"
+                                    onClick={() => toggleSection(section.title)}
+                                >
                                     <div className="module-title">
                                         <section.icon size={20} />
-                                        {!collapsed && <span>{section.title}</span>}
+                                        {!collapsed && (
+                                            <span>{section.title}</span>
+                                        )}
                                     </div>
                                     {!collapsed && (
                                         <ChevronDown
                                             size={16}
                                             className="chevron-icon"
-                                            style={{ transition: "transform 0.3s", transform: openSections[section.title] ? "rotate(180deg)" : "rotate(0)" }}
+                                            style={{
+                                                transition: "transform 0.3s",
+                                                transform: openSections[
+                                                    section.title
+                                                ]
+                                                    ? "rotate(180deg)"
+                                                    : "rotate(0)",
+                                            }}
                                         />
                                     )}
                                 </div>
 
                                 <AnimatePresence>
-                                    {!collapsed && openSections[section.title] && (
-                                        <motion.ul className="sidebar-submenu" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}>
-                                            {section.items.map((item) => (
-                                                <motion.li
-                                                    key={item.label}
-                                                    className="menu-item submenu-item"
-                                                    onClick={() => navigate(item.path)}
-                                                    layout
-                                                >
-                                                    <span>{item.label}</span>
-                                                </motion.li>
-                                            ))}
-                                        </motion.ul>
-                                    )}
+                                    {!collapsed &&
+                                        openSections[section.title] && (
+                                            <motion.ul
+                                                className="sidebar-submenu"
+                                                initial={{
+                                                    height: 0,
+                                                    opacity: 0,
+                                                }}
+                                                animate={{
+                                                    height: "auto",
+                                                    opacity: 1,
+                                                }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.2 }}
+                                            >
+                                                {section.items.map((item) => (
+                                                    <motion.li
+                                                        key={item.label}
+                                                        className="menu-item submenu-item"
+                                                        onClick={() =>
+                                                            navigate(item.path)
+                                                        }
+                                                        layout
+                                                    >
+                                                        <span>
+                                                            {item.label}
+                                                        </span>
+                                                    </motion.li>
+                                                ))}
+                                            </motion.ul>
+                                        )}
                                 </AnimatePresence>
                             </div>
                         </motion.li>
                     ))}
-
                 </ul>
             </motion.aside>
 
-            <motion.main className={`content ${collapsed ? "collapsed" : "expanded"}`} animate={{ marginLeft: collapsed ? "80px" : "250px" }} transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}>
-                <motion.div className={`header ${isMobile ? "" : collapsed ? "collapsed" : "expanded"}`}>
+            <motion.main
+                className={`content ${collapsed ? "collapsed" : "expanded"}`}
+                animate={{ marginLeft: collapsed ? "80px" : "250px" }}
+                transition={{ duration: 0.5, ease: [0.68, -0.55, 0.27, 1.55] }}
+            >
+                <motion.div
+                    className={`header ${isMobile ? "" : collapsed ? "collapsed" : "expanded"}`}
+                >
                     {isMobile && (
-                        <button className="menu-toggle-btn" onClick={toggleSidebar} aria-label="Abrir menú">
+                        <button
+                            className="menu-toggle-btn"
+                            onClick={toggleSidebar}
+                            aria-label="Abrir menú"
+                        >
                             <Menu size={26} />
                         </button>
                     )}
@@ -219,30 +283,37 @@ const AdminLayout = ({ children }) => {
                                 type="text"
                                 placeholder="Buscar..."
                                 value={searchTerm}
-                                onChange={(e) => handleSearchChange(e.target.value)}
+                                onChange={(e) =>
+                                    handleSearchChange(e.target.value)
+                                }
                             />
                             {filteredSuggestions.length > 0 && (
                                 <div className="suggestions-dropdown">
-                                    {filteredSuggestions.map((suggestion, index) => (
-                                        <div
-                                            key={index}
-                                            className="suggestion-item"
-                                            onClick={() => {
-                                                navigate(suggestion.path);
-                                                setSearchTerm("");
-                                                setFilteredSuggestions([]);
-                                            }}
-                                        >
-                                            {suggestion.label}
-                                        </div>
-                                    ))}
+                                    {filteredSuggestions.map(
+                                        (suggestion, index) => (
+                                            <div
+                                                key={index}
+                                                className="suggestion-item"
+                                                onClick={() => {
+                                                    navigate(suggestion.path);
+                                                    setSearchTerm("");
+                                                    setFilteredSuggestions([]);
+                                                }}
+                                            >
+                                                {suggestion.label}
+                                            </div>
+                                        )
+                                    )}
                                 </div>
                             )}
                         </div>
                     </div>
 
                     <div className="header-icons">
-                        <div className="tooltip-wrapper" data-tooltip="Cerrar sesión">
+                        <div
+                            className="tooltip-wrapper"
+                            data-tooltip="Cerrar sesión"
+                        >
                             <LogOut
                                 size={22}
                                 className="header-icon"
@@ -255,20 +326,26 @@ const AdminLayout = ({ children }) => {
                                         confirmButtonColor: "#FF0072",
                                         cancelButtonColor: "#888",
                                         confirmButtonText: "Sí, cerrar sesión",
-                                        cancelButtonText: "Cancelar"
+                                        cancelButtonText: "Cancelar",
                                     }).then((result) => {
                                         if (result.isConfirmed) {
                                             localStorage.removeItem("token");
-                                            localStorage.removeItem("tipo_usuario");
+                                            localStorage.removeItem(
+                                                "tipo_usuario"
+                                            );
                                             localStorage.removeItem("user_id");
-                                            window.location.href = "http://localhost:5173/";
+                                            window.location.href =
+                                                "http://localhost:5173/";
                                         }
                                     });
                                 }}
                             />
                         </div>
 
-                        <div className="tooltip-wrapper" data-tooltip="Ir a Outlook">
+                        <div
+                            className="tooltip-wrapper"
+                            data-tooltip="Ir a Outlook"
+                        >
                             <Mail
                                 size={22}
                                 className="header-icon"
@@ -294,7 +371,7 @@ const AdminLayout = ({ children }) => {
                                     cursor: "pointer",
                                     borderRadius: "50%",
                                     width: "36px",
-                                    height: "36px"
+                                    height: "36px",
                                 }}
                             >
                                 {userInitial}
