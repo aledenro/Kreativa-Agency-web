@@ -3,13 +3,19 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import LogoKreativa from "../assets/img/logo.png";
 
 const Login = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ usuario: "", contraseña: "" });
-    const [mostrarContrasena, setMostrarContrasena] = useState(false);
+    const { login } = useContext(AuthContext);
+    const [formData, setFormData] = useState({
+        usuario: "",
+        contraseña: "",
+    });
+
     const [error, setError] = useState("");
 
     const handleChange = (e) => {
@@ -27,6 +33,14 @@ const Login = () => {
 
             localStorage.setItem("token", token);
             const decodedToken = jwtDecode(token);
+            console.log("Token decodificado:", decodedToken);
+            // Contexto usuario 
+            login({
+                nombre: decodedToken.usuario, 
+                email: decodedToken.email || "", 
+                tipo_usuario: decodedToken.tipo_usuario,
+                id: decodedToken.id,
+              });
             localStorage.setItem("tipo_usuario", decodedToken.tipo_usuario);
             localStorage.setItem("user_id", decodedToken.id);
 

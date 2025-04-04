@@ -30,6 +30,7 @@
     "framer-motion": "^12.4.10",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.479.0",
+    "ogl": "^1.0.11",
     "mdb-react-ui-kit": "^9.0.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",

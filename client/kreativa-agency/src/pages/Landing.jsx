@@ -13,6 +13,7 @@ const Landing = () => {
                 <div className="landing-container">
                     <div className="video-section">
                         <video className="video-background" autoPlay loop muted>
+
                             <source
                                 src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/landing-video.mov"
                                 type="video/mp4"
