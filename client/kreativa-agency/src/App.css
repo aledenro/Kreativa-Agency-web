@@ -982,6 +982,7 @@ h3 {
     border: 2px solid #110D27;
     color: #333;
 }
+
 .btn-kreativa {
     background-color: var(--kreativa-rosado);
     color: var(--kreativa-white);
@@ -1637,14 +1638,14 @@ h3 {
 
 .btn-volver:hover {
     background-color: #eee;
-    border-color: #FF0072; 
+    border-color: #FF0072;
     color: #000;
 }
 
 .btn-volver:focus {
     outline: none;
     border-color: #FF0072;
-    box-shadow: 0 0 0 2px rgba(255, 0, 114, 0.3); 
+    box-shadow: 0 0 0 2px rgba(255, 0, 114, 0.3);
 }
 
 /* BOTÓN INICIAR SESIÓN */
@@ -1894,7 +1895,7 @@ h3 {
 
 @media screen and (max-width: 768px) {
     .login-buttons {
-        flex-direction: column-reverse; 
+        flex-direction: column-reverse;
         gap: 10px;
         align-items: center;
     }
@@ -1917,15 +1918,18 @@ h3 {
     --slide-spacing-lg: 2rem;
     --slide-size-lg: calc(100% / 3);
 }
+
 .embla__viewport {
     overflow: hidden;
 }
+
 .embla__container {
     backface-visibility: hidden;
     display: flex;
     touch-action: pan-y pinch-zoom;
     margin-left: calc(var(--slide-spacing) * -1);
 }
+
 @media (min-width: 750px) {
     .embla__container {
         margin-left: calc(var(--slide-spacing-sm) * -1);
@@ -1933,28 +1937,33 @@ h3 {
         margin-right: 20px;
     }
 }
+
 @media (min-width: 1200px) {
     .embla__container {
         margin-left: calc(var(--slide-spacing-lg) * -1);
     }
 }
+
 .embla__slide {
     min-width: 0;
     flex: 0 0 var(--slide-size);
     padding-left: var(--slide-spacing);
 }
+
 @media (min-width: 750px) {
     .embla__slide {
         flex: 0 0 var(--slide-size-sm);
         padding-left: var(--slide-spacing-sm);
     }
 }
+
 @media (min-width: 1200px) {
     .embla__slide {
         flex: 0 0 var(--slide-size-lg);
         padding-left: var(--slide-spacing-lg);
     }
 }
+
 .embla__controls {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -1962,12 +1971,14 @@ h3 {
     gap: 1.2rem;
     margin-top: 1.8rem;
 }
+
 .embla__buttons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.6rem;
     align-items: center;
 }
+
 .embla__button {
     -webkit-tap-highlight-color: rgba(var(--text-high-contrast-rgb-value), 0.5);
     -webkit-appearance: none;
@@ -1990,15 +2001,18 @@ h3 {
     align-items: center;
     justify-content: center;
 }
+
 .embla__button:disabled {
     color: var(--detail-high-contrast);
 }
+
 .embla__dots {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     align-items: center;
 }
+
 .embla__dot {
     -webkit-tap-highlight-color: rgba(var(--text-high-contrast-rgb-value), 0.5);
     -webkit-appearance: none;
@@ -2018,6 +2032,7 @@ h3 {
     justify-content: center;
     border-radius: 50%;
 }
+
 .embla__dot:after {
     box-shadow: inset 0 0 0 0.2rem var(--detail-medium-contrast);
     width: 1.4rem;
@@ -2027,6 +2042,7 @@ h3 {
     align-items: center;
     content: "";
 }
+
 .embla__dot--selected:after {
     box-shadow: inset 0 0 0 0.2rem var(--text-body);
 }
@@ -2312,3 +2328,114 @@ h3 {
         font-size: 13px;
     }
 }
+
+/* Estilos generales del contenedor */
+.responsive-usuarios-filtros {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Elementos internos con mismo comportamiento */
+.responsive-usuarios-filtros .thm-btn,
+.responsive-usuarios-filtros .search-container,
+.responsive-usuarios-filtros .select-container {
+    flex: 1 1 300px !important;
+    min-width: 280px !important;
+    max-width: 100% !important;
+}
+
+/* Input de búsqueda */
+.responsive-usuarios-filtros .search-container {
+    position: relative !important;
+}
+
+.responsive-usuarios-filtros .search-input {
+    width: 100% !important;
+    padding-left: 35px !important;
+    padding-right: 10px !important;
+    box-sizing: border-box !important;
+}
+
+/* Ícono dentro del input */
+.responsive-usuarios-filtros .icon-search {
+    position: absolute !important;
+    left: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+    color: #999 !important;
+}
+
+/* Select container */
+.responsive-usuarios-filtros .select-container {
+    position: relative !important;
+}
+
+.responsive-usuarios-filtros .select-input {
+    width: 100% !important;
+    padding-right: 40px !important;
+    padding-left: 15px !important;
+    appearance: none !important;
+    box-sizing: border-box !important;
+}
+
+/* Flecha del select */
+.responsive-usuarios-filtros .icon-arrow {
+    position: absolute !important;
+    right: 15px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+    color: #999 !important;
+    z-index: 10 !important;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .responsive-usuarios-filtros {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .responsive-usuarios-filtros .thm-btn,
+    .responsive-usuarios-filtros .search-container,
+    .responsive-usuarios-filtros .select-container {
+        width: 100% !important;
+    }
+    /* Reforzamos el alineamiento y tamaño del select-container */
+.select-container {
+    width: 100% !important;
+    max-width: 410px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    left: 45px;
+}
+
+/* Ajustamos el <select> */
+.select-container .select-input {
+    width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 40px !important;
+    appearance: none !important;
+    box-sizing: border-box !important;
+}
+
+/* Posicionamiento correcto del ícono de flecha */
+.select-container .icon-arrow {
+    position: absolute !important;
+    right: 58px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+    color: black !important;
+    z-index: 2 !important;
+}
+}
+
