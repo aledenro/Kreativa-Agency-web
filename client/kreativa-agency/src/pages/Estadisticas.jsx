@@ -19,6 +19,7 @@ import "../AdminPanel.css";
 import logo from "../assets/img/logo.png";
 import { Form } from "react-bootstrap";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import ModalImprimirReportes from "../components/Estadisticas/ModalImprimirReporte";
 
 const COLORS = ["#ff0072", "#8d25fc", "#007bff", "#ffc02c"];
 const CATEGORIAS = [
@@ -46,6 +47,7 @@ const Estadisticas = () => {
         cantidad: 0,
         detalle: [],
     }); // Resumen de ingresos
+    const [showModalReportes, setShowModalReportes] = useState(false);
 
     useEffect(() => {
         const formattedMonth =
@@ -188,6 +190,14 @@ const Estadisticas = () => {
                                     </option>
                                 ))}
                             </Form.Select>
+                            <button
+                                className="btn thm-btn"
+                                onClick={() => {
+                                    setShowModalReportes(true);
+                                }}
+                            >
+                                Imprimir Reporte
+                            </button>
                         </div>
 
                         {/* Gráfico de Ingresos vs Egresos Mensual */}
@@ -618,6 +628,12 @@ const Estadisticas = () => {
                     </div>
                 </div>
             </div>
+            {showModalReportes && (
+                <ModalImprimirReportes
+                    show={showModalReportes}
+                    handleClose={() => setShowModalReportes(false)}
+                ></ModalImprimirReportes>
+            )}
         </AdminLayout>
     );
 };
