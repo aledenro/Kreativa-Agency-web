@@ -2439,3 +2439,69 @@ h3 {
 }
 }
 
+@media (max-width: 767px) {
+    /* Elimina bordes blancos entre las celdas */
+    .kreativa-table {
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+    }
+
+    /* Quita bordes inferiores que se ven como líneas blancas */
+    .kreativa-table tbody td {
+        border-bottom: none !important;
+        background-color: transparent !important;
+    }
+
+    /* Quita cualquier borde blanco en el tr (card completo) */
+    .kreativa-table tbody tr {
+        border: none !important;
+        background-color: #fff !important; /* Puedes ajustar a lo que desees */
+        margin-top: 10px !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Asegura que los botones no tengan borde blanco */
+    .thm-btn-small {
+        background-color: transparent !important;
+        border: 2px solid currentColor !important;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Forzamos que todos los td actúen igual, incluyendo ACCIONES */
+    .kreativa-table tbody td {
+      display: block !important;
+      text-align: left !important;
+      padding: 10px 10px 10px 40% !important;
+      position: relative !important;
+      border-bottom: none !important;
+      font-size: 14px !important;
+      background-color: transparent !important;
+    }
+  
+    .kreativa-table tbody td::before {
+      position: absolute !important;
+      top: 10px !important;
+      left: 10px !important;
+      font-weight: bold !important;
+      color: var(--kreativa-base) !important;
+      width: 35% !important;
+      white-space: nowrap !important;
+    }
+  
+    /* Agregamos contenido al ::before SOLO si falta */
+    .kreativa-table tbody td[data-label="Acciones"]::before {
+      content: "ACCIONES" !important;
+    }
+  
+    /* Aseguramos que los botones no se monten */
+    .kreativa-table tbody td[data-label="Acciones"] .botones-grupo {
+      margin-top: 5px;
+    }
+  }
+
+  .kreativa-table tbody td {
+    word-break: break-word !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+}
