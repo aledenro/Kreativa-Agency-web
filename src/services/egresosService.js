@@ -146,12 +146,22 @@ class EgresosService {
             fechaFin = new Date(fechaFin);
             fechaFin.setHours(23, 59, 59, 999);
 
-            const egresos = await egresosModel.find({
-                $and: [
-                    { fecha: { $gte: fechaInicio } },
-                    { fecha: { $lte: fechaFin } },
-                ],
-            });
+            const egresos = await egresosModel
+                .find({
+                    $and: [
+                        { fecha: { $gte: fechaInicio } },
+                        { fecha: { $lte: fechaFin } },
+                    ],
+                })
+                .select({
+                    fecha: 1,
+                    monto: 1,
+                    categoria: 1,
+                    descripcion: 1,
+                    proveedor: 1,
+                    estado: 1,
+                    _id: 0,
+                });
 
             return egresos;
         } catch (error) {

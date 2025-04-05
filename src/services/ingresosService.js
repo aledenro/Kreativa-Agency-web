@@ -234,12 +234,22 @@ const ingresosService = {
             fechaFin = new Date(fechaFin);
             fechaFin.setHours(23, 59, 59, 999);
 
-            const ingresos = await ingresosModel.find({
-                $and: [
-                    { fecha: { $gte: fechaInicio } },
-                    { fecha: { $lte: fechaFin } },
-                ],
-            });
+            const ingresos = await ingresosModel
+                .find({
+                    $and: [
+                        { fecha: { $gte: fechaInicio } },
+                        { fecha: { $lte: fechaFin } },
+                    ],
+                })
+                .select({
+                    fecha: 1,
+                    monto: 1,
+                    descripcion: 1,
+                    nombre_cliente: 1,
+                    categoria: 1,
+                    estado: 1,
+                    _id: 0,
+                });
 
             return ingresos;
         } catch (error) {
