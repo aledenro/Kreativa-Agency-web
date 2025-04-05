@@ -2505,3 +2505,13 @@ h3 {
     white-space: normal !important;
     overflow-wrap: break-word !important;
 }
+
+.espacio-top-responsive {
+    height: 90px;
+}
+
+@media (max-width: 767px) {
+    .espacio-top-responsive {
+        height: 30px; 
+    }
+}

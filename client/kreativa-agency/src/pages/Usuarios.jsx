@@ -148,7 +148,7 @@ const Usuarios = () => {
     return (
         <AdminLayout>
             <div className="full-width-container">
-                <div style={{ height: "90px" }}></div>
+                <div className="espacio-top-responsive"></div>
                 <h1>Gestión de Usuarios</h1>
                 {error && <div className="alert alert-danger">{error}</div>}
                 <div style={{ marginBottom: "30px" }}></div>
