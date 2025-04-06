@@ -24,7 +24,6 @@ const columnasEgresos = [
 ];
 
 const ModalImprimirReportes = ({ show, handleClose }) => {
-    const [error, setError] = useState("");
     const [api, contextHolder] = notification.useNotification();
 
     const openSuccessNotification = (message) => {
@@ -61,7 +60,12 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
 
         let errorMsg =
             !ingresos && !egresos
-                ? "Debe seleccionar egresos, ingresos o ambos para poder imprimir un reporte."
+                ? "Debe seleccionar egresos, ingresos o ambos para poder imprimir un reporte. "
+                : "";
+
+        errorMsg +=
+            new Date(fechaFin) < new Date(fechaInicio)
+                ? "La fecha de finalización no debe de ser menor a la fecha de inicio del rango del reporte."
                 : "";
 
         if (errorMsg) {
