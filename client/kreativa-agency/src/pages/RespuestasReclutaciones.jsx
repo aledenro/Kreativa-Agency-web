@@ -196,6 +196,9 @@ const RespuestasReclutaciones = () => {
                     >
                         <FontAwesomeIcon icon={faCaretLeft} />
                     </button>
+                    <span className="align-self-center mx-2">
+                        Página {pagActual} de {totalPags || 1}
+                    </span>
                     <button
                         className={`thm-btn btn-volver thm-btn-small me-2`}
                         onClick={() => setPagActual(pagActual + 1)}

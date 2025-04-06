@@ -9,9 +9,12 @@ import {
     faCaretDown,
     faBackward,
     faEye,
+    faPencil,
+    faSortUp,
+    faSortDown,
 } from "@fortawesome/free-solid-svg-icons";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
-import ModalVerTareas from "../components/Tareas/ModalVerTareas"; // Import the modal component
+import ModalVerTareas from "../components/Tareas/ModalVerTareas";
 
 const DashboardColaborador = () => {
     const [proyectos, setProyectos] = useState([]);
@@ -25,15 +28,18 @@ const DashboardColaborador = () => {
     const [filterColab, setFilterColab] = useState("");
     const [filterStatus, setFilterStatus] = useState("");
 
+    const [taskSortByProject, setTaskSortByProject] = useState({});
+
     const [pagActual, setPagActual] = useState(1);
     const [itemsPag, setItemsPag] = useState(5);
 
-    // Add state for modal
     const [showModal, setShowModal] = useState(false);
     const [tareaModal, setTareaModal] = useState({});
 
     const rol = localStorage.getItem("tipo_usuario");
     const userId = localStorage.getItem("user_id");
+
+    const [estadosProyecto, setEstadosProyecto] = useState([]);
 
     useEffect(() => {
         const fetchProyectos = async () => {
@@ -48,11 +54,22 @@ const DashboardColaborador = () => {
 
                 setProyectos(response.data);
 
+                const estados = [
+                    ...new Set(response.data.map((p) => p.estado)),
+                ].filter(Boolean);
+                setEstadosProyecto(estados);
+
                 const expanded = {};
+                const taskSort = {};
                 response.data.forEach((proyecto) => {
                     expanded[proyecto._id] = false;
+                    taskSort[proyecto._id] = {
+                        field: "nombre",
+                        order: "asc",
+                    };
                 });
                 setExpandedProjects(expanded);
+                setTaskSortByProject(taskSort);
             } catch (error) {
                 console.error(
                     `Error al obtener los proyectos: ${error.message}`
@@ -112,61 +129,141 @@ const DashboardColaborador = () => {
         }));
     };
 
+    const handleTaskSort = (proyectoId, field) => {
+        setTaskSortByProject((prev) => {
+            const currentProjectSort = prev[proyectoId] || {
+                field: "nombre",
+                order: "asc",
+            };
+            const newOrder =
+                currentProjectSort.field === field &&
+                currentProjectSort.order === "asc"
+                    ? "desc"
+                    : "asc";
+
+            return {
+                ...prev,
+                [proyectoId]: {
+                    field: field,
+                    order: newOrder,
+                },
+            };
+        });
+    };
+
     const getTareasForProyecto = (proyectoId) => {
-        return tareas.filter(
+        const projectTasks = tareas.filter(
             (tarea) => tarea.proyecto_id && tarea.proyecto_id._id === proyectoId
+        );
+
+        const sortConfig = taskSortByProject[proyectoId] || {
+            field: "nombre",
+            order: "asc",
+        };
+
+        return projectTasks.sort((a, b) => {
+            let valA, valB;
+
+            if (sortConfig.field === "fecha_vencimiento") {
+                valA = a.fecha_vencimiento
+                    ? new Date(a.fecha_vencimiento)
+                    : new Date(0);
+                valB = b.fecha_vencimiento
+                    ? new Date(b.fecha_vencimiento)
+                    : new Date(0);
+                return sortConfig.order === "asc" ? valA - valB : valB - valA;
+            } else if (
+                sortConfig.field === "estado" ||
+                sortConfig.field === "prioridad"
+            ) {
+                valA = a[sortConfig.field] || "";
+                valB = b[sortConfig.field] || "";
+                return sortConfig.order === "asc"
+                    ? valA.toString().localeCompare(valB.toString())
+                    : valB.toString().localeCompare(valA.toString());
+            } else {
+                valA = a[sortConfig.field] || "";
+                valB = b[sortConfig.field] || "";
+                return sortConfig.order === "asc"
+                    ? valA.toString().localeCompare(valB.toString())
+                    : valB.toString().localeCompare(valA.toString());
+            }
+        });
+    };
+
+    const getSortIcon = (proyectoId, field) => {
+        const sortConfig = taskSortByProject[proyectoId] || {
+            field: "nombre",
+            order: "asc",
+        };
+
+        if (sortConfig.field !== field) {
+            return <FontAwesomeIcon icon={faSort} />;
+        }
+
+        return sortConfig.order === "asc" ? (
+            <FontAwesomeIcon icon={faSortUp} />
+        ) : (
+            <FontAwesomeIcon icon={faSortDown} />
         );
     };
 
-    const getStatusClass = (status) => {
+    const getEstado = (status) => {
         switch (status) {
             case "Por Hacer":
-                return "bg-primary text-white";
+                return "badge badge-azul";
             case "En Progreso":
-                return "bg-warning text-dark";
+                return "badge badge-amarillo";
             case "Finalizado":
-                return "bg-success text-white";
+                return "badge badge-verde";
             case "En Revisión":
-                return "bg-info text-dark";
+                return "badge badge-naranja";
             case "Cancelado":
-                return "bg-danger text-white";
+                return "badge badge-rojo";
             default:
-                return "bg-secondary text-white";
+                return "badge badge-gris";
         }
     };
 
-    const getPriorityClass = (priority) => {
+    const getPrioridad = (priority) => {
         switch (priority) {
             case "Alta":
-                return "bg-danger text-white";
+                return "badge badge-rojo";
             case "Media":
-                return "bg-warning text-dark";
+                return "badge badge-amarillo";
             case "Baja":
-                return "bg-info text-white";
+                return "badge badge-azul";
             default:
-                return "bg-secondary text-white";
+                return "badge badge-gris";
         }
     };
 
     const getUrgencyClass = (urgente) => {
-        return urgente ? "bg-danger text-white" : "bg-secondary text-white";
+        return urgente ? "badge badge-rojo" : "badge badge-gris";
     };
 
-    // Updated to match ListadoTareas implementation
-    const handleViewTask = (tarea) => {
+    const handleEditarTarea = (tareaId) => {
+        window.location.href = `/tarea/editar/${tareaId}`;
+    };
+
+    const handleVerTarea = (tarea) => {
         setTareaModal(tarea);
         setShowModal(true);
     };
 
-    const handleEditTask = (tareaId) => {
-        window.location.href = `/tarea/editar/${tareaId}`;
+    const handleEditarProyecto = (proyectoId) => {
+        window.location.href = `/proyecto/editar/${proyectoId}`;
     };
 
-    const handleCreateTask = (proyectoId) => {
+    const handleVerProyecto = (proyectoId) => {
+        window.location.href = `/proyecto/${proyectoId}`;
+    };
+
+    const handleAgregarTarea = (proyectoId) => {
         window.location.href = `/tarea/agregar?proyecto=${proyectoId}`;
     };
 
-    const handleCreateProject = () => {
+    const handleAgregarProyecto = () => {
         window.location.href = "/proyecto/agregar";
     };
 
@@ -185,23 +282,26 @@ const DashboardColaborador = () => {
     }
 
     if (filterColab || filterStatus) {
-        proyectosFiltrados = proyectosFiltrados.filter((proyecto) => {
-            const projectTasks = getTareasForProyecto(proyecto._id);
-            const filteredTasks = projectTasks.filter((tarea) => {
-                if (
-                    filterColab &&
-                    (!tarea.colaborador_id ||
-                        tarea.colaborador_id._id !== filterColab)
-                ) {
-                    return false;
-                }
-                if (filterStatus && tarea.estado !== filterStatus) {
-                    return false;
-                }
-                return true;
+        if (filterStatus) {
+            proyectosFiltrados = proyectosFiltrados.filter(
+                (proyecto) => proyecto.estado === filterStatus
+            );
+        }
+        if (filterColab) {
+            proyectosFiltrados = proyectosFiltrados.filter((proyecto) => {
+                const projectTasks = getTareasForProyecto(proyecto._id);
+                const filteredTasks = projectTasks.filter((tarea) => {
+                    if (
+                        !tarea.colaborador_id ||
+                        tarea.colaborador_id._id !== filterColab
+                    ) {
+                        return false;
+                    }
+                    return true;
+                });
+                return filteredTasks.length > 0;
             });
-            return filteredTasks.length > 0;
-        });
+        }
     }
 
     proyectosFiltrados.sort((a, b) => {
@@ -236,7 +336,7 @@ const DashboardColaborador = () => {
 
     return (
         <AdminLayout>
-            <div className="container  pt-3  mx-auto">
+            <div className="container pt-3 mx-auto">
                 <div style={{ height: "90px" }}></div>
                 <h1 className="mb-4">Backlog Proyectos</h1>
                 <div className="row mb-3">
@@ -280,18 +380,18 @@ const DashboardColaborador = () => {
                             value={filterStatus}
                         >
                             <option value="">Todos</option>
-                            <option value="Por Hacer">Por Hacer</option>
-                            <option value="En Progreso">En Progreso</option>
-                            <option value="Finalizado">Finalizado</option>
-                            <option value="En Revisión">En Revisión</option>
-                            <option value="Cancelado">Cancelado</option>
+                            {estadosProyecto.map((estado) => (
+                                <option key={estado} value={estado}>
+                                    {estado}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     {rol === "Administrador" && (
                         <div className="col text-end">
                             <button
                                 className="thm-btn"
-                                onClick={handleCreateProject}
+                                onClick={handleAgregarProyecto}
                             >
                                 Crear Proyecto
                             </button>
@@ -299,7 +399,7 @@ const DashboardColaborador = () => {
                     )}
                 </div>
                 <div className="table-responsive">
-                    <table className="table table-bordered table-hover">
+                    <table className="table table-hover kreativa-proyecto-table">
                         <thead className="table-light">
                             <tr>
                                 <th
@@ -317,7 +417,7 @@ const DashboardColaborador = () => {
                                     Proyecto <FontAwesomeIcon icon={faSort} />
                                 </th>
                                 <th
-                                    style={{ width: "150px" }}
+                                    style={{ width: "200px" }}
                                     className="text-center"
                                 >
                                     Cliente
@@ -350,8 +450,15 @@ const DashboardColaborador = () => {
                                         setSortField("fecha_entrega");
                                     }}
                                 >
-                                    Fecha Entrega{" "}
-                                    <FontAwesomeIcon icon={faSort} />
+                                    Entrega <FontAwesomeIcon icon={faSort} />
+                                </th>
+                                <th
+                                    style={{
+                                        width: "120px",
+                                    }}
+                                    className="text-center"
+                                >
+                                    Acciones
                                 </th>
                             </tr>
                         </thead>
@@ -420,14 +527,14 @@ const DashboardColaborador = () => {
                                                 </td>
                                                 <td className="text-center">
                                                     <div
-                                                        className={`p-1 rounded ${getStatusClass(proyecto.estado)}`}
+                                                        className={`${getEstado(proyecto.estado)}`}
                                                     >
                                                         {proyecto.estado}
                                                     </div>
                                                 </td>
                                                 <td className="text-center">
                                                     <div
-                                                        className={`p-1 rounded ${getUrgencyClass(proyecto.urgente)}`}
+                                                        className={`${getUrgencyClass(proyecto.urgente)}`}
                                                     >
                                                         {proyecto.urgente
                                                             ? "Sí"
@@ -441,6 +548,39 @@ const DashboardColaborador = () => {
                                                           ).toLocaleDateString()
                                                         : "-"}
                                                 </td>
+                                                <td className="text-center">
+                                                    <div className="botones-grupo">
+                                                        <button
+                                                            className="thm-btn thm-btn-small btn-amarillo"
+                                                            onClick={() =>
+                                                                handleVerProyecto(
+                                                                    proyecto._id
+                                                                )
+                                                            }
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={faEye}
+                                                            />
+                                                        </button>
+                                                        {rol ===
+                                                            "Administrador" && (
+                                                            <button
+                                                                className="thm-btn thm-btn-small btn-azul"
+                                                                onClick={() =>
+                                                                    handleEditarProyecto(
+                                                                        proyecto._id
+                                                                    )
+                                                                }
+                                                            >
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        faPencil
+                                                                    }
+                                                                />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
                                             </tr>
 
                                             {expandedProjects[proyecto._id] && (
@@ -450,16 +590,25 @@ const DashboardColaborador = () => {
                                                         className="p-0"
                                                     >
                                                         <div className="ms-5">
-                                                            <table className="table table-bordered mb-0">
+                                                            <table className="table kreativa-tareas-table border border-0">
                                                                 <thead className="table-light">
                                                                     <tr>
                                                                         <th
                                                                             style={{
-                                                                                width: "40px",
+                                                                                cursor: "pointer",
                                                                             }}
-                                                                        ></th>
-                                                                        <th>
-                                                                            Tarea
+                                                                            onClick={() =>
+                                                                                handleTaskSort(
+                                                                                    proyecto._id,
+                                                                                    "nombre"
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Tarea{" "}
+                                                                            {getSortIcon(
+                                                                                proyecto._id,
+                                                                                "nombre"
+                                                                            )}
                                                                         </th>
                                                                         <th
                                                                             style={{
@@ -472,26 +621,55 @@ const DashboardColaborador = () => {
                                                                         <th
                                                                             style={{
                                                                                 width: "120px",
+                                                                                cursor: "pointer",
                                                                             }}
                                                                             className="text-center"
+                                                                            onClick={() =>
+                                                                                handleTaskSort(
+                                                                                    proyecto._id,
+                                                                                    "estado"
+                                                                                )
+                                                                            }
                                                                         >
-                                                                            Estado
+                                                                            Estado{" "}
+                                                                            {getSortIcon(
+                                                                                proyecto._id,
+                                                                                "estado"
+                                                                            )}
                                                                         </th>
                                                                         <th
                                                                             style={{
                                                                                 width: "100px",
+                                                                                cursor: "pointer",
                                                                             }}
                                                                             className="text-center"
+                                                                            onClick={() =>
+                                                                                handleTaskSort(
+                                                                                    proyecto._id,
+                                                                                    "prioridad"
+                                                                                )
+                                                                            }
                                                                         >
                                                                             Prioridad
                                                                         </th>
                                                                         <th
                                                                             style={{
                                                                                 width: "120px",
+                                                                                cursor: "pointer",
                                                                             }}
                                                                             className="text-center"
+                                                                            onClick={() =>
+                                                                                handleTaskSort(
+                                                                                    proyecto._id,
+                                                                                    "fecha_vencimiento"
+                                                                                )
+                                                                            }
                                                                         >
-                                                                            Fecha
+                                                                            Fecha{" "}
+                                                                            {getSortIcon(
+                                                                                proyecto._id,
+                                                                                "fecha_vencimiento"
+                                                                            )}
                                                                         </th>
                                                                         <th
                                                                             style={{
@@ -515,12 +693,6 @@ const DashboardColaborador = () => {
                                                                                         tarea._id
                                                                                     }
                                                                                 >
-                                                                                    <td className="text-center">
-                                                                                        <input
-                                                                                            type="checkbox"
-                                                                                            className="form-check-input"
-                                                                                        />
-                                                                                    </td>
                                                                                     <td>
                                                                                         {
                                                                                             tarea.nombre
@@ -528,7 +700,7 @@ const DashboardColaborador = () => {
                                                                                     </td>
                                                                                     <td className="text-center">
                                                                                         <span
-                                                                                            className="badge bg-secondary rounded-pill"
+                                                                                            className="badge badge-gris"
                                                                                             title={
                                                                                                 tarea
                                                                                                     .colaborador_id
@@ -536,15 +708,29 @@ const DashboardColaborador = () => {
                                                                                                 "Sin asignar"
                                                                                             }
                                                                                         >
-                                                                                            {tarea.colaborador_id?.nombre?.charAt(
-                                                                                                0
-                                                                                            ) ||
-                                                                                                "?"}
+                                                                                            {tarea
+                                                                                                .colaborador_id
+                                                                                                ?.nombre
+                                                                                                ? tarea.colaborador_id.nombre.charAt(
+                                                                                                      0
+                                                                                                  ) +
+                                                                                                  (tarea.colaborador_id.nombre.includes(
+                                                                                                      " "
+                                                                                                  )
+                                                                                                      ? tarea.colaborador_id.nombre
+                                                                                                            .split(
+                                                                                                                " "
+                                                                                                            )[1]
+                                                                                                            .charAt(
+                                                                                                                0
+                                                                                                            )
+                                                                                                      : "")
+                                                                                                : "?"}
                                                                                         </span>
                                                                                     </td>
                                                                                     <td className="text-center">
                                                                                         <div
-                                                                                            className={`p-1 rounded ${getStatusClass(tarea.estado)}`}
+                                                                                            className={`${getEstado(tarea.estado)}`}
                                                                                         >
                                                                                             {
                                                                                                 tarea.estado
@@ -553,7 +739,7 @@ const DashboardColaborador = () => {
                                                                                     </td>
                                                                                     <td className="text-center">
                                                                                         <div
-                                                                                            className={`p-1 rounded ${getPriorityClass(tarea.prioridad)}`}
+                                                                                            className={`${getPrioridad(tarea.prioridad)}`}
                                                                                         >
                                                                                             {
                                                                                                 tarea.prioridad
@@ -572,7 +758,7 @@ const DashboardColaborador = () => {
                                                                                             <button
                                                                                                 className="thm-btn thm-btn-small btn-amarillo"
                                                                                                 onClick={() =>
-                                                                                                    handleViewTask(
+                                                                                                    handleVerTarea(
                                                                                                         tarea
                                                                                                     )
                                                                                                 }
@@ -586,14 +772,18 @@ const DashboardColaborador = () => {
                                                                                             {rol ===
                                                                                                 "Administrador" && (
                                                                                                 <button
-                                                                                                    className="thm-btn thm-btn-small btn-editar"
+                                                                                                    className="thm-btn thm-btn-small btn-azul"
                                                                                                     onClick={() =>
-                                                                                                        handleEditTask(
+                                                                                                        handleEditarTarea(
                                                                                                             tarea._id
                                                                                                         )
                                                                                                     }
                                                                                                 >
-                                                                                                    Editar
+                                                                                                    <FontAwesomeIcon
+                                                                                                        icon={
+                                                                                                            faPencil
+                                                                                                        }
+                                                                                                    />
                                                                                                 </button>
                                                                                             )}
                                                                                         </div>
@@ -631,7 +821,7 @@ const DashboardColaborador = () => {
                                                                                         e
                                                                                     ) => {
                                                                                         e.preventDefault();
-                                                                                        handleCreateTask(
+                                                                                        handleAgregarTarea(
                                                                                             proyecto._id
                                                                                         );
                                                                                     }}
@@ -656,23 +846,6 @@ const DashboardColaborador = () => {
                                 <tr>
                                     <td colSpan="6" className="text-center">
                                         No hay proyectos disponibles.
-                                    </td>
-                                </tr>
-                            )}
-
-                            {rol === "Administrador" && (
-                                <tr>
-                                    <td colSpan="6" className="text-muted">
-                                        <a
-                                            href="#"
-                                            className="text-decoration-none"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                handleCreateProject();
-                                            }}
-                                        >
-                                            + Agregar proyecto
-                                        </a>
                                     </td>
                                 </tr>
                             )}
@@ -706,9 +879,9 @@ const DashboardColaborador = () => {
                     >
                         <FontAwesomeIcon icon={faCaretLeft} />
                     </button>
-                    <button className="btn btn-outline-secondary active me-2">
-                        {pagActual}
-                    </button>
+                    <span className="align-self-center mx-2">
+                        Página {pagActual} de {totalPags || 1}
+                    </span>
                     <button
                         className="thm-btn btn-volver thm-btn-small me-2"
                         onClick={() => setPagActual(pagActual + 1)}

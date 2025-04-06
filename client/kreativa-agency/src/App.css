@@ -565,24 +565,38 @@ h3 {
 }
 
 /*Badges de colores*/
+
+.badge {
+    padding: 10px 5px !important;
+    font-size: 12px;
+    border-radius: var(--kreativa-bdr-radius);
+    min-width: 80px;
+    text-align: center;
+    margin-left: 10px;
+}
+
 .badge-azul {
-    background-color: var(--btn-azul);
+    background-color: var(--btn-azul) !important;
+}
+
+.badge-gris {
+    background-color: var(--kreativa-azul-medio) !important;
 }
 
 .badge-verde {
-    background-color: var(--btn-verde);
+    background-color: var(--btn-verde) !important;
 }
 
 .badge-rojo {
-    background-color: var(--btn-rojo);
+    background-color: var(--btn-rojo) !important;
 }
 
 .badge-amarillo {
-    background-color: var(--btn-amarillo);
+    background-color: var(--btn-amarillo) !important;
 }
 
 .badge-naranja {
-    background-color: var(--btn-naranja);
+    background-color: var(--btn-naranja) !important;
 }
 
 /* Botones pequeños */
@@ -2137,4 +2151,74 @@ h3 {
 
 .embla__slide__content:hover .embla__slide__image {
     transform: scale(1.05);
+}
+
+/*dashboard*/
+.kreativa-proyecto-table {
+    width: 100%;
+    border-radius: var(--kreativa-bdr-radius);
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 2rem;
+    box-shadow: none;
+}
+
+.kreativa-proyecto-table a {
+    color: var(--kreativa-azul);
+}
+
+.kreativa-proyecto-table thead th {
+    background-color: var(--kreativa-rosado) !important;
+    color: white !important;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-bottom: none;
+    position: relative;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.kreativa-proyecto-table thead tr:first-child th:first-child {
+    border-top-left-radius: var(--kreativa-bdr-radius);
+}
+
+.kreativa-proyecto-table thead tr:first-child th:last-child {
+    border-top-right-radius: var(--kreativa-bdr-radius);
+}
+
+.kreativa-proyecto-table tbody tr {
+    border-bottom: 1px solid var(--kreativa-rosado-claro);
+}
+
+.kreativa-proyecto-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.kreativa-proyecto-table tbody tr:last-of-type {
+    border-bottom: none !important;
+}
+
+.kreativa-tareas-table {
+    border: none;
+    border-radius: var(--kreativa-bdr-radius);
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 0;
+    box-shadow: none;
+}
+
+.kreativa-tareas-table thead th {
+    background-color: var(--kreativa-rosado-claro) !important;
+    color: var(--kreativa-base) !important;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-bottom: none;
+    position: relative;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
 }
