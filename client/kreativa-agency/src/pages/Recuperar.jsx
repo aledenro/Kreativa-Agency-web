@@ -65,7 +65,7 @@ const Recuperar = () => {
                         />
                     </div>
                     <div className="login-buttons">
-                    <button type="button" className="thm-btn btn-volver-login" onClick={() => navigate("/")}>Volver</button>
+                        <button type="button" className="thm-btn btn-volver-login" onClick={() => navigate("/login")}>Volver</button>
                         <button type="submit" className="thm-btn btn-kreativa">Enviar</button>
                     </div>
                 </form>
