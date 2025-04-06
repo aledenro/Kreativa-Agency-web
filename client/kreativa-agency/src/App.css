@@ -2744,10 +2744,10 @@ h3 {
     background-color: #f9f9f9;
     min-height: calc(100vh - 80px);
     margin-top: 80px;
-  }
-  
-  /* -------- TARJETA CON EL FORMULARIO -------- */
-  .kreativa-card {
+}
+
+/* -------- TARJETA CON EL FORMULARIO -------- */
+.kreativa-card {
     background: #fff;
     padding: 2.5rem 2rem;
     border-radius: 15px;
@@ -2755,19 +2755,19 @@ h3 {
     width: 100%;
     max-width: 640px;
     animation: fadeIn 0.5s ease-in-out;
-  }
-  
-  /* -------- TÍTULO PRINCIPAL -------- */
-  .kreativa-form-title {
+}
+
+/* -------- TÍTULO PRINCIPAL -------- */
+.kreativa-form-title {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
     text-align: center;
     color: #333;
-  }
-  
-  /* -------- INPUTS & SELECTS -------- */
-  .form_input {
+}
+
+/* -------- INPUTS & SELECTS -------- */
+.form_input {
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 10px;
@@ -2775,87 +2775,127 @@ h3 {
     transition: all 0.3s ease;
     font-size: 1rem;
     background-color: #fff;
-  }
-  
-  .form_input:focus {
+}
+
+.form_input:focus {
     border-color: #ff7eb3;
     outline: none;
     box-shadow: 0 0 5px rgba(255, 126, 179, 0.3);
-  }
-  
-  /* -------- GRUPO DE BOTONES -------- */
-  .kreativa-btn-wrapper {
+}
+
+/* -------- GRUPO DE BOTONES -------- */
+.kreativa-btn-wrapper {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
     margin-top: 1.5rem;
-  }
-  
-  .kreativa-btn-crear {
+}
+
+.kreativa-btn-crear {
     order: 2;
-  }
-  
-  .kreativa-btn-volver {
+}
+
+.kreativa-btn-volver {
     order: 1;
-  }
-  
-  /* -------- ALERTA -------- */
-  .kreativa-alert {
+}
+
+/* -------- ALERTA -------- */
+.kreativa-alert {
     font-size: 0.95rem;
     border-radius: 8px;
-  }
-  
-  /* -------- RESPONSIVE (CELULARES Y TABLETS) -------- */
-  @media screen and (max-width: 992px) {
+}
+
+/* -------- RESPONSIVE (CELULARES Y TABLETS) -------- */
+@media screen and (max-width: 992px) {
     .kreativa-btn-wrapper {
-      flex-direction: column;
-      align-items: stretch;
+        flex-direction: column;
+        align-items: stretch;
     }
-  
+
     .kreativa-btn-crear {
-      order: 1; /* Mostrar arriba */
-      width: 100%;
+        order: 1;
+        /* Mostrar arriba */
+        width: 100%;
     }
-  
+
     .kreativa-btn-volver {
-      order: 2; /* Mostrar abajo */
-      width: 100%;
+        order: 2;
+        /* Mostrar abajo */
+        width: 100%;
     }
-  
+
     .thm-btn,
     .thm-btn-secondary {
-      font-size: 0.95rem;
-      padding: 0.65rem 1rem;
-      text-align: center;
-      border-radius: 8px;
+        font-size: 0.95rem;
+        padding: 0.65rem 1rem;
+        text-align: center;
+        border-radius: 8px;
     }
-  }
-  
-  /* -------- MÁS AJUSTES PARA CELULARES PEQUEÑOS -------- */
-  @media screen and (max-width: 576px) {
-    .kreativa-card {
-      padding: 2rem 1.25rem;
-    }
-  
-    .kreativa-form-title {
-      font-size: 1.5rem;
-    }
-  }
-  
-  /* -------- ANIMACIÓN SUAVE -------- */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+}
 
-  .kreativa-card .lucide {
+/* -------- MÁS AJUSTES PARA CELULARES PEQUEÑOS -------- */
+@media screen and (max-width: 576px) {
+    .kreativa-card {
+        padding: 2rem 1.25rem;
+    }
+
+    .kreativa-form-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* -------- ANIMACIÓN SUAVE -------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kreativa-card .lucide {
     display: block;
     margin: 0 auto;
     margin-bottom: 0.9rem;
+}
+
+.kreativa-user-details p {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+@media screen and (max-width: 576px) {
+    .kreativa-user-details p {
+        font-size: 0.95rem;
+        text-align: left;
+    }
+}
+
+.kreativa-user-details p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+    color: #444;
+  }
+  
+  .kreativa-user-details strong {
+    color: #222;
+  }
+  
+  .kreativa-divider {
+    border: none;
+    height: 1px;
+    background-color: #ff0072;
+    margin: 0.5rem 0 1rem;
+  }
+  
+  @media screen and (max-width: 576px) {
+    .kreativa-user-details p {
+      font-size: 0.95rem;
+    }
   }
