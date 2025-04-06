@@ -11,6 +11,7 @@ router.get(
     "/getAllProyectosLimitedData",
     ProyectoController.getAllProyectosLimitedData
 );
+router.get("/", ProyectoController.getAllProyectos);
 router.put("/actualizarLog/:id", ProyectoController.actualizarLog);
 router.put("/agregarRespuesta/:id", ProyectoController.addRespuesta);
 

@@ -441,7 +441,10 @@ h3 {
     }
 }
 
-/* ---------------NAVBAR---------------  */
+/* =================== */
+/*       NAVBAR        */
+/* =================== */
+
 .navbar {
     display: flex;
     height: 60px;
@@ -589,58 +592,40 @@ h3 {
     margin: 4px 0;
 }
 
-/* @media (max-width: 950px) {
-    .menu {
-        display: none;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        background-color: var(--kreativa-black);
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        padding: 20px 0;
-    }
+/*Badges de colores*/
 
-    .menu.active {
-        display: flex;
-    }
-
-    .hamburger {
-        display: flex;
-    }
-
-    .logo {
-        margin-left: 50px;
-    }
-
-    .dropdown-menu {
-        position: static;
-        box-shadow: none;
-    }
-
-    .dropdown:hover .dropdown-menu {
-        display: none;
-    }
-
-    .dropdown-toggle::after {
-        content: "\25BC";
-        display: inline-block;
-        margin-left: 5px;
-    }
-
-    .dropdown.active .dropdown-menu {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+.badge {
+    padding: 10px 5px !important;
+    font-size: 12px;
+    border-radius: var(--kreativa-bdr-radius);
+    min-width: 80px;
+    text-align: center;
+    margin-left: 10px;
 }
 
-.pink-icon {
-    color: var(--kreativa-base);
-    padding-right: 10px;
-} */
+.badge-azul {
+    background-color: var(--btn-azul) !important;
+}
+
+.badge-gris {
+    background-color: var(--kreativa-azul-medio) !important;
+}
+
+.badge-verde {
+    background-color: var(--btn-verde) !important;
+}
+
+.badge-rojo {
+    background-color: var(--btn-rojo) !important;
+}
+
+.badge-amarillo {
+    background-color: var(--btn-amarillo) !important;
+}
+
+.badge-naranja {
+    background-color: var(--btn-naranja) !important;
+}
 
 /* Botones pequeños */
 .thm-btn-small {
@@ -661,7 +646,10 @@ h3 {
     margin-left: -10px;
 }
 
-/* ---------- Servicios -------------*/
+/* =================== */
+/*      SERVICIOS      */
+/* =================== */
+
 :root {
     --kreativa-light-bg: #f9f7fe;
     --kreativa-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -999,7 +987,19 @@ h3 {
     box-shadow: 0 0 1px 2px var(--btn-naranja-claro);
 }
 
-/* Botón para VOLVER con fondo rosado Kreativa sólido */
+
+.btn-gris {
+    background-color: var(--kreativa-white);
+    color: var(--kreativa-azul-medio);
+    border: var(--kreativa-azul-medio) solid 2px;
+}
+
+.btn-gris:hover {
+    background-color: #b8b3cf57;
+    color: var(--kreativa-azul-medio);
+    box-shadow: 0 0 1px 2px #b8b3cf57;
+}
+
 .btn-volver {
     background-color: #FF0072 !important;
     color: white !important;
@@ -1019,7 +1019,7 @@ h3 {
     box-shadow: none;
     /* También sin sombra */
     background-color: #ddd;
-    border: 2px solid #110D27;
+    border: 2px solid #110d27;
     color: #333;
 }
 
@@ -1092,7 +1092,6 @@ h3 {
     height: 16px;
     stroke: #121923;
 }
-
 
 /* Jerarquía de Usuarios */
 .jerarquia-section {
@@ -1359,7 +1358,10 @@ h3 {
     gap: 30px;
 }
 
-/* ----------------landing ----------------*/
+/* =================== */
+/*    LANDING PAGE     */
+/* =================== */
+
 .landing-container {
     position: relative;
     width: 100%;
@@ -1469,10 +1471,10 @@ h3 {
     margin-top: 60px;
 }
 
-
 /* =================== */
 /* ESTILOS PARA LOGIN  */
 /* =================== */
+
 
 /* Botón exclusivo para login */
 .btn-volver-login {
@@ -1515,7 +1517,7 @@ h3 {
 }
 
 .login-title {
-    font-family: 'Francy';
+    font-family: "Francy";
     font-size: 36px;
     color: var(--kreativa-black);
     margin-bottom: 10px;
@@ -1587,10 +1589,7 @@ h3 {
 
 .login-right {
     flex: 1;
-    background: linear-gradient(135deg,
-            #ff0072 0%,
-            #8d25fc 50%,
-            #181ddb 100%);
+    background: linear-gradient(135deg, #ff0072 0%, #8d25fc 50%, #181ddb 100%);
     color: white;
     padding: 60px 40px;
     display: flex;
@@ -1606,10 +1605,9 @@ h3 {
 .welcome-text {
     font-size: 80px;
     font-weight: bold;
-    font-family: 'Francy';
+    font-family: "Francy";
     margin-bottom: 10px;
     color: white;
-
 }
 
 .slogan-text {
@@ -1626,7 +1624,6 @@ h3 {
     margin-bottom: 20px;
     width: 100%;
 }
-
 
 .logo-kreativa {
     width: 300px;
@@ -1702,13 +1699,17 @@ h3 {
 
 .btn-volver:hover {
     background-color: #eee;
-    border-color: #FF0072;
+
+    border-color: #ff0072;
+
     color: #000;
 }
 
 .btn-volver:focus {
     outline: none;
-    border-color: #FF0072;
+
+    border-color: #ff0072;
+
     box-shadow: 0 0 0 2px rgba(255, 0, 114, 0.3);
 }
 
@@ -1723,8 +1724,10 @@ h3 {
   
   .btn-kreativa:hover {
     background-color: #d70065;
+
     color: white; 
   }
+
 
 /* =================== */
 /* ANIMACIONES LOG-IN  */
@@ -2439,6 +2442,176 @@ h3 {
         color: black !important;
         z-index: 2 !important;
     }
+}
+
+/*dashboard*/
+.kreativa-proyecto-table {
+    width: 100%;
+    border-radius: var(--kreativa-bdr-radius);
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 2rem;
+    box-shadow: none;
+}
+
+.kreativa-proyecto-table a {
+    color: var(--kreativa-azul);
+}
+
+.kreativa-proyecto-table thead th {
+    background-color: var(--kreativa-rosado) !important;
+    color: white !important;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-bottom: none;
+    position: relative;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.kreativa-proyecto-table thead tr:first-child th:first-child {
+    border-top-left-radius: var(--kreativa-bdr-radius);
+}
+
+.kreativa-proyecto-table thead tr:first-child th:last-child {
+    border-top-right-radius: var(--kreativa-bdr-radius);
+}
+
+.kreativa-proyecto-table tbody tr {
+    border-bottom: 1px solid var(--kreativa-rosado-claro);
+}
+
+.kreativa-proyecto-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.kreativa-proyecto-table tbody tr:last-of-type {
+    border-bottom: none !important;
+}
+
+.kreativa-tareas-table {
+    border: none;
+    border-radius: var(--kreativa-bdr-radius);
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 0;
+    box-shadow: none;
+}
+
+.kreativa-tareas-table thead th {
+    background-color: var(--kreativa-rosado-claro) !important;
+    color: var(--kreativa-base) !important;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-bottom: none;
+    position: relative;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+/* modal proyecto */
+
+.proyecto-modal .modal-content {
+    border-radius: 8px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.proyecto-modal-content {
+    height: calc(100vh - 150px);
+    max-height: 700px;
+    overflow: hidden;
+}
+
+.proyecto-modal .tabs-header {
+    background-color: #f9f9f9;
+}
+
+.proyecto-modal .nav-tabs {
+    border-bottom: none;
+    padding: 0 1rem;
+}
+
+.proyecto-modal .nav-tabs .nav-link {
+    border: none;
+    color: #666;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+}
+
+.proyecto-modal .nav-tabs .nav-link.active {
+    color: var(--kreativa-base);
+    background-color: transparent;
+    border-bottom: 2px solid var(--kreativa-base);
+}
+
+.proyecto-modal .nav-tabs .nav-link:hover:not(.active) {
+    color: #333;
+    border-bottom: 2px solid #ddd;
+}
+
+.proyecto-modal .descripcion-panel,
+.proyecto-modal .info-panel,
+.proyecto-modal .comentarios-panel {
+    height: calc(100vh - 200px);
+    max-height: 650px;
+    overflow-y: auto;
+}
+
+.proyecto-modal .info-item .text-muted {
+    font-size: 0.85rem;
+}
+
+.proyecto-modal .info-item .fw-medium {
+    font-weight: 500;
+}
+
+.proyecto-modal .comentarios-list {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.proyecto-modal .btn-outline-info {
+    color: var(--kreativa-base);
+    border-color: var(--kreativa-base);
+}
+
+.proyecto-modal .btn-outline-info:hover {
+    background-color: var(--kreativa-base);
+    color: white;
+}
+
+.proyecto-modal .archivos-list .card {
+    transition: all 0.2s;
+}
+
+.proyecto-modal .archivos-list .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.proyecto-modal ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.proyecto-modal ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.proyecto-modal ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.proyecto-modal ::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
 }
 
 @media (max-width: 767px) {
