@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
 import sendEmail from "../utils/emailSender";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
 
 function construirJsonRequest(
     proyecto,
@@ -138,129 +138,141 @@ const AgregarTarea = () => {
 
     return (
         <div>
-            <Navbar></Navbar>
-            <div className="container d-flex align-items-center justify-content-center">
-                <div className="card p-4 shadow-lg w-50">
-                    <h3 className="text-center section-title">Agregar Tarea</h3>
-                    <form onSubmit={handleSubmit}>
-                        {showAlert && (
-                            <Alert
-                                variant={alertVariant}
-                                onClose={() => setShowAlert(false)}
-                                dismissible
-                            >
-                                {alertMessage}
-                            </Alert>
-                        )}
-                        <div className="mb-3">
-                            <label htmlFor="proyecto" className="form-label">
-                                Proyecto
-                            </label>
-                            <select
-                                className="form-select form_input"
-                                name="proyecto"
-                                id="proyecto"
-                            >
-                                {proyectos.map((proyecto) => (
-                                    <option
-                                        key={proyecto._id}
-                                        value={proyecto._id}
-                                    >
-                                        {proyecto.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="nombre" className="form-label">
-                                Nombre
-                            </label>
-                            <input
-                                type="text"
-                                className="form_input"
-                                id="nombre"
-                                name="nombre"
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="descripcion" className="form-label">
-                                Descripción
-                            </label>
-                            <textarea
-                                name="descripcion"
-                                className="form_input form-textarea"
-                                id="descripcion"
-                                rows={7}
-                                placeholder="Describa su solicitud"
-                                required
-                            ></textarea>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="colab" className="form-label ">
-                                Colaborador
-                            </label>
-                            <select
-                                className="form-select form_input"
-                                name="colab"
-                                id="colab"
-                            >
-                                {empleados.map((colab) => (
-                                    <option key={colab._id} value={colab._id}>
-                                        {colab.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="row">
-                            <div className="col">
-                                <div className="mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="prioridad"
-                                    >
-                                        Prioridad
-                                    </label>
-                                    <select
-                                        className="form-select form_input"
-                                        name="prioridad"
-                                        id="prioridad"
-                                    >
-                                        {prioridades.map((prioridad) => (
-                                            <option
-                                                key={prioridad}
-                                                value={prioridad}
-                                            >
-                                                {prioridad}
-                                            </option>
-                                        ))}
-                                    </select>
+            <AdminLayout>
+                <div className="container d-flex align-items-center justify-content-center">
+                    <div className="card p-4 shadow-lg w-50">
+                        <h3 className="text-center section-title">
+                            Agregar Tarea
+                        </h3>
+                        <form onSubmit={handleSubmit}>
+                            {showAlert && (
+                                <Alert
+                                    variant={alertVariant}
+                                    onClose={() => setShowAlert(false)}
+                                    dismissible
+                                >
+                                    {alertMessage}
+                                </Alert>
+                            )}
+                            <div className="mb-3">
+                                <label
+                                    htmlFor="proyecto"
+                                    className="form-label"
+                                >
+                                    Proyecto
+                                </label>
+                                <select
+                                    className="form-select form_input"
+                                    name="proyecto"
+                                    id="proyecto"
+                                >
+                                    {proyectos.map((proyecto) => (
+                                        <option
+                                            key={proyecto._id}
+                                            value={proyecto._id}
+                                        >
+                                            {proyecto.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="nombre" className="form-label">
+                                    Nombre
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form_input"
+                                    id="nombre"
+                                    name="nombre"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label
+                                    htmlFor="descripcion"
+                                    className="form-label"
+                                >
+                                    Descripción
+                                </label>
+                                <textarea
+                                    name="descripcion"
+                                    className="form_input form-textarea"
+                                    id="descripcion"
+                                    rows={7}
+                                    placeholder="Describa su solicitud"
+                                    required
+                                ></textarea>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="colab" className="form-label ">
+                                    Colaborador
+                                </label>
+                                <select
+                                    className="form-select form_input"
+                                    name="colab"
+                                    id="colab"
+                                >
+                                    {empleados.map((colab) => (
+                                        <option
+                                            key={colab._id}
+                                            value={colab._id}
+                                        >
+                                            {colab.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <div className="mb-3">
+                                        <label
+                                            className="form-label"
+                                            htmlFor="prioridad"
+                                        >
+                                            Prioridad
+                                        </label>
+                                        <select
+                                            className="form-select form_input"
+                                            name="prioridad"
+                                            id="prioridad"
+                                        >
+                                            {prioridades.map((prioridad) => (
+                                                <option
+                                                    key={prioridad}
+                                                    value={prioridad}
+                                                >
+                                                    {prioridad}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    <div className="mb-3">
+                                        <label
+                                            htmlFor="fecha_entrega"
+                                            className="form-label"
+                                        >
+                                            Fecha de Entrega
+                                        </label>
+                                        <input
+                                            type="date"
+                                            className="form-control form_input"
+                                            id="fecha_entrega"
+                                            name="fecha_entrega"
+                                            required
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div className="col">
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="fecha_entrega"
-                                        className="form-label"
-                                    >
-                                        Fecha de Entrega
-                                    </label>
-                                    <input
-                                        type="date"
-                                        className="form-control form_input"
-                                        id="fecha_entrega"
-                                        name="fecha_entrega"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" className="thm-btn">
-                            Enviar
-                        </button>
-                    </form>
+                            <button type="submit" className="thm-btn">
+                                Enviar
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            </AdminLayout>
         </div>
     );
 };

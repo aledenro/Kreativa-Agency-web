@@ -12,6 +12,21 @@ class ProyectoService {
         }
     }
 
+    async getAllProyectos() {
+        try {
+            const proyectos = await ProyectoModel.find()
+                .populate("cliente_id", "nombre")
+                .populate("colaboradores.colaborador_id", "nombre")
+                .sort({ fecha_creacion: -1 });
+
+            return proyectos;
+        } catch (error) {
+            throw new Error(
+                `Error al obtener todos los proyectos: ${error.message}`
+            );
+        }
+    }
+
     async getProyectoById(id) {
         try {
             const proyecto = await ProyectoModel.findById(id)
