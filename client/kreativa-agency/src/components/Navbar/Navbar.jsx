@@ -5,7 +5,6 @@ export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const location = useLocation();
-    const rol = localStorage.getItem("tipo_usuario");
 
     useEffect(() => {
         const handleScroll = () => {
@@ -18,7 +17,6 @@ export default function Navbar() {
         };
     }, []);
 
-    // Function to handle smooth scrolling to sections
     const scrollToSection = (sectionId, event) => {
         event.preventDefault();
         const element = document.getElementById(sectionId);
@@ -198,6 +196,5 @@ export default function Navbar() {
                 </nav>
             </header>
         </div>
-
     );
 }
