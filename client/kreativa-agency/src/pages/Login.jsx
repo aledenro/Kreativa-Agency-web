@@ -106,7 +106,7 @@ const Login = () => {
                         <a href="/recuperar" className="kreativa-link">¿Olvidaste tu contraseña?</a>
                     </div>
                     <div className="login-buttons">
-                        <button type="button" className="thm-btn btn-volver" onClick={() => navigate("/")}>Volver</button>
+                        <button type="button" className="thm-btn btn-volver-login" onClick={() => navigate("/")}>Volver</button>
                         <button type="submit" className="thm-btn btn-kreativa">Iniciar Sesión</button>
                     </div>
                 </form>

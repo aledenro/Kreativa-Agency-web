@@ -999,13 +999,25 @@ h3 {
     box-shadow: 0 0 1px 2px var(--btn-naranja-claro);
 }
 
-/* Botón para VOLVER (rosado Kreativa) */
+/* Botón para VOLVER con fondo rosado Kreativa sólido */
 .btn-volver {
-    background-color: var(--kreativa-rosado);
-    color: var(--kreativa-white);
+    background-color: #FF0072 !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+/* Hover: un tono más oscuro */
 .btn-volver:hover {
+    background-color: #ce005d;
+    /* Oscurece el rosado */
+    color: white;
+    box-shadow: none;
+    /* También sin sombra */
     background-color: #ddd;
     border: 2px solid #110D27;
     color: #333;
@@ -1016,9 +1028,10 @@ h3 {
     color: var(--kreativa-white);
 }
 
-.btn-kreativa:hover {
-    background-color: #ce005d;
-    color: var(--kreativa-white);
+/* Focus: sin contorno clarito */
+.btn-volver:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #FF0072;
 }
 
 /* Botones pequeños */
@@ -1461,6 +1474,28 @@ h3 {
 /* ESTILOS PARA LOGIN  */
 /* =================== */
 
+/* Botón exclusivo para login */
+.btn-volver-login {
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid #FF0072;
+    border-radius: var(--kreativa-bdr-radius);
+    padding: 12px 24px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-volver-login:focus,
+.btn-volver-login:hover,
+.btn-volver-login:active {
+    outline: none !important;
+    border-color: #FF0072 !important;
+    background-color: #e6e6e6 !important;
+    color: #000 !important;
+}
 
 .login-split-container {
     display: flex;
@@ -1682,14 +1717,14 @@ h3 {
     background-color: var(--kreativa-base);
     color: white;
     border: none;
-}
-
-.btn-kreativa:hover {
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-kreativa:hover {
     background-color: #d70065;
-}
-
-
-
+    color: white; 
+  }
 
 /* =================== */
 /* ANIMACIONES LOG-IN  */
@@ -2191,6 +2226,10 @@ h3 {
     letter-spacing: 1.5px;
 }
 
+.embla__slide__content:hover .embla__slide__image {
+  transform: scale(1.05);
+}
+
 
 /* =========================== */
 /* GESTIÓN USUARIOS RESPONSIVE */
@@ -2228,6 +2267,7 @@ h3 {
     max-width: 280px;
     margin: 0 auto;
 }
+
 
 /* Tabla responsive general */
 .kreativa-table {
