@@ -2211,7 +2211,7 @@ h3 {
 }
 
 /* ============================ */
-/* 📱 Móviles (hasta 767px) */
+/* Móviles (hasta 767px) */
 /* ============================ */
 @media (max-width: 767px) {
     .full-width-container {
@@ -2271,7 +2271,6 @@ h3 {
     }
 }
 
-/* Estilos generales del contenedor */
 .responsive-usuarios-filtros {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -2281,7 +2280,6 @@ h3 {
     margin-bottom: 1.5rem !important;
 }
 
-/* Elementos internos con mismo comportamiento */
 .responsive-usuarios-filtros .thm-btn,
 .responsive-usuarios-filtros .search-container,
 .responsive-usuarios-filtros .select-container {
@@ -2290,7 +2288,6 @@ h3 {
     max-width: 100% !important;
 }
 
-/* Input de búsqueda */
 .responsive-usuarios-filtros .search-container {
     position: relative !important;
 }
@@ -2302,7 +2299,6 @@ h3 {
     box-sizing: border-box !important;
 }
 
-/* Ícono dentro del input */
 .responsive-usuarios-filtros .icon-search {
     position: absolute !important;
     left: 10px !important;
@@ -2312,7 +2308,6 @@ h3 {
     color: #999 !important;
 }
 
-/* Select container */
 .responsive-usuarios-filtros .select-container {
     position: relative !important;
 }
@@ -2325,7 +2320,6 @@ h3 {
     box-sizing: border-box !important;
 }
 
-/* Flecha del select */
 .responsive-usuarios-filtros .icon-arrow {
     position: absolute !important;
     right: 15px !important;
@@ -2349,7 +2343,6 @@ h3 {
         width: 100% !important;
     }
 
-    /* Reforzamos el alineamiento y tamaño del select-container */
     .select-container {
         width: 100% !important;
         max-width: 410px !important;
@@ -2361,7 +2354,6 @@ h3 {
         left: 45px;
     }
 
-    /* Ajustamos el <select> */
     .select-container .select-input {
         width: 100% !important;
         padding-left: 15px !important;
@@ -2369,8 +2361,6 @@ h3 {
         appearance: none !important;
         box-sizing: border-box !important;
     }
-
-    /* Posicionamiento correcto del ícono de flecha */
     .select-container .icon-arrow {
         position: absolute !important;
         right: 58px !important;
@@ -2383,38 +2373,28 @@ h3 {
 }
 
 @media (max-width: 767px) {
-
-    /* Elimina bordes blancos entre las celdas */
     .kreativa-table {
         border-collapse: collapse !important;
         border-spacing: 0 !important;
     }
-
-    /* Quita bordes inferiores que se ven como líneas blancas */
     .kreativa-table tbody td {
         border-bottom: none !important;
         background-color: transparent !important;
     }
-
-    /* Quita cualquier borde blanco en el tr (card completo) */
     .kreativa-table tbody tr {
         border: none !important;
         background-color: #fff !important;
-        /* Puedes ajustar a lo que desees */
         margin-top: 10px !important;
         margin-bottom: 0 !important;
     }
 
-    /* Asegura que los botones no tengan borde blanco */
     .thm-btn-small {
         background-color: transparent !important;
         border: 2px solid currentColor !important;
     }
 }
-
 @media (max-width: 767px) {
 
-    /* Forzamos que todos los td actúen igual, incluyendo ACCIONES */
     .kreativa-table tbody td {
         display: block !important;
         text-align: left !important;
@@ -2435,12 +2415,10 @@ h3 {
         white-space: nowrap !important;
     }
 
-    /* Agregamos contenido al ::before SOLO si falta */
     .kreativa-table tbody td[data-label="Acciones"]::before {
         content: "ACCIONES" !important;
     }
 
-    /* Aseguramos que los botones no se monten */
     .kreativa-table tbody td[data-label="Acciones"] .botones-grupo {
         margin-top: 5px;
     }
@@ -2579,9 +2557,7 @@ h3 {
     .kreativa-table {
         width: 100%;
         max-width: none;
-        /* elimina el límite */
         min-width: 100px;
-        /* fuerza una tabla más ancha */
         margin-left: -30px;
         margin-right: auto;
     }
@@ -2606,22 +2582,27 @@ h3 {
 @media (min-width: 2560px) {
     .thm-btn.btn-verde {
         min-width: 180px;
-      }
-    
-      .search-container {
-        max-width: 300px;
-        left: 1239px;
-      }
-    
-      .select-container {
+    }
+
+    .search-container {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        max-width: 700px;
+        width: 100%;
+    }
+
+
+    .select-container {
         max-width: 220px;
         left: 515px;
-      }
-    
-      .icon-arrow {
+    }
+
+    .icon-arrow {
         right: 110px;
-      }
-    
+    }
+
     .full-width-container {
         padding-left: 3rem;
         padding-right: 6rem;
@@ -2655,6 +2636,36 @@ h3 {
         margin-left: 0;
         margin-right: auto;
     }
+
+    .btn-verde {
+        margin-left: 2rem;
+    }
+
+    .search-container {
+        position: relative;
+        left: -10rem;
+        max-width: 300px;
+    }
+
+    .select-container {
+        position: relative;
+        left: -60rem;
+        max-width: 220px;
+    }
+
+    .icon-arrow {
+        position: absolute;
+        right: 110px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .d-flex.justify-content-between.flex-wrap.gap-3.mb-4 {
+        justify-content: flex-start;
+        gap: 2rem;
+        padding-left: 0;
+    }
+
 }
 
 .kreativa-paginacion {
@@ -2667,7 +2678,6 @@ h3 {
 
 .kreativa-paginacion button {
     background-color: #ff0072;
-    /* Rosado Creativa */
     color: white;
     border: none;
     border-radius: 8px;
@@ -2675,14 +2685,11 @@ h3 {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-
-    /* 🔒 Evitar efectos visuales */
     box-shadow: none;
     transition: none;
     transform: none;
 }
 
-/* 🔐 Evita cualquier cambio al pasar el cursor o hacer clic */
 .kreativa-paginacion button:hover,
 .kreativa-paginacion button:focus,
 .kreativa-paginacion button:active {
@@ -2693,69 +2700,3 @@ h3 {
     outline: none;
     transform: none;
 }
-
-/* La capa que cubre todo cuando el sidebar está abierto */
-.sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    /* fondo difuminado oscuro */
-    z-index: 1000;
-}
-
-/* El sidebar como panel lateral */
-.sidebar {
-    width: 250px;
-    height: 100%;
-    background-color: white;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 20px;
-    box-shadow: 3px 0 8px rgba(0, 0, 0, 0.2);
-    z-index: 1001;
-    animation: slideIn 0.3s ease-out forwards;
-}
-
-/* Botón para cerrar el menú */
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-/* Animación para que se deslice */
-@keyframes slideIn {
-    from {
-        transform: translateX(-100%);
-    }
-
-    to {
-        transform: translateX(0);
-    }
-}
-
-/* Botón de menú */
-.menu-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1100;
-    background-color: #ff0072;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-
-
