@@ -971,25 +971,31 @@ h3 {
     box-shadow: 0 0 1px 2px var(--btn-naranja-claro);
 }
 
-/* Botón para VOLVER (rosado Kreativa) */
+/* Botón para VOLVER con fondo rosado Kreativa sólido */
 .btn-volver {
-    background-color: var(--kreativa-rosado);
-    color: var(--kreativa-white);
+    background-color: #FF0072 !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+/* Hover: un tono más oscuro */
 .btn-volver:hover {
-    background-color: #ddd;
-    border: 2px solid #110D27;
-    color: #333;
-}
-.btn-kreativa {
-    background-color: var(--kreativa-rosado);
-    color: var(--kreativa-white);
+    background-color: #ce005d;
+    /* Oscurece el rosado */
+    color: white;
+    box-shadow: none;
+    /* También sin sombra */
 }
 
-.btn-kreativa:hover {
-    background-color: #ce005d;
-    color: var(--kreativa-white);
+/* Focus: sin contorno clarito */
+.btn-volver:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #FF0072;
 }
 
 /* Botones pequeños */
@@ -1431,6 +1437,28 @@ h3 {
 /* ESTILOS PARA LOGIN  */
 /* =================== */
 
+/* Botón exclusivo para login */
+.btn-volver-login {
+    background-color: #e6e6e6;
+    color: #000;
+    border: 1px solid #FF0072;
+    border-radius: var(--kreativa-bdr-radius);
+    padding: 12px 24px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-volver-login:focus,
+.btn-volver-login:hover,
+.btn-volver-login:active {
+    outline: none !important;
+    border-color: #FF0072 !important;
+    background-color: #e6e6e6 !important;
+    color: #000 !important;
+}
 
 .login-split-container {
     display: flex;
@@ -1637,14 +1665,14 @@ h3 {
 
 .btn-volver:hover {
     background-color: #eee;
-    border-color: #FF0072; 
+    border-color: #FF0072;
     color: #000;
 }
 
 .btn-volver:focus {
     outline: none;
     border-color: #FF0072;
-    box-shadow: 0 0 0 2px rgba(255, 0, 114, 0.3); 
+    box-shadow: 0 0 0 2px rgba(255, 0, 114, 0.3);
 }
 
 /* BOTÓN INICIAR SESIÓN */
@@ -1652,14 +1680,14 @@ h3 {
     background-color: var(--kreativa-base);
     color: white;
     border: none;
-}
-
-.btn-kreativa:hover {
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-kreativa:hover {
     background-color: #d70065;
-}
-
-
-
+    color: white; 
+  }
 
 /* =================== */
 /* ANIMACIONES LOG-IN  */
@@ -1894,7 +1922,7 @@ h3 {
 
 @media screen and (max-width: 768px) {
     .login-buttons {
-        flex-direction: column-reverse; 
+        flex-direction: column-reverse;
         gap: 10px;
         align-items: center;
     }
@@ -1917,15 +1945,18 @@ h3 {
     --slide-spacing-lg: 2rem;
     --slide-size-lg: calc(100% / 3);
 }
+
 .embla__viewport {
     overflow: hidden;
 }
+
 .embla__container {
     backface-visibility: hidden;
     display: flex;
     touch-action: pan-y pinch-zoom;
     margin-left: calc(var(--slide-spacing) * -1);
 }
+
 @media (min-width: 750px) {
     .embla__container {
         margin-left: calc(var(--slide-spacing-sm) * -1);
@@ -1933,28 +1964,33 @@ h3 {
         margin-right: 20px;
     }
 }
+
 @media (min-width: 1200px) {
     .embla__container {
         margin-left: calc(var(--slide-spacing-lg) * -1);
     }
 }
+
 .embla__slide {
     min-width: 0;
     flex: 0 0 var(--slide-size);
     padding-left: var(--slide-spacing);
 }
+
 @media (min-width: 750px) {
     .embla__slide {
         flex: 0 0 var(--slide-size-sm);
         padding-left: var(--slide-spacing-sm);
     }
 }
+
 @media (min-width: 1200px) {
     .embla__slide {
         flex: 0 0 var(--slide-size-lg);
         padding-left: var(--slide-spacing-lg);
     }
 }
+
 .embla__controls {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -1962,12 +1998,14 @@ h3 {
     gap: 1.2rem;
     margin-top: 1.8rem;
 }
+
 .embla__buttons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.6rem;
     align-items: center;
 }
+
 .embla__button {
     -webkit-tap-highlight-color: rgba(var(--text-high-contrast-rgb-value), 0.5);
     -webkit-appearance: none;
@@ -1990,15 +2028,18 @@ h3 {
     align-items: center;
     justify-content: center;
 }
+
 .embla__button:disabled {
     color: var(--detail-high-contrast);
 }
+
 .embla__dots {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     align-items: center;
 }
+
 .embla__dot {
     -webkit-tap-highlight-color: rgba(var(--text-high-contrast-rgb-value), 0.5);
     -webkit-appearance: none;
@@ -2018,6 +2059,7 @@ h3 {
     justify-content: center;
     border-radius: 50%;
 }
+
 .embla__dot:after {
     box-shadow: inset 0 0 0 0.2rem var(--detail-medium-contrast);
     width: 1.4rem;
@@ -2027,6 +2069,7 @@ h3 {
     align-items: center;
     content: "";
 }
+
 .embla__dot--selected:after {
     box-shadow: inset 0 0 0 0.2rem var(--text-body);
 }
@@ -2172,4 +2215,3 @@ h3 {
 .embla__slide__content:hover .embla__slide__image {
     transform: scale(1.05);
 }
-
