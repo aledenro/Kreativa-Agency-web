@@ -123,21 +123,21 @@ const ingresosService = {
     
         try {
             // Calculamos las fechas de inicio y fin del mes
-            const inicioDelMes = new Date(año, mes - 1, 1); // El primer día del mes
-            const finDelMes = new Date(año, mes, 0); // El último día del mes
+            const inicioDelMes = new Date(año, mes - 1, 1); // Primer día del mes
+            const finDelMes = new Date(año, mes, 0); // Último día del mes
     
-            // Ajustamos el finDelMes para que tenga la última hora del día
+            // Ajustamos finDelMes para que tenga la última hora del día
             finDelMes.setHours(23, 59, 59, 999);
     
-            console.log(`Inicio del mes: ${inicioDelMes}`);
-            console.log(`Fin del mes: ${finDelMes}`);
+            //console.log(`Inicio del mes: ${inicioDelMes}`);
+            //console.log(`Fin del mes: ${finDelMes}`);
     
-            // Buscamos todos los ingresos activos dentro del rango de fechas
+            // Obtenemos los ingresos activos en el rango de fechas SIN usar populate
             const ingresosPorMes = await IngresosModel.find({
                 activo: true,
                 fecha: {
-                    $gte: inicioDelMes,   // Mayor o igual a la fecha de inicio
-                    $lte: finDelMes       // Menor o igual a la fecha de fin
+                    $gte: inicioDelMes,
+                    $lte: finDelMes
                 }
             }).exec();
     
@@ -145,19 +145,18 @@ const ingresosService = {
                 throw new Error("No se encontraron ingresos para el mes y año proporcionados.");
             }
     
-            // Calculamos el total de ingresos y la cantidad
+            // Calculamos el total y la cantidad
             const totalIngresos = ingresosPorMes.reduce((total, ingreso) => total + ingreso.monto, 0);
             const cantidadIngresos = ingresosPorMes.length;
     
-            // Filtramos los datos para el resumen (nombre_cliente, fecha, monto)
+            // Mapeamos los ingresos para el resumen, devolviendo el campo "categoria" tal como está
             const detalleIngresos = ingresosPorMes.map(ingreso => ({
                 nombre_cliente: ingreso.nombre_cliente,
                 fecha: ingreso.fecha,
                 monto: ingreso.monto,
-                servicio: ingreso.servicio
+                categoria: ingreso.categoria  // Se retorna el ID de la categoría
             }));
     
-            // Devolvemos el resumen y el detalle
             return {
                 resumen: {
                     totalIngresos,
