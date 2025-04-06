@@ -1,72 +1,66 @@
-import { Modal, Alert, Form, Button } from "react-bootstrap";
+import { Modal, Form, Button, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 
-const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
-  const [egresoEditado, setEgresoEditado] = useState({});
-  const [mensaje, setMensaje] = useState("");
+const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
+  const [mensaje, setMensaje] = useState(""); // Para errores (si ocurren)
   const [showConfirm, setShowConfirm] = useState(false);
-
-  useEffect(() => {
-    if (egreso && Object.keys(egreso).length > 0) {
-      setEgresoEditado(egreso);
-    }
-  }, [egreso]);
+  const [formData, setFormData] = useState({
+    fecha: "",
+    monto: "",
+    categoria: "",
+    descripcion: "",
+    proveedor: "",
+    estado: "Pendiente",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEgresoEditado((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // La fecha se muestra de solo lectura, no se edita.
     try {
-      const res = await axios.put(
-        `http://localhost:4000/api/egresos/${egresoEditado._id}`,
-        egresoEditado
-      );
-      if (res.status === 200) {
-        setMensaje("Egreso actualizado exitosamente.");
+      const res = await axios.post("http://localhost:4000/api/egresos", formData);
+      if (res.status === 201) {
+        // Esperamos 1.5 segundos y luego cerramos el modal de creación y mostramos la confirmación
         setTimeout(() => {
-          setMensaje("");
-          onSave && onSave(egresoEditado);
-          // Cierra el modal de edición...
-          handleClose();
-          // ...y luego muestra el modal de confirmación
-          setShowConfirm(true);
+          handleClose(); // Se cierra el modal de creación
+          setShowConfirm(true); // Se activa el modal de confirmación
         }, 1500);
       }
     } catch (error) {
-      console.error("Error al actualizar egreso:", error.message);
-      setMensaje("Error al actualizar el egreso.");
+      console.error("Error creando egreso:", error.message);
+      setMensaje("Error al crear el egreso.");
     }
   };
 
   const handleConfirm = () => {
     setShowConfirm(false);
+    onSave && onSave();
   };
 
   return (
     <>
-      <Modal
-        show={show && egresoEditado && Object.keys(egresoEditado).length > 0}
-        onHide={handleClose}
-      >
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Editar Egreso</Modal.Title>
+          <Modal.Title>Crear Egreso</Modal.Title>
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body>
-            {mensaje && <Alert variant="info">{mensaje}</Alert>}
+            {/* Solo se muestra mensaje en caso de error */}
+            {mensaje && <Alert variant="danger">{mensaje}</Alert>}
             <div className="mb-3">
               <label>Fecha:</label>
               <input
-                type="text"
+                type="date"
+                name="fecha"
                 className="form_input"
-                value={new Date(egresoEditado.fecha).toLocaleDateString()}
-                disabled
+                value={formData.fecha}
+                onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -75,7 +69,7 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
                 type="number"
                 name="monto"
                 className="form_input"
-                value={egresoEditado.monto}
+                value={formData.monto}
                 onChange={handleChange}
                 required
               />
@@ -84,7 +78,7 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
               <label>Categoría:</label>
               <Form.Select
                 name="categoria"
-                value={egresoEditado.categoria}
+                value={formData.categoria}
                 onChange={handleChange}
                 required
               >
@@ -103,7 +97,7 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
                 type="text"
                 name="descripcion"
                 className="form_input"
-                value={egresoEditado.descripcion}
+                value={formData.descripcion}
                 onChange={handleChange}
                 required
               />
@@ -114,7 +108,7 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
                 type="text"
                 name="proveedor"
                 className="form_input"
-                value={egresoEditado.proveedor}
+                value={formData.proveedor}
                 onChange={handleChange}
                 required
               />
@@ -123,7 +117,7 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
               <label>Estado:</label>
               <Form.Select
                 name="estado"
-                value={egresoEditado.estado}
+                value={formData.estado}
                 onChange={handleChange}
                 required
               >
@@ -142,18 +136,18 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
               Cancelar
             </button>
             <button type="submit" className="thm-btn thm-btn-small">
-              Guardar Cambios
+              Crear
             </button>
           </Modal.Footer>
         </form>
       </Modal>
 
-      {/* Modal de confirmación, que aparece fuera del modal de edición */}
+      {/* Modal de confirmación para creación */}
       <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Egreso Actualizado</Modal.Title>
+          <Modal.Title>Egreso Creado</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Egreso actualizado exitosamente.</Modal.Body>
+        <Modal.Body>Egreso creado exitosamente.</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleConfirm}>
             Aceptar
@@ -164,11 +158,10 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
   );
 };
 
-ModalEditarEgreso.propTypes = {
+ModalCrearEgreso.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  egreso: PropTypes.object.isRequired,
   onSave: PropTypes.func,
 };
 
-export default ModalEditarEgreso;
+export default ModalCrearEgreso;

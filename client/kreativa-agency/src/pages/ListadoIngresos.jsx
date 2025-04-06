@@ -66,7 +66,7 @@
 
             const navigate = useNavigate();
 
-            // Función para mapear el id de la categoría al nombre (Opción B)
+            // Función para mapear el id de la categoría al nombre
             const getCategoryName = (catId) => {
                 const cat = categories.find((c) => c._id.toString() === catId.toString());
                 return cat ? cat.nombre : catId;
@@ -78,7 +78,7 @@
                     const res = await axios.get("http://localhost:4000/api/ingresos");
                     setIngresos(res.data);
                 } catch (error) {
-                    console.error("Error fetching ingresos:", error.message);
+                    console.error("Error al obtener los ingresos:", error.message);
                 }
             }, []);
 
@@ -88,7 +88,7 @@
                         const res = await axios.get("http://localhost:4000/api/servicios/categorias");
                         setCategories(res.data);
                     } catch (error) {
-                        console.error("Error fetching categories:", error.message);
+                        console.error("Error al obetener las categorias:", error.message);
                     }
                 };
 
@@ -109,7 +109,7 @@
                 fetchClientes();
             }, [fetchIngresos]);
 
-            // Filtrado global:
+            // Filtrado global
             let ingresosFiltrados = ingresos;
             if (filterEstadoPago !== "" && filterEstadoPago !== "Todos") {
                 ingresosFiltrados = ingresosFiltrados.filter(
@@ -176,12 +176,12 @@
                         setShowConfirmToggle(false);
                         setToggleIngreso(null);
                     } catch (error) {
-                        console.error("Error toggling activation:", error.message);
+                        console.error("Error altenear el estado de ingreso.", error.message);
                     }
                 }
             };
 
-            // Para editar: se espera que ModalEditarIngreso invoque onSave con los datos editados
+            // Al editar
             const onSaveEdit = (data) => {
                 setEditedIngresoData(data);
                 setShowModalEditar(false);
@@ -195,11 +195,11 @@
                     setEditedIngresoData(null);
                     fetchIngresos();
                 } catch (error) {
-                    console.error("Error updating ingreso:", error.message);
+                    console.error("Error al actualizar ingreso:", error.message);
                 }
             };
 
-            // Para crear: se espera que ModalCrearIngreso invoque onSave cuando se crea exitosamente
+            // Al crear
             const onSaveCrear = () => {
                 setShowModalCrear(false);
                 setShowConfirmCrear(true);
@@ -269,6 +269,21 @@
                             </div>
                             {/* Columna derecha: Filtros por Estado de Pago y Estado del Ingreso */}
                             <div className="col-md-4">
+                                <Form.Group controlId="filterEstado">
+                                    <Form.Label>Activo/Inactivo:</Form.Label>
+                                    <Form.Select
+                                        value={filterEstado}
+                                        onChange={(e) => {
+                                            setFilterEstado(e.target.value);
+                                            setPagActual(1);
+                                        }}
+                                        className="thm-btn"
+                                    >
+                                        <option value="Todos">Todos</option>
+                                        <option value="Activo">Activo</option>
+                                        <option value="Inactivo">Inactivo</option>
+                                    </Form.Select>
+                                </Form.Group>
                                 <Form.Group controlId="filterEstadoPago" className="mb-2">
                                     <Form.Label>Estado de Pago:</Form.Label>
                                     <Form.Select
@@ -282,21 +297,6 @@
                                         <option value="">Todos</option>
                                         <option value="Pendiente de pago">Pendiente de pago</option>
                                         <option value="Pagado">Pagado</option>
-                                    </Form.Select>
-                                </Form.Group>
-                                <Form.Group controlId="filterEstado">
-                                    <Form.Label>Estado del Ingreso:</Form.Label>
-                                    <Form.Select
-                                        value={filterEstado}
-                                        onChange={(e) => {
-                                            setFilterEstado(e.target.value);
-                                            setPagActual(1);
-                                        }}
-                                        className="thm-btn"
-                                    >
-                                        <option value="Todos">Todos</option>
-                                        <option value="Activo">Activo</option>
-                                        <option value="Inactivo">Inactivo</option>
                                     </Form.Select>
                                 </Form.Group>
                             </div>
@@ -467,13 +467,10 @@
                     {/* Modal de confirmación para editar */}
                     <Modal show={showConfirmEditar} onHide={() => setShowConfirmEditar(false)}>
                         <Modal.Header closeButton>
-                            <Modal.Title>Confirmar Edición</Modal.Title>
+                            <Modal.Title>Ingreso Editado</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>¿Está seguro que desea editar este ingreso?</Modal.Body>
+                        <Modal.Body>Ingreso actualizado exitosamente</Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={() => setShowConfirmEditar(false)}>
-                                Cancelar
-                            </Button>
                             <Button variant="primary" onClick={handleConfirmEdit}>
                                 Aceptar
                             </Button>
