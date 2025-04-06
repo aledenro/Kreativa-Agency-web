@@ -50,6 +50,24 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
         return res.data;
     };
 
+    const getDataMultiPageData = async (fechaInicio, fechaFin) => {
+        const data = [];
+
+        const resEgresos = await axios.get(
+            `http://localhost:4000/api/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+        );
+
+        data.push(resEgresos.data);
+
+        const resIngresos = await axios.get(
+            `http://localhost:4000/api/ingresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+        );
+
+        data.push(resIngresos.data);
+
+        return data;
+    };
+
     const handleImprimirReporte = async (event) => {
         event.preventDefault();
 
@@ -119,6 +137,56 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
                 console.error(error.message);
                 openErrorNotification(
                     `Error al generar el  reporte de ${dataReport}.`
+                );
+            }
+        } else {
+            const fileName = `reporte_de_ingresos_egresos_${fechaInicio}_${fechaFin}`;
+
+            try {
+                const data = await getDataMultiPageData(fechaInicio, fechaFin);
+
+                if (
+                    lodash.isEmpty(data) ||
+                    (!lodash.isEmpty(data) &&
+                        lodash.isEmpty(data[0]) &&
+                        lodash.isEmpty(data[1]))
+                ) {
+                    openErrorNotification(
+                        `No hay datos de ingresos ni egresos entre ${fechaInicio} y ${fechaFin}.`
+                    );
+                }
+
+                const response = await axios.post(
+                    "http://localhost:3000/printExcel/multiPage",
+                    {
+                        cols: [columnasEgresos, columnasIngresos],
+                        data: data,
+                        fileName: fileName,
+                        sheetName: ["egresos", "ingresos"],
+                        pageCount: 2,
+                    },
+                    {
+                        responseType: "blob",
+                    }
+                );
+
+                if (response.status === 200) {
+                    const blob = new Blob([response.data], {
+                        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    });
+
+                    forceFileDownload(blob, fileName);
+
+                    openSuccessNotification(
+                        `Reporte  de ingresos y egresos generado correctamente.`
+                    );
+                    event.target.reset();
+                    return;
+                }
+            } catch (error) {
+                console.error(error.message);
+                openErrorNotification(
+                    `Error al generar el  reporte de ingresos y egresos.`
                 );
             }
         }
