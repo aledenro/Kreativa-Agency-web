@@ -138,8 +138,8 @@ const ingresosController = {
 
     async getIngresosDateRange(req, res) {
         try {
-            const fechaInicio = req.body.fechaInicio;
-            const fechaFin = req.body.fechaFin;
+            const fechaInicio = req.query.fechaInicio;
+            const fechaFin = req.query.fechaFin;
 
             const ingresos = await ingresosService.getIngresosDateRange(
                 fechaInicio,

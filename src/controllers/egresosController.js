@@ -233,8 +233,8 @@ class EgresosController {
 
     async getEgresosDateRange(req, res) {
         try {
-            const fechaInicio = req.body.fechaInicio;
-            const fechaFin = req.body.fechaFin;
+            const fechaInicio = req.query.fechaInicio;
+            const fechaFin = req.query.fechaFin;
 
             const egresos = await egresosService.getEgresosDateRange(
                 fechaInicio,
