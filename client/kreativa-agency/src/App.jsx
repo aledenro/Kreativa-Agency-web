@@ -8,9 +8,10 @@ import AgregarCotizacion from "./pages/AgregarCotizacion";
 import AgregarEgreso from "./pages/AgregarEgreso";
 import VerEgresos from "./pages/VerEgresos";
 import EditarEgreso from "./pages/EditarEgreso";
-import VerIngresos from "./pages/VerIngresos";
-import AgregarIngreso from "./pages/AgregarIngreso";
-import EditarIngreso from "./pages/EditarIngreso";
+import ListadoIngresos from "./pages/ListadoIngresos";
+//import VerIngresos from "./pages/VerIngresos";
+//import AgregarIngreso from "./pages/AgregarIngreso";
+//import EditarIngreso from "./pages/EditarIngreso";
 import Estadisticas from "./pages/Estadisticas";
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
@@ -100,9 +101,9 @@ function App() {
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
                 ></Route>
-                <Route path="/ingreso/agregar" element={<AgregarIngreso />} />
-                <Route path="/ingresos" element={<VerIngresos />} />
-                <Route path="/ingreso/editar/:id" element={<EditarIngreso />} />
+                
+                <Route path="/ingresos" element={<ListadoIngresos />} />
+                
 
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 

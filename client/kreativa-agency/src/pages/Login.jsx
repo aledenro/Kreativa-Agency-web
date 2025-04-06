@@ -16,6 +16,7 @@ const Login = () => {
         contraseña: "",
     });
 
+    const [mostrarContrasena, setMostrarContrasena] = useState(false);
     const [error, setError] = useState("");
     const [mostrarContrasena, setMostrarContrasena] = useState(false);
     const handleChange = (e) => {

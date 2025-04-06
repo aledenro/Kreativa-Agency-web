@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { InboxOutlined } from "@ant-design/icons";
@@ -17,12 +17,36 @@ const FormReclutaciones = () => {
     });
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [formActive, setFormActive] = useState(true);
+    const [checkingStatus, setCheckingStatus] = useState(true);
 
     const [api, contextHolder] = notification.useNotification();
     const [isHovered, setIsHovered] = useState(false);
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => setIsHovered(false);
+
+    useEffect(() => {
+        const checkFormStatus = async () => {
+            try {
+                const response = await axios.get(
+                    "http://localhost:4000/api/form-status"
+                );
+                setFormActive(response.data.active);
+            } catch (error) {
+                console.error(
+                    "Error al verificar estado del formulario:",
+                    error
+                );
+                // Si hay error, asumimos que el formulario está activo
+                setFormActive(true);
+            } finally {
+                setCheckingStatus(false);
+            }
+        };
+
+        checkFormStatus();
+    }, []);
 
     const showNotification = (type, message) => {
         api[type]({
@@ -152,6 +176,10 @@ const FormReclutaciones = () => {
             setFiles([]);
         }
     };
+
+    if (checkingStatus || !formActive) {
+        return <div style={{ height: "100px" }}></div>;
+    }
 
     return (
         <div>
