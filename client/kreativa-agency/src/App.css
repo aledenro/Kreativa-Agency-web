@@ -959,6 +959,18 @@ h3 {
     box-shadow: 0 0 1px 2px var(--btn-naranja-claro);
 }
 
+.btn-gris {
+    background-color: var(--kreativa-white);
+    color: var(--kreativa-azul-medio);
+    border: var(--kreativa-azul-medio) solid 2px;
+}
+
+.btn-gris:hover {
+    background-color: #b8b3cf57;
+    color: var(--kreativa-azul-medio);
+    box-shadow: 0 0 1px 2px #b8b3cf57;
+}
+
 /* Botón para VOLVER (rosado Kreativa) */
 .btn-volver {
     background-color: var(--kreativa-rosado);
@@ -2221,4 +2233,104 @@ h3 {
     position: relative;
     font-size: 0.9rem;
     letter-spacing: 0.5px;
+}
+
+/* modal proyecto */
+
+.proyecto-modal .modal-content {
+    border-radius: 8px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.proyecto-modal-content {
+    height: calc(100vh - 150px);
+    max-height: 700px;
+    overflow: hidden;
+}
+
+.proyecto-modal .tabs-header {
+    background-color: #f9f9f9;
+}
+
+.proyecto-modal .nav-tabs {
+    border-bottom: none;
+    padding: 0 1rem;
+}
+
+.proyecto-modal .nav-tabs .nav-link {
+    border: none;
+    color: #666;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+}
+
+.proyecto-modal .nav-tabs .nav-link.active {
+    color: var(--kreativa-base);
+    background-color: transparent;
+    border-bottom: 2px solid var(--kreativa-base);
+}
+
+.proyecto-modal .nav-tabs .nav-link:hover:not(.active) {
+    color: #333;
+    border-bottom: 2px solid #ddd;
+}
+
+.proyecto-modal .descripcion-panel,
+.proyecto-modal .info-panel,
+.proyecto-modal .comentarios-panel {
+    height: calc(100vh - 200px);
+    max-height: 650px;
+    overflow-y: auto;
+}
+
+.proyecto-modal .info-item .text-muted {
+    font-size: 0.85rem;
+}
+
+.proyecto-modal .info-item .fw-medium {
+    font-weight: 500;
+}
+
+.proyecto-modal .comentarios-list {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.proyecto-modal .btn-outline-info {
+    color: var(--kreativa-base);
+    border-color: var(--kreativa-base);
+}
+
+.proyecto-modal .btn-outline-info:hover {
+    background-color: var(--kreativa-base);
+    color: white;
+}
+
+.proyecto-modal .archivos-list .card {
+    transition: all 0.2s;
+}
+
+.proyecto-modal .archivos-list .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.proyecto-modal ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.proyecto-modal ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.proyecto-modal ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.proyecto-modal ::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
 }

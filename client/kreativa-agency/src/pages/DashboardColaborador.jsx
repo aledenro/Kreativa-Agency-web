@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
+import ModalVerProyecto from "../components/Proyectos/ModalDetalleProyecto"; // Importa el nuevo componente modal
 
 const DashboardColaborador = () => {
     const [proyectos, setProyectos] = useState([]);
@@ -35,6 +36,9 @@ const DashboardColaborador = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [tareaModal, setTareaModal] = useState({});
+
+    const [showProyectoModal, setShowProyectoModal] = useState(false);
+    const [selectedProyectoId, setSelectedProyectoId] = useState(null);
 
     const rol = localStorage.getItem("tipo_usuario");
     const userId = localStorage.getItem("user_id");
@@ -255,8 +259,10 @@ const DashboardColaborador = () => {
         window.location.href = `/proyecto/editar/${proyectoId}`;
     };
 
+    // Modificar para usar el modal de proyecto
     const handleVerProyecto = (proyectoId) => {
-        window.location.href = `/proyecto/${proyectoId}`;
+        setSelectedProyectoId(proyectoId);
+        setShowProyectoModal(true);
     };
 
     const handleAgregarTarea = (proyectoId) => {
@@ -347,7 +353,7 @@ const DashboardColaborador = () => {
                             </label>
                             <select
                                 id="filterColab"
-                                className="form-select"
+                                className="form-select form_input"
                                 onChange={(e) => {
                                     setFilterColab(e.target.value);
                                     setPagActual(1);
@@ -372,7 +378,7 @@ const DashboardColaborador = () => {
                         </label>
                         <select
                             id="filterStatus"
-                            className="form-select"
+                            className="form-select form_input"
                             onChange={(e) => {
                                 setFilterStatus(e.target.value);
                                 setPagActual(1);
@@ -399,7 +405,7 @@ const DashboardColaborador = () => {
                     )}
                 </div>
                 <div className="table-responsive">
-                    <table className="table table-hover kreativa-proyecto-table">
+                    <table className="table kreativa-proyecto-table">
                         <thead className="table-light">
                             <tr>
                                 <th
@@ -590,7 +596,7 @@ const DashboardColaborador = () => {
                                                         className="p-0"
                                                     >
                                                         <div className="ms-5">
-                                                            <table className="table kreativa-tareas-table border border-0">
+                                                            <table className="table kreativa-tareas-table border border-0 my-2">
                                                                 <thead className="table-light">
                                                                     <tr>
                                                                         <th
@@ -899,13 +905,21 @@ const DashboardColaborador = () => {
                 </div>
             </div>
 
+            {/* Modal para ver tareas */}
             {showModal && (
                 <ModalVerTareas
                     show={showModal}
                     handleClose={() => setShowModal(false)}
                     tareaModal={tareaModal}
-                ></ModalVerTareas>
+                />
             )}
+
+            {/* Modal para ver proyectos */}
+            <ModalVerProyecto
+                show={showProyectoModal}
+                handleClose={() => setShowProyectoModal(false)}
+                proyectoId={selectedProyectoId}
+            />
         </AdminLayout>
     );
 };
