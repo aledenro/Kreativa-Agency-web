@@ -243,7 +243,7 @@ const Usuarios = () => {
                     </tbody>
                 </table>
 
-                <div className="d-flex justify-content-center mt-4 flex-wrap gap-2">
+                <div className="kreativa-paginacion">
                     {Array.from({ length: totalPaginas }, (_, i) => (
                         <button
                             key={i}
@@ -260,3 +260,4 @@ const Usuarios = () => {
 };
 
 export default Usuarios;
+

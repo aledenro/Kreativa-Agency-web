@@ -327,6 +327,7 @@ h3 {
     overflow: hidden;
     font-family: var(--kreativa-font);
     color: var(--kreativa-black);
+    max-width: none;
 }
 
 .kreativa-table thead {
@@ -2270,65 +2271,6 @@ h3 {
     }
 }
 
-/* ============================ */
-/* 📱 Tablets y pantallas medianas (768–1023px) */
-/* ============================ */
-@media (min-width: 768px) and (max-width: 1023px) {
-    .kreativa-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    .d-flex.justify-content-between.flex-wrap {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .search-container,
-    .select-container {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .botones-grupo {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .thm-btn-small {
-        min-width: 120px;
-        margin-bottom: 5px;
-    }
-
-    .btn-volver {
-        min-width: 60px;
-        padding: 10px 15px;
-    }
-}
-
-/* ============================ */
-/* 🖥️ Pantallas intermedias grandes (1024–1399px) */
-/* ============================ */
-@media (min-width: 1024px) and (max-width: 1399px) {
-    .full-width-container {
-        padding: 20px 30px;
-    }
-
-    .kreativa-table {
-        font-size: 15px;
-    }
-
-    .search-container,
-    .select-container {
-        max-width: 250px;
-    }
-
-    .thm-btn-small {
-        font-size: 13px;
-    }
-}
-
 /* Estilos generales del contenedor */
 .responsive-usuarios-filtros {
     display: flex !important;
@@ -2406,40 +2348,42 @@ h3 {
     .responsive-usuarios-filtros .select-container {
         width: 100% !important;
     }
+
     /* Reforzamos el alineamiento y tamaño del select-container */
-.select-container {
-    width: 100% !important;
-    max-width: 410px !important;
-    margin: 0 auto !important;
-    position: relative !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    left: 45px;
-}
+    .select-container {
+        width: 100% !important;
+        max-width: 410px !important;
+        margin: 0 auto !important;
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        left: 45px;
+    }
 
-/* Ajustamos el <select> */
-.select-container .select-input {
-    width: 100% !important;
-    padding-left: 15px !important;
-    padding-right: 40px !important;
-    appearance: none !important;
-    box-sizing: border-box !important;
-}
+    /* Ajustamos el <select> */
+    .select-container .select-input {
+        width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 40px !important;
+        appearance: none !important;
+        box-sizing: border-box !important;
+    }
 
-/* Posicionamiento correcto del ícono de flecha */
-.select-container .icon-arrow {
-    position: absolute !important;
-    right: 58px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    pointer-events: none !important;
-    color: black !important;
-    z-index: 2 !important;
-}
+    /* Posicionamiento correcto del ícono de flecha */
+    .select-container .icon-arrow {
+        position: absolute !important;
+        right: 58px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        pointer-events: none !important;
+        color: black !important;
+        z-index: 2 !important;
+    }
 }
 
 @media (max-width: 767px) {
+
     /* Elimina bordes blancos entre las celdas */
     .kreativa-table {
         border-collapse: collapse !important;
@@ -2455,7 +2399,8 @@ h3 {
     /* Quita cualquier borde blanco en el tr (card completo) */
     .kreativa-table tbody tr {
         border: none !important;
-        background-color: #fff !important; /* Puedes ajustar a lo que desees */
+        background-color: #fff !important;
+        /* Puedes ajustar a lo que desees */
         margin-top: 10px !important;
         margin-bottom: 0 !important;
     }
@@ -2468,39 +2413,40 @@ h3 {
 }
 
 @media (max-width: 767px) {
+
     /* Forzamos que todos los td actúen igual, incluyendo ACCIONES */
     .kreativa-table tbody td {
-      display: block !important;
-      text-align: left !important;
-      padding: 10px 10px 10px 40% !important;
-      position: relative !important;
-      border-bottom: none !important;
-      font-size: 14px !important;
-      background-color: transparent !important;
+        display: block !important;
+        text-align: left !important;
+        padding: 10px 10px 10px 40% !important;
+        position: relative !important;
+        border-bottom: none !important;
+        font-size: 14px !important;
+        background-color: transparent !important;
     }
-  
+
     .kreativa-table tbody td::before {
-      position: absolute !important;
-      top: 10px !important;
-      left: 10px !important;
-      font-weight: bold !important;
-      color: var(--kreativa-base) !important;
-      width: 35% !important;
-      white-space: nowrap !important;
+        position: absolute !important;
+        top: 10px !important;
+        left: 10px !important;
+        font-weight: bold !important;
+        color: var(--kreativa-base) !important;
+        width: 35% !important;
+        white-space: nowrap !important;
     }
-  
+
     /* Agregamos contenido al ::before SOLO si falta */
     .kreativa-table tbody td[data-label="Acciones"]::before {
-      content: "ACCIONES" !important;
+        content: "ACCIONES" !important;
     }
-  
+
     /* Aseguramos que los botones no se monten */
     .kreativa-table tbody td[data-label="Acciones"] .botones-grupo {
-      margin-top: 5px;
+        margin-top: 5px;
     }
-  }
+}
 
-  .kreativa-table tbody td {
+.kreativa-table tbody td {
     word-break: break-word !important;
     white-space: normal !important;
     overflow-wrap: break-word !important;
@@ -2512,6 +2458,219 @@ h3 {
 
 @media (max-width: 767px) {
     .espacio-top-responsive {
-        height: 30px; 
+        height: 30px;
     }
 }
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .d-flex.justify-content-between.flex-wrap {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .thm-btn.btn-verde {
+        font-size: 13px !important;
+        padding: 8px 14px !important;
+        min-width: auto !important;
+        max-width: 160px !important;
+        flex-shrink: 1 !important;
+    }
+
+    .search-container,
+    .select-container {
+        max-width: 200px !important;
+        min-width: 140px !important;
+        flex-shrink: 1 !important;
+    }
+
+    .search-container .search-input,
+    .select-container .select-input {
+        font-size: 13px !important;
+        padding: 6px 30px 6px 30px !important;
+    }
+
+    .icon-search,
+    .icon-arrow {
+        font-size: 12px !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+
+    .full-width-container {
+        padding-left: 10px !important;
+        padding-right: 90px !important;
+    }
+
+    .kreativa-table {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .kreativa-table thead {
+        display: none !important;
+    }
+
+    .kreativa-table {
+        width: 100% !important;
+        display: block !important;
+        margin: 0 auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .kreativa-table tbody {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        align-items: center !important;
+    }
+
+    .kreativa-table tbody tr {
+        display: block !important;
+        width: 100% !important;
+        max-width: 620px !important;
+        padding: 20px !important;
+        background-color: #fff !important;
+        border-radius: var(--kreativa-bdr-radius) !important;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .kreativa-table tbody td {
+        display: block !important;
+        text-align: left !important;
+        position: relative !important;
+        padding: 12px 12px 12px 40% !important;
+        border-bottom: none !important;
+        font-size: 14px !important;
+        background-color: transparent !important;
+        word-break: break-word !important;
+    }
+
+    .kreativa-table tbody td::before {
+        content: attr(data-label);
+        position: absolute !important;
+        top: 12px !important;
+        left: 12px !important;
+        width: 35% !important;
+        font-weight: bold !important;
+        color: var(--kreativa-base) !important;
+        white-space: nowrap !important;
+    }
+
+    .botones-grupo {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        margin-top: 10px !important;
+    }
+
+    .thm-btn-small {
+        font-size: 13px !important;
+        padding: 6px 10px !important;
+        min-width: 70px !important;
+    }
+}
+
+@media (min-width: 1280px) {
+    .kreativa-table {
+        width: 100%;
+        max-width: none;
+        /* elimina el límite */
+        min-width: 100px;
+        /* fuerza una tabla más ancha */
+        margin-left: -30px;
+        margin-right: auto;
+    }
+
+    .titulo-gestion {
+        margin-left: 0 !important;
+        text-align: left !important;
+        width: 100%;
+    }
+
+    .filtros-gestion {
+        justify-content: flex-start !important;
+        gap: 1.5rem !important;
+    }
+
+    .filtros-gestion>* {
+        margin-right: 0.5rem;
+    }
+
+}
+
+@media (min-width: 2560px) {
+    .full-width-container {
+        padding-left: 3rem;
+        padding-right: 6rem;
+        max-width: none;
+    }
+
+    .full-width-container h1 {
+        text-align: left;
+        margin-left: 0;
+    }
+
+    .d-flex.justify-content-between.flex-wrap {
+        justify-content: flex-start;
+        padding-left: 0;
+        gap: 1.5rem;
+    }
+
+    .search-container,
+    .select-container {
+        max-width: 250px;
+    }
+
+    .pagination-container {
+        justify-content: flex-start !important;
+        padding-left: 0;
+    }
+
+    .kreativa-table {
+        min-width: 1800px;
+        max-width: 95vw;
+        margin-left: 0;
+        margin-right: auto;
+    }
+}
+
+.kreativa-paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .kreativa-paginacion button {
+    background-color: #ff0072; /* Rosado Creativa */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+  
+    /* 🔒 Evitar efectos visuales */
+    box-shadow: none;
+    transition: none;
+    transform: none;
+  }
+  
+  /* 🔐 Evita cualquier cambio al pasar el cursor o hacer clic */
+  .kreativa-paginacion button:hover,
+  .kreativa-paginacion button:focus,
+  .kreativa-paginacion button:active {
+    background-color: #ff0072;
+    color: white;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    transform: none;
+  }
