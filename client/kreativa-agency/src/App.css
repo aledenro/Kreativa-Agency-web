@@ -2645,10 +2645,11 @@ h3 {
     gap: 12px;
     margin-top: 2rem;
     flex-wrap: wrap;
-  }
-  
-  .kreativa-paginacion button {
-    background-color: #ff0072; /* Rosado Creativa */
+}
+
+.kreativa-paginacion button {
+    background-color: #ff0072;
+    /* Rosado Creativa */
     color: white;
     border: none;
     border-radius: 8px;
@@ -2656,21 +2657,82 @@ h3 {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-  
+
     /* 🔒 Evitar efectos visuales */
     box-shadow: none;
     transition: none;
     transform: none;
-  }
-  
-  /* 🔐 Evita cualquier cambio al pasar el cursor o hacer clic */
-  .kreativa-paginacion button:hover,
-  .kreativa-paginacion button:focus,
-  .kreativa-paginacion button:active {
+}
+
+/* 🔐 Evita cualquier cambio al pasar el cursor o hacer clic */
+.kreativa-paginacion button:hover,
+.kreativa-paginacion button:focus,
+.kreativa-paginacion button:active {
     background-color: #ff0072;
     color: white;
     border: none;
     box-shadow: none;
     outline: none;
     transform: none;
+}
+
+/* La capa que cubre todo cuando el sidebar está abierto */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4); /* fondo difuminado oscuro */
+    z-index: 1000;
+  }
+  
+  /* El sidebar como panel lateral */
+  .sidebar {
+    width: 250px;
+    height: 100%;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    box-shadow: 3px 0 8px rgba(0,0,0,0.2);
+    z-index: 1001;
+    animation: slideIn 0.3s ease-out forwards;
+  }
+  
+  /* Botón para cerrar el menú */
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  /* Animación para que se deslice */
+  @keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  /* Botón de menú */
+  .menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+    background-color: #ff0072;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
   }
