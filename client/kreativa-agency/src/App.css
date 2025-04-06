@@ -321,13 +321,40 @@ h3 {
 
 .kreativa-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background-color: var(--kreativa-base-clear);
     border-radius: var(--kreativa-bdr-radius);
     overflow: hidden;
     font-family: var(--kreativa-font);
     color: var(--kreativa-black);
     max-width: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.kreativa-table thead tr:first-child th:first-child {
+    border-top-left-radius: var(--kreativa-bdr-radius);
+}
+
+.kreativa-table thead tr:first-child th:last-child {
+    border-top-right-radius: var(--kreativa-bdr-radius);
+}
+
+.kreativa-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: var(--kreativa-bdr-radius);
+    border-bottom: none;
+}
+
+.kreativa-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: var(--kreativa-bdr-radius);
+}
+
+.kreativa-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.kreativa-table tr:last-child {
+    border-bottom: none !important;
 }
 
 .kreativa-table thead {
@@ -1205,6 +1232,7 @@ h3 {
     padding: 18px;
     text-align: left;
     font-size: 18px;
+    border-bottom: 1px solid #ff0072;
 }
 
 /* Encabezado */
@@ -2361,6 +2389,7 @@ h3 {
         appearance: none !important;
         box-sizing: border-box !important;
     }
+
     .select-container .icon-arrow {
         position: absolute !important;
         right: 58px !important;
@@ -2377,10 +2406,12 @@ h3 {
         border-collapse: collapse !important;
         border-spacing: 0 !important;
     }
+
     .kreativa-table tbody td {
         border-bottom: none !important;
         background-color: transparent !important;
     }
+
     .kreativa-table tbody tr {
         border: none !important;
         background-color: #fff !important;
@@ -2393,6 +2424,7 @@ h3 {
         border: 2px solid currentColor !important;
     }
 }
+
 @media (max-width: 767px) {
 
     .kreativa-table tbody td {
