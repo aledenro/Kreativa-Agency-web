@@ -3,70 +3,121 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
-  const [egresoEditado, setEgresoEditado] = useState({});
+const ModalEditarIngreso = ({ show, handleClose, ingreso, categories, onSave }) => {
+  const [ingresoEditado, setIngresoEditado] = useState({});
   const [mensaje, setMensaje] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
-    if (egreso && Object.keys(egreso).length > 0) {
-      setEgresoEditado(egreso);
+    if (ingreso && Object.keys(ingreso).length > 0) {
+      // Asumimos que ingreso.categoria ya es el _id o se usa para buscar en categories,
+      // pero en esta versión no se permite editar la categoría.
+      setIngresoEditado({ ...ingreso });
     }
-  }, [egreso]);
+  }, [ingreso]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEgresoEditado((prev) => ({ ...prev, [name]: value }));
+    // No permitimos cambiar la categoría
+    if (name === "categoria") return;
+    setIngresoEditado((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  // Al presionar "Guardar Cambios" se muestra el modal de confirmación
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // La fecha se muestra de solo lectura, no se edita.
+    setShowConfirm(true);
+  };
+
+  const handleConfirmEdit = async () => {
     try {
       const res = await axios.put(
-        `http://localhost:4000/api/egresos/${egresoEditado._id}`,
-        egresoEditado
+        `http://localhost:4000/api/ingresos/${ingresoEditado._id}`,
+        ingresoEditado
       );
       if (res.status === 200) {
-        setMensaje("Egreso actualizado exitosamente.");
+        setMensaje("Ingreso actualizado exitosamente.");
         setTimeout(() => {
           setMensaje("");
-          onSave && onSave(egresoEditado);
-          // Cierra el modal de edición...
+          setShowConfirm(false);
+          onSave && onSave(ingresoEditado);
           handleClose();
-          // ...y luego muestra el modal de confirmación
-          setShowConfirm(true);
         }, 1500);
       }
     } catch (error) {
-      console.error("Error al actualizar egreso:", error.message);
-      setMensaje("Error al actualizar el egreso.");
+      console.error("Error al actualizar ingreso:", error.message);
+      setMensaje("Error al actualizar el ingreso.");
     }
   };
 
-  const handleConfirm = () => {
+  const handleCancelConfirm = () => {
     setShowConfirm(false);
   };
 
   return (
     <>
       <Modal
-        show={show && egresoEditado && Object.keys(egresoEditado).length > 0}
+        show={show && ingresoEditado && Object.keys(ingresoEditado).length > 0}
         onHide={handleClose}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Editar Egreso</Modal.Title>
+          <Modal.Title>Editar Ingreso</Modal.Title>
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body>
             {mensaje && <Alert variant="info">{mensaje}</Alert>}
             <div className="mb-3">
-              <label>Fecha:</label>
+              <label>Fecha Creación:</label>
               <input
                 type="text"
                 className="form_input"
-                value={new Date(egresoEditado.fecha).toLocaleDateString()}
+                value={new Date(ingresoEditado.fecha_creacion).toLocaleDateString()}
                 disabled
+              />
+            </div>
+            <div className="mb-3">
+              <label>Nombre Cliente:</label>
+              <input
+                type="text"
+                className="form_input"
+                value={ingresoEditado.nombre_cliente}
+                disabled
+              />
+            </div>
+            <div className="mb-3">
+              <label>Cédula:</label>
+              <input
+                type="text"
+                className="form_input"
+                value={ingresoEditado.cedula}
+                disabled
+              />
+            </div>
+            <div className="mb-3">
+              <label>Categoría:</label>
+              {/* Deshabilitamos la edición de la categoría, se muestra el nombre */}
+              <Form.Control
+                type="text"
+                value={
+                  categories.find((cat) => cat._id.toString() === ingresoEditado.categoria)
+                    ? categories.find((cat) => cat._id.toString() === ingresoEditado.categoria).nombre
+                    : ingresoEditado.categoria
+                }
+                disabled
+              />
+            </div>
+            <div className="mb-3">
+              <label>Descripción:</label>
+              <input
+                type="text"
+                name="descripcion"
+                className="form_input"
+                value={ingresoEditado.descripcion}
+                onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -75,46 +126,22 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
                 type="number"
                 name="monto"
                 className="form_input"
-                value={egresoEditado.monto}
+                value={ingresoEditado.monto}
                 onChange={handleChange}
                 required
               />
             </div>
             <div className="mb-3">
-              <label>Categoría:</label>
-              <Form.Select
-                name="categoria"
-                value={egresoEditado.categoria}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccione una categoría</option>
-                <option value="Salarios">Salarios</option>
-                <option value="Software">Software</option>
-                <option value="Servicios de contabilidad">
-                  Servicios de contabilidad
-                </option>
-                <option value="Servicios">Servicios</option>
-              </Form.Select>
-            </div>
-            <div className="mb-3">
-              <label>Descripción:</label>
+              <label>Fecha Vencimiento:</label>
               <input
-                type="text"
-                name="descripcion"
+                type="date"
+                name="fecha"
                 className="form_input"
-                value={egresoEditado.descripcion}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label>Proveedor:</label>
-              <input
-                type="text"
-                name="proveedor"
-                className="form_input"
-                value={egresoEditado.proveedor}
+                value={
+                  ingresoEditado.fecha
+                    ? new Date(ingresoEditado.fecha).toISOString().split("T")[0]
+                    : ""
+                }
                 onChange={handleChange}
                 required
               />
@@ -123,13 +150,12 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
               <label>Estado:</label>
               <Form.Select
                 name="estado"
-                value={egresoEditado.estado}
+                value={ingresoEditado.estado}
                 onChange={handleChange}
                 required
               >
-                <option value="Pendiente">Pendiente</option>
-                <option value="Aprobado">Aprobado</option>
-                <option value="Rechazado">Rechazado</option>
+                <option value="Pendiente de pago">Pendiente de pago</option>
+                <option value="Pagado">Pagado</option>
               </Form.Select>
             </div>
           </Modal.Body>
@@ -148,14 +174,17 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
         </form>
       </Modal>
 
-      {/* Modal de confirmación, que aparece fuera del modal de edición */}
-      <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
+      {/* Modal de confirmación para edición */}
+      <Modal show={showConfirm} onHide={handleCancelConfirm} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Egreso Actualizado</Modal.Title>
+          <Modal.Title>Confirmar Edición</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Egreso actualizado exitosamente.</Modal.Body>
+        <Modal.Body>¿Está seguro que desea editar este ingreso?</Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleConfirm}>
+          <Button variant="secondary" onClick={handleCancelConfirm}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleConfirmEdit}>
             Aceptar
           </Button>
         </Modal.Footer>
@@ -164,11 +193,12 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
   );
 };
 
-ModalEditarEgreso.propTypes = {
+ModalEditarIngreso.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  egreso: PropTypes.object.isRequired,
+  ingreso: PropTypes.object.isRequired,
+  categories: PropTypes.array.isRequired,
   onSave: PropTypes.func,
 };
 
-export default ModalEditarEgreso;
+export default ModalEditarIngreso;
