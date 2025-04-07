@@ -8,9 +8,10 @@ import AgregarCotizacion from "./pages/AgregarCotizacion";
 import AgregarEgreso from "./pages/AgregarEgreso";
 import VerEgresos from "./pages/VerEgresos";
 import EditarEgreso from "./pages/EditarEgreso";
-import VerIngresos from "./pages/VerIngresos";
-import AgregarIngreso from "./pages/AgregarIngreso";
-import EditarIngreso from "./pages/EditarIngreso";
+import ListadoIngresos from "./pages/ListadoIngresos";
+//import VerIngresos from "./pages/VerIngresos";
+//import AgregarIngreso from "./pages/AgregarIngreso";
+//import EditarIngreso from "./pages/EditarIngreso";
 import Estadisticas from "./pages/Estadisticas";
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
@@ -22,6 +23,7 @@ import ListadoServicios from "./pages/ListadoServicios";
 import AgregarServicio from "./pages/AgregarServicio";
 import ModificarServicio from "./pages/ModificarServicio";
 import AgregarPaquete from "./pages/AgregarPaquete";
+import ModificarPaquete from "./pages/ModificarPaquete";
 import DetalleServicio from "./pages/DetalleServicio";
 import AgregarProyecto from "./pages/AgregarProyecto";
 import EditarProyecto from "./pages/EditarProyecto";
@@ -32,7 +34,6 @@ import VistaClientes from "./pages/VistaClientes";
 import VistaColaborador from "./pages/VistaColaborador";
 import Recuperar from "./pages/Recuperar";
 import Restablecer from "./pages/Restablecer";
-import RestablecerContraseña from "./pages/RestablecerContraseña";
 import ListadoTareas from "./pages/ListadoTareas";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
 import AgregarPTO from "./pages/AgregarPTO";
@@ -44,6 +45,9 @@ import Landing from "./pages/Landing";
 import ListadoPagos from "./pages/ListadoPagos";
 import RespuestasContacto from "./pages/RespuestasContacto";
 import RespuestasReclutaciones from "./pages/RespuestasReclutaciones";
+import GestionServicios from "./pages/GestionServicios";
+import GestionPaquetes from "./pages/GestionPaquetes";
+import DashboardColaborador from "./pages/DashboardColaborador";
 
 function App() {
     return (
@@ -72,6 +76,10 @@ function App() {
                     path="/servicio/agregarPaquete/:id"
                     element={<AgregarPaquete />}
                 ></Route>
+                <Route
+                    path="/paquete/modificar/:servicioId/:paqueteId"
+                    element={<ModificarPaquete />}
+                ></Route>
 
                 <Route
                     path="/cotizacion/agregar"
@@ -94,9 +102,8 @@ function App() {
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
                 ></Route>
-                <Route path="/ingreso/agregar" element={<AgregarIngreso />} />
-                <Route path="/ingresos" element={<VerIngresos />} />
-                <Route path="/ingreso/editar/:id" element={<EditarIngreso />} />
+
+                <Route path="/ingresos" element={<ListadoIngresos />} />
 
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 
@@ -139,10 +146,6 @@ function App() {
                     path="/restablecer/:token"
                     element={<Restablecer />}
                 ></Route>
-                <Route
-                    path="/restablecer/:token"
-                    element={<RestablecerContraseña />}
-                ></Route>
                 <Route path="/tareas" element={<ListadoTareas />}></Route>
                 <Route
                     path="/jerarquia"
@@ -172,6 +175,16 @@ function App() {
                 <Route
                     path="/admin/reclutaciones"
                     element={<RespuestasReclutaciones />}
+                />
+                <Route
+                    path="/admin/reclutaciones"
+                    element={<RespuestasReclutaciones />}
+                />
+                <Route path="/admin/servicios" element={<GestionServicios />} />
+                <Route path="/admin/paquetes" element={<GestionPaquetes />} />
+                <Route
+                    path="/proyectos/dashboard"
+                    element={<DashboardColaborador />}
                 />
             </Routes>
         </Router>

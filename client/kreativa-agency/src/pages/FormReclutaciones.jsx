@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { InboxOutlined } from "@ant-design/icons";
@@ -17,8 +17,36 @@ const FormReclutaciones = () => {
     });
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [formActive, setFormActive] = useState(true);
+    const [checkingStatus, setCheckingStatus] = useState(true);
 
     const [api, contextHolder] = notification.useNotification();
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
+
+    useEffect(() => {
+        const checkFormStatus = async () => {
+            try {
+                const response = await axios.get(
+                    "http://localhost:4000/api/form-status"
+                );
+                setFormActive(response.data.active);
+            } catch (error) {
+                console.error(
+                    "Error al verificar estado del formulario:",
+                    error
+                );
+                // Si hay error, asumimos que el formulario está activo
+                setFormActive(true);
+            } finally {
+                setCheckingStatus(false);
+            }
+        };
+
+        checkFormStatus();
+    }, []);
 
     const showNotification = (type, message) => {
         api[type]({
@@ -149,6 +177,10 @@ const FormReclutaciones = () => {
         }
     };
 
+    if (checkingStatus || !formActive) {
+        return <div style={{ height: "100px" }}></div>;
+    }
+
     return (
         <div>
             {contextHolder}
@@ -244,7 +276,11 @@ const FormReclutaciones = () => {
                                         theme={{
                                             components: {
                                                 Upload: {
-                                                    lineWidth: "0",
+                                                    lineWidth: "1px",
+                                                    lineType: "solid",
+                                                    colorBorder: "#8788ab",
+                                                    colorBgContainer:
+                                                        "transparent",
                                                 },
                                             },
                                         }}
@@ -258,9 +294,29 @@ const FormReclutaciones = () => {
                                             className="custom-dragger"
                                             accept=".pdf"
                                             maxCount={1}
+                                            style={{
+                                                borderRadius: "12px",
+                                                borderColor: isHovered
+                                                    ? "#110d27"
+                                                    : "#8788ab",
+                                                borderWidth: "1px",
+                                                borderStyle: "solid",
+                                                backgroundColor: "transparent",
+                                                transition: "border-color 0.3s",
+                                            }}
+                                            onMouseEnter={handleMouseEnter}
+                                            onMouseLeave={handleMouseLeave}
                                         >
                                             <p className="ant-upload-drag-icon custom-icon">
-                                                <InboxOutlined />
+                                                <InboxOutlined
+                                                    style={{
+                                                        color: isHovered
+                                                            ? "#110d27"
+                                                            : "#8788ab",
+                                                        transition:
+                                                            "color 0.3s",
+                                                    }}
+                                                />
                                             </p>
                                             <p className="ant-upload-text">
                                                 Haz clic o arrastra tu archivo
@@ -281,6 +337,9 @@ const FormReclutaciones = () => {
                                     variant="primary"
                                     type="submit"
                                     disabled={loading}
+                                    style={{
+                                        margin: "20px",
+                                    }}
                                 >
                                     {loading ? (
                                         <Spinner animation="border" size="sm" />

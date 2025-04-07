@@ -1,38 +1,40 @@
 const ingresosModel = require("../models/ingresosModel");
 const IngresosModel = require("../models/ingresosModel");
 const Usuario = require("../models/usuarioModel");
+const mongoose = require("mongoose");
 
 const ingresosService = {
-    async registrarIngreso({
-        cedula,
-        fecha,
-        monto,
-        descripcion,
-        servicio,
-        estado,
-        nota,
-    }) {
-        console.log("Buscando cliente con cédula:", cedula);
+
+    async registrarIngreso({ cedula, fecha, monto, descripcion, estado, categoria }) {
+
         // Validar si el usuario existe en la base de datos
         const usuarioExistente = await Usuario.findOne({ cedula });
-        console.log("Cliente encontrado:", usuarioExistente);
         if (!usuarioExistente) {
             throw new Error("El cliente con esta cédula no está registrado.");
         }
+        
+        // Opcional: Validar que la categoría exista
+        const categoriaExistente = await mongoose.connection.db
+            .collection("categorias_servicio")
+            .findOne({ _id: new mongoose.Types.ObjectId(categoria) });
+        if (!categoriaExistente) {
+            throw new Error("La categoría seleccionada no existe.");
+        }
 
-        // Crear el nuevo ingreso
+        // Crear el nuevo ingreso utilizando la fecha de vencimiento y la categoría seleccionada
         const nuevoIngreso = new IngresosModel({
             cedula,
-            fecha,
-            nombre_cliente: usuarioExistente.nombre, // Guardar el nombre del usuario en el ingreso
+
+            fecha, // Fecha de vencimiento proporcionada por el usuario
+            nombre_cliente: usuarioExistente.nombre,
+
             monto,
             descripcion,
-            servicio,
             estado,
-            nota,
+            //nota,
+            categoria, // Se almacena el ID de la categoría seleccionada
         });
 
-        // Guardar en la base de datos
         await nuevoIngreso.save();
         return nuevoIngreso;
     },

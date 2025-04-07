@@ -10,5 +10,6 @@ router.put("/actualizarLog/:id", TareasController.actualizarLog);
 router.get("/", TareasController.getAllTareas);
 router.get("/getByColab/:id", TareasController.getAllTareasByColab);
 router.put("/comment/:id", TareasController.commentTarea);
+router.put("/comment/edit/:id", TareasController.editComment);
 
 module.exports = router;
