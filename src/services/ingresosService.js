@@ -2,17 +2,23 @@ const ingresosModel = require("../models/ingresosModel");
 const IngresosModel = require("../models/ingresosModel");
 const Usuario = require("../models/usuarioModel");
 const mongoose = require("mongoose");
+require("../models/categoriaServicioModel");
 
 const ingresosService = {
-
-    async registrarIngreso({ cedula, fecha, monto, descripcion, estado, categoria }) {
-
+    async registrarIngreso({
+        cedula,
+        fecha,
+        monto,
+        descripcion,
+        estado,
+        categoria,
+    }) {
         // Validar si el usuario existe en la base de datos
         const usuarioExistente = await Usuario.findOne({ cedula });
         if (!usuarioExistente) {
             throw new Error("El cliente con esta cédula no está registrado.");
         }
-        
+
         // Opcional: Validar que la categoría exista
         const categoriaExistente = await mongoose.connection.db
             .collection("categorias_servicio")
