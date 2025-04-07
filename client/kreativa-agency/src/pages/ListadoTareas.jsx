@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar/Navbar";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
 import axios from "axios";
 import lodash from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,9 +10,40 @@ import {
     faCaretLeft,
     faBackward,
     faEye,
+    faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
+
+const getEstado = (status) => {
+    switch (status) {
+        case "Por Hacer":
+            return "badge badge-azul";
+        case "En Progreso":
+            return "badge badge-amarillo";
+        case "Finalizado":
+            return "badge badge-verde";
+        case "En Revisión":
+            return "badge badge-naranja";
+        case "Cancelado":
+            return "badge badge-rojo";
+        default:
+            return "badge badge-gris";
+    }
+};
+
+const getPrioridad = (priority) => {
+    switch (priority) {
+        case "Alta":
+            return "badge badge-rojo";
+        case "Media":
+            return "badge badge-amarillo";
+        case "Baja":
+            return "badge badge-azul";
+        default:
+            return "badge badge-gris";
+    }
+};
 
 const ListadoTareas = () => {
     const navigate = useNavigate();
@@ -139,21 +170,24 @@ const ListadoTareas = () => {
     }
 
     return (
-        <div>
-            <Navbar></Navbar>
-            <h3 className="section-title text-center">
-                {rol === "Administrador" ? "Listado de Tareas" : "Mis Tareas"}
-            </h3>
+        <AdminLayout>
+            <div className="container pt-3 mx-auto">
+                <div style={{ height: "90px" }}></div>
 
-            <div className="container pt-3  table-responsive">
-                <div className="row">
+                <h1 className="mb-4">
+                    {rol === "Administrador"
+                        ? "Listado de Tareas"
+                        : "Mis Tareas"}
+                </h1>
+
+                <div className="row mb-3">
                     {rol === "Administrador" ? (
                         <div className="col">
                             <label htmlFor="filterColab">
                                 Filtrar por Colaborador:
                             </label>
                             <select
-                                className="form-select form-select-sm mb-4"
+                                className="form-select form_input"
                                 onChange={(e) => {
                                     setFilterColab(e.target.value);
                                     setFilterStatus(filterStatus);
@@ -161,7 +195,7 @@ const ListadoTareas = () => {
                                 }}
                                 id="filterColab"
                             >
-                                <option defaultValue={""}></option>
+                                <option defaultValue={""}>Todos</option>
                                 {renderOptionsColabs()}
                             </select>
                         </div>
@@ -173,7 +207,7 @@ const ListadoTareas = () => {
                             Filtrar por Prioridad:
                         </label>
                         <select
-                            className="form-select form-select-sm mb-4"
+                            className="form-select form_input"
                             onChange={(e) => {
                                 setFilterStatus(e.target.value);
                                 setFilterColab(filterColab);
@@ -181,7 +215,7 @@ const ListadoTareas = () => {
                             }}
                             id="filterStatus"
                         >
-                            <option defaultValue={""}></option>
+                            <option defaultValue={""}>Todos</option>
                             <option value={"Por Hacer"}>Por Hacer</option>
                             <option value={"En Progreso"}>En Progreso</option>
                             <option value={"Cancelado"}>Cancelado</option>
@@ -193,7 +227,7 @@ const ListadoTareas = () => {
                     {rol === "Administrador" ? (
                         <div className="col text-end">
                             <button
-                                className="thm-btn btn-crear"
+                                className="thm-btn"
                                 onClick={() => navigate("/tarea/agregar")}
                             >
                                 Crear Tarea
@@ -203,48 +237,34 @@ const ListadoTareas = () => {
                         ""
                     )}
                 </div>
-
-                <table className="table kreativa-table">
-                    <thead>
-                        <tr>
-                            <th
-                                onClick={() => {
-                                    if (sortField === "nombre") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
-
-                                    setsortField("nombre");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Nombre <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            <th
-                                onClick={() => {
-                                    if (sortField === "proyecto_id.nombre") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
-
-                                    setsortField("proyecto_id.nombre");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Proyecto <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            {rol === "Administrador" ? (
+                <div className="table-responsive">
+                    <table className="table kreativa-proyecto-table">
+                        <thead className="table-light">
+                            <tr>
                                 <th
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        if (sortField === "nombre") {
+                                            setsortOrder(
+                                                sortOrder === "asc"
+                                                    ? "desc"
+                                                    : "asc"
+                                            );
+                                            return;
+                                        }
+
+                                        setsortField("nombre");
+                                        setsortOrder("asc");
+                                    }}
+                                    className="text-center"
+                                >
+                                    Nombre <FontAwesomeIcon icon={faSort} />
+                                </th>
+                                <th
+                                    style={{ cursor: "pointer" }}
                                     onClick={() => {
                                         if (
-                                            sortField ===
-                                            "colaborador_id.nombre"
+                                            sortField === "proyecto_id.nombre"
                                         ) {
                                             setsortOrder(
                                                 sortOrder === "asc"
@@ -254,164 +274,252 @@ const ListadoTareas = () => {
                                             return;
                                         }
 
-                                        setsortField("colaborador_id.nombre");
+                                        setsortField("proyecto_id.nombre");
                                         setsortOrder("asc");
                                     }}
-                                    className="sort-field"
+                                    className="text-center"
                                 >
-                                    Colaborador{" "}
+                                    Proyecto <FontAwesomeIcon icon={faSort} />
+                                </th>
+                                {rol === "Administrador" ? (
+                                    <th
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => {
+                                            if (
+                                                sortField ===
+                                                "colaborador_id.nombre"
+                                            ) {
+                                                setsortOrder(
+                                                    sortOrder === "asc"
+                                                        ? "desc"
+                                                        : "asc"
+                                                );
+                                                return;
+                                            }
+
+                                            setsortField(
+                                                "colaborador_id.nombre"
+                                            );
+                                            setsortOrder("asc");
+                                        }}
+                                        className="text-center"
+                                    >
+                                        Colaborador{" "}
+                                        <FontAwesomeIcon icon={faSort} />
+                                    </th>
+                                ) : (
+                                    ""
+                                )}
+                                <th
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        if (sortField === "estado") {
+                                            setsortOrder(
+                                                sortOrder === "asc"
+                                                    ? "desc"
+                                                    : "asc"
+                                            );
+                                            return;
+                                        }
+
+                                        setsortField("estado");
+                                        setsortOrder("asc");
+                                    }}
+                                    className="text-center"
+                                >
+                                    Estado <FontAwesomeIcon icon={faSort} />
+                                </th>
+                                <th
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        if (sortField === "prioridad") {
+                                            setsortOrder(
+                                                sortOrder === "asc"
+                                                    ? "desc"
+                                                    : "asc"
+                                            );
+                                            return;
+                                        }
+
+                                        setsortField("prioridad");
+                                        setsortOrder("asc");
+                                    }}
+                                    className="text-center"
+                                >
+                                    Prioridad <FontAwesomeIcon icon={faSort} />
+                                </th>
+                                <th
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        if (sortField === "fecha_vencimiento") {
+                                            setsortOrder(
+                                                sortOrder === "asc"
+                                                    ? "desc"
+                                                    : "asc"
+                                            );
+                                            return;
+                                        }
+
+                                        setsortField("fecha_vencimiento");
+                                        setsortOrder("asc");
+                                    }}
+                                    className="text-center"
+                                >
+                                    Fecha de Entrega{" "}
                                     <FontAwesomeIcon icon={faSort} />
                                 </th>
-                            ) : (
-                                ""
-                            )}
-                            <th
-                                onClick={() => {
-                                    if (sortField === "estado") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
-
-                                    setsortField("estado");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Estado <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            <th
-                                onClick={() => {
-                                    if (sortField === "prioridad") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
-
-                                    setsortField("prioridad");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Prioridad <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            <th
-                                onClick={() => {
-                                    if (sortField === "fecha_vencimiento") {
-                                        setsortOrder(
-                                            sortOrder === "asc" ? "desc" : "asc"
-                                        );
-                                        return;
-                                    }
-
-                                    setsortField("fecha_vencimiento");
-                                    setsortOrder("asc");
-                                }}
-                                className="sort-field"
-                            >
-                                Fecha de Entrega{" "}
-                                <FontAwesomeIcon icon={faSort} />
-                            </th>
-                            <th className="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tareasOrdenadas.length !== 0 ? (
-                            tareasPags.map((tarea) => (
-                                <tr key={tarea._id}>
-                                    <td>{tarea.nombre}</td>
-                                    <td>{tarea.proyecto_id.nombre}</td>
-                                    {rol === "Administrador" ? (
-                                        <td>{tarea.colaborador_id.nombre}</td>
-                                    ) : (
-                                        ""
-                                    )}
-                                    <td>{tarea.estado}</td>
-                                    <td>{tarea.prioridad}</td>
-                                    <td>
-                                        {new Date(
-                                            tarea.fecha_vencimiento
-                                        ).toLocaleDateString()}
-                                    </td>
-
-                                    <td className="acciones">
-                                        <div className="botones-grupo">
-                                            <button
-                                                className="thm-btn thm-btn-small btn-amarillo"
-                                                onClick={() => {
-                                                    setTareaModal(tarea);
-                                                    setShowModal(true);
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faEye} />
-                                            </button>
-                                            {rol === "Administrador" ? (
-                                                <button
-                                                    className="thm-btn thm-btn-small btn-editar"
-                                                    onClick={() =>
-                                                        handleEditar(tarea._id)
+                                <th className="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tareasOrdenadas.length !== 0 ? (
+                                tareasPags.map((tarea) => (
+                                    <tr key={tarea._id}>
+                                        <td className="text-center">
+                                            {tarea.nombre}
+                                        </td>
+                                        <td className="text-center">
+                                            {tarea.proyecto_id.nombre}
+                                        </td>
+                                        {rol === "Administrador" ? (
+                                            <td className="text-center">
+                                                <span
+                                                    className="badge badge-gris"
+                                                    title={
+                                                        tarea.colaborador_id
+                                                            ?.nombre ||
+                                                        "Sin asignar"
                                                     }
                                                 >
-                                                    Editar
+                                                    {tarea.colaborador_id
+                                                        ?.nombre
+                                                        ? tarea.colaborador_id.nombre.charAt(
+                                                              0
+                                                          ) +
+                                                          (tarea.colaborador_id.nombre.includes(
+                                                              " "
+                                                          )
+                                                              ? tarea.colaborador_id.nombre
+                                                                    .split(
+                                                                        " "
+                                                                    )[1]
+                                                                    .charAt(0)
+                                                              : "")
+                                                        : "?"}
+                                                </span>
+                                            </td>
+                                        ) : (
+                                            ""
+                                        )}
+                                        <td className="text-center">
+                                            <div
+                                                className={`${getEstado(tarea.estado)}`}
+                                            >
+                                                {tarea.estado}
+                                            </div>
+                                        </td>
+                                        <td className="text-center">
+                                            <div
+                                                className={`${getPrioridad(tarea.prioridad)}`}
+                                            >
+                                                {tarea.prioridad}
+                                            </div>
+                                        </td>
+                                        <td className="text-center">
+                                            {new Date(
+                                                tarea.fecha_vencimiento
+                                            ).toLocaleDateString()}
+                                        </td>
+
+                                        <td className="text-center">
+                                            <div className="botones-grupo">
+                                                <button
+                                                    className="thm-btn thm-btn-small btn-amarillo"
+                                                    onClick={() => {
+                                                        setTareaModal(tarea);
+                                                        setShowModal(true);
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faEye}
+                                                    />
                                                 </button>
-                                            ) : (
-                                                ""
-                                            )}
-                                        </div>
+                                                {rol === "Administrador" ? (
+                                                    <button
+                                                        className="thm-btn thm-btn-small btn-azul"
+                                                        onClick={() =>
+                                                            handleEditar(
+                                                                tarea._id
+                                                            )
+                                                        }
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faPencil}
+                                                        />
+                                                    </button>
+                                                ) : (
+                                                    ""
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={7}>
+                                        No hay tareas por mostar.
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan={7}>No hay tareas por mostar.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
-            <div className="d-flex justify-content-center mt-4">
-                <select
-                    className="form-select form-select-sm w-10 "
-                    onChange={handleChangeCantItems}
-                >
-                    <option value={5} selected>
-                        5
-                    </option>
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={tareasOrdenadas.length}>Todos</option>
-                </select>{" "}
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(1)}
-                    disabled={pagActual === 1}
-                >
-                    <FontAwesomeIcon icon={faBackward} />
-                </button>
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(pagActual - 1)}
-                    disabled={pagActual === 1}
-                >
-                    <FontAwesomeIcon icon={faCaretLeft} />
-                </button>
-                <button
-                    className={`thm-btn btn-volver thm-btn-small me-2`}
-                    onClick={() => setPagActual(pagActual + 1)}
-                    disabled={pagActual === totalPags || totalPags - 1 <= 0}
-                >
-                    <FontAwesomeIcon icon={faCaretRight} />
-                </button>
-                <button
-                    className={`thm-btn thm-btn-small btn-volver me-2`}
-                    onClick={() => setPagActual(totalPags)}
-                    disabled={pagActual === totalPags || totalPags - 1 <= 0}
-                >
-                    <FontAwesomeIcon icon={faForward} />
-                </button>
+                <div className="d-flex justify-content-center mt-4">
+                    <select
+                        className="form-select form-select-sm me-2 "
+                        onChange={handleChangeCantItems}
+                        style={{ width: "70px" }}
+                    >
+                        <option value={5} selected>
+                            5
+                        </option>
+                        <option value={10}>10</option>
+                        <option value={25}>25</option>
+                        <option value={tareasOrdenadas.length}>Todos</option>
+                    </select>{" "}
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(1)}
+                        disabled={pagActual === 1}
+                    >
+                        <FontAwesomeIcon icon={faBackward} />
+                    </button>
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(pagActual - 1)}
+                        disabled={pagActual === 1}
+                    >
+                        <FontAwesomeIcon icon={faCaretLeft} />
+                    </button>
+                    <span className="align-self-center mx-2">
+                        Página {pagActual} de {totalPags || 1}
+                    </span>
+                    <button
+                        className={`thm-btn btn-volver thm-btn-small me-2`}
+                        onClick={() => setPagActual(pagActual + 1)}
+                        disabled={pagActual === totalPags || totalPags - 1 <= 0}
+                    >
+                        <FontAwesomeIcon icon={faCaretRight} />
+                    </button>
+                    <button
+                        className={`thm-btn thm-btn-small btn-volver me-2`}
+                        onClick={() => setPagActual(totalPags)}
+                        disabled={pagActual === totalPags || totalPags - 1 <= 0}
+                    >
+                        <FontAwesomeIcon icon={faForward} />
+                    </button>
+                </div>
             </div>
 
             {showModal && (
@@ -421,7 +529,7 @@ const ListadoTareas = () => {
                     tareaModal={tareaModal}
                 ></ModalVerTareas>
             )}
-        </div>
+        </AdminLayout>
     );
 };
 
