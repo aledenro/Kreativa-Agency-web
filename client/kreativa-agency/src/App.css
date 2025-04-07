@@ -3197,3 +3197,109 @@ h3 {
     }
 }
 
+/* Ver Perfil */
+
+.perfil-view-container {
+    max-width: 1000px;
+    margin: 150px auto 50px;
+    padding: 20px;
+}
+
+.perfil-view-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.perfil-view-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.perfil-view-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #111;
+    margin-top: 12px;
+}
+
+.perfil-view-nombre {
+    font-size: 22px;
+    color: #111;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.perfil-view-info {
+    text-align: left;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.perfil-view-info p {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.perfil-view-field {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.perfil-view-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #555;
+}
+
+.perfil-view-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.perfil-view-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.perfil-view-btn {
+    background-color: white;
+    border: 2px solid #ff0072;
+    color: #ff0072;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.perfil-view-btn:hover {
+    background-color: #ff0072;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .perfil-view-card {
+        padding: 30px 20px;
+    }
+
+    .perfil-view-btn {
+        width: 100%;
+    }
+
+    .perfil-view-buttons {
+        flex-direction: column;
+    }
+}

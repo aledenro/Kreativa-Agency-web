@@ -57,9 +57,8 @@ const menuStructure = [
         title: "Empleados",
         icon: IdCard,
         items: [
-            { label: "Organigrama", path: "/empleados/organigrama" },
-            { label: "PTO", path: "/empleados/pto" },
-            { label: "Perfiles", path: "/empleados/perfiles" },
+            { label: "Organigrama", path: "/jerarquia" },
+            { label: "PTO", path: "/ver-pto-empleados" },
         ],
     },
     {
