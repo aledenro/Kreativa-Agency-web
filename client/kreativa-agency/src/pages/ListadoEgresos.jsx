@@ -196,7 +196,7 @@ const ListadoEgresos = () => {
         {/* Espacio para evitar que el contenido quede detrás del navbar */}
         <div style={{ height: "90px" }}></div>
         {/* Encabezado */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="d-flex justify-content-between align-items-center mb-4" style={{ paddingRight: "80px" }}>
           <h1>Gestión de Egresos</h1>
           <button className="thm-btn" onClick={() => setShowModalCrear(true)}>
             <FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo Egreso
@@ -240,7 +240,7 @@ const ListadoEgresos = () => {
           </div>
           {/* Columna derecha: Activo/Inactivo y Estado */}
           <div className="col-md-3">
-            <Form.Group controlId="filterEstado" className="mb-4">
+            <Form.Group controlId="filterEstado" className="mb-4" style={{ paddingRight: "80px" }}>
               <Form.Label>Activo/Inactivo:</Form.Label>
               <Form.Select
                 value={filterEstado}
@@ -255,7 +255,7 @@ const ListadoEgresos = () => {
                 <option value="Inactivo">Inactivo</option>
               </Form.Select>
             </Form.Group>
-            <Form.Group controlId="filterEgresoEstado">
+            <Form.Group controlId="filterEgresoEstado" style={{ paddingRight: "80px" }}>
               <Form.Label>Estado de Pago:</Form.Label>
               <Form.Select
                 value={filterEgresoEstado}

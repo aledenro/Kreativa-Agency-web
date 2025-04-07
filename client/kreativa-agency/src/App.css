@@ -2173,3 +2173,7 @@ h3 {
     transform: scale(1.05);
 }
 
+.form-check-input:checked {
+    background-color: #ce005d;
+    border-color: #ce005d;
+  }

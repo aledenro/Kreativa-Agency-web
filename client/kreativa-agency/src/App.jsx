@@ -7,6 +7,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import AgregarCotizacion from "./pages/AgregarCotizacion";
 import ListadoEgresos from "./pages/ListadoEgresos";
 import ListadoIngresos from "./pages/ListadoIngresos";
+import Movimientos from "./pages/Movimientos";
 import Estadisticas from "./pages/Estadisticas";
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
@@ -90,6 +91,8 @@ function App() {
                 <Route path="/egresos" element={<ListadoEgresos />} />
 
                 <Route path="/ingresos" element={<ListadoIngresos />} />
+
+                <Route path="/movimientos" element={<Movimientos />} />
 
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 
