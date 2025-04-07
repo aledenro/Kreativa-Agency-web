@@ -77,7 +77,9 @@ const menuStructure = [
             { label: "Gestión de servicios", path: "/admin/servicios" },
             { label: "Gestión de paquetes", path: "/admin/paquetes" },
             { label: "Gestión Form Puestos", path: "/admin/reclutaciones" },
+
             { label: "Gestión Form Contacto", path: "/admin/contacto" },
+
         ],
     },
     {

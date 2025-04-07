@@ -47,6 +47,7 @@ import RespuestasContacto from "./pages/RespuestasContacto";
 import RespuestasReclutaciones from "./pages/RespuestasReclutaciones";
 import GestionServicios from "./pages/GestionServicios";
 import GestionPaquetes from "./pages/GestionPaquetes";
+import DashboardColaborador from "./pages/DashboardColaborador";
 
 function App() {
     return (
@@ -101,9 +102,8 @@ function App() {
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
                 ></Route>
-                
+
                 <Route path="/ingresos" element={<ListadoIngresos />} />
-                
 
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 
@@ -182,6 +182,10 @@ function App() {
                 />
                 <Route path="/admin/servicios" element={<GestionServicios />} />
                 <Route path="/admin/paquetes" element={<GestionPaquetes />} />
+                <Route
+                    path="/proyectos/dashboard"
+                    element={<DashboardColaborador />}
+                />
             </Routes>
         </Router>
     );

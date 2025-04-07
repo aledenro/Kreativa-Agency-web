@@ -183,7 +183,7 @@ const GestionServicios = () => {
                                         </td>
                                         <td>
                                             <span
-                                                className={`badge ${servicio.activo ? "bg-success" : "bg-danger"}`}
+                                                className={`badge ${servicio.activo ? "badge-verde" : "badge-rojo"}`}
                                             >
                                                 {servicio.activo
                                                     ? "Activo"
