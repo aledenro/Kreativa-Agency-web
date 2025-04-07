@@ -45,7 +45,7 @@ class CotizacionesController {
                 respuesta
             );
 
-            return res.json({ cotizacion: cotizacion });
+            return res.json(cotizacion);
         } catch (error) {
             console.error(
                 "Error al agregar una respuesta a la cotizacion: " +
