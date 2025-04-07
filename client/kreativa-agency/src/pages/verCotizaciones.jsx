@@ -13,6 +13,23 @@ import {
 import lodash from "lodash";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 
+const getEstado = (status) => {
+    switch (status) {
+        case "Nuevo":
+            return "badge badge-azul";
+        case "Aceptado":
+            return "badge badge-verde";
+        case "Cancelado":
+            return "badge badge-rojo";
+        default:
+            return "badge badge-gris";
+    }
+};
+
+const getUrgencyClass = (urgente) => {
+    return urgente ? "badge badge-rojo" : "badge badge-gris";
+};
+
 const VerCotizaciones = () => {
     const [cotizaciones, setCotizaciones] = useState([]);
     const navigate = useNavigate();
@@ -90,28 +107,29 @@ const VerCotizaciones = () => {
 
     return (
         <AdminLayout>
-            <div className="container mt-4">
+            <div className="container pt-3 mx-auto">
                 <div style={{ height: "90px" }}></div>
                 <h1 className="mb-4">Listado de Cotizaciones</h1>
 
-                <div className="container pt-3  table-responsive">
-                    <div className="row mb-3">
-                        <div className="col">
-                            <button
-                                className="thm-btn btn-verde "
-                                onClick={() => navigate("/cotizacion/agregar")}
-                            >
-                                Solicitar Cotización
-                            </button>
-                        </div>
+                <div className="row mb-3">
+                    <div className="col text-end">
+                        <button
+                            className="thm-btn"
+                            onClick={() => navigate("/cotizacion/agregar")}
+                        >
+                            Solicitar Cotización
+                        </button>
                     </div>
+                </div>
 
-                    <table className="table kreativa-table">
-                        <thead>
+                <div className="table-responsive">
+                    <table className="table kreativa-proyecto-table">
+                        <thead className="table-light">
                             <tr>
                                 <th
                                     scope="col"
-                                    className="sort-field"
+                                    style={{ cursor: "pointer" }}
+                                    className="text-center"
                                     onClick={() => {
                                         if (sortField === "titulo") {
                                             setsortOrder(
@@ -130,7 +148,8 @@ const VerCotizaciones = () => {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="sort-field"
+                                    style={{ cursor: "pointer" }}
+                                    className="text-center"
                                     onClick={() => {
                                         if (sortField === "cliente_id.nombre") {
                                             setsortOrder(
@@ -149,7 +168,8 @@ const VerCotizaciones = () => {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="sort-field"
+                                    style={{ cursor: "pointer" }}
+                                    className="text-center"
                                     onClick={() => {
                                         if (sortField === "estado") {
                                             setsortOrder(
@@ -168,7 +188,8 @@ const VerCotizaciones = () => {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="sort-field"
+                                    style={{ cursor: "pointer" }}
+                                    className="text-center"
                                     onClick={() => {
                                         if (sortField === "fecha_solicitud") {
                                             setsortOrder(
@@ -187,7 +208,8 @@ const VerCotizaciones = () => {
                                 </th>
                                 <th
                                     scope="col"
-                                    className="sort-field"
+                                    style={{ cursor: "pointer" }}
+                                    className="text-center"
                                     onClick={() => {
                                         if (sortField === "urgente") {
                                             setsortOrder(
@@ -204,22 +226,40 @@ const VerCotizaciones = () => {
                                 >
                                     Urgente <FontAwesomeIcon icon={faSort} />
                                 </th>
-                                <th scope="col">Ver Detalles</th>
+                                <th scope="col" className="text-center">
+                                    Ver Detalles
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {cotizacionesPags.map((cotizacion) => (
                                 <tr key={cotizacion._id}>
-                                    <td>{cotizacion.titulo}</td>
-                                    <td>{cotizacion.cliente_id.nombre}</td>
-                                    <td>{cotizacion.estado}</td>
-                                    <td>
+                                    <td className="text-center">
+                                        {cotizacion.titulo}
+                                    </td>
+                                    <td className="text-center">
+                                        {cotizacion.cliente_id.nombre}
+                                    </td>
+                                    <td className="text-center">
+                                        <div
+                                            className={`${getEstado(cotizacion.estado)}`}
+                                        >
+                                            {cotizacion.estado}
+                                        </div>
+                                    </td>
+                                    <td className="text-center">
                                         {new Date(
                                             cotizacion.fecha_solicitud
                                         ).toLocaleDateString()}
                                     </td>
-                                    <td>{cotizacion.urgente ? "Si" : "No"}</td>
-                                    <td>
+                                    <td className="text-center">
+                                        <div
+                                            className={`${getUrgencyClass(cotizacion.urgente)}`}
+                                        >
+                                            {cotizacion.urgente ? "Sí" : "No"}
+                                        </div>
+                                    </td>
+                                    <td className="text-center">
                                         <button
                                             className="thm-btn thm-btn-small btn-amarillo"
                                             onClick={() =>
@@ -238,8 +278,9 @@ const VerCotizaciones = () => {
                 </div>
                 <div className="d-flex justify-content-center mt-4">
                     <select
-                        className="form-select form-select-sm w-10 "
+                        className="form-select form-select-sm me-2"
                         onChange={handleChangeCantItems}
+                        style={{ width: "70px" }}
                     >
                         <option value={5} selected>
                             5
@@ -264,6 +305,9 @@ const VerCotizaciones = () => {
                     >
                         <FontAwesomeIcon icon={faCaretLeft} />
                     </button>
+                    <span className="align-self-center mx-2">
+                        Página {pagActual} de {totalPags || 1}
+                    </span>
                     <button
                         className={`thm-btn btn-volver thm-btn-small me-2`}
                         onClick={() => setPagActual(pagActual + 1)}
