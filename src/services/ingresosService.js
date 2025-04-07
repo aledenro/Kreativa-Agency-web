@@ -23,6 +23,7 @@ const ingresosService = {
             cedula,
             fecha, // Fecha de vencimiento proporcionada por el usuario
             nombre_cliente: usuarioExistente.nombre,
+            email: usuarioExistente.email,
             monto,
             descripcion,
             estado,

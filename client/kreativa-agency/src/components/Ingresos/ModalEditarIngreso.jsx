@@ -97,6 +97,15 @@ const ModalEditarIngreso = ({ show, handleClose, ingreso, categories, onSave }) 
               />
             </div>
             <div className="mb-3">
+              <label>Email:</label>
+              <input
+                type="text"
+                className="form_input"
+                value={ingresoEditado.email || ""}
+                disabled
+              />
+            </div>
+            <div className="mb-3">
               <label>Categoría:</label>
               {/* Deshabilitamos la edición de la categoría, se muestra el nombre */}
               <Form.Control
