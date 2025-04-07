@@ -448,7 +448,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
                                     Colaboradores:
                                 </label>
                                 <select
-                                    className="form-select custom-checkbox"
+                                    className="form-select"
                                     name="colab"
                                     id="colab"
                                     multiple
@@ -463,7 +463,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
                                     <div className="mb-3 form-check">
                                         <input
                                             type="checkbox"
-                                            className="form-check-input form-checkbox"
+                                            className="form-check-input custom-checkbox"
                                             id="urgente"
                                             name="urgente"
                                             checked={proyecto.urgente}

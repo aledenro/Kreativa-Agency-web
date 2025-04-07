@@ -18,6 +18,8 @@ import ModalVerTareas from "../components/Tareas/ModalVerTareas";
 import ModalVerProyecto from "../components/Proyectos/ModalDetalleProyecto";
 import ModalEditarProyecto from "../components/Proyectos/ModalEditarProyecto";
 import ModalEditarTarea from "../components/Tareas/ModalEditarTarea";
+import ModalAgregarProyecto from "../components/Proyectos/ModalAgregarProyecto";
+import ModalAgregarTarea from "../components/Tareas/ModalAgregarTarea";
 
 const DashboardColaborador = () => {
     const [proyectos, setProyectos] = useState([]);
@@ -47,6 +49,11 @@ const DashboardColaborador = () => {
 
     const [showEditTareaModal, setShowEditTareaModal] = useState(false);
     const [editingTareaId, setEditingTareaId] = useState(null);
+
+    const [showModalAgregarProyecto, setShowModalProyecto] = useState(false);
+
+    const [showModalAgregarTarea, setShowModalAgregarTarea] = useState(false);
+    const [selectedProyectoTarea, setSelectedProyectoTarea] = useState(null);
 
     const rol = localStorage.getItem("tipo_usuario");
     const userId = localStorage.getItem("user_id");
@@ -335,11 +342,12 @@ const DashboardColaborador = () => {
     };
 
     const handleAgregarTarea = (proyectoId) => {
-        window.location.href = `/tarea/agregar?proyecto=${proyectoId}`;
+        setSelectedProyectoTarea(proyectoId);
+        setShowModalAgregarTarea(true);
     };
 
     const handleAgregarProyecto = () => {
-        window.location.href = "/proyecto/agregar";
+        setShowModalProyecto(true);
     };
 
     const handleChangeCantItems = (event) => {
@@ -355,6 +363,15 @@ const DashboardColaborador = () => {
     const handleCloseEditTareaModal = () => {
         setShowEditTareaModal(false);
         reloadData();
+    };
+
+    const handleCloseAgregarProyectoModal = () => {
+        setShowModalProyecto(false);
+    };
+
+    const handleCloseAgregarTareaModal = () => {
+        setShowModalAgregarTarea(false);
+        setSelectedProyectoTarea(null);
     };
 
     let proyectosFiltrados = [...proyectos];
@@ -1013,6 +1030,19 @@ const DashboardColaborador = () => {
                 show={showEditTareaModal}
                 handleClose={handleCloseEditTareaModal}
                 tareaId={editingTareaId}
+                onUpdate={reloadData}
+            />
+
+            <ModalAgregarProyecto
+                show={showModalAgregarProyecto}
+                handleClose={handleCloseAgregarProyectoModal}
+                onUpdate={reloadData}
+            />
+
+            <ModalAgregarTarea
+                show={showModalAgregarTarea}
+                handleClose={handleCloseAgregarTareaModal}
+                proyectoId={selectedProyectoTarea}
                 onUpdate={reloadData}
             />
         </AdminLayout>
