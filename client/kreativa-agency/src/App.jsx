@@ -43,6 +43,7 @@ import RespuestasContacto from "./pages/RespuestasContacto";
 import RespuestasReclutaciones from "./pages/RespuestasReclutaciones";
 import GestionServicios from "./pages/GestionServicios";
 import GestionPaquetes from "./pages/GestionPaquetes";
+import DashboardColaborador from "./pages/DashboardColaborador";
 
 function App() {
     return (
@@ -88,11 +89,25 @@ function App() {
                     path="/cotizacion/:id"
                     element={<VerDetalleCotizacion />}
                 ></Route>
+
                 <Route path="/egresos" element={<ListadoEgresos />} />
 
                 <Route path="/ingresos" element={<ListadoIngresos />} />
 
                 <Route path="/movimientos" element={<Movimientos />} />
+
+                <Route
+                    path="/egreso/agregar"
+                    element={<AgregarEgreso />}
+                ></Route>
+                <Route path="/egresos" element={<VerEgresos />}></Route>
+                <Route
+                    path="/egreso/editar/:id"
+                    element={<EditarEgreso />}
+                ></Route>
+
+                <Route path="/ingresos" element={<ListadoIngresos />} />
+
 
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 
@@ -171,6 +186,7 @@ function App() {
                 />
                 <Route path="/admin/servicios" element={<GestionServicios />} />
                 <Route path="/admin/paquetes" element={<GestionPaquetes />} />
+                <Route path="/dashboard" element={<DashboardColaborador />} />
             </Routes>
         </Router>
     );

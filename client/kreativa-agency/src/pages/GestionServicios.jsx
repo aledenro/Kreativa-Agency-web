@@ -149,8 +149,8 @@ const GestionServicios = () => {
                         Servicio
                     </button>
                 </div>
-                <div className="table-responsive">
-                    <table className="table kreativa-table">
+                <div className="table-responsive-xxl">
+                    <table className="table kreativa-proyecto-table">
                         <thead>
                             <tr>
                                 <th
@@ -183,7 +183,7 @@ const GestionServicios = () => {
                                         </td>
                                         <td>
                                             <span
-                                                className={`badge ${servicio.activo ? "bg-success" : "bg-danger"}`}
+                                                className={`badge ${servicio.activo ? "badge-verde" : "badge-rojo"}`}
                                             >
                                                 {servicio.activo
                                                     ? "Activo"

@@ -32,6 +32,7 @@
     left: 0;
     box-shadow: var(--shadow);
     align-items: flex-start;
+    z-index: 2000 !important;
 }
 
 
@@ -78,6 +79,8 @@
     border-radius: 0 !important;
     box-shadow: none !important;
     width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 /* Ajuste cuando el sidebar está colapsado */

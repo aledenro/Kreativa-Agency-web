@@ -1,7 +1,7 @@
+const egresosModel = require("../models/egresosModel");
 const EgresosModel = require("../models/egresosModel");
 
 class EgresosService {
-
     //Agregar egreso
     async agregarEgreso(datosEgreso) {
         try {
@@ -28,16 +28,19 @@ class EgresosService {
             const egreso = await EgresosModel.findById(id); // Buscamos el egreso por su ID
             return egreso;
         } catch (error) {
-            throw new Error("Error al obtener el egreso por ID: " + error.message);
+            throw new Error(
+                "Error al obtener el egreso por ID: " + error.message
+            );
         }
     }
 
     // Editar egreso
     async editarEgreso(id, datos) {
-
         try {
-            datos.ultima_modificacion = new Date();  // Actualizar la fecha de modificación
-            return await EgresosModel.findByIdAndUpdate(id, datos, { new: true });
+            datos.ultima_modificacion = new Date(); // Actualizar la fecha de modificación
+            return await EgresosModel.findByIdAndUpdate(id, datos, {
+                new: true,
+            });
         } catch (error) {
             throw new Error("Error al editar el egreso: " + error.message);
         }
@@ -49,14 +52,16 @@ class EgresosService {
             const egresoDesactivado = await EgresosModel.findByIdAndUpdate(
                 id,
                 { activo: false, ultima_modificacion: Date.now() }, // Desactivar y actualizar la última modificación
-                { new: true }  // Retorna el documento actualizado
+                { new: true } // Retorna el documento actualizado
             );
             if (!egresoDesactivado) {
                 throw new Error(`Egreso ${id} no encontrado`);
             }
             return egresoDesactivado;
         } catch (error) {
-            throw new Error(`No se pudo desactivar el egreso ${id}: ` + error.message);
+            throw new Error(
+                `No se pudo desactivar el egreso ${id}: ` + error.message
+            );
         }
     }
 
@@ -66,14 +71,16 @@ class EgresosService {
             const egresoActivado = await EgresosModel.findByIdAndUpdate(
                 id,
                 { activo: true, ultima_modificacion: new Date() }, // Activar y actualizar la última modificación
-                { new: true }  // Retorna el documento actualizado
+                { new: true } // Retorna el documento actualizado
             );
             if (!egresoActivado) {
                 throw new Error(`Egreso ${id} no encontrado`);
             }
             return egresoActivado;
         } catch (error) {
-            throw new Error(`No se pudo activar el egreso ${id}: ` + error.message);
+            throw new Error(
+                `No se pudo activar el egreso ${id}: ` + error.message
+            );
         }
     }
 
@@ -81,18 +88,21 @@ class EgresosService {
         try {
             return await Egreso.find({
                 fecha: {
-                    $gte: inicioDelMes,   // Mayor o igual a la fecha de inicio
-                    $lte: finDelMes       // Menor o igual a la fecha de fin
-                }
+                    $gte: inicioDelMes, // Mayor o igual a la fecha de inicio
+                    $lte: finDelMes, // Menor o igual a la fecha de fin
+                },
             });
         } catch (error) {
-            console.error("Error al obtener los egresos por fecha: " + error.message);
+            console.error(
+                "Error al obtener los egresos por fecha: " + error.message
+            );
             throw new Error("Error al obtener los egresos por fecha");
         }
     }
 
     async obtenerEgresosPorAnio(anio) {
         try {
+
           let fechaInicio, fechaFin;
           if (anio) {
             fechaInicio = new Date(anio, 0, 1); // 1 de enero del año dado
@@ -114,10 +124,12 @@ class EgresosService {
           const totalEgresos = egresos.reduce((total, egreso) => total + egreso.monto, 0);
       
           return totalEgresos;
+
         } catch (error) {
           console.error("Error al obtener los egresos por anio:", error);
           throw new Error("No se pudieron obtener los egresos por anio.");
         }
+
       }
 
       async obtenerEgresosPorAnioDetalle(anio) {
@@ -160,6 +172,59 @@ class EgresosService {
           throw new Error("No se pudieron obtener los egresos por anio.");
         }
       }
+    }
+
+    async getEgresosDateRange(fechaInicio, fechaFin) {
+        try {
+            fechaInicio = new Date(fechaInicio);
+            fechaFin = new Date(fechaFin);
+            fechaFin.setHours(23, 59, 59, 999);
+
+            const egresos = await egresosModel
+                .find({
+                    $and: [
+                        { fecha: { $gte: fechaInicio } },
+                        { fecha: { $lte: fechaFin } },
+                    ],
+                })
+                .select({
+                    fecha: 1,
+                    monto: 1,
+                    categoria: 1,
+                    descripcion: 1,
+                    proveedor: 1,
+                    estado: 1,
+                    _id: 0,
+                });
+
+            const egresosFormated =
+                egresos.length > 0
+                    ? egresos.map((egreso) => {
+                          return {
+                              fecha: new Date(
+                                  egreso.fecha
+                              ).toLocaleDateString(),
+                              monto: egreso.monto,
+                              categoria: egreso.categoria,
+                              descripcion: egreso.descripcion,
+                              proveedor: egreso.proveedor,
+                              estado: egreso.estado,
+                          };
+                      })
+                    : [];
+
+            return egresosFormated;
+        } catch (error) {
+            console.log(
+                `Error al obtener los egresos entre las fechas ${fechaInicio}  y ${fechaFin}: ${error.message}`
+            );
+
+            throw new Error(
+                `Error al obtener los egresos entre las fechas ${fechaInicio}  y ${fechaFin}`
+            );
+        }
+    }
+
 }
 
 module.exports = new EgresosService();

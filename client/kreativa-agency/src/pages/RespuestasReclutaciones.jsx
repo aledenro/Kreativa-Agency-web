@@ -23,6 +23,9 @@ const RespuestasReclutaciones = () => {
     const [sortField, setSortField] = useState("fecha_envio");
     const [sortOrder, setSortOrder] = useState("desc");
 
+    const [isFormActive, setIsFormActive] = useState(true);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchFormularios = async () => {
             try {
@@ -38,8 +41,36 @@ const RespuestasReclutaciones = () => {
             }
         };
 
+        const fetchFormStatus = async () => {
+            try {
+                const response = await axios.get(
+                    "http://localhost:4000/api/form-status"
+                );
+                setIsFormActive(response.data.active);
+            } catch (error) {
+                console.error("Error al obtener estado del formulario:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchFormularios();
+        fetchFormStatus();
     }, []);
+
+    const toggleFormStatus = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.put(
+                "http://localhost:4000/api/form-status"
+            );
+            setIsFormActive(response.data.active);
+        } catch (error) {
+            console.error("Error al cambiar estado del formulario:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleResponderFormulario = (form) => {
         setFormularioSeleccionado(form);
@@ -90,8 +121,25 @@ const RespuestasReclutaciones = () => {
             <div className="container mt-4">
                 <div style={{ height: "90px" }}></div>
                 <h1 className="mb-4">Formularios de Reclutamiento</h1>
-                <div className="table-responsive">
-                    <table className="table kreativa-table">
+                <div className="admin-panel">
+                    <h2>Panel de Control</h2>
+                    <div className="control-item">
+                        <span>Formulario de Landing Page:</span>
+                        <button
+                            onClick={toggleFormStatus}
+                            disabled={loading}
+                            className={`my-3 thm-btn thm-btn-small ${isFormActive ? "btn-rojo" : "btn-verde"}`}
+                        >
+                            {loading
+                                ? "Cargando..."
+                                : isFormActive
+                                  ? "Desactivar"
+                                  : "Activar"}
+                        </button>
+                    </div>
+                </div>
+                <div className="table-responsive-xxl">
+                    <table className="table kreativa-proyecto-table">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -196,6 +244,9 @@ const RespuestasReclutaciones = () => {
                     >
                         <FontAwesomeIcon icon={faCaretLeft} />
                     </button>
+                    <span className="align-self-center mx-2">
+                        Página {pagActual} de {totalPags || 1}
+                    </span>
                     <button
                         className={`thm-btn btn-volver thm-btn-small me-2`}
                         onClick={() => setPagActual(pagActual + 1)}

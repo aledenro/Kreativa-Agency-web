@@ -15,7 +15,9 @@ import {
 } from "recharts";
 import { Form } from "react-bootstrap";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+
 import "../AdminPanel.css";
+import ModalImprimirReportes from "../components/Estadisticas/ModalImprimirReporte";
 
 // Colores para gráficos
 const COLORS = ["#ff0072", "#8d25fc", "#007bff", "#ffc02c"];
@@ -33,10 +35,26 @@ const monthNames = [
 ];
 
 const Estadisticas = () => {
-  // Selección de año y mes
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  // Si se selecciona "Año completo", el valor será 0; en otro caso, el mes numérico.
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+
+    const [collapsed, setCollapsed] = useState(true);
+    const [egresos, setEgresos] = useState([]);
+    const [totalEgresos, setTotalEgresos] = useState(0);
+    const [totalIngresos, setTotalIngresos] = useState(0);
+    const [cantidadIngresos, setCantidadIngresos] = useState(0);
+    const [totalEgresosAnuales, setTotalEgresosAnuales] = useState(0);
+    const [totalIngresosAnuales, setTotalIngresosAnuales] = useState(0);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(
+        new Date().getMonth() + 1
+    );
+    const [resumenEgresos, setResumenEgresos] = useState([]); // Resumen de egresos
+    const [resumenIngresos, setResumenIngresos] = useState({
+        total: 0,
+        cantidad: 0,
+        detalle: [],
+    }); // Resumen de ingresos
+    const [showModalReportes, setShowModalReportes] = useState(false);
+
 
   // Datos mensuales
   const [totalIngresos, setTotalIngresos] = useState(0);
@@ -165,11 +183,70 @@ const Estadisticas = () => {
       });
   }, [selectedYear, selectedMonth, isAnnualView]);
 
+
   // Arreglo de años para el selector
   const years = [];
   for (let i = new Date().getFullYear(); i >= new Date().getFullYear() - 5; i--) {
     years.push(i);
   }
+
+    // Verificar si los datos están vacíos para los gráficos
+    const noDatosEgresos = totalEgresos === 0 || egresos.length === 0;
+    const noDatosIngresos =
+        totalIngresos === 0 || resumenIngresos.detalle.length === 0;
+
+    return (
+        <AdminLayout>
+            <div className="main-container mx-5 ">
+                <div className="charts-container">
+                    <div className="row">
+                        {/* Selector de Año y Mes */}
+                        <div
+                            style={{
+                                display: "flex",
+                                gap: "10px",
+                                marginBottom: "20px",
+                                justifyContent: "center",
+                                paddingTop: "40px",
+                            }}
+                        >
+                            <Form.Select
+                                value={selectedYear}
+                                onChange={(e) =>
+                                    setSelectedYear(e.target.value)
+                                }
+                                style={{ width: "150px" }}
+                            >
+                                {years.map((year, index) => (
+                                    <option key={index} value={year}>
+                                        {year}
+                                    </option>
+                                ))}
+                            </Form.Select>
+
+                            <Form.Select
+                                value={selectedMonth}
+                                onChange={(e) =>
+                                    setSelectedMonth(e.target.value)
+                                }
+                                style={{ width: "150px" }}
+                            >
+                                {Array.from({ length: 12 }, (_, i) => (
+                                    <option key={i} value={i + 1}>
+                                        {i + 1}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                            <button
+                                className="btn thm-btn"
+                                onClick={() => {
+                                    setShowModalReportes(true);
+                                }}
+                            >
+                                Imprimir Reporte
+                            </button>
+                        </div>
+
 
   // Helper para mapear el ID de categoría al nombre
   const getCategoryName = (catId) => {
@@ -606,11 +683,19 @@ const Estadisticas = () => {
                 )}
               </div>
             </div>
+
           </>
         )}
       </div>
+      {showModalReportes && (
+                <ModalImprimirReportes
+                    show={showModalReportes}
+                    handleClose={() => setShowModalReportes(false)}
+                ></ModalImprimirReportes>
+            )}
     </AdminLayout>
   );
+
 };
 
 export default Estadisticas;
