@@ -1,4 +1,6 @@
 const Cotizaciones = require("../models/cotizacionesModel");
+const lodash = require("lodash");
+const awsS3Connect = require("../utils/awsS3Connect");
 
 class CotizacionesService {
     async crearCotizacion(data) {
@@ -13,9 +15,31 @@ class CotizacionesService {
 
     async getCotizacionById(id) {
         try {
-            return Cotizaciones.findById(id)
+            const cotizacion = await Cotizaciones.findById(id)
                 .populate("cliente_id", "nombre")
                 .populate("historial_respuestas.usuario_id", "nombre");
+
+            if (cotizacion && !lodash.isEmpty(cotizacion)) {
+                if (cotizacion.historial_respuestas.length > 0) {
+                    for (
+                        let i = 0;
+                        i < cotizacion.historial_respuestas.length;
+                        i++
+                    ) {
+                        const respuesta = cotizacion.historial_respuestas.at(i);
+
+                        const files = await awsS3Connect.generateUrls({
+                            folder: "cotizaciones",
+                            parent: cotizacion._id,
+                            parent_id: respuesta._id,
+                        });
+
+                        cotizacion.historial_respuestas.at(i).files = files;
+                    }
+                }
+            }
+
+            return cotizacion;
         } catch (error) {
             throw new Error("Error al obtener la cotizacion " + error.message);
         }
@@ -50,12 +74,15 @@ class CotizacionesService {
 
     async addRespuestaCotizacion(id, respuesta) {
         try {
-            const cotizacion = await Cotizaciones.findById(id);
+            const cotizacion = await Cotizaciones.findById(id).populate(
+                "cliente_id",
+                "nombre"
+            );
 
             cotizacion["historial_respuestas"].push(respuesta);
             await cotizacion.save();
 
-            return cotizacion;
+            return cotizacion["historial_respuestas"].at(-1);
         } catch (error) {
             throw new Error("Error al agregar la respuesta " + error.message);
         }

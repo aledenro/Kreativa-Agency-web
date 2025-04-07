@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import ModalVerCotizacion from "../components/Cotizaciones/ModalVerDetalles";
 
 const getEstado = (status) => {
     switch (status) {
@@ -37,6 +38,8 @@ const VerCotizaciones = () => {
     const [pagActual, setPagActual] = useState(1);
     const [sortField, setsortField] = useState("fecha_solicitud");
     const [sortOrder, setsortOrder] = useState("desc");
+    const [showModalDetalles, setShowModalDetalles] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
 
     useEffect(() => {
         async function getCotizaciones() {
@@ -54,7 +57,8 @@ const VerCotizaciones = () => {
     }, []);
 
     function handleVerDetalles(id) {
-        navigate(`/cotizacion/${id}`);
+        setSelectedId(id);
+        setShowModalDetalles(true);
     }
 
     const handleChangeCantItems = (event) => {
@@ -324,6 +328,14 @@ const VerCotizaciones = () => {
                     </button>
                 </div>
             </div>
+
+            {showModalDetalles && selectedId !== null && (
+                <ModalVerCotizacion
+                    show={showModalDetalles}
+                    handleClose={() => setShowModalDetalles(false)}
+                    cotizacionId={selectedId}
+                />
+            )}
         </AdminLayout>
     );
 };

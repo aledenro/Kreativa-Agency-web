@@ -987,7 +987,6 @@ h3 {
     box-shadow: 0 0 1px 2px var(--btn-naranja-claro);
 }
 
-
 .btn-gris {
     background-color: var(--kreativa-white);
     color: var(--kreativa-azul-medio);
@@ -1001,7 +1000,7 @@ h3 {
 }
 
 .btn-volver {
-    background-color: #FF0072 !important;
+    background-color: #ff0072 !important;
     color: white !important;
     border: none !important;
     padding: 12px 30px;
@@ -1031,7 +1030,7 @@ h3 {
 /* Focus: sin contorno clarito */
 .btn-volver:focus {
     outline: none;
-    box-shadow: 0 0 0 2px #FF0072;
+    box-shadow: 0 0 0 2px #ff0072;
 }
 
 /* Botones pequeños */
@@ -1435,12 +1434,11 @@ h3 {
 /* ESTILOS PARA LOGIN  */
 /* =================== */
 
-
 /* Botón exclusivo para login */
 .btn-volver-login {
     background-color: #e6e6e6;
     color: #000;
-    border: 1px solid #FF0072;
+    border: 1px solid #ff0072;
     border-radius: var(--kreativa-bdr-radius);
     padding: 12px 24px;
     font-size: 16px;
@@ -1454,7 +1452,7 @@ h3 {
 .btn-volver-login:hover,
 .btn-volver-login:active {
     outline: none !important;
-    border-color: #FF0072 !important;
+    border-color: #ff0072 !important;
     background-color: #e6e6e6 !important;
     color: #000 !important;
 }
@@ -1687,7 +1685,6 @@ h3 {
 
     color: white;
 }
-
 
 /* =================== */
 /* ANIMACIONES LOG-IN  */
@@ -2193,11 +2190,9 @@ h3 {
     transform: scale(1.05);
 }
 
-
 /* =========================== */
 /* GESTIÓN USUARIOS RESPONSIVE */
 /* =========================== */
-
 
 /* Estructura base */
 .full-width-container {
@@ -2230,7 +2225,6 @@ h3 {
     max-width: 280px;
     margin: 0 auto;
 }
-
 
 /* Tabla responsive general */
 .kreativa-table {
@@ -2478,7 +2472,6 @@ h3 {
 
 .proyecto-modal .modal-content {
     border-radius: 8px;
-    overflow: hidden;
     border: none;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
@@ -2486,7 +2479,6 @@ h3 {
 .proyecto-modal-content {
     height: calc(100vh - 150px);
     max-height: 700px;
-    overflow: hidden;
 }
 
 .proyecto-modal .tabs-header {
@@ -2599,7 +2591,6 @@ h3 {
 }
 
 @media (max-width: 767px) {
-
     .kreativa-table tbody td {
         display: block !important;
         text-align: left !important;
@@ -2682,7 +2673,6 @@ h3 {
 }
 
 @media (min-width: 768px) and (max-width: 1279px) {
-
     .full-width-container {
         padding-left: 10px !important;
         padding-right: 90px !important;
@@ -2778,10 +2768,9 @@ h3 {
         gap: 1.5rem !important;
     }
 
-    .filtros-gestion>* {
+    .filtros-gestion > * {
         margin-right: 0.5rem;
     }
-
 }
 
 @media (min-width: 2560px) {
@@ -2797,7 +2786,6 @@ h3 {
         max-width: 700px;
         width: 100%;
     }
-
 
     .select-container {
         max-width: 220px;
@@ -2870,7 +2858,6 @@ h3 {
         gap: 2rem;
         padding-left: 0;
     }
-
 }
 
 .kreativa-paginacion {
@@ -3093,7 +3080,9 @@ h3 {
 .kreativa-card {
     margin-bottom: 1.8rem;
     /* Aumenta el espacio vertical entre cards */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
     border: 2px solid #ff0072;
     border-radius: 12px;
     padding: 1rem;
@@ -3141,7 +3130,6 @@ h3 {
         max-width: 500px;
     }
 }
-
 
 .kreativa-user-details p {
     font-size: 1rem;
@@ -3196,4 +3184,3 @@ h3 {
         width: 100%;
     }
 }
-

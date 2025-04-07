@@ -46,6 +46,7 @@ const CotizacionesModel = new mongoose.Schema(
                     required: true,
                     default: Date.now(),
                 },
+                files: [],
             },
         ],
         estado: {
