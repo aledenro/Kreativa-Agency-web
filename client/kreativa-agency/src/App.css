@@ -1093,46 +1093,6 @@ h3 {
     stroke: #121923;
 }
 
-/* Jerarquía de Usuarios */
-.jerarquia-section {
-    margin-top: 20px;
-}
-
-.jerarquia-title {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--kreativa-black);
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.jerarquia-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-}
-
-.jerarquia-card {
-    background-color: var(--kreativa-white);
-    border-radius: var(--kreativa-bdr-radius);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    width: 250px;
-    text-align: center;
-}
-
-.jerarquia-card h4 {
-    color: var(--kreativa-black);
-    font-size: 18px;
-    margin-bottom: 5px;
-}
-
-.jerarquia-card p {
-    font-size: 14px;
-    color: var(--kreativa-gray);
-}
-
 .estado-activo {
     background-color: #28a745;
     color: white;
@@ -1720,13 +1680,13 @@ h3 {
     border: none;
     font-weight: bold;
     transition: all 0.3s ease;
-  }
-  
-  .btn-kreativa:hover {
+}
+
+.btn-kreativa:hover {
     background-color: #d70065;
 
-    color: white; 
-  }
+    color: white;
+}
 
 
 /* =================== */
@@ -2230,7 +2190,7 @@ h3 {
 }
 
 .embla__slide__content:hover .embla__slide__image {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 
@@ -2957,10 +2917,10 @@ h3 {
     background-color: #f9f9f9;
     min-height: calc(100vh - 80px);
     margin-top: 80px;
-  }
-  
-  /* -------- TARJETA CON EL FORMULARIO -------- */
-  .kreativa-card {
+}
+
+/* -------- TARJETA CON EL FORMULARIO -------- */
+.kreativa-card {
     background: #fff;
     padding: 2.5rem 2rem;
     border-radius: 15px;
@@ -2968,19 +2928,19 @@ h3 {
     width: 100%;
     max-width: 640px;
     animation: fadeIn 0.5s ease-in-out;
-  }
-  
-  /* -------- TÍTULO PRINCIPAL -------- */
-  .kreativa-form-title {
+}
+
+/* -------- TÍTULO PRINCIPAL -------- */
+.kreativa-form-title {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
     text-align: center;
     color: #333;
-  }
-  
-  /* -------- INPUTS & SELECTS -------- */
-  .form_input {
+}
+
+/* -------- INPUTS & SELECTS -------- */
+.form_input {
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 10px;
@@ -2988,87 +2948,196 @@ h3 {
     transition: all 0.3s ease;
     font-size: 1rem;
     background-color: #fff;
-  }
-  
-  .form_input:focus {
+}
+
+.form_input:focus {
     border-color: #ff7eb3;
     outline: none;
     box-shadow: 0 0 5px rgba(255, 126, 179, 0.3);
-  }
-  
-  /* -------- GRUPO DE BOTONES -------- */
-  .kreativa-btn-wrapper {
+}
+
+/* -------- GRUPO DE BOTONES -------- */
+.kreativa-btn-wrapper {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
     margin-top: 1.5rem;
-  }
-  
-  .kreativa-btn-crear {
+}
+
+.kreativa-btn-crear {
     order: 2;
-  }
-  
-  .kreativa-btn-volver {
+}
+
+.kreativa-btn-volver {
     order: 1;
-  }
-  
-  /* -------- ALERTA -------- */
-  .kreativa-alert {
+}
+
+/* -------- ALERTA -------- */
+.kreativa-alert {
     font-size: 0.95rem;
     border-radius: 8px;
-  }
-  
-  /* -------- RESPONSIVE (CELULARES Y TABLETS) -------- */
-  @media screen and (max-width: 992px) {
+}
+
+/* -------- RESPONSIVE (CELULARES Y TABLETS) -------- */
+@media screen and (max-width: 992px) {
     .kreativa-btn-wrapper {
-      flex-direction: column;
-      align-items: stretch;
+        flex-direction: column;
+        align-items: stretch;
     }
-  
+
     .kreativa-btn-crear {
-      order: 1; /* Mostrar arriba */
-      width: 100%;
+        order: 1;
+        /* Mostrar arriba */
+        width: 100%;
     }
-  
+
     .kreativa-btn-volver {
-      order: 2; /* Mostrar abajo */
-      width: 100%;
+        order: 2;
+        /* Mostrar abajo */
+        width: 100%;
     }
-  
+
     .thm-btn,
     .thm-btn-secondary {
-      font-size: 0.95rem;
-      padding: 0.65rem 1rem;
-      text-align: center;
-      border-radius: 8px;
+        font-size: 0.95rem;
+        padding: 0.65rem 1rem;
+        text-align: center;
+        border-radius: 8px;
     }
-  }
-  
-  /* -------- MÁS AJUSTES PARA CELULARES PEQUEÑOS -------- */
-  @media screen and (max-width: 576px) {
-    .kreativa-card {
-      padding: 2rem 1.25rem;
-    }
-  
-    .kreativa-form-title {
-      font-size: 1.5rem;
-    }
-  }
-  
-  /* -------- ANIMACIÓN SUAVE -------- */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+}
 
-  .kreativa-card .lucide {
+/* -------- MÁS AJUSTES PARA CELULARES PEQUEÑOS -------- */
+@media screen and (max-width: 576px) {
+    .kreativa-card {
+        padding: 2rem 1.25rem;
+    }
+
+    .kreativa-form-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* -------- ANIMACIÓN SUAVE -------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kreativa-card .lucide {
     display: block;
     margin: 0 auto;
     margin-bottom: 0.9rem;
-  }
+}
+
+/* === Jerarquía de Usuarios === */
+/* Título */
+.kreativa-title {
+    margin-top: 7rem;
+    margin-bottom: 2.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--kreativa-black);
+}
+
+/* Contenedor general */
+.jerarquia-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 0 auto;
+    max-width: 1300px;
+    /* Controlamos el ancho total */
+    padding: 0 1rem;
+}
+
+/* Columnas individuales */
+.jerarquia-col {
+    flex: 1 1 30%;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+/* Títulos de sección */
+.kreativa-administrador,
+.kreativa-colaborador,
+.kreativa-cliente {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.kreativa-administrador {
+    color: #ff0072;
+}
+
+.kreativa-colaborador {
+    color: #007bff;
+}
+
+.kreativa-cliente {
+    color: #28a745;
+}
+
+/* Tarjetas */
+.kreativa-card {
+    margin-bottom: 1.8rem;
+    /* Aumenta el espacio vertical entre cards */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #ff0072;
+    border-radius: 12px;
+    padding: 1rem;
+    background-color: #fff;
+}
+
+.kreativa-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 20px rgba(255, 0, 114, 0.15);
+}
+
+.kreativa-card-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #111;
+    margin-bottom: 0.5rem;
+}
+
+.kreativa-card-text {
+    color: #777;
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+}
+
+/* Spinner */
+.kreativa-spinner {
+    color: #ff0072;
+    margin: 1rem auto;
+}
+
+.loading-text {
+    font-size: 1rem;
+    color: #777;
+}
+
+/* Responsive */
+@media screen and (max-width: 992px) {
+    .jerarquia-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .jerarquia-col {
+        width: 100%;
+        max-width: 500px;
+    }
+}
