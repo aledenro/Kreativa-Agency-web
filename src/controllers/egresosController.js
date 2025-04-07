@@ -1,8 +1,7 @@
 const EgresosService = require("../services/egresosService");
 const lodash = require("lodash");
-const Egreso = require('../models/egresosModel');
-const movimientosService = require('../services/movimientosService');
-
+const Egreso = require("../models/egresosModel");
+const movimientosService = require("../services/movimientosService");
 
 class EgresosController {
     //Agregar egreso
@@ -24,7 +23,7 @@ class EgresosController {
                 accion: "creación",
                 descripcion: "Creación del egreso",
                 detalle: { datosNuevos: egreso },
-                usuario: req.user ? req.user.username : "sistema"
+                usuario: req.user ? req.user.username : "sistema",
             });
             return res.status(201).json(egreso);
         } catch (error) {
@@ -122,8 +121,11 @@ class EgresosController {
                 idRegistro: egresoActualizado._id,
                 accion: "edición",
                 descripcion: "Edición del egreso",
-                detalle: { datosAnteriores: egresoAnterior, datosNuevos: egresoActualizado },
-                usuario: req.user ? req.user.username : "sistema"
+                detalle: {
+                    datosAnteriores: egresoAnterior,
+                    datosNuevos: egresoActualizado,
+                },
+                usuario: req.user ? req.user.username : "sistema",
             });
 
             return res.status(200).json(egresoActualizado);
@@ -159,11 +161,15 @@ class EgresosController {
                 idRegistro: egreso._id,
                 accion: "desactivación",
                 descripcion: "Desactivación del egreso",
-                detalle: { datosAnteriores: egresoAnterior, datosNuevos: egreso },
-                usuario: req.user ? req.user.username : "sistema"
+                detalle: {
+                    datosAnteriores: egresoAnterior,
+                    datosNuevos: egreso,
+                },
+                usuario: req.user ? req.user.username : "sistema",
             });
-            return res.status(200).json({ mensaje: "Egreso desactivado", egreso });
-
+            return res
+                .status(200)
+                .json({ mensaje: "Egreso desactivado", egreso });
         } catch (error) {
             console.error("Error al desactivar el egreso: " + error.message);
             return res.status(500).json({ error: error.message });
@@ -181,8 +187,11 @@ class EgresosController {
                 idRegistro: egreso._id,
                 accion: "activación",
                 descripcion: "Activación del egreso",
-                detalle: { datosAnteriores: egresoAnterior, datosNuevos: egreso },
-                usuario: req.user ? req.user.username : "sistema"
+                detalle: {
+                    datosAnteriores: egresoAnterior,
+                    datosNuevos: egreso,
+                },
+                usuario: req.user ? req.user.username : "sistema",
             });
             return res.status(200).json({ mensaje: "Egreso activado", egreso });
         } catch (error) {
@@ -221,7 +230,7 @@ class EgresosController {
             const egresos = await Egreso.find({
                 fecha: { $gte: fechaInicio, $lte: fechaFin },
                 activo: true,
-                estado: "Aprobado"
+                estado: "Aprobado",
             });
 
             return res.json(egresos); // Retornamos los egresos filtrados
@@ -278,12 +287,17 @@ class EgresosController {
         try {
             const { anio } = req.query;
             if (!anio) {
-                return res.status(400).json({ message: "Se requiere el parámetro 'anio'." });
+                return res
+                    .status(400)
+                    .json({ message: "Se requiere el parámetro 'anio'." });
             }
-            const data = await EgresosService.obtenerEgresosPorAnioDetalle(anio);
+            const data =
+                await EgresosService.obtenerEgresosPorAnioDetalle(anio);
             res.status(200).json(data);
         } catch (error) {
             res.status(500).json({ error: error.message });
+        }
+    }
 
     async getEgresosDateRange(req, res) {
         try {
@@ -300,7 +314,6 @@ class EgresosController {
             res.status(500).json({
                 error: "No se pudieron obtener los egresos.",
             });
-
         }
     }
 }

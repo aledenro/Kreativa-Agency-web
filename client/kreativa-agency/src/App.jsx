@@ -96,18 +96,13 @@ function App() {
 
                 <Route path="/movimientos" element={<Movimientos />} />
 
-                <Route
-                    path="/egreso/agregar"
-                    element={<AgregarEgreso />}
-                ></Route>
-                <Route path="/egresos" element={<VerEgresos />}></Route>
-                <Route
+                {/* <Route path="/egresos" element={<VerEgresos />}></Route> */}
+                {/* <Route
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
-                ></Route>
+                ></Route> */}
 
-                <Route path="/ingresos" element={<ListadoIngresos />} />
-
+                {/* <Route path="/ingresos" element={<ListadoIngresos />} /> */}
 
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 
