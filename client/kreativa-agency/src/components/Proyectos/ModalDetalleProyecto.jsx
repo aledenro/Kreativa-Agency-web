@@ -206,6 +206,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
     return (
         <Modal
+            scrollable
             show={show}
             onHide={handleClose}
             size="xl"
@@ -251,14 +252,6 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
                                             <h5 className="mb-0">
                                                 Información del Proyecto
                                             </h5>
-                                            <Button
-                                                variant="light"
-                                                className="btn-sm rounded-circle"
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faEllipsisH}
-                                                />
-                                            </Button>
                                         </div>
 
                                         <div className="proyecto-info mb-4">

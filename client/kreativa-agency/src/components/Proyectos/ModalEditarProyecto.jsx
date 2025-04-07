@@ -5,7 +5,6 @@ import Alert from "react-bootstrap/Alert";
 import sendEmail from "../../utils/emailSender";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 
 const estados = [
@@ -66,7 +65,7 @@ function renderOptionsEstados(opcion, estadoProyecto) {
     }
 }
 
-const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
+const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
     const [clientes, setClientes] = useState([]);
     const [proyecto, setProyecto] = useState(null);
     const [estado, setEstado] = useState("");
@@ -74,6 +73,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
     const [empleados, setEmpleados] = useState([]);
+    const [formRef, setFormRef] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -131,7 +131,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                 await addActionLog("Editó el proyecto.");
                 fetchProyecto();
 
-                // Auto-cerrar la alerta después de 3 segundos
+                if (typeof onUpdate === "function") {
+                    onUpdate();
+                }
+
                 setTimeout(() => {
                     setShowAlert(false);
                 }, 3000);
@@ -165,6 +168,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                     `Cambió el estado del proyecto a: ${estadoEdit}.`
                 );
 
+                if (typeof onUpdate === "function") {
+                    onUpdate();
+                }
+
                 if (estadoEdit !== "Finalizado") {
                     await sendEmail(
                         proyecto.cliente_id,
@@ -183,7 +190,6 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                     );
                 }
 
-                // Auto-cerrar la alerta después de 3 segundos
                 setTimeout(() => {
                     setShowAlert(false);
                 }, 3000);
@@ -285,8 +291,22 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
         }
     }
 
+    const handleSaveClick = () => {
+        if (formRef) {
+            formRef.dispatchEvent(
+                new Event("submit", { cancelable: true, bubbles: true })
+            );
+        }
+    };
+
+    const getFechaHoy = () => {
+        const today = new Date();
+        return today.toISOString().split("T")[0];
+    };
+
     return (
         <Modal
+            scrollable
             show={show}
             onHide={handleClose}
             size="xl"
@@ -294,13 +314,11 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
             dialogClassName="proyecto-modal"
         >
             <Modal.Header closeButton>
-                <Modal.Title>
-                    Editar Proyecto: {proyecto?.nombre || ""}
-                </Modal.Title>
+                <Modal.Title>{proyecto?.nombre || ""}</Modal.Title>
             </Modal.Header>
             <Modal.Body
                 className="p-4"
-                style={{ maxHeight: "80vh", overflowY: "auto" }}
+                style={{ maxHeight: "70vh", overflowY: "auto" }}
             >
                 {!proyecto ? (
                     <div className="text-center p-5">
@@ -310,12 +328,6 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                     <>
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h5 className="mb-0">Información del Proyecto</h5>
-                            <Button
-                                variant="light"
-                                className="btn-sm rounded-circle"
-                            >
-                                <FontAwesomeIcon icon={faEllipsisH} />
-                            </Button>
                         </div>
 
                         {showAlert && (
@@ -365,7 +377,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit}>
+                        <form
+                            onSubmit={handleSubmit}
+                            ref={(el) => setFormRef(el)}
+                        >
                             <div className="mb-3">
                                 <label htmlFor="nombre" className="form-label">
                                     Nombre
@@ -433,7 +448,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                                     Colaboradores:
                                 </label>
                                 <select
-                                    className="form-select form_input"
+                                    className="form-select"
                                     name="colab"
                                     id="colab"
                                     multiple
@@ -448,7 +463,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                                     <div className="mb-3 form-check">
                                         <input
                                             type="checkbox"
-                                            className="form-check-input"
+                                            className="form-check-input custom-checkbox"
                                             id="urgente"
                                             name="urgente"
                                             checked={proyecto.urgente}
@@ -486,6 +501,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                                                     .toISOString()
                                                     .split("T")[0]
                                             }
+                                            min={getFechaHoy()}
                                             disabled={
                                                 estado === "Cancelado" ||
                                                 estado === "Finalizado"
@@ -494,29 +510,31 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId }) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="d-flex justify-content-end">
-                                <button
-                                    type="button"
-                                    className="thm-btn btn-gris me-2"
-                                    onClick={handleClose}
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="thm-btn"
-                                    disabled={
-                                        estado === "Cancelado" ||
-                                        estado === "Finalizado"
-                                    }
-                                >
-                                    Guardar Cambios
-                                </button>
-                            </div>
                         </form>
                     </>
                 )}
             </Modal.Body>
+            <Modal.Footer>
+                <button
+                    type="button"
+                    className="thm-btn btn-gris me-2"
+                    onClick={handleClose}
+                >
+                    Cerrar
+                </button>
+                <button
+                    type="button"
+                    className="thm-btn"
+                    onClick={handleSaveClick}
+                    disabled={
+                        !proyecto ||
+                        estado === "Cancelado" ||
+                        estado === "Finalizado"
+                    }
+                >
+                    Guardar
+                </button>
+            </Modal.Footer>
         </Modal>
     );
 };

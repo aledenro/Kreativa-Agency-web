@@ -98,6 +98,11 @@ const AgregarTarea = () => {
         }
     };
 
+    const getFechaHoy = () => {
+        const today = new Date();
+        return today.toISOString().split("T")[0];
+    };
+
     useEffect(() => {
         async function fetchEmpleados() {
             try {
@@ -262,6 +267,7 @@ const AgregarTarea = () => {
                                             id="fecha_entrega"
                                             name="fecha_entrega"
                                             required
+                                            min={getFechaHoy()}
                                         />
                                     </div>
                                 </div>
