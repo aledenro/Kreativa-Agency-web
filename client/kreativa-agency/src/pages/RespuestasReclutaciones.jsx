@@ -138,8 +138,8 @@ const RespuestasReclutaciones = () => {
                         </button>
                     </div>
                 </div>
-                <div className="table-responsive">
-                    <table className="table kreativa-table">
+                <div className="table-responsive-xxl">
+                    <table className="table kreativa-proyecto-table">
                         <thead>
                             <tr>
                                 <th>Nombre</th>

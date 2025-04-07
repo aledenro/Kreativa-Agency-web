@@ -422,7 +422,7 @@ const DashboardColaborador = () => {
                         </div>
                     )}
                 </div>
-                <div className="table-responsive">
+                <div className="table-responsive-xxl">
                     <table className="table kreativa-proyecto-table">
                         <thead className="table-light">
                             <tr>

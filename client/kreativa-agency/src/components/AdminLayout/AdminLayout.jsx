@@ -44,7 +44,7 @@ const menuStructure = [
         icon: SquareKanban,
         items: [
             { label: "Gestión de proyectos", path: "/proyectos/gestion" },
-            { label: "Dashboard proyecto", path: "/proyectos/dashboard" },
+            { label: "Dashboard proyecto", path: "/dashboard" },
             { label: "Solicitudes cotización", path: "/proyectos/solicitudes" },
         ],
     },
@@ -79,7 +79,6 @@ const menuStructure = [
             { label: "Gestión Form Puestos", path: "/admin/reclutaciones" },
 
             { label: "Gestión Form Contacto", path: "/admin/contacto" },
-
         ],
     },
     {
