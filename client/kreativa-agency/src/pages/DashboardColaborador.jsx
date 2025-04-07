@@ -53,8 +53,6 @@ const DashboardColaborador = () => {
 
                 if (rol === "Cliente") {
                     url += `/cliente/${userId}`;
-                } else if (rol === "Colaborador") {
-                    url += `/colaborador/${userId}`;
                 }
 
                 const response = await axios.get(url, {
@@ -90,12 +88,6 @@ const DashboardColaborador = () => {
             try {
                 const token = localStorage.getItem("token");
                 let url = "http://localhost:4000/api/tareas";
-
-                if (rol === "Colaborador") {
-                    url += `/getByColab/${userId}`;
-                } else if (rol === "Cliente") {
-                    url += `/getByCliente/${userId}`;
-                }
 
                 const response = await axios.get(url, {
                     headers: { Authorization: `Bearer ${token}` },
@@ -422,7 +414,7 @@ const DashboardColaborador = () => {
                         </div>
                     )}
                 </div>
-                <div className="table-responsive-xxl">
+                <div className="table-responsive">
                     <table className="table kreativa-proyecto-table">
                         <thead className="table-light">
                             <tr>
@@ -924,7 +916,6 @@ const DashboardColaborador = () => {
                 </div>
             </div>
 
-            {/* Modal para ver tareas */}
             {showModal && (
                 <ModalVerTareas
                     show={showModal}
@@ -933,7 +924,6 @@ const DashboardColaborador = () => {
                 />
             )}
 
-            {/* Modal para ver proyectos */}
             <ModalVerProyecto
                 show={showProyectoModal}
                 handleClose={() => setShowProyectoModal(false)}
