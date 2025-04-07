@@ -44,7 +44,7 @@ class printExcelService {
                 const sheet = xlsx.utils.json_to_sheet(data[i]);
                 xlsx.utils.sheet_add_aoa(sheet, [columns[i]], { origin: "A1" });
 
-                const columnKeys = Object.keys(data[0][0]);
+                const columnKeys = Object.keys(data[i][0]);
                 const colWidths = columnKeys.map((key) => {
                     const maxLength = data.reduce((max, row) => {
                         const value =
