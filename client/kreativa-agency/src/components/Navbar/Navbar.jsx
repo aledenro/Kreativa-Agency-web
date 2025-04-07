@@ -4,9 +4,22 @@ import { Link, useLocation } from "react-router-dom";
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userRole, setUserRole] = useState(null);
     const location = useLocation();
 
     useEffect(() => {
+        const rol = localStorage.getItem("tipo_usuario");
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            setIsLoggedIn(true);
+            setUserRole(rol);
+        } else {
+            setIsLoggedIn(false);
+            setUserRole(null);
+        }
+
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
@@ -51,6 +64,14 @@ export default function Navbar() {
                 }
             }
         }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("tipo_usuario");
+        setIsLoggedIn(false);
+        setUserRole(null);
+        window.location.href = "/";
     };
 
     return (
@@ -176,18 +197,30 @@ export default function Navbar() {
                                     </li>
 
                                     <li className="nav-item ms-xl-auto d-flex gap-2">
-                                        <Link
-                                            to="/estadisticas"
-                                            className="login-button px-3 nav-link rounded-3 text-base leading-6 fw-semibold text-center"
-                                        >
-                                            Dashboard
-                                        </Link>
-                                        <Link
-                                            to="/login"
-                                            className="login-button px-3 nav-link rounded-3 text-base leading-6 fw-semibold text-center"
-                                        >
-                                            Iniciar Sesión
-                                        </Link>
+                                        {isLoggedIn && (
+                                            <Link
+                                                to="/estadisticas"
+                                                className="login-button px-3 nav-link rounded-3 text-base leading-6 fw-semibold text-center"
+                                            >
+                                                Dashboard
+                                            </Link>
+                                        )}
+
+                                        {!isLoggedIn ? (
+                                            <Link
+                                                to="/login"
+                                                className="login-button px-3 nav-link rounded-3 text-base leading-6 fw-semibold text-center"
+                                            >
+                                                Iniciar Sesión
+                                            </Link>
+                                        ) : (
+                                            <button
+                                                onClick={handleLogout}
+                                                className="login-button px-3 nav-link rounded-3 text-base leading-6 fw-semibold text-center"
+                                            >
+                                                Cerrar Sesión
+                                            </button>
+                                        )}
                                     </li>
                                 </ul>
                             </div>
