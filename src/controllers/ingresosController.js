@@ -1,12 +1,22 @@
 const ingresosService = require("../services/ingresosService");
 const Usuario = require("../models/usuarioModel");
+const movimientosService = require('../services/movimientosService');
 
 const ingresosController = {
     async registrarIngreso(req, res) {
         try {
-            const nuevoIngreso = await ingresosService.registrarIngreso(
-                req.body
-            );
+
+            const nuevoIngreso = await ingresosService.registrarIngreso(req.body);
+            // Registrar el movimiento de creación
+      await movimientosService.registrarMovimiento({
+        entidad: "ingreso", // <-- Aquí cambiamos "tipo" por "entidad"
+        idRegistro: nuevoIngreso._id,
+        accion: "creación",
+        descripcion: "Creación del ingreso",
+        detalle: { datosNuevos: nuevoIngreso },
+        usuario: req.user ? req.user.username : "sistema",
+      });
+
             res.status(201).json({
                 message: "Ingreso registrado con éxito.",
                 ingreso: nuevoIngreso,
@@ -57,10 +67,20 @@ const ingresosController = {
 
     async actualizarIngreso(req, res) {
         try {
-            const ingresoActualizado = await ingresosService.actualizarIngreso(
-                req.params.id,
-                req.body
-            );
+
+            // Obtener el registro anterior para comparar (opcional)
+            const ingresoAnterior = await ingresosService.obtenerIngresoPorId(req.params.id);
+            const ingresoActualizado = await ingresosService.actualizarIngreso(req.params.id, req.body);
+            // Registrar el movimiento de edición
+      await movimientosService.registrarMovimiento({
+        entidad: "ingreso",
+        idRegistro: ingresoActualizado._id,
+        accion: "edición",
+        descripcion: "Edición del ingreso",
+        detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingresoActualizado },
+        usuario: req.user ? req.user.username : "sistema",
+      });
+
             res.status(200).json({
                 message: "Ingreso actualizado con éxito.",
                 ingreso: ingresoActualizado,
@@ -74,10 +94,19 @@ const ingresosController = {
     async activarIngreso(req, res) {
         try {
             const { id } = req.params;
+            const ingresoAnterior = await ingresosService.obtenerIngresoPorId(id);
             const ingreso = await ingresosService.activarIngresoById(id);
-            return res
-                .status(200)
-                .json({ mensaje: "Ingreso activado", ingreso });
+
+            await movimientosService.registrarMovimiento({
+                entidad: "ingreso",
+                idRegistro: ingreso._id,
+                accion: "activación",
+                descripcion: "Activación del ingreso",
+                detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingreso },
+                usuario: req.user ? req.user.username : "sistema",
+              });
+            return res.status(200).json({ mensaje: "Ingreso activado", ingreso });
+
         } catch (error) {
             console.error("Error al activar el ingreso: " + error.message);
             return res.status(500).json({ error: error.message });
@@ -88,10 +117,18 @@ const ingresosController = {
     async desactivarIngreso(req, res) {
         try {
             const { id } = req.params;
+            const ingresoAnterior = await ingresosService.obtenerIngresoPorId(req.params.id);
             const ingreso = await ingresosService.desactivarIngresoById(id);
-            return res
-                .status(200)
-                .json({ mensaje: "Ingreso desactivado", ingreso });
+            await movimientosService.registrarMovimiento({
+                entidad: "ingreso",
+                idRegistro: ingreso._id,
+                accion: "desactivación",
+                descripcion: "Desactivación del ingreso",
+                detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingreso },
+                usuario: req.user ? req.user.username : "sistema",
+              });
+            return res.status(200).json({ mensaje: "Ingreso desactivado", ingreso });
+
         } catch (error) {
             console.error("Error al desactivar el ingreso: " + error.message);
             return res.status(500).json({ error: error.message });
@@ -100,6 +137,7 @@ const ingresosController = {
 
     async obtenerIngresosPorMes(req, res) {
         try {
+
             const { mes, año } = req.query; // Recibe los parámetros mes y año del query string
 
             if (!mes || !año) {
@@ -153,6 +191,21 @@ const ingresosController = {
             });
         }
     },
+
+
+    async obtenerIngresosAnualesDetalle(req, res) {
+        try {
+            const { anio } = req.query;
+            if (!anio) {
+                return res.status(400).json({ message: "Debe proporcionar el parámetro 'anio'." });
+            }
+            const data = await ingresosService.obtenerIngresosPorAnioDetalle(anio);
+            res.status(200).json(data);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
 };
 
 module.exports = ingresosController;

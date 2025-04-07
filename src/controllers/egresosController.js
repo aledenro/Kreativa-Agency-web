@@ -1,7 +1,8 @@
 const EgresosService = require("../services/egresosService");
 const lodash = require("lodash");
-const Egreso = require("../models/egresosModel");
-const egresosService = require("../services/egresosService");
+const Egreso = require('../models/egresosModel');
+const movimientosService = require('../services/movimientosService');
+
 
 class EgresosController {
     //Agregar egreso
@@ -16,6 +17,15 @@ class EgresosController {
 
             // Lógica en el servicio
             const egreso = await EgresosService.agregarEgreso(req.body);
+            // Registrar el movimiento de creación
+            await await movimientosService.registrarMovimiento({
+                entidad: "egreso",
+                idRegistro: egreso._id,
+                accion: "creación",
+                descripcion: "Creación del egreso",
+                detalle: { datosNuevos: egreso },
+                usuario: req.user ? req.user.username : "sistema"
+            });
             return res.status(201).json(egreso);
         } catch (error) {
             console.error(
@@ -94,6 +104,8 @@ class EgresosController {
                     return obj;
                 }, {});
 
+            const egresoAnterior = await EgresosService.obtenerEgresoPorId(id);
+
             // Lógica en el servicio para editar el egreso
             const egresoActualizado = await EgresosService.editarEgreso(
                 id,
@@ -103,6 +115,16 @@ class EgresosController {
             if (!egresoActualizado) {
                 return res.status(404).json({ error: "Egreso no encontrado" });
             }
+
+            // Registrar movimiento de edición
+            await movimientosService.registrarMovimiento({
+                entidad: "egreso",
+                idRegistro: egresoActualizado._id,
+                accion: "edición",
+                descripcion: "Edición del egreso",
+                detalle: { datosAnteriores: egresoAnterior, datosNuevos: egresoActualizado },
+                usuario: req.user ? req.user.username : "sistema"
+            });
 
             return res.status(200).json(egresoActualizado);
         } catch (error) {
@@ -129,10 +151,19 @@ class EgresosController {
     async desactivarEgreso(req, res) {
         try {
             const { id } = req.params;
+            const egresoAnterior = await EgresosService.obtenerEgresoPorId(id);
             const egreso = await EgresosService.desactivarEgresoById(id); // Usamos el servicio para desactivar el egreso
-            return res
-                .status(200)
-                .json({ mensaje: "Egreso desactivado", egreso });
+
+            await movimientosService.registrarMovimiento({
+                entidad: "egreso",
+                idRegistro: egreso._id,
+                accion: "desactivación",
+                descripcion: "Desactivación del egreso",
+                detalle: { datosAnteriores: egresoAnterior, datosNuevos: egreso },
+                usuario: req.user ? req.user.username : "sistema"
+            });
+            return res.status(200).json({ mensaje: "Egreso desactivado", egreso });
+
         } catch (error) {
             console.error("Error al desactivar el egreso: " + error.message);
             return res.status(500).json({ error: error.message });
@@ -143,7 +174,16 @@ class EgresosController {
     async activarEgreso(req, res) {
         try {
             const { id } = req.params;
+            const egresoAnterior = await EgresosService.obtenerEgresoPorId(id);
             const egreso = await EgresosService.activarEgresoById(id); // Usamos el servicio para activar el egreso
+            await movimientosService.registrarMovimiento({
+                entidad: "egreso",
+                idRegistro: egreso._id,
+                accion: "activación",
+                descripcion: "Activación del egreso",
+                detalle: { datosAnteriores: egresoAnterior, datosNuevos: egreso },
+                usuario: req.user ? req.user.username : "sistema"
+            });
             return res.status(200).json({ mensaje: "Egreso activado", egreso });
         } catch (error) {
             console.error("Error al activar el egreso: " + error.message);
@@ -180,6 +220,8 @@ class EgresosController {
             // Realizamos la consulta para obtener los egresos dentro del rango de fechas.
             const egresos = await Egreso.find({
                 fecha: { $gte: fechaInicio, $lte: fechaFin },
+                activo: true,
+                estado: "Aprobado"
             });
 
             return res.json(egresos); // Retornamos los egresos filtrados
@@ -221,6 +263,7 @@ class EgresosController {
             }
 
             // Llamar al servicio para obtener el total de egresos
+
             const totalEgresos =
                 await EgresosService.obtenerEgresosPorAnio(anio);
 
@@ -230,6 +273,17 @@ class EgresosController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    async obtenerEgresosAnualesDetalle(req, res) {
+        try {
+            const { anio } = req.query;
+            if (!anio) {
+                return res.status(400).json({ message: "Se requiere el parámetro 'anio'." });
+            }
+            const data = await EgresosService.obtenerEgresosPorAnioDetalle(anio);
+            res.status(200).json(data);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
 
     async getEgresosDateRange(req, res) {
         try {
@@ -246,6 +300,7 @@ class EgresosController {
             res.status(500).json({
                 error: "No se pudieron obtener los egresos.",
             });
+
         }
     }
 }

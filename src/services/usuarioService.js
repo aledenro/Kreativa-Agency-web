@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const Usuario = require("../models/usuarioModel");
+const mongoose = require("mongoose");
 
 // Verificar si un usuario ya existe
 const verificarUsuarioExistente = async (usuario) => {
@@ -143,7 +144,11 @@ const obtenerJerarquiaUsuarios = async () => {
 
 const getEmailUsuario = async (id) => {
     try {
-        return await Usuario.findById(id).select("email");
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            return await Usuario.findById(id).select("email");
+        } else {
+            return await Usuario.findOne({ cedula: id }).select("email");
+        }
     } catch (error) {
         throw new Error(`Error al obtener los empleados: ${error.message}`);
     }

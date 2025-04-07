@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import AdminLayout from "../components/AdminLayout/AdminLayout";
+import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
-import sendEmail from "../utils/emailSender";
+import sendEmail from "../../utils/emailSender";
+import Button from "react-bootstrap/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import lodash from "lodash";
 
 const estados = [
     "Por Hacer",
@@ -63,8 +65,7 @@ function renderOptionsEstados(opcion, estadoProyecto) {
     }
 }
 
-const AgregarProyecto = () => {
-    const { id } = useParams();
+const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
     const [clientes, setClientes] = useState([]);
     const [proyecto, setProyecto] = useState(null);
     const [estado, setEstado] = useState("");
@@ -72,6 +73,7 @@ const AgregarProyecto = () => {
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
     const [empleados, setEmpleados] = useState([]);
+    const [formRef, setFormRef] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -118,7 +120,7 @@ const AgregarProyecto = () => {
 
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/proyectos/editar/${id}`,
+                `http://localhost:4000/api/proyectos/editar/${proyectoId}`,
                 data
             );
 
@@ -128,6 +130,14 @@ const AgregarProyecto = () => {
                 setShowAlert(true);
                 await addActionLog("Editó el proyecto.");
                 fetchProyecto();
+
+                if (typeof onUpdate === "function") {
+                    onUpdate();
+                }
+
+                setTimeout(() => {
+                    setShowAlert(false);
+                }, 3000);
             }
         } catch (error) {
             console.error(error.message);
@@ -145,18 +155,22 @@ const AgregarProyecto = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:4000/api/proyectos/editar/${id}`,
+                `http://localhost:4000/api/proyectos/editar/${proyectoId}`,
                 { estado: estadoEdit }
             );
 
             if (response.status === 200) {
-                setAlertMessage("Estado cambiado  correctamente.");
+                setAlertMessage("Estado cambiado correctamente.");
                 setAlertVariant("success");
                 setShowAlert(true);
                 setEstado(estadoEdit);
                 await addActionLog(
                     `Cambió el estado del proyecto a: ${estadoEdit}.`
                 );
+
+                if (typeof onUpdate === "function") {
+                    onUpdate();
+                }
 
                 if (estadoEdit !== "Finalizado") {
                     await sendEmail(
@@ -169,12 +183,16 @@ const AgregarProyecto = () => {
                 } else {
                     await sendEmail(
                         proyecto.cliente_id,
-                        `El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingresse para ver más detalles.`,
+                        `El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingrese para ver más detalles.`,
                         `Actualización en su proyecto ${proyecto.nombre}`,
                         "Ver",
                         "test"
                     );
                 }
+
+                setTimeout(() => {
+                    setShowAlert(false);
+                }, 3000);
             }
         } catch (error) {
             console.error(error.message);
@@ -190,7 +208,7 @@ const AgregarProyecto = () => {
         try {
             const user_id = localStorage.getItem("user_id");
             await axios.put(
-                `http://localhost:4000/api/proyectos/actualizarLog/${id}`,
+                `http://localhost:4000/api/proyectos/actualizarLog/${proyectoId}`,
                 {
                     usuario_id: user_id,
                     accion: accion,
@@ -202,7 +220,7 @@ const AgregarProyecto = () => {
     };
 
     function renderColab(colab) {
-        const isSelected = proyecto.colaboradores.some(
+        const isSelected = proyecto?.colaboradores?.some(
             (proyectoColab) => colab._id === proyectoColab.colaborador_id._id
         );
 
@@ -214,45 +232,47 @@ const AgregarProyecto = () => {
     }
 
     const fetchProyecto = useCallback(async () => {
+        if (!proyectoId) return;
+
         try {
             const response = await axios.get(
-                `http://localhost:4000/api/proyectos/id/${id}`
+                `http://localhost:4000/api/proyectos/id/${proyectoId}`
             );
 
             if (response.status === 200) {
                 setProyecto(response.data.proyecto);
-                setEstado(response.data.estado);
+                setEstado(response.data.proyecto.estado);
             }
 
             fetchClientes();
         } catch (error) {
             console.error(`Error al obtener el proyecto: ${error.message}`);
         }
-    }, [id]);
+    }, [proyectoId]);
 
     useEffect(() => {
-        fetchProyecto();
-        async function fetchEmpleados() {
-            try {
-                const token = localStorage.getItem("token");
-
-                const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/empleados",
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-
-                setEmpleados(response.data);
-            } catch (error) {
-                console.error(
-                    `Error al obtener los empleados: ${error.message}`
-                );
-            }
+        if (show) {
+            fetchProyecto();
+            fetchEmpleados();
         }
+    }, [show, fetchProyecto]);
 
-        fetchEmpleados();
-    }, [fetchProyecto]);
+    async function fetchEmpleados() {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await axios.get(
+                "http://localhost:4000/api/usuarios/empleados",
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            setEmpleados(response.data);
+        } catch (error) {
+            console.error(`Error al obtener los empleados: ${error.message}`);
+        }
+    }
 
     async function fetchClientes() {
         try {
@@ -271,23 +291,45 @@ const AgregarProyecto = () => {
         }
     }
 
-    if (!proyecto) {
-        return (
-            <div className="container d-flex align-items-center justify-content-center">
-                <p>Cargando proyecto...</p>
-            </div>
-        );
-    }
+    const handleSaveClick = () => {
+        if (formRef) {
+            formRef.dispatchEvent(
+                new Event("submit", { cancelable: true, bubbles: true })
+            );
+        }
+    };
+
+    const getFechaHoy = () => {
+        const today = new Date();
+        return today.toISOString().split("T")[0];
+    };
 
     return (
-        <div>
-            <AdminLayout>
-                <div className="container align-items-center justify-content-center">
-                    <div style={{ height: "90px" }}></div>
-                    <div className=" p-4">
-                        <h1 className="text-center section-title">
-                            Editar Proyecto
-                        </h1>
+        <Modal
+            scrollable
+            show={show}
+            onHide={handleClose}
+            size="xl"
+            centered
+            dialogClassName="proyecto-modal"
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>{proyecto?.nombre || ""}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body
+                className="p-4"
+                style={{ maxHeight: "70vh", overflowY: "auto" }}
+            >
+                {!proyecto ? (
+                    <div className="text-center p-5">
+                        <p>Cargando proyecto...</p>
+                    </div>
+                ) : (
+                    <>
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h5 className="mb-0">Información del Proyecto</h5>
+                        </div>
+
                         {showAlert && (
                             <Alert
                                 variant={alertVariant}
@@ -297,35 +339,48 @@ const AgregarProyecto = () => {
                                 {alertMessage}
                             </Alert>
                         )}
-                        <div className="row mb-3">
-                            <div className="col mx-3">
-                                Fecha de Solicitud:{" "}
-                                <small>
-                                    {new Date(
-                                        proyecto.fecha_creacion
-                                    ).toLocaleDateString()}
-                                </small>
-                            </div>
-                            <div className="col mx-3">
-                                <label htmlFor="estado" className="form-label">
-                                    Estado
-                                </label>
-                                <select
-                                    className="form-select form_input"
-                                    name="estado"
-                                    id="estado"
-                                    onChange={handleChangeEstado}
-                                >
-                                    {estados.map((opcion) =>
-                                        renderOptionsEstados(
-                                            opcion,
-                                            proyecto.estado
-                                        )
-                                    )}
-                                </select>
+
+                        <div className="proyecto-info mb-4">
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <div className="info-item">
+                                        <div className="text-muted mb-1">
+                                            Fecha de Solicitud
+                                        </div>
+                                        <div className="fw-medium">
+                                            {new Date(
+                                                proyecto.fecha_creacion
+                                            ).toLocaleDateString()}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <div className="info-item">
+                                        <div className="text-muted mb-1">
+                                            Estado
+                                        </div>
+                                        <select
+                                            className="form-select form_input"
+                                            name="estado"
+                                            id="estado"
+                                            onChange={handleChangeEstado}
+                                        >
+                                            {estados.map((opcion) =>
+                                                renderOptionsEstados(
+                                                    opcion,
+                                                    proyecto.estado
+                                                )
+                                            )}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <form onSubmit={handleSubmit}>
+
+                        <form
+                            onSubmit={handleSubmit}
+                            ref={(el) => setFormRef(el)}
+                        >
                             <div className="mb-3">
                                 <label htmlFor="nombre" className="form-label">
                                     Nombre
@@ -355,7 +410,7 @@ const AgregarProyecto = () => {
                                     name="descripcion"
                                     className="form_input form-textarea"
                                     id="descripcion"
-                                    rows={15}
+                                    rows={6}
                                     placeholder="Describa su solicitud"
                                     required
                                     value={proyecto.descripcion}
@@ -393,7 +448,7 @@ const AgregarProyecto = () => {
                                     Colaboradores:
                                 </label>
                                 <select
-                                    className="form-select form_input"
+                                    className="form-select"
                                     name="colab"
                                     id="colab"
                                     multiple
@@ -404,11 +459,11 @@ const AgregarProyecto = () => {
                                 </select>
                             </div>
                             <div className="row">
-                                <div className="col">
+                                <div className="col-md-6">
                                     <div className="mb-3 form-check">
                                         <input
                                             type="checkbox"
-                                            className="form-check-input"
+                                            className="form-check-input custom-checkbox"
                                             id="urgente"
                                             name="urgente"
                                             checked={proyecto.urgente}
@@ -426,7 +481,7 @@ const AgregarProyecto = () => {
                                         </label>
                                     </div>
                                 </div>
-                                <div className="col">
+                                <div className="col-md-6">
                                     <div className="mb-3">
                                         <label
                                             htmlFor="fecha_entrega"
@@ -446,6 +501,7 @@ const AgregarProyecto = () => {
                                                     .toISOString()
                                                     .split("T")[0]
                                             }
+                                            min={getFechaHoy()}
                                             disabled={
                                                 estado === "Cancelado" ||
                                                 estado === "Finalizado"
@@ -454,22 +510,33 @@ const AgregarProyecto = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button
-                                type="submit"
-                                className="thm-btn"
-                                disabled={
-                                    estado === "Cancelado" ||
-                                    estado === "Finalizado"
-                                }
-                            >
-                                Enviar
-                            </button>
                         </form>
-                    </div>
-                </div>
-            </AdminLayout>
-        </div>
+                    </>
+                )}
+            </Modal.Body>
+            <Modal.Footer>
+                <button
+                    type="button"
+                    className="thm-btn btn-gris me-2"
+                    onClick={handleClose}
+                >
+                    Cerrar
+                </button>
+                <button
+                    type="button"
+                    className="thm-btn"
+                    onClick={handleSaveClick}
+                    disabled={
+                        !proyecto ||
+                        estado === "Cancelado" ||
+                        estado === "Finalizado"
+                    }
+                >
+                    Guardar
+                </button>
+            </Modal.Footer>
+        </Modal>
     );
 };
 
-export default AgregarProyecto;
+export default ModalEditarProyecto;

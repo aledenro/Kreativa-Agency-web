@@ -240,8 +240,8 @@ const GestionPaquetes = () => {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                    <div className="table-responsive">
-                        <table className="table kreativa-table">
+                    <div className="table-responsive-xxl">
+                        <table className="table kreativa-proyecto-table">
                             <thead>
                                 <tr>
                                     <th
@@ -309,7 +309,7 @@ const GestionPaquetes = () => {
                                             <td>{paquete.duracion}</td>
                                             <td>
                                                 <span
-                                                    className={`badge ${paquete.activo ? "bg-success" : "bg-danger"}`}
+                                                    className={`badge ${paquete.activo ? "badge-verde" : "badge-rojo"}`}
                                                 >
                                                     {paquete.activo
                                                         ? "Activo"

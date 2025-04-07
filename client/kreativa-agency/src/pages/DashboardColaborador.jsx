@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,7 +15,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
-import ModalVerProyecto from "../components/Proyectos/ModalDetalleProyecto"; // Importa el nuevo componente modal
+import ModalVerProyecto from "../components/Proyectos/ModalDetalleProyecto";
+import ModalEditarProyecto from "../components/Proyectos/ModalEditarProyecto";
+import ModalEditarTarea from "../components/Tareas/ModalEditarTarea";
+import ModalAgregarProyecto from "../components/Proyectos/ModalAgregarProyecto";
+import ModalAgregarTarea from "../components/Tareas/ModalAgregarTarea";
 
 const DashboardColaborador = () => {
     const [proyectos, setProyectos] = useState([]);
@@ -40,6 +44,17 @@ const DashboardColaborador = () => {
     const [showProyectoModal, setShowProyectoModal] = useState(false);
     const [selectedProyectoId, setSelectedProyectoId] = useState(null);
 
+    const [showEditProyectoModal, setShowEditProyectoModal] = useState(false);
+    const [editingProyectoId, setEditingProyectoId] = useState(null);
+
+    const [showEditTareaModal, setShowEditTareaModal] = useState(false);
+    const [editingTareaId, setEditingTareaId] = useState(null);
+
+    const [showModalAgregarProyecto, setShowModalProyecto] = useState(false);
+
+    const [showModalAgregarTarea, setShowModalAgregarTarea] = useState(false);
+    const [selectedProyectoTarea, setSelectedProyectoTarea] = useState(null);
+
     const rol = localStorage.getItem("tipo_usuario");
     const userId = localStorage.getItem("user_id");
 
@@ -49,12 +64,15 @@ const DashboardColaborador = () => {
         const fetchProyectos = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(
-                    "http://localhost:4000/api/proyectos",
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
+                let url = "http://localhost:4000/api/proyectos";
+
+                if (rol === "Cliente") {
+                    url += `/cliente/${userId}`;
+                }
+
+                const response = await axios.get(url, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
 
                 setProyectos(response.data);
 
@@ -86,10 +104,6 @@ const DashboardColaborador = () => {
                 const token = localStorage.getItem("token");
                 let url = "http://localhost:4000/api/tareas";
 
-                if (rol === "Colaborador") {
-                    url += `/getByColab/${userId}`;
-                }
-
                 const response = await axios.get(url, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -118,7 +132,68 @@ const DashboardColaborador = () => {
             }
         };
 
-        Promise.all([fetchProyectos(), fetchTareas(), fetchEmpleados()])
+        if (rol === "Administrador") {
+            Promise.all([fetchProyectos(), fetchTareas(), fetchEmpleados()])
+                .then(() => setLoading(false))
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                    setLoading(false);
+                });
+        } else {
+            Promise.all([fetchProyectos(), fetchTareas()])
+                .then(() => setLoading(false))
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                    setLoading(false);
+                });
+        }
+    }, [rol, userId]);
+
+    const reloadData = useCallback(() => {
+        setLoading(true);
+
+        const fetchProyectos = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                let url = "http://localhost:4000/api/proyectos";
+
+                if (rol === "Cliente") {
+                    url += `/cliente/${userId}`;
+                }
+
+                const response = await axios.get(url, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                setProyectos(response.data);
+
+                const estados = [
+                    ...new Set(response.data.map((p) => p.estado)),
+                ].filter(Boolean);
+                setEstadosProyecto(estados);
+            } catch (error) {
+                console.error(
+                    `Error al obtener los proyectos: ${error.message}`
+                );
+            }
+        };
+
+        const fetchTareas = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                let url = "http://localhost:4000/api/tareas";
+
+                const response = await axios.get(url, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                setTareas(response.data.tareas || []);
+            } catch (error) {
+                console.error(`Error al obtener las tareas: ${error.message}`);
+            }
+        };
+
+        Promise.all([fetchProyectos(), fetchTareas()])
             .then(() => setLoading(false))
             .catch((error) => {
                 console.error("Error fetching data:", error);
@@ -247,7 +322,8 @@ const DashboardColaborador = () => {
     };
 
     const handleEditarTarea = (tareaId) => {
-        window.location.href = `/tarea/editar/${tareaId}`;
+        setEditingTareaId(tareaId);
+        setShowEditTareaModal(true);
     };
 
     const handleVerTarea = (tarea) => {
@@ -256,26 +332,46 @@ const DashboardColaborador = () => {
     };
 
     const handleEditarProyecto = (proyectoId) => {
-        window.location.href = `/proyecto/editar/${proyectoId}`;
+        setEditingProyectoId(proyectoId);
+        setShowEditProyectoModal(true);
     };
 
-    // Modificar para usar el modal de proyecto
     const handleVerProyecto = (proyectoId) => {
         setSelectedProyectoId(proyectoId);
         setShowProyectoModal(true);
     };
 
     const handleAgregarTarea = (proyectoId) => {
-        window.location.href = `/tarea/agregar?proyecto=${proyectoId}`;
+        setSelectedProyectoTarea(proyectoId);
+        setShowModalAgregarTarea(true);
     };
 
     const handleAgregarProyecto = () => {
-        window.location.href = "/proyecto/agregar";
+        setShowModalProyecto(true);
     };
 
     const handleChangeCantItems = (event) => {
         setItemsPag(parseInt(event.target.value));
         setPagActual(1);
+    };
+
+    const handleCloseEditModal = () => {
+        setShowEditProyectoModal(false);
+        reloadData();
+    };
+
+    const handleCloseEditTareaModal = () => {
+        setShowEditTareaModal(false);
+        reloadData();
+    };
+
+    const handleCloseAgregarProyectoModal = () => {
+        setShowModalProyecto(false);
+    };
+
+    const handleCloseAgregarTareaModal = () => {
+        setShowModalAgregarTarea(false);
+        setSelectedProyectoTarea(null);
     };
 
     let proyectosFiltrados = [...proyectos];
@@ -331,6 +427,9 @@ const DashboardColaborador = () => {
         (pagActual - 1) * itemsPag,
         pagActual * itemsPag
     );
+
+    const canEdit = rol === "Administrador";
+    const canView = true;
 
     if (loading) {
         return (
@@ -393,7 +492,7 @@ const DashboardColaborador = () => {
                             ))}
                         </select>
                     </div>
-                    {rol === "Administrador" && (
+                    {canEdit && (
                         <div className="col text-end">
                             <button
                                 className="thm-btn"
@@ -556,20 +655,21 @@ const DashboardColaborador = () => {
                                                 </td>
                                                 <td className="text-center">
                                                     <div className="botones-grupo">
-                                                        <button
-                                                            className="thm-btn thm-btn-small btn-amarillo"
-                                                            onClick={() =>
-                                                                handleVerProyecto(
-                                                                    proyecto._id
-                                                                )
-                                                            }
-                                                        >
-                                                            <FontAwesomeIcon
-                                                                icon={faEye}
-                                                            />
-                                                        </button>
-                                                        {rol ===
-                                                            "Administrador" && (
+                                                        {canView && (
+                                                            <button
+                                                                className="thm-btn thm-btn-small btn-amarillo"
+                                                                onClick={() =>
+                                                                    handleVerProyecto(
+                                                                        proyecto._id
+                                                                    )
+                                                                }
+                                                            >
+                                                                <FontAwesomeIcon
+                                                                    icon={faEye}
+                                                                />
+                                                            </button>
+                                                        )}
+                                                        {canEdit && (
                                                             <button
                                                                 className="thm-btn thm-btn-small btn-azul"
                                                                 onClick={() =>
@@ -761,22 +861,23 @@ const DashboardColaborador = () => {
                                                                                     </td>
                                                                                     <td className="text-center">
                                                                                         <div className="botones-grupo">
-                                                                                            <button
-                                                                                                className="thm-btn thm-btn-small btn-amarillo"
-                                                                                                onClick={() =>
-                                                                                                    handleVerTarea(
-                                                                                                        tarea
-                                                                                                    )
-                                                                                                }
-                                                                                            >
-                                                                                                <FontAwesomeIcon
-                                                                                                    icon={
-                                                                                                        faEye
+                                                                                            {canView && (
+                                                                                                <button
+                                                                                                    className="thm-btn thm-btn-small btn-amarillo"
+                                                                                                    onClick={() =>
+                                                                                                        handleVerTarea(
+                                                                                                            tarea
+                                                                                                        )
                                                                                                     }
-                                                                                                />
-                                                                                            </button>
-                                                                                            {rol ===
-                                                                                                "Administrador" && (
+                                                                                                >
+                                                                                                    <FontAwesomeIcon
+                                                                                                        icon={
+                                                                                                            faEye
+                                                                                                        }
+                                                                                                    />
+                                                                                                </button>
+                                                                                            )}
+                                                                                            {canEdit && (
                                                                                                 <button
                                                                                                     className="thm-btn thm-btn-small btn-azul"
                                                                                                     onClick={() =>
@@ -813,8 +914,7 @@ const DashboardColaborador = () => {
                                                                         </tr>
                                                                     )}
 
-                                                                    {rol ===
-                                                                        "Administrador" && (
+                                                                    {canEdit && (
                                                                         <tr>
                                                                             <td
                                                                                 colSpan="7"
@@ -905,7 +1005,6 @@ const DashboardColaborador = () => {
                 </div>
             </div>
 
-            {/* Modal para ver tareas */}
             {showModal && (
                 <ModalVerTareas
                     show={showModal}
@@ -914,11 +1013,37 @@ const DashboardColaborador = () => {
                 />
             )}
 
-            {/* Modal para ver proyectos */}
             <ModalVerProyecto
                 show={showProyectoModal}
                 handleClose={() => setShowProyectoModal(false)}
                 proyectoId={selectedProyectoId}
+            />
+
+            <ModalEditarProyecto
+                show={showEditProyectoModal}
+                handleClose={handleCloseEditModal}
+                proyectoId={editingProyectoId}
+                onUpdate={reloadData}
+            />
+
+            <ModalEditarTarea
+                show={showEditTareaModal}
+                handleClose={handleCloseEditTareaModal}
+                tareaId={editingTareaId}
+                onUpdate={reloadData}
+            />
+
+            <ModalAgregarProyecto
+                show={showModalAgregarProyecto}
+                handleClose={handleCloseAgregarProyectoModal}
+                onUpdate={reloadData}
+            />
+
+            <ModalAgregarTarea
+                show={showModalAgregarTarea}
+                handleClose={handleCloseAgregarTareaModal}
+                proyectoId={selectedProyectoTarea}
+                onUpdate={reloadData}
             />
         </AdminLayout>
     );

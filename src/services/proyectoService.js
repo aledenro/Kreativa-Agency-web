@@ -122,6 +122,23 @@ class ProyectoService {
             throw new Error("Error al agregar la respuesta " + error.message);
         }
     }
+
+    async getProyectosByCliente(clienteId) {
+        try {
+            const proyectos = await ProyectoModel.find({
+                cliente_id: clienteId,
+            })
+                .populate("cliente_id", "nombre")
+                .populate("colaboradores.colaborador_id", "nombre")
+                .sort({ fecha_creacion: -1 });
+
+            return proyectos;
+        } catch (error) {
+            throw new Error(
+                `Error al obtener los proyectos del cliente: ${error.message}`
+            );
+        }
+    }
 }
 
 module.exports = new ProyectoService();

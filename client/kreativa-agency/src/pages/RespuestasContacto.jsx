@@ -84,8 +84,8 @@ const RespuestasContacto = () => {
             <div className="container mt-4">
                 <div style={{ height: "90px" }}></div>
                 <h1 className="mb-4">Formularios de Contacto</h1>
-                <div className="table-responsive">
-                    <table className="table kreativa-table">
+                <div className="table-responsive-xxl">
+                    <table className="table kreativa-proyecto-table">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
