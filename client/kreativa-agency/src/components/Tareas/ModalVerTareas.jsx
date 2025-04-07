@@ -1,34 +1,36 @@
-import { Modal } from "react-bootstrap";
 import axios from "axios";
-import lodash from "lodash";
-import PropTypes from "prop-types";
-import { useState } from "react";
-import { notification } from "antd";
-import { Button } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Nav from "react-bootstrap/Nav";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Tab from "react-bootstrap/Tab";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisH, faPencil } from "@fortawesome/free-solid-svg-icons";
+import lodash from "lodash";
+import { notification } from "antd";
+import PropTypes from "prop-types";
 
 const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
     const [tarea, setTarea] = useState(tareaModal);
     const [error, setError] = useState("");
     const [editando, setEditando] = useState(false);
     const [commentEdit, setCommentEdit] = useState({});
+    const [activeTab, setActiveTab] = useState("detalles");
     const [api, contextHolder] = notification.useNotification();
     const user_id = localStorage.getItem("user_id");
     const [contenido, setContenido] = useState("");
 
-    const openSuccessNotification = (message) => {
-        api.success({
-            message: "Éxito",
-            description: message,
-            placement: "bottomRight",
-            duration: 4,
-        });
-    };
+    useEffect(() => {
+        if (show && !lodash.isEmpty(tareaModal)) {
+            setTarea(tareaModal);
+        }
+    }, [tareaModal, show]);
 
-    const openErrorNotification = (message) => {
-        api.error({
-            message: "Error",
+    const showNotification = (type, message) => {
+        api[type]({
+            message: type === "success" ? "Éxito" : "Error",
             description: message,
             placement: "bottomRight",
             duration: 4,
@@ -70,7 +72,10 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
             const response = await axios.put(`${url}${tarea._id}`, data);
 
             if (response.status === 200) {
-                openSuccessNotification("Comentario enviado correctamente.");
+                showNotification(
+                    "success",
+                    "Comentario enviado correctamente."
+                );
                 setTarea(response.data);
                 if (editando) {
                     setCommentEdit({});
@@ -80,241 +85,369 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
             }
         } catch (error) {
             console.error(error.message);
-            openErrorNotification("Error al enviar su comentario.");
+            showNotification("error", "Error al enviar su comentario.");
         }
     };
 
     return (
-        <Modal show={show && !lodash.isEmpty(tarea)} onHide={handleClose}>
+        <Modal
+            show={show && !lodash.isEmpty(tarea)}
+            onHide={handleClose}
+            size="xl"
+            centered
+            dialogClassName="proyecto-modal"
+        >
             {contextHolder}
             <Modal.Header closeButton>
-                <Modal.Title>Ver Detalles Tarea</Modal.Title>
+                <Modal.Title>
+                    {tarea?.nombre || "Detalles de la Tarea"}
+                </Modal.Title>
             </Modal.Header>
-            <div className="card p-4 shadow-lg">
-                <div className="row mb-3">
-                    <div className="col mx-3">
-                        Fecha de Solicitud:{" "}
-                        <small>
-                            {tarea.fecha_creacion
-                                ? new Date(
-                                      tarea.fecha_creacion
-                                  ).toLocaleDateString()
-                                : ""}
-                        </small>
+            <Modal.Body className="p-0">
+                {!tarea ? (
+                    <div className="text-center p-5">
+                        <p>Cargando tarea...</p>
                     </div>
-                    <div className="col mx-3">
-                        <label htmlFor="estado">Estado</label>
-                        <select
-                            className="form-select"
-                            name="estado"
-                            id="estado"
-                            disabled
+                ) : (
+                    <div className="proyecto-modal-content">
+                        <Tab.Container
+                            id="tarea-tabs"
+                            defaultActiveKey="detalles"
                         >
-                            <option value="">
-                                {tarea.estado ? tarea.estado : ""}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="proyecto" className="form-label">
-                        Proyecto
-                    </label>
-                    <select
-                        className="form-select"
-                        name="proyecto"
-                        id="proyecto"
-                        disabled
-                    >
-                        <option value="">
-                            {tarea.proyecto_id ? tarea.proyecto_id.nombre : ""}
-                        </option>
-                    </select>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="nombre" className="form-label">
-                        Nombre
-                    </label>
-                    <input
-                        type="text"
-                        className="form_input"
-                        id="nombre"
-                        name="nombre"
-                        required
-                        value={tarea.nombre ? tarea.nombre : ""}
-                        disabled
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="descripcion" className="form-label">
-                        Descripción
-                    </label>
-                    <textarea
-                        name="descripcion"
-                        className="form_input form-textarea"
-                        id="descripcion"
-                        rows={7}
-                        placeholder="Describa su solicitud"
-                        required
-                        value={tarea.descripcion ? tarea.descripcion : ""}
-                        disabled
-                    ></textarea>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="colab" className="form-label">
-                        Colaborador
-                    </label>
-                    <select
-                        className="form-select"
-                        name="colab"
-                        id="colab"
-                        disabled
-                    >
-                        <option value="">
-                            {tarea.colaborador_id
-                                ? tarea.colaborador_id.nombre
-                                : ""}
-                        </option>
-                    </select>
-                </div>
-                <div className="row">
-                    <div className="col">
-                        <div className="mb-3">
-                            <label className="form-label" htmlFor="prioridad">
-                                Prioridad
-                            </label>
-                            <select
-                                className="form-select"
-                                name="prioridad"
-                                id="prioridad"
-                                disabled
-                            >
-                                <option value="">
-                                    {tarea.prioridad ? tarea.prioridad : ""}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className="mb-3">
-                            <label
-                                htmlFor="fecha_entrega"
-                                className="form-label"
-                            >
-                                Fecha de Entrega
-                            </label>
-                            <input
-                                type="date"
-                                className="form-control"
-                                id="fecha_entrega"
-                                name="fecha_entrega"
-                                required
-                                value={
-                                    tarea.fecha_vencimiento
-                                        ? new Date(tarea.fecha_vencimiento)
-                                              .toISOString()
-                                              .split("T")[0]
-                                        : ""
-                                }
-                                disabled
-                            />
-                        </div>
-                    </div>
-                </div>
-                <hr />
-                <div className="row">
-                    {tarea.comentarios.length > 0 ? (
-                        tarea.comentarios.map((comentario) => (
-                            <div className="card" key={comentario._id}>
-                                <div className="card-body">
-                                    <div className="d-flex flex-start align-items-center">
-                                        <div className="container row">
-                                            <h6 className="fw-bold mb-1  col">
-                                                {comentario.usuario_id.nombre}
+                            <div className="tabs-header border-bottom">
+                                <Nav variant="tabs" className="flex-nowrap">
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="detalles">
+                                            Detalles
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="comentarios">
+                                            Comentarios
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
+                            </div>
+
+                            <Tab.Content>
+                                <Tab.Pane eventKey="detalles">
+                                    <div className="p-4">
+                                        <div className="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 className="mb-0">
+                                                Información de la Tarea
+                                            </h5>
+                                            <Button
+                                                variant="light"
+                                                className="btn-sm rounded-circle"
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={faEllipsisH}
+                                                />
+                                            </Button>
+                                        </div>
+
+                                        <div className="proyecto-info mb-4">
+                                            <div className="row mb-3">
+                                                <div className="col-md-6">
+                                                    <div className="info-item">
+                                                        <div className="text-muted mb-1">
+                                                            Fecha de Solicitud
+                                                        </div>
+                                                        <div className="fw-medium">
+                                                            {tarea.fecha_creacion
+                                                                ? new Date(
+                                                                      tarea.fecha_creacion
+                                                                  ).toLocaleDateString()
+                                                                : "-"}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <div className="info-item">
+                                                        <div className="text-muted mb-1">
+                                                            Fecha de Entrega
+                                                        </div>
+                                                        <div className="fw-medium">
+                                                            {tarea.fecha_vencimiento
+                                                                ? new Date(
+                                                                      tarea.fecha_vencimiento
+                                                                  ).toLocaleDateString()
+                                                                : "-"}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="row mb-3">
+                                                <div className="col-md-6">
+                                                    <div className="info-item">
+                                                        <div className="text-muted mb-1">
+                                                            Estado
+                                                        </div>
+                                                        <div className="estado-badge fw-medium">
+                                                            <span
+                                                                className={`badge ${
+                                                                    tarea.estado ===
+                                                                    "Por Hacer"
+                                                                        ? "badge badge-azul"
+                                                                        : tarea.estado ===
+                                                                            "En Progreso"
+                                                                          ? "badge-amarillo"
+                                                                          : tarea.estado ===
+                                                                              "Finalizado"
+                                                                            ? "badge-verde"
+                                                                            : tarea.estado ===
+                                                                                "En Revisión"
+                                                                              ? "badge-naranja"
+                                                                              : tarea.estado ===
+                                                                                  "Cancelado"
+                                                                                ? "badge-rojo"
+                                                                                : "badge-gris"
+                                                                }`}
+                                                            >
+                                                                {tarea.estado}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <div className="info-item">
+                                                        <div className="text-muted mb-1">
+                                                            Prioridad
+                                                        </div>
+                                                        <div className="urgente-badge fw-medium">
+                                                            <span
+                                                                className={`badge ${
+                                                                    tarea.prioridad ===
+                                                                    "Alta"
+                                                                        ? "badge-rojo"
+                                                                        : tarea.prioridad ===
+                                                                            "Media"
+                                                                          ? "badge-amarillo"
+                                                                          : "badge-gris"
+                                                                }`}
+                                                            >
+                                                                {tarea.prioridad ||
+                                                                    "Baja"}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="row mb-3">
+                                                <div className="col-md-6">
+                                                    <div className="info-item">
+                                                        <div className="text-muted mb-1">
+                                                            Proyecto
+                                                        </div>
+                                                        <div className="fw-medium">
+                                                            {tarea.proyecto_id
+                                                                ? tarea
+                                                                      .proyecto_id
+                                                                      .nombre
+                                                                : "-"}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <div className="info-item">
+                                                        <div className="text-muted mb-1">
+                                                            Colaborador Asignado
+                                                        </div>
+                                                        <div className="fw-medium">
+                                                            {tarea.colaborador_id
+                                                                ? tarea
+                                                                      .colaborador_id
+                                                                      .nombre
+                                                                : "-"}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="descripcion-section">
+                                            <h6 className="mb-2">
+                                                Descripción
                                             </h6>
-                                            <small className="col text-end">
-                                                {comentario.fecha
-                                                    ? new Date(comentario.fecha)
-                                                          .toISOString()
-                                                          .split("T")[0]
-                                                    : ""}
-                                            </small>
-                                            {comentario.usuario_id._id ===
-                                                user_id &&
-                                            tarea.proyecto_id.estado !=
-                                                "Finalizado" &&
-                                            tarea.proyecto_id.estado !=
-                                                "Cancelado" ? (
-                                                <Button
-                                                    className="thm-btn thm-btn-small btn-azul col"
-                                                    onClick={() => {
-                                                        setCommentEdit(
-                                                            comentario
-                                                        );
-                                                        setEditando(true);
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faPencil}
-                                                    />
-                                                </Button>
-                                            ) : (
-                                                ""
-                                            )}
+                                            <div className="descripcion-content p-3 bg-light rounded">
+                                                {tarea.descripcion ? (
+                                                    <p className="mb-0">
+                                                        {tarea.descripcion}
+                                                    </p>
+                                                ) : (
+                                                    <p className="text-muted mb-0">
+                                                        Sin descripción
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                    <hr />
-                                    <p className="mt-1 mb-4 pb-2">
-                                        {comentario.contenido}
-                                    </p>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No hay comentarios todavía.</p>
-                    )}
-                    <div className="card-footer border-1">
-                        <form onSubmit={handleAddCommentario}>
-                            <div className="d-flex flex-start w-100">
-                                <div
-                                    data-mdb-input-init
-                                    className="form-outline w-100"
-                                >
-                                    <textarea
-                                        className="form-input"
-                                        id="contenido"
-                                        rows="4"
-                                        placeholder="Ingrese un comentario..."
-                                        name="contenido"
-                                        value={
-                                            editando
-                                                ? commentEdit.contenido
-                                                : contenido
-                                        }
-                                        onChange={handleChange}
-                                    ></textarea>
-                                    {error && (
-                                        <small className="text-danger">
-                                            {error}
-                                        </small>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="float-end mt-2 pt-1">
-                                <button
-                                    type="submit"
-                                    className="thm-btn thm-btn-small"
-                                >
-                                    {editando ? "Guardar Cambios" : "Enviar"}
-                                </button>
-                            </div>
-                        </form>
+                                </Tab.Pane>
+
+                                <Tab.Pane eventKey="comentarios">
+                                    <Row className="g-0">
+                                        <Col className="comentarios-panel p-4">
+                                            <h5 className="mb-4">
+                                                Comentarios
+                                            </h5>
+
+                                            {tarea.comentarios &&
+                                            tarea.comentarios.length > 0 ? (
+                                                <div className="comentarios-list">
+                                                    {tarea.comentarios.map(
+                                                        (comentario) => (
+                                                            <div
+                                                                className="comentario-item mb-4 border-bottom pb-3"
+                                                                key={
+                                                                    comentario._id
+                                                                }
+                                                            >
+                                                                <div className="d-flex justify-content-between mb-2">
+                                                                    <div className="usuario fw-bold">
+                                                                        {
+                                                                            comentario
+                                                                                .usuario_id
+                                                                                .nombre
+                                                                        }
+                                                                    </div>
+                                                                    <div className="text-end">
+                                                                        <div className="fecha text-muted small mb-1">
+                                                                            {new Date(
+                                                                                comentario.fecha
+                                                                            ).toLocaleDateString()}
+                                                                        </div>
+                                                                        {comentario
+                                                                            .usuario_id
+                                                                            ._id ===
+                                                                            user_id &&
+                                                                        tarea
+                                                                            .proyecto_id
+                                                                            .estado !==
+                                                                            "Finalizado" &&
+                                                                        tarea
+                                                                            .proyecto_id
+                                                                            .estado !==
+                                                                            "Cancelado" ? (
+                                                                            <button
+                                                                                className="thm-btn thm-btn-small btn-azul"
+                                                                                onClick={() => {
+                                                                                    setCommentEdit(
+                                                                                        comentario
+                                                                                    );
+                                                                                    setEditando(
+                                                                                        true
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                <FontAwesomeIcon
+                                                                                    icon={
+                                                                                        faPencil
+                                                                                    }
+                                                                                />
+                                                                            </button>
+                                                                        ) : null}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="contenido mb-2">
+                                                                    {
+                                                                        comentario.contenido
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="text-muted">
+                                                    No hay comentarios todavía.
+                                                </div>
+                                            )}
+
+                                            <div className="responder-form mt-4">
+                                                <form
+                                                    onSubmit={
+                                                        handleAddCommentario
+                                                    }
+                                                >
+                                                    <h6 className="mb-3">
+                                                        {editando
+                                                            ? "Editar comentario:"
+                                                            : "Agregar comentario:"}
+                                                    </h6>
+                                                    <div className="form-group mb-3">
+                                                        <textarea
+                                                            name="contenido"
+                                                            id="contenido"
+                                                            className="form-control form_input form-textarea"
+                                                            rows="3"
+                                                            placeholder="Por favor escriba su comentario"
+                                                            value={
+                                                                editando
+                                                                    ? commentEdit.contenido
+                                                                    : contenido
+                                                            }
+                                                            onChange={
+                                                                handleChange
+                                                            }
+                                                            required
+                                                        ></textarea>
+                                                        {error && (
+                                                            <small className="text-danger">
+                                                                {error}
+                                                            </small>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="d-flex justify-content-end">
+                                                        {editando && (
+                                                            <button
+                                                                type="button"
+                                                                className="thm-btn btn-gris me-2"
+                                                                onClick={() => {
+                                                                    setEditando(
+                                                                        false
+                                                                    );
+                                                                    setCommentEdit(
+                                                                        {}
+                                                                    );
+                                                                    setContenido(
+                                                                        ""
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Cancelar
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            type="submit"
+                                                            className="thm-btn"
+                                                        >
+                                                            {editando
+                                                                ? "Guardar Cambios"
+                                                                : "Enviar"}
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </Tab.Pane>
+                            </Tab.Content>
+                        </Tab.Container>
                     </div>
-                </div>
-            </div>
+                )}
+            </Modal.Body>
+            <Modal.Footer>
+                <button className="thm-btn btn-gris" onClick={handleClose}>
+                    Cerrar
+                </button>
+            </Modal.Footer>
         </Modal>
     );
 };
+
 ModalVerTareas.propTypes = {
     tareaModal: PropTypes.object.isRequired,
     show: PropTypes.bool.isRequired,

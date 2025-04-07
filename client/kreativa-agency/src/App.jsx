@@ -182,10 +182,7 @@ function App() {
                 />
                 <Route path="/admin/servicios" element={<GestionServicios />} />
                 <Route path="/admin/paquetes" element={<GestionPaquetes />} />
-                <Route
-                    path="/proyectos/dashboard"
-                    element={<DashboardColaborador />}
-                />
+                <Route path="/dashboard" element={<DashboardColaborador />} />
             </Routes>
         </Router>
     );

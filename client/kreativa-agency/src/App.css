@@ -987,7 +987,6 @@ h3 {
     box-shadow: 0 0 1px 2px var(--btn-naranja-claro);
 }
 
-
 .btn-gris {
     background-color: var(--kreativa-white);
     color: var(--kreativa-azul-medio);
@@ -1001,7 +1000,7 @@ h3 {
 }
 
 .btn-volver {
-    background-color: #FF0072 !important;
+    background-color: #ff0072 !important;
     color: white !important;
     border: none !important;
     padding: 12px 30px;
@@ -1031,7 +1030,7 @@ h3 {
 /* Focus: sin contorno clarito */
 .btn-volver:focus {
     outline: none;
-    box-shadow: 0 0 0 2px #FF0072;
+    box-shadow: 0 0 0 2px #ff0072;
 }
 
 /* Botones pequeños */
@@ -1435,12 +1434,11 @@ h3 {
 /* ESTILOS PARA LOGIN  */
 /* =================== */
 
-
 /* Botón exclusivo para login */
 .btn-volver-login {
     background-color: #e6e6e6;
     color: #000;
-    border: 1px solid #FF0072;
+    border: 1px solid #ff0072;
     border-radius: var(--kreativa-bdr-radius);
     padding: 12px 24px;
     font-size: 16px;
@@ -1454,7 +1452,7 @@ h3 {
 .btn-volver-login:hover,
 .btn-volver-login:active {
     outline: none !important;
-    border-color: #FF0072 !important;
+    border-color: #ff0072 !important;
     background-color: #e6e6e6 !important;
     color: #000 !important;
 }
@@ -1687,7 +1685,6 @@ h3 {
 
     color: white;
 }
-
 
 /* =================== */
 /* ANIMACIONES LOG-IN  */
@@ -2033,6 +2030,12 @@ h3 {
     color: var(--detail-high-contrast);
 }
 
+.embla__button__svg {
+    width: 35%;
+    height: 35%;
+    color: var(--kreativa-base);
+}
+
 .embla__dots {
     display: flex;
     flex-wrap: wrap;
@@ -2193,11 +2196,9 @@ h3 {
     transform: scale(1.05);
 }
 
-
 /* =========================== */
 /* GESTIÓN USUARIOS RESPONSIVE */
 /* =========================== */
-
 
 /* Estructura base */
 .full-width-container {
@@ -2230,7 +2231,6 @@ h3 {
     max-width: 280px;
     margin: 0 auto;
 }
-
 
 /* Tabla responsive general */
 .kreativa-table {
@@ -2599,7 +2599,6 @@ h3 {
 }
 
 @media (max-width: 767px) {
-
     .kreativa-table tbody td {
         display: block !important;
         text-align: left !important;
@@ -2682,7 +2681,6 @@ h3 {
 }
 
 @media (min-width: 768px) and (max-width: 1279px) {
-
     .full-width-container {
         padding-left: 10px !important;
         padding-right: 90px !important;
@@ -2778,10 +2776,9 @@ h3 {
         gap: 1.5rem !important;
     }
 
-    .filtros-gestion>* {
+    .filtros-gestion > * {
         margin-right: 0.5rem;
     }
-
 }
 
 @media (min-width: 2560px) {
@@ -2797,7 +2794,6 @@ h3 {
         max-width: 700px;
         width: 100%;
     }
-
 
     .select-container {
         max-width: 220px;
@@ -2870,7 +2866,6 @@ h3 {
         gap: 2rem;
         padding-left: 0;
     }
-
 }
 
 .kreativa-paginacion {
@@ -3093,7 +3088,9 @@ h3 {
 .kreativa-card {
     margin-bottom: 1.8rem;
     /* Aumenta el espacio vertical entre cards */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
     border: 2px solid #ff0072;
     border-radius: 12px;
     padding: 1rem;
@@ -3141,7 +3138,6 @@ h3 {
         max-width: 500px;
     }
 }
-
 
 .kreativa-user-details p {
     font-size: 1rem;
@@ -3286,9 +3282,288 @@ h3 {
 }
 
 .perfil-view-btn:hover {
+=======
+/* PTO - Solicitar Permiso */
+
+.kreativa-pto-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px 40px;
+    min-height: 100vh;
+    background-color: #fff;
+}
+
+.kreativa-pto-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 40px 30px;
+    max-width: 600px;
+    width: 100%;
+    border: 1.5px solid #eee;
+    position: relative;
+    z-index: 1;
+}
+
+.kreativa-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1c1c1c;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.form_input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.form_input:focus {
+    border-color: #ff0072;
+    outline: none;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.kreativa-btn-wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+
+.thm-btn-secondary:hover {
+    background-color: #f1f1f1;
+    /* Sin cambio en hover */
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .kreativa-pto-card {
+        padding: 30px 20px;
+    }
+
+    .kreativa-title {
+        font-size: 24px;
+    }
+
+    .kreativa-btn-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .thm-btn,
+    .thm-btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* =============================
+   VER PTO EMPLEADOS - ÚNICAS
+=============================*/
+
+/* Contenedor general */
+.verpto-wrapper {
+    width: 100%;
+    padding: 40px 10px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Contenido centrado */
+.verpto-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+/* Título */
+.verpto-title-wrapper {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.verpto-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #111;
+    margin: 0;
+}
+
+/* Tabla responsive */
+.verpto-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+/* Tabla */
+.verpto-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    background-color: white;
+    font-size: 15px;
+    table-layout: auto;
+    overflow: hidden;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
+}
+
+.verpto-table thead {
+    background-color: #ff0072;
+    color: white;
+    text-align: left;
+}
+
+.verpto-table thead th {
+    padding: 14px 20px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.verpto-table thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.verpto-table thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+.verpto-table tbody td {
+    padding: 14px 20px;
+    color: #333;
+    background-color: white;
+    border-bottom: 1px solid #ff0072;
+    white-space: normal;
+}
+
+.verpto-table tbody tr:hover td {
+    background-color: #f9f9f9;
+}
+
+/* Redondear última fila */
+.verpto-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+}
+
+.verpto-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+}
+
+/* Botones */
+.verpto-btn {
+    background-color: white;
+    border: 2px solid #ff0072;
+    color: #ff0072;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    margin-left: 0;
+    text-align: left;
+}
+
+.verpto-btn:hover {
     background-color: #ff0072;
     color: white;
 }
+
+/* Botón volver */
+.verpto-volver {
+    padding: 8px 30px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .verpto-table thead {
+        display: none;
+    }
+
+    .verpto-table,
+    .verpto-table tbody,
+    .verpto-table tr,
+    .verpto-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .verpto-table tr {
+        margin-bottom: 16px;
+        border: 1px solid #ff0072;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: white;
+    }
+
+    .verpto-table td {
+        padding: 12px;
+        text-align: right;
+        position: relative;
+    }
+
+    .verpto-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        font-weight: bold;
+        text-transform: capitalize;
+        color: #ff0072;
+    }
+
+    .verpto-table td:last-child {
+        text-align: left;
+        padding-left: 16px;
+    }
+}
+
+/* =============================
+          MODAL PTO TABLE
+=============================*/
+
+.verpto-modal-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    background-color: white;
+    font-size: 15px;
+    table-layout: auto;
+    overflow: hidden;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    text-align: left;
+}
+
+/* Encabezado rosado */
+.verpto-modal-table thead {
+    background-color: #ff0072;
+    color: white;
+}
+
 
 @media (max-width: 768px) {
     .perfil-view-card {
@@ -3303,3 +3578,137 @@ h3 {
         flex-direction: column;
     }
 }
+
+.verpto-modal-table thead th {
+    padding: 14px 20px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+    text-transform: capitalize;
+}
+
+/* Bordes redondeados en encabezado */
+.verpto-modal-table thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.verpto-modal-table thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+/* Filas de datos */
+.verpto-modal-table tbody td {
+    padding: 14px 20px;
+    color: #333;
+    background-color: white;
+    border-bottom: 1px solid #ff0072;
+    vertical-align: middle;
+    text-align: left;
+}
+
+/* Última fila con esquinas redondeadas */
+.verpto-modal-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+}
+
+.verpto-modal-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+}
+
+
+/* =============================
+ ---------RESPONSIVE-----------
+=============================*/
+
+/* Tablets */
+@media (max-width: 1024px) {
+    .verpto-title {
+        font-size: 24px;
+    }
+
+    .verpto-table {
+        font-size: 14px;
+    }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+    .verpto-table thead {
+        display: none;
+    }
+
+    .verpto-table,
+    .verpto-table tbody,
+    .verpto-table tr,
+    .verpto-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .verpto-table tr {
+        margin-bottom: 16px;
+        border: 1px solid #ff0072;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: white;
+    }
+
+    .verpto-table td {
+        padding: 12px;
+        text-align: right;
+        position: relative;
+    }
+
+    .verpto-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        font-weight: bold;
+        text-transform: capitalize;
+        color: #ff0072;
+    }
+
+    .verpto-table td:last-child {
+        text-align: left;
+        padding-left: 16px;
+    }
+
+    .verpto-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 8px;
+    }
+
+    .verpto-volver {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.verpto-icon-wrapper {
+    text-align: center;
+    margin-bottom: 20px; 
+}
+
+
+.aprobar-pto-btn {
+    background-color: #ff0072;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.aprobar-pto-btn:hover {
+    background-color: #e60065;
+}
+
+.verpto-icon-wrapper {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
