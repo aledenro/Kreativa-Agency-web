@@ -256,7 +256,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
                                     <div className="p-4">
                                         <div className="d-flex justify-content-between align-items-center mb-3">
                                             <h5 className="mb-0">
-                                                Información del Proyecto
+                                                Información de la Cotización
                                             </h5>
                                             <Button
                                                 variant="light"

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faSort,
@@ -13,6 +12,7 @@ import {
 import lodash from "lodash";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ModalVerCotizacion from "../components/Cotizaciones/ModalVerDetalles";
+import ModalAgregar from "../components/Cotizaciones/ModalAgregar";
 
 const getEstado = (status) => {
     switch (status) {
@@ -33,26 +33,28 @@ const getUrgencyClass = (urgente) => {
 
 const VerCotizaciones = () => {
     const [cotizaciones, setCotizaciones] = useState([]);
-    const navigate = useNavigate();
     const [itemsPag, setItemsPag] = useState(5);
     const [pagActual, setPagActual] = useState(1);
     const [sortField, setsortField] = useState("fecha_solicitud");
     const [sortOrder, setsortOrder] = useState("desc");
     const [showModalDetalles, setShowModalDetalles] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const [showModalCrear, setShowModalCrear] = useState(false);
+
+    async function getCotizaciones() {
+        try {
+            const response = await axios.get(
+                "http://localhost:4000/api/cotizaciones/"
+            );
+            setCotizaciones(response.data.cotizaciones);
+            setsortField("fecha_solicitud");
+            setsortOrder("desc");
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
 
     useEffect(() => {
-        async function getCotizaciones() {
-            try {
-                const response = await axios.get(
-                    "http://localhost:4000/api/cotizaciones/"
-                );
-                setCotizaciones(response.data.cotizaciones);
-            } catch (error) {
-                console.error(error.message);
-            }
-        }
-
         getCotizaciones();
     }, []);
 
@@ -119,7 +121,7 @@ const VerCotizaciones = () => {
                     <div className="col text-end">
                         <button
                             className="thm-btn"
-                            onClick={() => navigate("/cotizacion/agregar")}
+                            onClick={() => setShowModalCrear(true)}
                         >
                             Solicitar Cotización
                         </button>
@@ -334,6 +336,16 @@ const VerCotizaciones = () => {
                     show={showModalDetalles}
                     handleClose={() => setShowModalDetalles(false)}
                     cotizacionId={selectedId}
+                />
+            )}
+
+            {showModalCrear && (
+                <ModalAgregar
+                    show={showModalCrear}
+                    handleClose={() => {
+                        setShowModalCrear(false);
+                        setTimeout(() => getCotizaciones(), 50);
+                    }}
                 />
             )}
         </AdminLayout>
