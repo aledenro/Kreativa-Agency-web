@@ -14,6 +14,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
+import { notification } from "antd";
+import forceFileDownload from "../utils/forceFileDownload";
 
 const getEstado = (status) => {
     switch (status) {
@@ -57,6 +59,25 @@ const ListadoTareas = () => {
     const [showModal, setShowModal] = useState(false);
     const [tareaModal, setTareaModal] = useState({});
     const [filterStatus, setFilterStatus] = useState("");
+    const [api, contextHolder] = notification.useNotification();
+
+    const openSuccessNotification = (message) => {
+        api.success({
+            message: "Éxito",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
+
+    const openErrorNotification = (message) => {
+        api.error({
+            message: "Error",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
 
     const rol = localStorage.getItem("tipo_usuario");
 
@@ -118,6 +139,66 @@ const ListadoTareas = () => {
         ));
     };
 
+    const handleImprimirReporte = async () => {
+        const tareasFormateados = tareasFiltradas.map((tarea) => {
+            return {
+                nombre: tarea.nombre,
+                descripcion: tarea.descripcion,
+                proyecto: tarea.proyecto_id.nombre,
+                estado: tarea.estado,
+                prioridad: tarea.prioridad,
+                fecha_vencimiento: new Date(
+                    tarea.fecha_vencimiento
+                ).toLocaleDateString(),
+            };
+        });
+
+        const cols = [
+            "Nombre",
+            "Descripción",
+            "Proyecto",
+            "Estado",
+            "Prioridad",
+            "Fecha de Entrega",
+        ];
+
+        try {
+            if (lodash.isEmpty(tareasFormateados)) {
+                openErrorNotification(`No hay datos de tareas para imprimir.`);
+                return;
+            }
+
+            const response = await axios.post(
+                "http://localhost:3000/printExcel/singlePage",
+                {
+                    cols: cols,
+                    data: tareasFormateados,
+                    fileName: "reporte_tareas",
+                    sheetName: "tareas",
+                },
+                {
+                    responseType: "blob",
+                }
+            );
+
+            if (response.status === 200) {
+                const blob = new Blob([response.data], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                });
+
+                forceFileDownload(blob, "reporte_tareas");
+
+                openSuccessNotification(
+                    `Reporte de tareas generado correctamente.`
+                );
+                return;
+            }
+        } catch (error) {
+            console.error(error.message);
+            openErrorNotification(`Error al generar el  reporte de tareas.`);
+        }
+    };
+
     let tareasFiltradas =
         filterColab !== ""
             ? tareas.filter(
@@ -171,6 +252,7 @@ const ListadoTareas = () => {
 
     return (
         <AdminLayout>
+            {contextHolder}
             <div className="container pt-3 mx-auto">
                 <div style={{ height: "90px" }}></div>
 
@@ -224,18 +306,27 @@ const ListadoTareas = () => {
                         </select>
                     </div>
 
-                    {rol === "Administrador" ? (
-                        <div className="col text-end">
+                    <div className="col text-end">
+                        {rol === "Administrador" ? (
                             <button
-                                className="thm-btn"
+                                className="thm-btn  m-1"
                                 onClick={() => navigate("/tarea/agregar")}
                             >
                                 Crear Tarea
                             </button>
-                        </div>
-                    ) : (
-                        ""
-                    )}
+                        ) : (
+                            ""
+                        )}
+
+                        <button
+                            className="btn thm-btn  m-1"
+                            onClick={() => {
+                                handleImprimirReporte();
+                            }}
+                        >
+                            Imprimir Reporte
+                        </button>
+                    </div>
                 </div>
                 <div className="table-responsive">
                     <table className="table kreativa-proyecto-table">

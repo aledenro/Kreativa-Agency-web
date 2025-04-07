@@ -451,7 +451,7 @@ const DashboardColaborador = () => {
                 openSuccessNotification(
                     `Reporte de proyectos generado correctamente.`
                 );
-                event.target.reset();
+
                 return;
             }
         } catch (error) {
