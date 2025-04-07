@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -43,7 +43,7 @@ const VerCotizaciones = () => {
     const tipoUsuario = localStorage.getItem("tipo_usuario");
     const user_id = localStorage.getItem("user_id");
 
-    async function getCotizaciones() {
+    const getCotizaciones = useCallback(async () => {
         try {
             let url = `http://localhost:4000/api/cotizaciones/`;
 
@@ -56,11 +56,11 @@ const VerCotizaciones = () => {
         } catch (error) {
             console.error(error.message);
         }
-    }
+    }, [tipoUsuario, user_id]);
 
     useEffect(() => {
         getCotizaciones();
-    }, [user_id]);
+    }, [getCotizaciones]);
 
     function handleVerDetalles(id) {
         setSelectedId(id);
