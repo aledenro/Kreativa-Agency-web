@@ -20,6 +20,26 @@ import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
 import { AuthContext } from "../../context/AuthContext";
 
+const handleLogout = () => {
+    Swal.fire({
+        title: "¿Cerrar sesión?",
+        text: "¿Estás seguro que deseas cerrar tu sesión?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FF0072",
+        cancelButtonColor: "#888",
+        confirmButtonText: "Sí, cerrar sesión",
+        cancelButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("tipo_usuario");
+            localStorage.removeItem("user_id");
+            window.location.href = "http://localhost:5173/";
+        }
+    });
+};
+
 const sidebarItemVariants = {
     hidden: { opacity: 0, x: -20 },
     visible: (i) => ({
@@ -82,9 +102,9 @@ const menuStructure = [
         ],
     },
     {
-        title: "Salir",
+        title: "Inicio",
         icon: LogOut,
-        items: [{ label: "Cerrar sesión", path: "/logout" }],
+        items: [{ label: "Landing Page", path: "/" },],
     },
 ];
 
