@@ -33,6 +33,10 @@ const IngresosModel = new mongoose.Schema(
             type: String, 
             required: true 
         },
+        email: { 
+            type: String, 
+            required: true 
+        },
         categoria: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "categorias_servicio",

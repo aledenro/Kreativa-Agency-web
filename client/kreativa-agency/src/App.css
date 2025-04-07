@@ -2361,6 +2361,11 @@ h3 {
     z-index: 10 !important;
 }
 
+.form-check-input:checked {
+    background-color: #ce005d;
+    border-color: #ce005d;
+  }
+
 /* Responsive para móviles */
 @media (max-width: 768px) {
     .responsive-usuarios-filtros {
@@ -3703,3 +3708,4 @@ h3 {
     text-align: center;
     margin-bottom: 15px;
 }
+

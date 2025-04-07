@@ -10,7 +10,7 @@ const ModalVerIngreso = ({ show, handleClose, ingreso, categories = [] }) => {
     const cat = categories.find((c) => c._id.toString() === catId.toString());
     console.log("Categoría encontrada:", cat);
     return cat ? cat.nombre : catId;
-  };  
+  };
 
   return (
     <Modal show={show && ingreso && Object.keys(ingreso).length > 0} onHide={handleClose}>
@@ -27,6 +27,9 @@ const ModalVerIngreso = ({ show, handleClose, ingreso, categories = [] }) => {
         </p>
         <p>
           <strong>Cédula:</strong> {ingreso.cedula}
+        </p>
+        <p>
+          <strong>Email:</strong> {ingreso.email}
         </p>
         <p>
           <strong>Categoría:</strong> {getCategoryName(ingreso.categoria)}

@@ -102,42 +102,76 @@ class EgresosService {
 
     async obtenerEgresosPorAnio(anio) {
         try {
-            let fechaInicio, fechaFin;
 
-            if (anio) {
-                fechaInicio = new Date(anio, 0, 1); // 1 de enero del año dado
-                fechaFin = new Date(anio, 11, 31, 23, 59, 59, 999); // 31 de diciembre del año dado
-            } else {
-                const today = new Date();
-                fechaInicio = new Date(today.getFullYear(), 0, 1);
-                fechaFin = new Date(
-                    today.getFullYear(),
-                    11,
-                    31,
-                    23,
-                    59,
-                    59,
-                    999
-                );
-            }
+          let fechaInicio, fechaFin;
+          if (anio) {
+            fechaInicio = new Date(anio, 0, 1); // 1 de enero del año dado
+            fechaFin = new Date(anio, 11, 31, 23, 59, 59, 999); // 31 de diciembre del año dado
+          } else {
+            const today = new Date();
+            fechaInicio = new Date(today.getFullYear(), 0, 1);
+            fechaFin = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+          }
+      
+          // Filtramos solo los egresos activos y con estado "Aprobado" dentro del rango de fechas
+          const egresos = await EgresosModel.find({
+            fecha: { $gte: fechaInicio, $lte: fechaFin },
+            activo: true,
+            estado: "Aprobado"
+          });
+      
+          // Sumamos el monto de todos los egresos filtrados
+          const totalEgresos = egresos.reduce((total, egreso) => total + egreso.monto, 0);
+      
+          return totalEgresos;
 
-            // Filtramos solo los egresos activos y dentro del rango de fechas
-            const egresos = await EgresosModel.find({
-                fecha: { $gte: fechaInicio, $lte: fechaFin },
-                activo: true, // Filtrar solo los egresos activos
-            });
-
-            // Sumamos el monto de todos los egresos filtrados
-            const totalEgresos = egresos.reduce(
-                (total, egreso) => total + egreso.monto,
-                0
-            );
-
-            return totalEgresos;
         } catch (error) {
-            console.error("Error al obtener los egresos por año:", error);
-            throw new Error("No se pudieron obtener los egresos por año.");
+          console.error("Error al obtener los egresos por anio:", error);
+          throw new Error("No se pudieron obtener los egresos por anio.");
         }
+
+      }
+
+      async obtenerEgresosPorAnioDetalle(anio) {
+        try {
+          let fechaInicio, fechaFin;
+          if (anio) {
+            fechaInicio = new Date(anio, 0, 1);
+            fechaFin = new Date(anio, 11, 31, 23, 59, 59, 999);
+          } else {
+            const today = new Date();
+            fechaInicio = new Date(today.getFullYear(), 0, 1);
+            fechaFin = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+          }
+          // Filtrar egresos activos y con estado "Aprobado"
+          const egresos = await EgresosModel.find({
+            fecha: { $gte: fechaInicio, $lte: fechaFin },
+            activo: true,
+            estado: "Aprobado"
+          });
+          if (egresos.length === 0) {
+            return {
+              resumen: { totalEgresos: 0, cantidadEgresos: 0 },
+              detalle: []
+            };
+          }
+          const totalEgresos = egresos.reduce((sum, egreso) => sum + egreso.monto, 0);
+          const cantidadEgresos = egresos.length;
+          const detalleEgresos = egresos.map(egreso => ({
+            fecha: egreso.fecha,
+            categoria: egreso.categoria,
+            proveedor: egreso.proveedor,
+            monto: egreso.monto
+          }));
+          return {
+            resumen: { totalEgresos, cantidadEgresos },
+            detalle: detalleEgresos
+          };
+        } catch (error) {
+          console.error("Error al obtener los egresos por anio:", error.message);
+          throw new Error("No se pudieron obtener los egresos por anio.");
+        }
+      }
     }
 
     async getEgresosDateRange(fechaInicio, fechaFin) {
@@ -190,6 +224,7 @@ class EgresosService {
             );
         }
     }
+
 }
 
 module.exports = new EgresosService();

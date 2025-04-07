@@ -7,6 +7,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
   const [mensaje, setMensaje] = useState("");
   const [errorCedula, setErrorCedula] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
+  const [emailCliente, setEmailCliente] = useState("");
   const [formData, setFormData] = useState({
     cedula: "",
     categoria: "",
@@ -28,9 +29,11 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
       const res = await axios.get(`http://localhost:4000/api/ingresos/buscarPorCedula/${formData.cedula}`);
       if (res.data) {
         setNombreCliente(res.data.nombre);
+        setEmailCliente(res.data.email);
         setErrorCedula("");
       } else {
         setNombreCliente("");
+        setEmailCliente("");
         setErrorCedula("Cliente no encontrado");
       }
     } catch (error) {
@@ -95,6 +98,16 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
               type="text"
               className="form_input"
               value={nombreCliente}
+              readOnly
+              placeholder="Se autocompleta si la cédula es válida"
+            />
+          </div>
+          <div className="mb-3">
+            <label>Email:</label>
+            <input
+              type="text"
+              className="form_input"
+              value={emailCliente}
               readOnly
               placeholder="Se autocompleta si la cédula es válida"
             />
