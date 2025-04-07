@@ -20,6 +20,9 @@ import ModalEditarProyecto from "../components/Proyectos/ModalEditarProyecto";
 import ModalEditarTarea from "../components/Tareas/ModalEditarTarea";
 import ModalAgregarProyecto from "../components/Proyectos/ModalAgregarProyecto";
 import ModalAgregarTarea from "../components/Tareas/ModalAgregarTarea";
+import lodash from "lodash";
+import { notification } from "antd";
+import forceFileDownload from "../utils/forceFileDownload";
 
 const DashboardColaborador = () => {
     const [proyectos, setProyectos] = useState([]);
@@ -59,6 +62,26 @@ const DashboardColaborador = () => {
     const userId = localStorage.getItem("user_id");
 
     const [estadosProyecto, setEstadosProyecto] = useState([]);
+
+    const [api, contextHolder] = notification.useNotification();
+
+    const openSuccessNotification = (message) => {
+        api.success({
+            message: "Éxito",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
+
+    const openErrorNotification = (message) => {
+        api.error({
+            message: "Error",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
 
     useEffect(() => {
         const fetchProyectos = async () => {
@@ -374,6 +397,69 @@ const DashboardColaborador = () => {
         setSelectedProyectoTarea(null);
     };
 
+    const handleImprimirReporte = async () => {
+        const proyectosFormateados = proyectosFiltrados.map((proyecto) => {
+            return {
+                nombre: proyecto.nombre,
+                descripcion: proyecto.descripcion,
+                cliente: proyecto.cliente_id.nombre,
+                estado: proyecto.estado,
+                urgente: proyecto.urgente ? "Sí" : "No",
+                fecha_entrega: new Date(
+                    proyecto.fecha_entrega
+                ).toLocaleDateString(),
+            };
+        });
+
+        const cols = [
+            "Nombre",
+            "Descripción",
+            "Cliente",
+            "Estado",
+            "Urgente",
+            "Fecha de Entrega",
+        ];
+
+        try {
+            if (lodash.isEmpty(proyectosFormateados)) {
+                openErrorNotification(
+                    `No hay datos de proyectos para imprimir.`
+                );
+                return;
+            }
+
+            const response = await axios.post(
+                "http://localhost:3000/printExcel/singlePage",
+                {
+                    cols: cols,
+                    data: proyectosFormateados,
+                    fileName: "reporte_proyectos",
+                    sheetName: "proyectos",
+                },
+                {
+                    responseType: "blob",
+                }
+            );
+
+            if (response.status === 200) {
+                const blob = new Blob([response.data], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                });
+
+                forceFileDownload(blob, "reporte_proyectos");
+
+                openSuccessNotification(
+                    `Reporte de proyectos generado correctamente.`
+                );
+                event.target.reset();
+                return;
+            }
+        } catch (error) {
+            console.error(error.message);
+            openErrorNotification(`Error al generar el  reporte de proyectos.`);
+        }
+    };
+
     let proyectosFiltrados = [...proyectos];
 
     if (rol === "Colaborador") {
@@ -441,6 +527,7 @@ const DashboardColaborador = () => {
 
     return (
         <AdminLayout>
+            {contextHolder}
             <div className="container pt-3 mx-auto">
                 <div style={{ height: "90px" }}></div>
                 <h1 className="mb-4">Backlog Proyectos</h1>
@@ -492,16 +579,25 @@ const DashboardColaborador = () => {
                             ))}
                         </select>
                     </div>
-                    {canEdit && (
-                        <div className="col text-end">
+                    <div className="col text-end">
+                        {canEdit && (
                             <button
-                                className="thm-btn"
+                                className="thm-btn  m-1"
                                 onClick={handleAgregarProyecto}
                             >
                                 Crear Proyecto
                             </button>
-                        </div>
-                    )}
+                        )}
+
+                        <button
+                            className="btn thm-btn  m-1"
+                            onClick={() => {
+                                handleImprimirReporte();
+                            }}
+                        >
+                            Imprimir Reporte
+                        </button>
+                    </div>
                 </div>
                 <div className="table-responsive">
                     <table className="table kreativa-proyecto-table">
