@@ -82,13 +82,11 @@ const ingresosController = {
     
     async obtenerIngresosPorMes(req, res) {
         try {
-            const { mes, año } = req.query; // Recibe los parámetros mes y año del query string
-    
-            if (!mes || !año) {
-                return res.status(400).json({ message: "Debe proporcionar mes y año." });
+            const { mes, anio } = req.query; // Usamos "anio" en lugar de "año"
+            if (!mes || !anio) {
+                return res.status(400).json({ message: "Debe proporcionar mes y anio." });
             }
-    
-            const ingresosPorMes = await ingresosService.obtenerIngresosPorMes(mes, año);
+            const ingresosPorMes = await ingresosService.obtenerIngresosPorMes(mes, anio);
             res.status(200).json(ingresosPorMes);
         } catch (error) {
             res.status(500).json({ message: "Error al obtener los ingresos por mes.", error: error.message });
@@ -105,7 +103,20 @@ const ingresosController = {
         } catch (error) {
             res.status(500).json({ error: 'No se pudieron obtener los ingresos.' });
         }
-    }
+    },
+
+    async obtenerIngresosAnualesDetalle(req, res) {
+        try {
+          const { anio } = req.query;
+          if (!anio) {
+            return res.status(400).json({ message: "Debe proporcionar el parámetro 'anio'." });
+          }
+          const data = await ingresosService.obtenerIngresosPorAnioDetalle(anio);
+          res.status(200).json(data);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      }
 };
 
 module.exports = ingresosController;

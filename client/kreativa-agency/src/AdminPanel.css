@@ -605,3 +605,7 @@ body {
     opacity: 1;
     transform: translateX(-50%) translateY(2px);
 }
+
+.main-container {
+    padding-right: 80px;
+  }
