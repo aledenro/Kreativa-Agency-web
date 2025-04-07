@@ -241,6 +241,7 @@ const ingresosService = {
                         { fecha: { $lte: fechaFin } },
                     ],
                 })
+                .populate("categoria", "nombre")
                 .select({
                     fecha: 1,
                     monto: 1,
@@ -251,7 +252,23 @@ const ingresosService = {
                     _id: 0,
                 });
 
-            return ingresos;
+            const ingresosFormated =
+                ingresos.length > 0
+                    ? ingresos.map((ingreso) => {
+                          return {
+                              fecha: new Date(
+                                  ingreso.fecha
+                              ).toLocaleDateString(),
+                              monto: ingreso.monto,
+                              descripcion: ingreso.descripcion,
+                              nombre_cliente: ingreso.nombre_cliente,
+                              categoria: ingreso.categoria.nombre,
+                              estado: ingreso.estado,
+                          };
+                      })
+                    : [];
+
+            return ingresosFormated;
         } catch (error) {
             console.log(
                 `Error al obtener los ingreso entre las fechas ${fechaInicio}  y ${fechaFin}: ${error.message}`

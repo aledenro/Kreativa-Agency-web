@@ -163,7 +163,23 @@ class EgresosService {
                     _id: 0,
                 });
 
-            return egresos;
+            const egresosFormated =
+                egresos.length > 0
+                    ? egresos.map((egreso) => {
+                          return {
+                              fecha: new Date(
+                                  egreso.fecha
+                              ).toLocaleDateString(),
+                              monto: egreso.monto,
+                              categoria: egreso.categoria,
+                              descripcion: egreso.descripcion,
+                              proveedor: egreso.proveedor,
+                              estado: egreso.estado,
+                          };
+                      })
+                    : [];
+
+            return egresosFormated;
         } catch (error) {
             console.log(
                 `Error al obtener los egresos entre las fechas ${fechaInicio}  y ${fechaFin}: ${error.message}`
