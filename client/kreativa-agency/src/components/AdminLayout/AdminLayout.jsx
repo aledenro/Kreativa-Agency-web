@@ -15,6 +15,7 @@ import {
     Banknote,
     FilePlus2,
     BriefcaseBusiness,
+    Wallpaper,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "/src/assets/img/logo.png";
@@ -53,57 +54,114 @@ const sidebarItemVariants = {
     }),
 };
 
-const menuStructure = [
+const fullMenuStructure = [
     {
         title: "Usuarios",
         icon: Users,
+        roles: ["Administrador"],
         items: [{ label: "Gestión de usuarios", path: "/usuarios" }],
     },
     {
         title: "Proyectos",
         icon: SquareKanban,
+        roles: ["Administrador", "Colaborador", "Cliente"],
         items: [
-            { label: "Gestión de proyectos", path: "/proyectos/gestion" },
-            { label: "Dashboard proyecto", path: "/dashboard" },
-            { label: "Solicitudes cotización", path: "/proyectos/solicitudes" },
+            {
+                label: "Dashboard proyecto",
+                path: "/dashboard",
+                roles: ["Administrador", "Colaborador", "Cliente"],
+            },
+            {
+                label: "Listado tareas",
+                path: "/tareas",
+                roles: ["Administrador", "Colaborador"],
+            },
+            {
+                label: "Solicitudes cotización",
+                path: "/cotizacion",
+                roles: ["Administrador", "Cliente"],
+            },
         ],
-    },
-    {
-        title: "Reportes",
-        icon: LayoutDashboard,
-        items: [{ label: "Dashboard", path: "/estadisticas" }],
     },
     {
         title: "Empleados",
         icon: IdCard,
+        roles: ["Administrador", "Colaborador"],
         items: [
-            { label: "Organigrama", path: "/jerarquia" },
-            { label: "PTO", path: "/ver-pto-empleados" },
+            {
+                label: "Organigrama",
+                path: "/jerarquia",
+                roles: ["Administrador"],
+            },
+            {
+                label: "PTO",
+                path: "/ver-pto-empleados",
+                roles: ["Administrador"],
+            },
+            {
+                label: "Solicitar PTO",
+                path: "/agregar-pto",
+                roles: ["Administrador", "Colaborador"],
+            },
         ],
     },
     {
         title: "Finanzas",
         icon: Banknote,
+        roles: ["Administrador"],
         items: [
-            { label: "Gestión financiera", path: "/finanzas/gestion" },
-            { label: "Estadísticas", path: "/finanzas/estadisticas" },
+            { label: "Ingresos", path: "/ingresos", roles: ["Administrador"] },
+            { label: "Egresos", path: "/egresos", roles: ["Administrador"] },
+            {
+                label: "Estadísticas",
+                path: "/estadisticas",
+                roles: ["Administrador"],
+            },
+            {
+                label: "Historial Movimientos",
+                path: "/movimientos",
+                roles: ["Administrador"],
+            },
         ],
     },
     {
         title: "Landing",
-        icon: Home,
+        icon: Wallpaper,
+        roles: ["Administrador"],
         items: [
-            { label: "Gestión de servicios", path: "/admin/servicios" },
-            { label: "Gestión de paquetes", path: "/admin/paquetes" },
-            { label: "Gestión Form Puestos", path: "/admin/reclutaciones" },
-
-            { label: "Gestión Form Contacto", path: "/admin/contacto" },
+            {
+                label: "Gestión de servicios",
+                path: "/admin/servicios",
+                roles: ["Administrador"],
+            },
+            {
+                label: "Gestión de paquetes",
+                path: "/admin/paquetes",
+                roles: ["Administrador"],
+            },
+            {
+                label: "Gestión Form Puestos",
+                path: "/admin/reclutaciones",
+                roles: ["Administrador"],
+            },
+            {
+                label: "Gestión Form Contacto",
+                path: "/admin/contacto",
+                roles: ["Administrador"],
+            },
         ],
     },
     {
         title: "Inicio",
-        icon: LogOut,
-        items: [{ label: "Landing Page", path: "/" },],
+        icon: Home,
+        roles: ["Administrador", "Colaborador", "Cliente"],
+        items: [
+            {
+                label: "Landing Page",
+                path: "/",
+                roles: ["Administrador", "Colaborador", "Cliente"],
+            },
+        ],
     },
 ];
 
@@ -117,6 +175,18 @@ const AdminLayout = ({ children }) => {
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
     const userInitial = user?.nombre?.charAt(0).toUpperCase() || "U";
+
+    const userRole = localStorage.getItem("tipo_usuario") || "Colaborador";
+
+    const menuStructure = fullMenuStructure
+        .filter((section) => section.roles.includes(userRole))
+        .map((section) => ({
+            ...section,
+            items: section.items.filter(
+                (item) => !item.roles || item.roles.includes(userRole)
+            ),
+        }))
+        .filter((section) => section.items.length > 0);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -337,28 +407,7 @@ const AdminLayout = ({ children }) => {
                             <LogOut
                                 size={22}
                                 className="header-icon"
-                                onClick={() => {
-                                    Swal.fire({
-                                        title: "¿Cerrar sesión?",
-                                        text: "¿Estás seguro que deseas cerrar tu sesión?",
-                                        icon: "warning",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#FF0072",
-                                        cancelButtonColor: "#888",
-                                        confirmButtonText: "Sí, cerrar sesión",
-                                        cancelButtonText: "Cancelar",
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            localStorage.removeItem("token");
-                                            localStorage.removeItem(
-                                                "tipo_usuario"
-                                            );
-                                            localStorage.removeItem("user_id");
-                                            window.location.href =
-                                                "http://localhost:5173/";
-                                        }
-                                    });
-                                }}
+                                onClick={handleLogout}
                             />
                         </div>
 
