@@ -3281,10 +3281,6 @@ h3 {
     transition: all 0.2s ease-in-out;
 }
 
-.perfil-view-btn:hover {
-=======
-/* PTO - Solicitar Permiso */
-
 .kreativa-pto-wrapper {
     display: flex;
     justify-content: center;
@@ -3345,7 +3341,6 @@ h3 {
     position: relative;
     z-index: 1;
 }
-
 
 .thm-btn-secondary:hover {
     background-color: #f1f1f1;
@@ -3564,7 +3559,6 @@ h3 {
     color: white;
 }
 
-
 @media (max-width: 768px) {
     .perfil-view-card {
         padding: 30px 20px;
@@ -3615,7 +3609,6 @@ h3 {
 .verpto-modal-table tbody tr:last-child td:last-child {
     border-bottom-right-radius: 12px;
 }
-
 
 /* =============================
  ---------RESPONSIVE-----------
@@ -3689,9 +3682,8 @@ h3 {
 
 .verpto-icon-wrapper {
     text-align: center;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
 }
-
 
 .aprobar-pto-btn {
     background-color: #ff0072;
@@ -3711,4 +3703,3 @@ h3 {
     text-align: center;
     margin-bottom: 15px;
 }
-

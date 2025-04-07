@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,6 +16,8 @@ import {
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
 import ModalVerProyecto from "../components/Proyectos/ModalDetalleProyecto";
+import ModalEditarProyecto from "../components/Proyectos/ModalEditarProyecto";
+import ModalEditarTarea from "../components/Tareas/ModalEditarTarea";
 
 const DashboardColaborador = () => {
     const [proyectos, setProyectos] = useState([]);
@@ -39,6 +41,12 @@ const DashboardColaborador = () => {
 
     const [showProyectoModal, setShowProyectoModal] = useState(false);
     const [selectedProyectoId, setSelectedProyectoId] = useState(null);
+
+    const [showEditProyectoModal, setShowEditProyectoModal] = useState(false);
+    const [editingProyectoId, setEditingProyectoId] = useState(null);
+
+    const [showEditTareaModal, setShowEditTareaModal] = useState(false);
+    const [editingTareaId, setEditingTareaId] = useState(null);
 
     const rol = localStorage.getItem("tipo_usuario");
     const userId = localStorage.getItem("user_id");
@@ -132,6 +140,58 @@ const DashboardColaborador = () => {
                     setLoading(false);
                 });
         }
+    }, [rol, userId]);
+
+    const reloadData = useCallback(() => {
+        setLoading(true);
+
+        const fetchProyectos = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                let url = "http://localhost:4000/api/proyectos";
+
+                if (rol === "Cliente") {
+                    url += `/cliente/${userId}`;
+                }
+
+                const response = await axios.get(url, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                setProyectos(response.data);
+
+                const estados = [
+                    ...new Set(response.data.map((p) => p.estado)),
+                ].filter(Boolean);
+                setEstadosProyecto(estados);
+            } catch (error) {
+                console.error(
+                    `Error al obtener los proyectos: ${error.message}`
+                );
+            }
+        };
+
+        const fetchTareas = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                let url = "http://localhost:4000/api/tareas";
+
+                const response = await axios.get(url, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                setTareas(response.data.tareas || []);
+            } catch (error) {
+                console.error(`Error al obtener las tareas: ${error.message}`);
+            }
+        };
+
+        Promise.all([fetchProyectos(), fetchTareas()])
+            .then(() => setLoading(false))
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+                setLoading(false);
+            });
     }, [rol, userId]);
 
     const toggleExpand = (proyectoId) => {
@@ -255,7 +315,8 @@ const DashboardColaborador = () => {
     };
 
     const handleEditarTarea = (tareaId) => {
-        window.location.href = `/tarea/editar/${tareaId}`;
+        setEditingTareaId(tareaId);
+        setShowEditTareaModal(true);
     };
 
     const handleVerTarea = (tarea) => {
@@ -264,7 +325,8 @@ const DashboardColaborador = () => {
     };
 
     const handleEditarProyecto = (proyectoId) => {
-        window.location.href = `/proyecto/editar/${proyectoId}`;
+        setEditingProyectoId(proyectoId);
+        setShowEditProyectoModal(true);
     };
 
     const handleVerProyecto = (proyectoId) => {
@@ -283,6 +345,16 @@ const DashboardColaborador = () => {
     const handleChangeCantItems = (event) => {
         setItemsPag(parseInt(event.target.value));
         setPagActual(1);
+    };
+
+    const handleCloseEditModal = () => {
+        setShowEditProyectoModal(false);
+        reloadData();
+    };
+
+    const handleCloseEditTareaModal = () => {
+        setShowEditTareaModal(false);
+        reloadData();
     };
 
     let proyectosFiltrados = [...proyectos];
@@ -928,6 +1000,20 @@ const DashboardColaborador = () => {
                 show={showProyectoModal}
                 handleClose={() => setShowProyectoModal(false)}
                 proyectoId={selectedProyectoId}
+            />
+
+            <ModalEditarProyecto
+                show={showEditProyectoModal}
+                handleClose={handleCloseEditModal}
+                proyectoId={editingProyectoId}
+                onUpdate={reloadData}
+            />
+
+            <ModalEditarTarea
+                show={showEditTareaModal}
+                handleClose={handleCloseEditTareaModal}
+                tareaId={editingTareaId}
+                onUpdate={reloadData}
             />
         </AdminLayout>
     );

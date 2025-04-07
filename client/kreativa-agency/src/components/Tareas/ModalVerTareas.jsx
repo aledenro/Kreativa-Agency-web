@@ -136,14 +136,6 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
                                             <h5 className="mb-0">
                                                 Información de la Tarea
                                             </h5>
-                                            <Button
-                                                variant="light"
-                                                className="btn-sm rounded-circle"
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faEllipsisH}
-                                                />
-                                            </Button>
                                         </div>
 
                                         <div className="proyecto-info mb-4">
