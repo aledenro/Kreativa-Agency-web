@@ -40,12 +40,16 @@ const VerCotizaciones = () => {
     const [showModalDetalles, setShowModalDetalles] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
     const [showModalCrear, setShowModalCrear] = useState(false);
+    const tipoUsuario = localStorage.getItem("tipo_usuario");
+    const user_id = localStorage.getItem("user_id");
 
     async function getCotizaciones() {
         try {
-            const response = await axios.get(
-                "http://localhost:4000/api/cotizaciones/"
-            );
+            let url = `http://localhost:4000/api/cotizaciones/`;
+
+            url += tipoUsuario === "Cliente" ? `getByUser/${user_id}` : "";
+
+            const response = await axios.get(url);
             setCotizaciones(response.data.cotizaciones);
             setsortField("fecha_solicitud");
             setsortOrder("desc");
@@ -56,7 +60,7 @@ const VerCotizaciones = () => {
 
     useEffect(() => {
         getCotizaciones();
-    }, []);
+    }, [user_id]);
 
     function handleVerDetalles(id) {
         setSelectedId(id);

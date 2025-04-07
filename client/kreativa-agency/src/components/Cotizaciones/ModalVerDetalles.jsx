@@ -147,8 +147,6 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
         }
 
         try {
-            const tipoUsuario = localStorage.getItem("tipo_usuario");
-
             await sendEmail(
                 cotizacion.cliente_id._id,
                 `Un colaborador de Kreativa Agency ha respondido a su cotización, ingrese para ver los detalles.`,
