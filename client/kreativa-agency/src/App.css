@@ -2483,7 +2483,6 @@ h3 {
 
 .proyecto-modal .modal-content {
     border-radius: 8px;
-    overflow: hidden;
     border: none;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
@@ -2491,7 +2490,6 @@ h3 {
 .proyecto-modal-content {
     height: calc(100vh - 150px);
     max-height: 700px;
-    overflow: hidden;
 }
 
 .proyecto-modal .tabs-header {
@@ -3708,4 +3706,5 @@ h3 {
     text-align: center;
     margin-bottom: 15px;
 }
+
 
