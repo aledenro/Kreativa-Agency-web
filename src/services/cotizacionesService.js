@@ -20,6 +20,14 @@ class CotizacionesService {
                 .populate("historial_respuestas.usuario_id", "nombre");
 
             if (cotizacion && !lodash.isEmpty(cotizacion)) {
+                const filesCotizacion = await awsS3Connect.generateUrls({
+                    folder: "cotizaciones",
+                    parent: "cotizacion",
+                    parent_id: cotizacion._id,
+                });
+
+                cotizacion.files = filesCotizacion;
+
                 if (cotizacion.historial_respuestas.length > 0) {
                     for (
                         let i = 0;

@@ -48,6 +48,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
     const fetchCotizacion = useCallback(async (cotizacionId) => {
         try {
+            setLoading(true);
             const res = await axios.get(
                 `http://localhost:4000/api/cotizaciones/id/${cotizacionId}`
             );
@@ -55,6 +56,8 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
             setCotizacion(res.data.cotizacion);
         } catch (error) {
             console.error("Error al obtener la cotizacion: " + error.message);
+        } finally {
+            setLoading(false);
         }
     }, []);
 
@@ -231,7 +234,10 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
                         <p>Cargando cotización...</p>
                     </div>
                 ) : (
-                    <div className="proyecto-modal-content">
+                    <div
+                        className="proyecto-modal-content"
+                        style={{ maxHeight: "600px" }}
+                    >
                         <Tab.Container
                             id="proyecto-tabs"
                             defaultActiveKey="detalles"
@@ -330,11 +336,55 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
                                                         {cotizacion.detalles}
                                                     </p>
                                                 ) : (
-                                                    <p className="text-muted mb-0">
+                                                    <p className="text-muted mb-2">
                                                         Sin detalles
                                                     </p>
                                                 )}
                                             </div>
+                                            <h6 className="mb-2 mt-4">
+                                                Archivos
+                                            </h6>
+                                            {cotizacion.files &&
+                                                cotizacion.files.length > 0 && (
+                                                    <div className="archivos-adjuntos">
+                                                        {cotizacion.files.map(
+                                                            (file) => (
+                                                                <div
+                                                                    className="archivo-item d-inline-block me-2 mb-2"
+                                                                    key={
+                                                                        file.key
+                                                                    }
+                                                                >
+                                                                    <a
+                                                                        href={
+                                                                            file.url
+                                                                        }
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="thm-btn thm-btn-small"
+                                                                    >
+                                                                        {file
+                                                                            .fileName
+                                                                            .length >
+                                                                        15
+                                                                            ? file.fileName.substring(
+                                                                                  0,
+                                                                                  12
+                                                                              ) +
+                                                                              "..."
+                                                                            : file.fileName}
+                                                                        <FontAwesomeIcon
+                                                                            icon={
+                                                                                faFileArrowDown
+                                                                            }
+                                                                            className="ms-1"
+                                                                        />
+                                                                    </a>
+                                                                </div>
+                                                            )
+                                                        )}
+                                                    </div>
+                                                )}
                                         </div>
                                     </div>
                                 </Tab.Pane>
