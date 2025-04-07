@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
 import Alert from "react-bootstrap/Alert";
 import sendEmail from "../utils/emailSender";
 
@@ -281,186 +281,193 @@ const AgregarProyecto = () => {
 
     return (
         <div>
-            <Navbar></Navbar>
-            <div className="container align-items-center justify-content-center">
-                <div className=" p-4">
-                    <h3 className="text-center section-title">
-                        Editar Proyecto
-                    </h3>
-                    {showAlert && (
-                        <Alert
-                            variant={alertVariant}
-                            onClose={() => setShowAlert(false)}
-                            dismissible
-                        >
-                            {alertMessage}
-                        </Alert>
-                    )}
-                    <div className="row mb-3">
-                        <div className="col mx-3">
-                            Fecha de Solicitud:{" "}
-                            <small>
-                                {new Date(
-                                    proyecto.fecha_creacion
-                                ).toLocaleDateString()}
-                            </small>
-                        </div>
-                        <div className="col mx-3">
-                            <label htmlFor="estado" className="form-label">
-                                Estado
-                            </label>
-                            <select
-                                className="form-select form_input"
-                                name="estado"
-                                id="estado"
-                                onChange={handleChangeEstado}
+            <AdminLayout>
+                <div className="container align-items-center justify-content-center">
+                    <div style={{ height: "90px" }}></div>
+                    <div className=" p-4">
+                        <h1 className="text-center section-title">
+                            Editar Proyecto
+                        </h1>
+                        {showAlert && (
+                            <Alert
+                                variant={alertVariant}
+                                onClose={() => setShowAlert(false)}
+                                dismissible
                             >
-                                {estados.map((opcion) =>
-                                    renderOptionsEstados(
-                                        opcion,
-                                        proyecto.estado
-                                    )
-                                )}
-                            </select>
+                                {alertMessage}
+                            </Alert>
+                        )}
+                        <div className="row mb-3">
+                            <div className="col mx-3">
+                                Fecha de Solicitud:{" "}
+                                <small>
+                                    {new Date(
+                                        proyecto.fecha_creacion
+                                    ).toLocaleDateString()}
+                                </small>
+                            </div>
+                            <div className="col mx-3">
+                                <label htmlFor="estado" className="form-label">
+                                    Estado
+                                </label>
+                                <select
+                                    className="form-select form_input"
+                                    name="estado"
+                                    id="estado"
+                                    onChange={handleChangeEstado}
+                                >
+                                    {estados.map((opcion) =>
+                                        renderOptionsEstados(
+                                            opcion,
+                                            proyecto.estado
+                                        )
+                                    )}
+                                </select>
+                            </div>
                         </div>
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-3">
+                                <label htmlFor="nombre" className="form-label">
+                                    Nombre
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form_input"
+                                    id="nombre"
+                                    name="nombre"
+                                    required
+                                    value={proyecto.nombre}
+                                    onChange={handleChange}
+                                    disabled={
+                                        estado === "Cancelado" ||
+                                        estado === "Finalizado"
+                                    }
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label
+                                    htmlFor="descripcion"
+                                    className="form-label"
+                                >
+                                    Descripción
+                                </label>
+                                <textarea
+                                    name="descripcion"
+                                    className="form_input form-textarea"
+                                    id="descripcion"
+                                    rows={15}
+                                    placeholder="Describa su solicitud"
+                                    required
+                                    value={proyecto.descripcion}
+                                    onChange={handleChange}
+                                    disabled={
+                                        estado === "Cancelado" ||
+                                        estado === "Finalizado"
+                                    }
+                                ></textarea>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="cliente" className="form-label">
+                                    Cliente
+                                </label>
+                                <select
+                                    className="form-select form_input"
+                                    name="cliente"
+                                    id="cliente"
+                                    onChange={handleChange}
+                                    disabled={
+                                        estado === "Cancelado" ||
+                                        estado === "Finalizado"
+                                    }
+                                >
+                                    {clientes.map((cliente) =>
+                                        renderOptionsClientes(
+                                            cliente,
+                                            proyecto.cliente_id
+                                        )
+                                    )}
+                                </select>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="colab" className="form-label ">
+                                    Colaboradores:
+                                </label>
+                                <select
+                                    className="form-select form_input"
+                                    name="colab"
+                                    id="colab"
+                                    multiple
+                                >
+                                    {empleados.map((colab) =>
+                                        renderColab(colab)
+                                    )}
+                                </select>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <div className="mb-3 form-check">
+                                        <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            id="urgente"
+                                            name="urgente"
+                                            checked={proyecto.urgente}
+                                            onChange={handleChangeCheckBox}
+                                            disabled={
+                                                estado === "Cancelado" ||
+                                                estado === "Finalizado"
+                                            }
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="urgente"
+                                        >
+                                            Urgente
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    <div className="mb-3">
+                                        <label
+                                            htmlFor="fecha_entrega"
+                                            className="form-label"
+                                        >
+                                            Fecha de Entrega
+                                        </label>
+                                        <input
+                                            type="date"
+                                            className="form-control"
+                                            id="fecha_entrega"
+                                            name="fecha_entrega"
+                                            required
+                                            onChange={handleChange}
+                                            value={
+                                                new Date(proyecto.fecha_entrega)
+                                                    .toISOString()
+                                                    .split("T")[0]
+                                            }
+                                            disabled={
+                                                estado === "Cancelado" ||
+                                                estado === "Finalizado"
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                type="submit"
+                                className="thm-btn"
+                                disabled={
+                                    estado === "Cancelado" ||
+                                    estado === "Finalizado"
+                                }
+                            >
+                                Enviar
+                            </button>
+                        </form>
                     </div>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-3">
-                            <label htmlFor="nombre" className="form-label">
-                                Nombre
-                            </label>
-                            <input
-                                type="text"
-                                className="form_input"
-                                id="nombre"
-                                name="nombre"
-                                required
-                                value={proyecto.nombre}
-                                onChange={handleChange}
-                                disabled={
-                                    estado === "Cancelado" ||
-                                    estado === "Finalizado"
-                                }
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="descripcion" className="form-label">
-                                Descripción
-                            </label>
-                            <textarea
-                                name="descripcion"
-                                className="form_input form-textarea"
-                                id="descripcion"
-                                rows={15}
-                                placeholder="Describa su solicitud"
-                                required
-                                value={proyecto.descripcion}
-                                onChange={handleChange}
-                                disabled={
-                                    estado === "Cancelado" ||
-                                    estado === "Finalizado"
-                                }
-                            ></textarea>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="cliente" className="form-label">
-                                Cliente
-                            </label>
-                            <select
-                                className="form-select form_input"
-                                name="cliente"
-                                id="cliente"
-                                onChange={handleChange}
-                                disabled={
-                                    estado === "Cancelado" ||
-                                    estado === "Finalizado"
-                                }
-                            >
-                                {clientes.map((cliente) =>
-                                    renderOptionsClientes(
-                                        cliente,
-                                        proyecto.cliente_id
-                                    )
-                                )}
-                            </select>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="colab" className="form-label ">
-                                Colaboradores:
-                            </label>
-                            <select
-                                className="form-select form_input"
-                                name="colab"
-                                id="colab"
-                                multiple
-                            >
-                                {empleados.map((colab) => renderColab(colab))}
-                            </select>
-                        </div>
-                        <div className="row">
-                            <div className="col">
-                                <div className="mb-3 form-check">
-                                    <input
-                                        type="checkbox"
-                                        className="form-check-input"
-                                        id="urgente"
-                                        name="urgente"
-                                        checked={proyecto.urgente}
-                                        onChange={handleChangeCheckBox}
-                                        disabled={
-                                            estado === "Cancelado" ||
-                                            estado === "Finalizado"
-                                        }
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor="urgente"
-                                    >
-                                        Urgente
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="col">
-                                <div className="mb-3">
-                                    <label
-                                        htmlFor="fecha_entrega"
-                                        className="form-label"
-                                    >
-                                        Fecha de Entrega
-                                    </label>
-                                    <input
-                                        type="date"
-                                        className="form-control"
-                                        id="fecha_entrega"
-                                        name="fecha_entrega"
-                                        required
-                                        onChange={handleChange}
-                                        value={
-                                            new Date(proyecto.fecha_entrega)
-                                                .toISOString()
-                                                .split("T")[0]
-                                        }
-                                        disabled={
-                                            estado === "Cancelado" ||
-                                            estado === "Finalizado"
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <button
-                            type="submit"
-                            className="thm-btn"
-                            disabled={
-                                estado === "Cancelado" ||
-                                estado === "Finalizado"
-                            }
-                        >
-                            Enviar
-                        </button>
-                    </form>
                 </div>
-            </div>
+            </AdminLayout>
         </div>
     );
 };

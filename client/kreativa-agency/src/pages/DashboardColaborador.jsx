@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
-import ModalVerProyecto from "../components/Proyectos/ModalDetalleProyecto"; // Importa el nuevo componente modal
+import ModalVerProyecto from "../components/Proyectos/ModalDetalleProyecto";
 
 const DashboardColaborador = () => {
     const [proyectos, setProyectos] = useState([]);
@@ -49,12 +49,17 @@ const DashboardColaborador = () => {
         const fetchProyectos = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get(
-                    "http://localhost:4000/api/proyectos",
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
+                let url = "http://localhost:4000/api/proyectos";
+
+                if (rol === "Cliente") {
+                    url += `/cliente/${userId}`;
+                } else if (rol === "Colaborador") {
+                    url += `/colaborador/${userId}`;
+                }
+
+                const response = await axios.get(url, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
 
                 setProyectos(response.data);
 
@@ -88,6 +93,8 @@ const DashboardColaborador = () => {
 
                 if (rol === "Colaborador") {
                     url += `/getByColab/${userId}`;
+                } else if (rol === "Cliente") {
+                    url += `/getByCliente/${userId}`;
                 }
 
                 const response = await axios.get(url, {
@@ -118,12 +125,21 @@ const DashboardColaborador = () => {
             }
         };
 
-        Promise.all([fetchProyectos(), fetchTareas(), fetchEmpleados()])
-            .then(() => setLoading(false))
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-                setLoading(false);
-            });
+        if (rol === "Administrador") {
+            Promise.all([fetchProyectos(), fetchTareas(), fetchEmpleados()])
+                .then(() => setLoading(false))
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                    setLoading(false);
+                });
+        } else {
+            Promise.all([fetchProyectos(), fetchTareas()])
+                .then(() => setLoading(false))
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                    setLoading(false);
+                });
+        }
     }, [rol, userId]);
 
     const toggleExpand = (proyectoId) => {
@@ -259,7 +275,6 @@ const DashboardColaborador = () => {
         window.location.href = `/proyecto/editar/${proyectoId}`;
     };
 
-    // Modificar para usar el modal de proyecto
     const handleVerProyecto = (proyectoId) => {
         setSelectedProyectoId(proyectoId);
         setShowProyectoModal(true);
@@ -332,6 +347,9 @@ const DashboardColaborador = () => {
         pagActual * itemsPag
     );
 
+    const canEdit = rol === "Administrador";
+    const canView = true;
+
     if (loading) {
         return (
             <div className="container d-flex align-items-center justify-content-center">
@@ -393,7 +411,7 @@ const DashboardColaborador = () => {
                             ))}
                         </select>
                     </div>
-                    {rol === "Administrador" && (
+                    {canEdit && (
                         <div className="col text-end">
                             <button
                                 className="thm-btn"
@@ -556,20 +574,21 @@ const DashboardColaborador = () => {
                                                 </td>
                                                 <td className="text-center">
                                                     <div className="botones-grupo">
-                                                        <button
-                                                            className="thm-btn thm-btn-small btn-amarillo"
-                                                            onClick={() =>
-                                                                handleVerProyecto(
-                                                                    proyecto._id
-                                                                )
-                                                            }
-                                                        >
-                                                            <FontAwesomeIcon
-                                                                icon={faEye}
-                                                            />
-                                                        </button>
-                                                        {rol ===
-                                                            "Administrador" && (
+                                                        {canView && (
+                                                            <button
+                                                                className="thm-btn thm-btn-small btn-amarillo"
+                                                                onClick={() =>
+                                                                    handleVerProyecto(
+                                                                        proyecto._id
+                                                                    )
+                                                                }
+                                                            >
+                                                                <FontAwesomeIcon
+                                                                    icon={faEye}
+                                                                />
+                                                            </button>
+                                                        )}
+                                                        {canEdit && (
                                                             <button
                                                                 className="thm-btn thm-btn-small btn-azul"
                                                                 onClick={() =>
@@ -761,22 +780,23 @@ const DashboardColaborador = () => {
                                                                                     </td>
                                                                                     <td className="text-center">
                                                                                         <div className="botones-grupo">
-                                                                                            <button
-                                                                                                className="thm-btn thm-btn-small btn-amarillo"
-                                                                                                onClick={() =>
-                                                                                                    handleVerTarea(
-                                                                                                        tarea
-                                                                                                    )
-                                                                                                }
-                                                                                            >
-                                                                                                <FontAwesomeIcon
-                                                                                                    icon={
-                                                                                                        faEye
+                                                                                            {canView && (
+                                                                                                <button
+                                                                                                    className="thm-btn thm-btn-small btn-amarillo"
+                                                                                                    onClick={() =>
+                                                                                                        handleVerTarea(
+                                                                                                            tarea
+                                                                                                        )
                                                                                                     }
-                                                                                                />
-                                                                                            </button>
-                                                                                            {rol ===
-                                                                                                "Administrador" && (
+                                                                                                >
+                                                                                                    <FontAwesomeIcon
+                                                                                                        icon={
+                                                                                                            faEye
+                                                                                                        }
+                                                                                                    />
+                                                                                                </button>
+                                                                                            )}
+                                                                                            {canEdit && (
                                                                                                 <button
                                                                                                     className="thm-btn thm-btn-small btn-azul"
                                                                                                     onClick={() =>
@@ -813,8 +833,7 @@ const DashboardColaborador = () => {
                                                                         </tr>
                                                                     )}
 
-                                                                    {rol ===
-                                                                        "Administrador" && (
+                                                                    {canEdit && (
                                                                         <tr>
                                                                             <td
                                                                                 colSpan="7"
