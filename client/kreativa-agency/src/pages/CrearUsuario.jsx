@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
-import { UserPlus } from "lucide-react"; // Ícono de usuario grande
+import { UserPlus } from "lucide-react";
+import Swal from "sweetalert2"; 
 
 const CrearUsuario = () => {
     const navigate = useNavigate();
@@ -87,8 +88,17 @@ const CrearUsuario = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            alert("Usuario creado exitosamente");
-            navigate("/usuarios");
+            // SweetAlert2 de éxito 🎉
+            Swal.fire({
+                title: '¡Usuario creado!',
+                text: 'El usuario se ha creado correctamente.',
+                icon: 'success',
+                confirmButtonColor: '#ff7eb3',
+                confirmButtonText: 'Continuar'
+            }).then(() => {
+                navigate("/usuarios");
+            });
+
         } catch (error) {
             console.error("Error al crear usuario:", error);
             setErrorServidor("Error al crear el usuario. Asegúrate de que los datos sean válidos.");
