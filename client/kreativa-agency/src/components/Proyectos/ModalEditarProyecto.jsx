@@ -299,6 +299,11 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
         }
     };
 
+    const getFechaHoy = () => {
+        const today = new Date();
+        return today.toISOString().split("T")[0];
+    };
+
     return (
         <Modal
             scrollable
@@ -496,6 +501,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
                                                     .toISOString()
                                                     .split("T")[0]
                                             }
+                                            min={getFechaHoy()}
                                             disabled={
                                                 estado === "Cancelado" ||
                                                 estado === "Finalizado"

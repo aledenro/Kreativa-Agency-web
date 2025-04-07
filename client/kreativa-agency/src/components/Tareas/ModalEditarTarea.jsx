@@ -290,6 +290,11 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
         }
     };
 
+    const getFechaHoy = () => {
+        const today = new Date();
+        return today.toISOString().split("T")[0];
+    };
+
     return (
         <Modal
             scrollable
@@ -491,6 +496,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
                                                     .toISOString()
                                                     .split("T")[0]
                                             }
+                                            min={getFechaHoy()}
                                             onChange={handleChange}
                                             disabled={
                                                 estado === "Cancelado" ||

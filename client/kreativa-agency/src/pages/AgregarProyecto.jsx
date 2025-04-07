@@ -139,6 +139,11 @@ const AgregarProyecto = () => {
 
     console.log(clientes);
 
+    const getFechaHoy = () => {
+        const today = new Date();
+        return today.toISOString().split("T")[0];
+    };
+
     return (
         <div>
             <AdminLayout>
@@ -255,6 +260,7 @@ const AgregarProyecto = () => {
                                             id="fecha_entrega"
                                             name="fecha_entrega"
                                             required
+                                            min={getFechaHoy()}
                                         />
                                     </div>
                                 </div>
