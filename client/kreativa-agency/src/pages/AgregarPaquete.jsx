@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Form, Alert, Modal, Button } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
+import { notification } from "antd";
 
 const AgregarPaquete = () => {
     const { id } = useParams();
@@ -17,10 +18,27 @@ const AgregarPaquete = () => {
         beneficios: [""],
         precio: "",
     });
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertVariant, setAlertVariant] = useState("danger");
     const [showModal, setShowModal] = useState(false);
+
+    const [api, contextHolder] = notification.useNotification();
+
+    const openSuccessNotification = (message) => {
+        api.success({
+            message: "Éxito",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
+
+    const openErrorNotification = (message) => {
+        api.error({
+            message: "Error",
+            description: message,
+            placement: "bottomRight",
+            duration: 4,
+        });
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -73,173 +91,166 @@ const AgregarPaquete = () => {
                 paqueteData
             );
             console.log(res.data);
-            setAlertMessage("Paquete agregado exitosamente");
-            setAlertVariant("success");
-            setShowAlert(true);
+            openSuccessNotification("Paquete agregado exitosamente");
             setShowModal(false);
 
             setTimeout(() => {
-                navigate(`/servicio/${id}`);
+                navigate(`/admin/paquetes`);
             }, 2000);
         } catch (error) {
             console.error("Error al agregar el paquete: ", error.message);
-            setAlertMessage("Hubo un error al agregar el paquete");
-            setAlertVariant("danger");
-            setShowAlert(true);
+            openErrorNotification("Hubo un error al agregar el paquete");
             setShowModal(false);
         }
     };
 
     return (
         <div>
-            <Navbar />
-            <div className="container">
-                <div className="section-title text-center">
-                    <h2>Agregar Paquete</h2>
-                </div>
-                <div className="mx-auto align-items-center justify-content-center d-flex">
-                    <div className="col-xl-8">
-                        {showAlert && (
-                            <Alert
-                                variant={alertVariant}
-                                onClose={() => setShowAlert(false)}
-                                dismissible
+            <AdminLayout>
+                <div className="container main-container">
+                    <div className="section-title text-center">
+                        <h2>Agregar Paquete</h2>
+                    </div>
+                    <div className="mx-auto align-items-center justify-content-center d-flex">
+                        <div className="col-xl-8">
+                            {contextHolder}
+                            <Form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    setShowModal(true);
+                                }}
+                                className="paquete_form"
                             >
-                                {alertMessage}
-                            </Alert>
-                        )}
-                        <Form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                setShowModal(true);
-                            }}
-                            className="paquete_form"
-                        >
-                            <div className="row">
-                                <div className="col">
-                                    <label className="form-label">
-                                        Nombre del paquete
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="nombre"
-                                        className="form_input"
-                                        value={paquete.nombre}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                <div className="row">
+                                    <div className="col">
+                                        <label className="form-label">
+                                            Nombre del paquete
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="nombre"
+                                            className="form_input"
+                                            value={paquete.nombre}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <label className="form-label">
+                                            Nivel
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="nivel"
+                                            className="form_input"
+                                            value={paquete.nivel}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
                                 </div>
-                                <div className="col">
-                                    <label className="form-label">Nivel</label>
-                                    <input
-                                        type="text"
-                                        name="nivel"
-                                        className="form_input"
-                                        value={paquete.nivel}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                <div className="row">
+                                    <div className="col">
+                                        <label className="form-label">
+                                            Duración
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="duracion"
+                                            className="form_input"
+                                            value={paquete.duracion}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <label className="form-label">
+                                            Precio
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="precio"
+                                            className="form_input"
+                                            value={paquete.precio}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="row">
-                                <div className="col">
-                                    <label className="form-label">
-                                        Duración
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="duracion"
-                                        className="form_input"
-                                        value={paquete.duracion}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                <div className="row">
+                                    <div className="col">
+                                        <label className="form-label">
+                                            Descripción
+                                        </label>
+                                        <textarea
+                                            name="descripcion"
+                                            className="form_input form_textarea"
+                                            rows="3"
+                                            value={paquete.descripcion}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </div>
                                 </div>
-                                <div className="col">
-                                    <label className="form-label">Precio</label>
-                                    <input
-                                        type="number"
-                                        name="precio"
-                                        className="form_input"
-                                        value={paquete.precio}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col">
-                                    <label className="form-label">
-                                        Descripción
-                                    </label>
-                                    <textarea
-                                        name="descripcion"
-                                        className="form_input form_textarea"
-                                        rows="3"
-                                        value={paquete.descripcion}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col">
-                                    <label className="form-label">
-                                        Beneficios
-                                    </label>
-                                    {paquete.beneficios.map(
-                                        (beneficio, index) => (
-                                            <div
-                                                key={index}
-                                                className="d-flex align-items-center mb-2"
-                                            >
-                                                <input
-                                                    type="text"
-                                                    className="form_input"
-                                                    value={beneficio}
-                                                    onChange={(e) =>
-                                                        handleBeneficioChange(
-                                                            index,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    onFocus={() =>
-                                                        handleFocus(index)
-                                                    }
-                                                    required
-                                                />
-                                                {index > 0 && (
-                                                    <button
-                                                        type="button"
-                                                        className="icon-btn"
-                                                        onClick={() =>
-                                                            eliminarBeneficio(
-                                                                index
+                                <div className="row">
+                                    <div className="col">
+                                        <label className="form-label">
+                                            Beneficios
+                                        </label>
+                                        {paquete.beneficios.map(
+                                            (beneficio, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="d-flex align-items-center mb-2"
+                                                >
+                                                    <input
+                                                        type="text"
+                                                        className="form_input"
+                                                        value={beneficio}
+                                                        onChange={(e) =>
+                                                            handleBeneficioChange(
+                                                                index,
+                                                                e.target.value
                                                             )
                                                         }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faX}
-                                                        />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        )
-                                    )}
+                                                        onFocus={() =>
+                                                            handleFocus(index)
+                                                        }
+                                                        required
+                                                    />
+                                                    {index > 0 && (
+                                                        <button
+                                                            type="button"
+                                                            className="icon-btn"
+                                                            onClick={() =>
+                                                                eliminarBeneficio(
+                                                                    index
+                                                                )
+                                                            }
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={faX}
+                                                            />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="d-flex justify-content-center mt-3">
-                                <button
-                                    type="submit"
-                                    className="thm-btn form-btn"
-                                >
-                                    Agregar
-                                </button>
-                            </div>
-                        </Form>
+                                <div className="d-flex justify-content-center mt-3">
+                                    <button
+                                        type="submit"
+                                        className="thm-btn form-btn"
+                                    >
+                                        Agregar
+                                    </button>
+                                </div>
+                            </Form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </AdminLayout>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
@@ -248,7 +259,7 @@ const AgregarPaquete = () => {
                 <Modal.Body>¿Seguro que desea agregar este paquete?</Modal.Body>
                 <Modal.Footer>
                     <button
-                        className="thm-btn-2 thm-btn-small"
+                        className="thm-btn thm-btn-small btn-rojo"
                         onClick={() => setShowModal(false)}
                     >
                         No

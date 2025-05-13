@@ -32,7 +32,6 @@ const EgresosModel = new mongoose.Schema(
         },
         nota: {
             type: String,
-            required: true,
         },
         fecha_creacion: {
             type: Date,

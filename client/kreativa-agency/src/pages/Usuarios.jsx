@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+    faSearch,
+    faChevronDown,
     faEye,
     faPencil,
     faToggleOff,
@@ -58,7 +60,6 @@ const Usuarios = () => {
         fetchUsuarios();
     }, []);
 
-    //  Obtener detalles de un usuario
     const handleVerUsuario = async (id) => {
         try {
             const token = localStorage.getItem("token");
@@ -85,12 +86,10 @@ const Usuarios = () => {
         }
     };
 
-    //  Redirigir a la edición de un usuario
     const handleEditarUsuario = (id) => {
         navigate(`/usuario/editar/${id}`);
     };
 
-    // Activar/Desactivar usuario
     const handleActivarDesactivar = async (id, estadoActual) => {
         const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
         if (
@@ -121,14 +120,9 @@ const Usuarios = () => {
         }
     };
 
-    // Eliminar usuario
     const handleEliminar = async (id) => {
-        if (
-            !window.confirm(
-                "¿Estás seguro de que deseas eliminar este usuario?"
-            )
-        )
-            return;
+        if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) return;
+
         try {
             const token = localStorage.getItem("token");
             await axios.delete(`http://localhost:4000/api/usuarios/${id}`, {
@@ -141,33 +135,26 @@ const Usuarios = () => {
         }
     };
 
-    // Filtrar usuarios por CÉDULA
     const usuariosFiltrados = usuarios
         .filter((usuario) => usuario.cedula.includes(search))
-        .filter((usuario) =>
-            estadoFiltro ? usuario.estado === estadoFiltro : true
-        );
+        .filter((usuario) => (estadoFiltro ? usuario.estado === estadoFiltro : true));
 
-    //  Paginación
     const indexOfLastUser = paginaActual * usuariosPorPagina;
     const indexOfFirstUser = indexOfLastUser - usuariosPorPagina;
-    const usuariosPaginados = usuariosFiltrados.slice(
-        indexOfFirstUser,
-        indexOfLastUser
-    );
+    const usuariosPaginados = usuariosFiltrados.slice(indexOfFirstUser, indexOfLastUser);
 
-    const totalPaginas = Math.ceil(
-        usuariosFiltrados.length / usuariosPorPagina
-    );
+    const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
 
     return (
-        <div>
-            <Navbar />
-            <div className="container mt-5 mb-4">
+        <AdminLayout>
+            <div className="full-width-container">
+                <div className="espacio-top-responsive"></div>
                 <h1>Gestión de Usuarios</h1>
                 {error && <div className="alert alert-danger">{error}</div>}
-                <div style={{ marginBottom: "50px" }}></div>
-                <div className="d-flex justify-content-between mb-3">
+                <div style={{ marginBottom: "30px" }}></div>
+
+                {/* Filtros responsivos */}
+                <div className="d-flex justify-content-between flex-wrap gap-3 mb-4">
                     <button
                         className="thm-btn btn-verde"
                         onClick={() => navigate("/usuario/crear")}
@@ -176,31 +163,13 @@ const Usuarios = () => {
                     </button>
 
                     <div className="search-container">
+                        <FontAwesomeIcon icon={faSearch} className="icon-search" />
                         <input
                             type="text"
                             className="form-control search-input"
                             placeholder="Buscar por cédula..."
                             onChange={(e) => setSearch(e.target.value)}
                         />
-                        <svg
-                            className="icon-search"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M15 15L21 21"
-                                stroke="#323232"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            ></path>
-                            <path
-                                d="M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
-                                stroke="#323232"
-                                strokeWidth="2"
-                            ></path>
-                        </svg>
                     </div>
 
                     <div className="select-container">
@@ -212,18 +181,7 @@ const Usuarios = () => {
                             <option value="Activo">Activos</option>
                             <option value="Inactivo">Inactivos</option>
                         </select>
-                        <svg
-                            className="icon-arrow"
-                            viewBox="0 0 25 25"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M17 10.5L12.5 15L8 10.5"
-                                stroke="#121923"
-                                strokeWidth="1.2"
-                            ></path>
-                        </svg>
+                        <FontAwesomeIcon icon={faChevronDown} className="icon-arrow" />
                     </div>
                 </div>
 
@@ -242,54 +200,39 @@ const Usuarios = () => {
                     <tbody>
                         {usuariosPaginados.map((usuario) => (
                             <tr key={usuario._id}>
-                                <td>{usuario.nombre}</td>
-                                <td>{usuario.usuario}</td>
-                                <td>{usuario.cedula}</td>
-                                <td>{usuario.email}</td>
-                                <td>{usuario.tipo_usuario}</td>
-                                <td>{usuario.estado}</td>
-                                <td className="acciones">
+                                <td data-label="Nombre">{usuario.nombre}</td>
+                                <td data-label="Usuario">{usuario.usuario}</td>
+                                <td data-label="Cédula">{usuario.cedula}</td>
+                                <td data-label="Email">{usuario.email}</td>
+                                <td data-label="Tipo">{usuario.tipo_usuario}</td>
+                                <td data-label="Estado">{usuario.estado}</td>
+                                <td className="acciones" data-label="Acciones">
                                     <div className="botones-grupo">
                                         <button
                                             className="thm-btn thm-btn-small btn-amarillo"
-                                            onClick={() =>
-                                                handleVerUsuario(usuario._id)
-                                            }
+                                            onClick={() => handleVerUsuario(usuario._id)}
                                         >
                                             <FontAwesomeIcon icon={faEye} />
                                         </button>
                                         <button
                                             className="thm-btn thm-btn-small btn-azul"
-                                            onClick={() =>
-                                                handleEditarUsuario(usuario._id)
-                                            }
+                                            onClick={() => handleEditarUsuario(usuario._id)}
                                         >
                                             <FontAwesomeIcon icon={faPencil} />
                                         </button>
                                         <button
                                             className={`thm-btn thm-btn-small ${usuario.estado === "Activo" ? "btn-verde" : "btn-naranja"}`}
-                                            onClick={() =>
-                                                handleActivarDesactivar(
-                                                    usuario._id,
-                                                    usuario.estado
-                                                )
-                                            }
+                                            onClick={() => handleActivarDesactivar(usuario._id, usuario.estado)}
                                         >
                                             {usuario.estado === "Activo" ? (
-                                                <FontAwesomeIcon
-                                                    icon={faToggleOff}
-                                                />
+                                                <FontAwesomeIcon icon={faToggleOff} />
                                             ) : (
-                                                <FontAwesomeIcon
-                                                    icon={faToggleOn}
-                                                />
+                                                <FontAwesomeIcon icon={faToggleOn} />
                                             )}
                                         </button>
                                         <button
                                             className="thm-btn thm-btn-small btn-rojo"
-                                            onClick={() =>
-                                                handleEliminar(usuario._id)
-                                            }
+                                            onClick={() => handleEliminar(usuario._id)}
                                         >
                                             <FontAwesomeIcon icon={faTrash} />
                                         </button>
@@ -300,12 +243,11 @@ const Usuarios = () => {
                     </tbody>
                 </table>
 
-                {/* PAGINACIÓN */}
-                <div className="d-flex justify-content-center mt-4">
+                <div className="kreativa-paginacion">
                     {Array.from({ length: totalPaginas }, (_, i) => (
                         <button
                             key={i}
-                            className={`thm-btn btn-volver me-2 ${paginaActual === i + 1 ? "active" : ""}`}
+                            className={`thm-btn btn-volver ${paginaActual === i + 1 ? "active" : ""}`}
                             onClick={() => setPaginaActual(i + 1)}
                         >
                             {i + 1}
@@ -313,8 +255,9 @@ const Usuarios = () => {
                     ))}
                 </div>
             </div>
-        </div>
+        </AdminLayout>
     );
 };
 
 export default Usuarios;
+

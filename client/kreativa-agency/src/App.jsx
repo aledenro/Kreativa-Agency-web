@@ -5,12 +5,10 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import AgregarCotizacion from "./pages/AgregarCotizacion";
-import AgregarEgreso from "./pages/AgregarEgreso";
-import VerEgresos from "./pages/VerEgresos";
-import EditarEgreso from "./pages/EditarEgreso";
-import VerIngresos from "./pages/VerIngresos";
-import AgregarIngreso from "./pages/AgregarIngreso";
-import EditarIngreso from "./pages/EditarIngreso";
+import ListadoEgresos from "./pages/ListadoEgresos";
+import ListadoIngresos from "./pages/ListadoIngresos";
+import Movimientos from "./pages/Movimientos";
+import Estadisticas from "./pages/Estadisticas";
 import VerCotizaciones from "./pages/verCotizaciones";
 import VerDetalleCotizacion from "./pages/VerDetalleCotizacion";
 import CrearUsuario from "./pages/CrearUsuario";
@@ -21,6 +19,7 @@ import ListadoServicios from "./pages/ListadoServicios";
 import AgregarServicio from "./pages/AgregarServicio";
 import ModificarServicio from "./pages/ModificarServicio";
 import AgregarPaquete from "./pages/AgregarPaquete";
+import ModificarPaquete from "./pages/ModificarPaquete";
 import DetalleServicio from "./pages/DetalleServicio";
 import AgregarProyecto from "./pages/AgregarProyecto";
 import EditarProyecto from "./pages/EditarProyecto";
@@ -31,13 +30,20 @@ import VistaClientes from "./pages/VistaClientes";
 import VistaColaborador from "./pages/VistaColaborador";
 import Recuperar from "./pages/Recuperar";
 import Restablecer from "./pages/Restablecer";
-import RestablecerContraseña from "./pages/RestablecerContraseña";
 import ListadoTareas from "./pages/ListadoTareas";
 import JerarquiaUsuarios from "./pages/JerarquiaUsuarios";
 import AgregarPTO from "./pages/AgregarPTO";
 import VerPTOEmpleados from "./pages/VerPTOEmpleados";
 import VerPerfil from "./pages/VerPerfil";
+import AdminPanel from "./pages/AdminPanel";
 import VerDetalleProyecto from "./pages/VerDetalleProyecto";
+import Landing from "./pages/Landing";
+import ListadoPagos from "./pages/ListadoPagos";
+import RespuestasContacto from "./pages/RespuestasContacto";
+import RespuestasReclutaciones from "./pages/RespuestasReclutaciones";
+import GestionServicios from "./pages/GestionServicios";
+import GestionPaquetes from "./pages/GestionPaquetes";
+import DashboardColaborador from "./pages/DashboardColaborador";
 
 function App() {
     return (
@@ -66,6 +72,10 @@ function App() {
                     path="/servicio/agregarPaquete/:id"
                     element={<AgregarPaquete />}
                 ></Route>
+                <Route
+                    path="/paquete/modificar/:servicioId/:paqueteId"
+                    element={<ModificarPaquete />}
+                ></Route>
 
                 <Route
                     path="/cotizacion/agregar"
@@ -79,18 +89,20 @@ function App() {
                     path="/cotizacion/:id"
                     element={<VerDetalleCotizacion />}
                 ></Route>
-                <Route
-                    path="/egreso/agregar"
-                    element={<AgregarEgreso />}
-                ></Route>
-                <Route path="/egresos" element={<VerEgresos />}></Route>
-                <Route
+
+                <Route path="/egresos" element={<ListadoEgresos />} />
+
+                <Route path="/ingresos" element={<ListadoIngresos />} />
+
+                <Route path="/movimientos" element={<Movimientos />} />
+
+                {/* <Route path="/egresos" element={<VerEgresos />}></Route> */}
+                {/* <Route
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
-                ></Route>
-                <Route path="/ingreso/agregar" element={<AgregarIngreso />} />
-                <Route path="/ingresos" element={<VerIngresos />} />
-                <Route path="/ingreso/editar/:id" element={<EditarIngreso />} />
+                ></Route> */}
+
+                {/* <Route path="/ingresos" element={<ListadoIngresos />} /> */}
 
                 <Route path="/servicios" element={<ListadoServicios />}></Route>
 
@@ -133,10 +145,6 @@ function App() {
                     path="/restablecer/:token"
                     element={<Restablecer />}
                 ></Route>
-                <Route
-                    path="/restablecer/:token"
-                    element={<RestablecerContraseña />}
-                ></Route>
                 <Route path="/tareas" element={<ListadoTareas />}></Route>
                 <Route
                     path="/jerarquia"
@@ -152,6 +160,28 @@ function App() {
                     path="/proyecto/:id"
                     element={<VerDetalleProyecto />}
                 ></Route>
+
+                <Route path="/admin" element={<AdminPanel />}></Route>
+                <Route path="/estadisticas" element={<Estadisticas />} />
+
+                <Route path="/admin" element={<AdminPanel />}></Route>
+                <Route path="/" element={<Landing />} />
+                <Route path="/pagos" element={<ListadoPagos />} />
+                <Route
+                    path="/admin/contacto"
+                    element={<RespuestasContacto />}
+                />
+                <Route
+                    path="/admin/reclutaciones"
+                    element={<RespuestasReclutaciones />}
+                />
+                <Route
+                    path="/admin/reclutaciones"
+                    element={<RespuestasReclutaciones />}
+                />
+                <Route path="/admin/servicios" element={<GestionServicios />} />
+                <Route path="/admin/paquetes" element={<GestionPaquetes />} />
+                <Route path="/dashboard" element={<DashboardColaborador />} />
             </Routes>
         </Router>
     );

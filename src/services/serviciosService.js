@@ -1,12 +1,28 @@
 const Servicios = require("../models/serviciosModel");
 const mongoose = require("mongoose");
+const awsS3Connect = require("../utils/awsS3Connect");
 
 class ServiciosService {
-    async agregarServicio(data) {
+    async agregarServicio(data, files) {
         try {
-            const servicio = new Servicios(data);
+            let imagenes = [];
 
-            return await servicio.save();
+            if (files && files.length > 0) {
+                imagenes = await Promise.all(
+                    files.map(async (file) => {
+                        return await awsS3Connect.uploadFile(file, {
+                            folder: "landingpage",
+                            parent: "servicios",
+                            parent_id: "",
+                        });
+                    })
+                );
+            }
+
+            const servicio = new Servicios({ ...data, imagenes });
+            const nuevoServicio = await servicio.save();
+
+            return nuevoServicio.toObject();
         } catch (error) {
             throw new Error("No se pudo agregar el servicio: " + error.message);
         }
@@ -14,7 +30,29 @@ class ServiciosService {
 
     async getServicios() {
         try {
-            return await Servicios.find();
+            let servicios = await Servicios.find().lean();
+
+            if (servicios.length > 0) {
+                for (let servicio of servicios) {
+                    const files = await awsS3Connect.generateUrls({
+                        folder: "landingpage",
+                        parent: "servicios",
+                        parent_id: servicio._id,
+                    });
+
+                    const sortedFiles = files.sort((a, b) => {
+                        const timestampA = a.key.split("/")[3].split("-")[0];
+                        const timestampB = b.key.split("/")[3].split("-")[0];
+
+                        return parseInt(timestampB) - parseInt(timestampA);
+                    });
+
+                    servicio.imagen =
+                        sortedFiles.length > 0 ? sortedFiles[0].url : null;
+                }
+            }
+
+            return servicios;
         } catch (error) {
             throw new Error(
                 "No se pudieron obtener los servicios: " + error.message
@@ -24,38 +62,111 @@ class ServiciosService {
 
     async getServicioById(id) {
         try {
-            const servicio = await Servicios.findById(id);
+            const servicio = await Servicios.findById(id).lean();
+
             if (!servicio) {
-                throw new Error(`Servicio ${id} no encontrado`);
+                throw new Error(`Servicio con ID ${id} no encontrado`);
             }
+
+            const files = await awsS3Connect.generateUrls({
+                folder: "landingpage",
+                parent: "servicios",
+                parent_id: servicio._id,
+            });
+
+            const sortedFiles = files.sort((a, b) => {
+                const timestampA = a.key.split("/")[3].split("-")[0];
+                const timestampB = b.key.split("/")[3].split("-")[0];
+
+                return parseInt(timestampB) - parseInt(timestampA);
+            });
+
+            servicio.imagen =
+                sortedFiles.length > 0 ? sortedFiles[0].url : null;
+
+            servicio.imagenesUrls = sortedFiles.map((file) => file.url);
+
             return servicio;
         } catch (error) {
             throw new Error(
-                `No se pudo obtener el servicio ${id}: ` + error.message
+                `No se pudo obtener el servicio con ID ${id}: ${error.message}`
             );
         }
     }
 
-    async modificarServicioById(id, datosActualizados) {
+    async getServiciosNombres() {
         try {
+            let servicios = await Servicios.find({}, "_id nombre").lean();
+
+            return servicios;
+        } catch (error) {
+            throw new Error(
+                "No se pudieron obtener los nombres de los servicios: " +
+                    error.message
+            );
+        }
+    }
+
+    async modificarServicioById(id, datosActualizados, files) {
+        try {
+            const servicioExistente = await Servicios.findById(id);
+            if (!servicioExistente) {
+                throw new Error(`No se encontró el servicio ${id}`);
+            }
+
+            if (files && files.length > 0) {
+                const nuevasImagenes = await Promise.all(
+                    files.map(async (file) => {
+                        return await awsS3Connect.uploadFile(file, {
+                            folder: "landingpage",
+                            parent: "servicios",
+                            parent_id: id,
+                        });
+                    })
+                );
+
+                datosActualizados.imagenes = nuevasImagenes;
+            }
+
+            if (
+                datosActualizados.imagenes &&
+                Object.keys(datosActualizados).length === 1
+            ) {
+                await Servicios.updateOne(
+                    { _id: id },
+                    { $set: { imagenes: datosActualizados.imagenes } }
+                );
+            }
+
             const servicioActualizado = await Servicios.findByIdAndUpdate(
                 id,
                 datosActualizados,
                 {
                     new: true,
+                    runValidators: true,
                 }
-            );
+            ).lean();
 
-            console.log(datosActualizados);
+            const imagenesConUrls = await awsS3Connect.generateUrls({
+                folder: "landingpage",
+                parent: "servicios",
+                parent_id: servicioActualizado._id,
+            });
+
+            servicioActualizado.imagen =
+                imagenesConUrls.length > 0 ? imagenesConUrls[0].url : null;
+
+            servicioActualizado.imagenesUrls = imagenesConUrls.map(
+                (file) => file.url
+            );
 
             return servicioActualizado;
         } catch (error) {
             throw new Error(
-                `No se pudo modificar el servicio ${id}: ` + error.message
+                `No se pudo modificar el servicio ${id}: ${error.message}`
             );
         }
     }
-
     async desactivarServicioById(id) {
         try {
             const servicioDesactivado = await Servicios.findByIdAndUpdate(

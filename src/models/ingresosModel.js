@@ -6,7 +6,6 @@ const IngresosModel = new mongoose.Schema(
         fecha: {
             type: Date,
             required: true,
-            default: Date.now,
         },
         monto: {
             type: Number,
@@ -34,14 +33,19 @@ const IngresosModel = new mongoose.Schema(
             type: String, 
             required: true 
         },
-        servicio: {
-            type: String,
+        email: { 
+            type: String, 
+            required: true 
+        },
+        categoria: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "categorias_servicio",
             required: true,
         },
         estado: {
             type: String,
             required: true,
-            enum: ["Pendiente de pago", "Aprobado"],
+            enum: ["Pendiente de pago", "Pagado"],
         },
         nota: {
             type: String,

@@ -17,6 +17,7 @@ const DetalleServicio = () => {
     const [servicio, setServicio] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const rol = localStorage.getItem("tipo_usuario");
 
     // modificar paquete
     const [showModal, setShowModal] = useState(false);
@@ -28,8 +29,9 @@ const DetalleServicio = () => {
                 const response = await axios.get(
                     `http://localhost:4000/api/servicios/${id}`
                 );
-
-                setServicio(response.data);
+                const servicioData = response.data;
+                console.log("Servicio recibido:", servicioData.imagen);
+                setServicio(servicioData);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -95,44 +97,55 @@ const DetalleServicio = () => {
     return (
         <div>
             <Navbar />
-            <div className="container mt-4">
+            <div className="container main-container mt-4">
                 <div className="row justify-content-center">
                     <div className="col-md-8">
                         <div className="row my-4">
                             <div className="col-auto align-self-center">
                                 <h1>{servicio.nombre}</h1>
                             </div>
-                            <div className="col-lg text-end align-self-center">
-                                <button
-                                    className="thm-btn btn-azul thm-btn-small"
-                                    type="button"
-                                    onClick={() =>
-                                        handleModificar(servicio._id)
-                                    }
-                                >
-                                    <FontAwesomeIcon icon={faPencil} />
-                                </button>
-                                <button
-                                    className={`thm-btn thm-btn-small ${
-                                        servicio.activo
-                                            ? "btn-rojo"
-                                            : "btn-verde"
-                                    } ms-2`}
-                                    type="button"
-                                    onClick={toggleEstadoServicio}
-                                >
-                                    {servicio.activo ? (
-                                        <FontAwesomeIcon icon={faToggleOn} />
-                                    ) : (
-                                        <FontAwesomeIcon icon={faToggleOff} />
-                                    )}
-                                </button>
-                            </div>
+                            {rol === "Administrador" ? (
+                                <div className="col-lg text-end align-self-center">
+                                    <button
+                                        className="thm-btn btn-azul thm-btn-small"
+                                        type="button"
+                                        onClick={() =>
+                                            handleModificar(servicio._id)
+                                        }
+                                    >
+                                        <FontAwesomeIcon icon={faPencil} />
+                                    </button>
+                                    <button
+                                        className={`thm-btn thm-btn-small ${
+                                            servicio.activo
+                                                ? "btn-verde"
+                                                : "btn-rojo"
+                                        } ms-2`}
+                                        type="button"
+                                        onClick={toggleEstadoServicio}
+                                    >
+                                        {servicio.activo ? (
+                                            <FontAwesomeIcon
+                                                icon={faToggleOn}
+                                            />
+                                        ) : (
+                                            <FontAwesomeIcon
+                                                icon={faToggleOff}
+                                            />
+                                        )}
+                                    </button>
+                                </div>
+                            ) : (
+                                ""
+                            )}
                         </div>
                         <div className="col-12">
                             <div className="row">
                                 <img
-                                    src="https://placehold.co/770x470"
+                                    src={
+                                        servicio.imagen ||
+                                        "https://placehold.co/770x470"
+                                    }
                                     alt="Imagen del servicio"
                                     className="img-fluid"
                                 />
@@ -148,19 +161,23 @@ const DetalleServicio = () => {
                                         <div className="col align-self-center">
                                             <h3>Paquetes disponibles</h3>
                                         </div>
-                                        <div className="col text-end align-self-center">
-                                            <button
-                                                className="thm-btn thm-btn-small"
-                                                type="button"
-                                                onClick={() =>
-                                                    handleAgregarPaquete(
-                                                        servicio._id
-                                                    )
-                                                }
-                                            >
-                                                Agregar Paquete
-                                            </button>
-                                        </div>
+                                        {rol === "Administrador" ? (
+                                            <div className="col text-end align-self-center">
+                                                <button
+                                                    className="thm-btn thm-btn-small"
+                                                    type="button"
+                                                    onClick={() =>
+                                                        handleAgregarPaquete(
+                                                            servicio._id
+                                                        )
+                                                    }
+                                                >
+                                                    Agregar Paquete
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -216,52 +233,58 @@ const DetalleServicio = () => {
                                                         ${paquete.precio}
                                                     </p>
                                                 </div>
-                                                <div className="col text-end">
-                                                    <div
-                                                        className="btn-group"
-                                                        role="group"
-                                                    >
-                                                        <button
-                                                            className="thm-btn thm-btn-small btn-azul"
-                                                            onClick={() =>
-                                                                handleModificarPaquete(
-                                                                    paquete
-                                                                )
-                                                            }
+                                                {rol === "Administrador" ? (
+                                                    <div className="col text-end">
+                                                        <div
+                                                            className="btn-group"
+                                                            role="group"
                                                         >
-                                                            <FontAwesomeIcon
-                                                                icon={faPencil}
-                                                            />
-                                                        </button>
-                                                        <button
-                                                            className={`thm-btn thm-btn-small ${
-                                                                paquete.activo
-                                                                    ? "btn-verde"
-                                                                    : "btn-rojo"
-                                                            }`}
-                                                            onClick={() =>
-                                                                toggleEstadoPaquete(
-                                                                    paquete._id,
+                                                            <button
+                                                                className="thm-btn thm-btn-small btn-azul"
+                                                                onClick={() =>
+                                                                    handleModificarPaquete(
+                                                                        paquete
+                                                                    )
+                                                                }
+                                                            >
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        faPencil
+                                                                    }
+                                                                />
+                                                            </button>
+                                                            <button
+                                                                className={`thm-btn thm-btn-small ${
                                                                     paquete.activo
-                                                                )
-                                                            }
-                                                        >
-                                                            {paquete.activo ? (
-                                                                <FontAwesomeIcon
-                                                                    icon={
-                                                                        faToggleOn
-                                                                    }
-                                                                />
-                                                            ) : (
-                                                                <FontAwesomeIcon
-                                                                    icon={
-                                                                        faToggleOff
-                                                                    }
-                                                                />
-                                                            )}
-                                                        </button>
+                                                                        ? "btn-verde"
+                                                                        : "btn-rojo"
+                                                                }`}
+                                                                onClick={() =>
+                                                                    toggleEstadoPaquete(
+                                                                        paquete._id,
+                                                                        paquete.activo
+                                                                    )
+                                                                }
+                                                            >
+                                                                {paquete.activo ? (
+                                                                    <FontAwesomeIcon
+                                                                        icon={
+                                                                            faToggleOn
+                                                                        }
+                                                                    />
+                                                                ) : (
+                                                                    <FontAwesomeIcon
+                                                                        icon={
+                                                                            faToggleOff
+                                                                        }
+                                                                    />
+                                                                )}
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                ) : (
+                                                    ""
+                                                )}
                                             </div>
                                         </div>
                                     </div>

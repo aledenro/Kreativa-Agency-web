@@ -46,6 +46,7 @@ const CotizacionesModel = new mongoose.Schema(
                     required: true,
                     default: Date.now(),
                 },
+                files: [],
             },
         ],
         estado: {
@@ -53,6 +54,7 @@ const CotizacionesModel = new mongoose.Schema(
             required: true,
             enum: ["Nuevo", "Aceptado", "Cancelado"],
         },
+        files: [],
     },
     { collection: "cotizaciones" }
 );

@@ -30,14 +30,18 @@ const EmailTemplate = ({ header, content, btnLabel, accessLink }) => {
                     </Section>
                     <Heading style={h1}>{header}</Heading>
                     <Text style={text}>{content}</Text>
-                    <Section>
-                        <Button
-                            href={`http://localhost:5173/${accessLink}`}
-                            style={button}
-                        >
-                            {btnLabel}
-                        </Button>
-                    </Section>
+                    {btnLabel != "" ? (
+                        <Section>
+                            <Button
+                                href={`http://localhost:5173/${accessLink}`}
+                                style={button}
+                            >
+                                {btnLabel}
+                            </Button>
+                        </Section>
+                    ) : (
+                        ""
+                    )}
                 </Container>
             </Body>
         </Html>
@@ -47,8 +51,8 @@ const EmailTemplate = ({ header, content, btnLabel, accessLink }) => {
 EmailTemplate.propTypes = {
     header: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
-    btnLabel: PropTypes.string.isRequired,
-    accessLink: PropTypes.string.isRequired,
+    btnLabel: PropTypes.string,
+    accessLink: PropTypes.string,
 };
 
 export default EmailTemplate;

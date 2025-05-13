@@ -17,6 +17,27 @@ class ProyectoController {
         }
     }
 
+    async getAllProyectos(req, res) {
+        try {
+            const proyectos = await ProyectoService.getAllProyectos();
+
+            if (!proyectos || lodash.isEmpty(proyectos)) {
+                return res.status(404).json({
+                    error: `No se encontraron proyectos disponibles`,
+                });
+            }
+
+            return res.json(proyectos);
+        } catch (error) {
+            console.error(
+                `Error al obtener todos los proyectos: ${error.message}`
+            );
+            return res.status(500).json({
+                error: `Error al obtener todos los proyectos: ${error.message}`,
+            });
+        }
+    }
+
     async getProyectoById(req, res) {
         try {
             const id = req.params.id;
@@ -126,6 +147,29 @@ class ProyectoController {
                 "Error al agregar una respuesta al proyecto: " + error.message
             );
             return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getProyectosByCliente(req, res) {
+        try {
+            const clienteId = req.params.clienteId;
+            const proyectos =
+                await ProyectoService.getProyectosByCliente(clienteId);
+
+            if (!proyectos || lodash.isEmpty(proyectos)) {
+                return res.status(404).json({
+                    error: `No se encontraron proyectos para el cliente con ID ${clienteId}`,
+                });
+            }
+
+            return res.json(proyectos);
+        } catch (error) {
+            console.error(
+                `Error al obtener proyectos del cliente: ${error.message}`
+            );
+            return res.status(500).json({
+                error: `Error al obtener proyectos del cliente: ${error.message}`,
+            });
         }
     }
 }

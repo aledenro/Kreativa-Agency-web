@@ -4,8 +4,10 @@ const lodash = require("lodash");
 class ServiciosController {
     async agregarServicio(req, res) {
         try {
-            const servicio = await ServiciosService.agregarServicio(req.body);
-
+            const servicio = await ServiciosService.agregarServicio(
+                req.body,
+                req.files
+            );
             return res.status(201).json(servicio);
         } catch (error) {
             console.error("Error al agregar el servicio: " + error.message);
@@ -35,13 +37,23 @@ class ServiciosController {
         }
     }
 
+    async getServiciosNombres(req, res) {
+        try {
+            const servicios = await ServiciosService.getServiciosNombres();
+            res.json(servicios);
+        } catch (error) {
+            res.status(500).json({ mensaje: error.message });
+        }
+    }
+
     async modificarServicioById(req, res) {
         try {
             const id = req.params.id;
             const data = req.body;
+            const files = req.files;
 
             const servicioActualizado =
-                await ServiciosService.modificarServicioById(id, data);
+                await ServiciosService.modificarServicioById(id, data, files);
 
             return res.status(200).json(servicioActualizado);
         } catch (error) {
