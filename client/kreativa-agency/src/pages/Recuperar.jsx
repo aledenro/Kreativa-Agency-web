@@ -13,7 +13,7 @@ const Recuperar = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post("http://localhost:4000/api/recuperar", { email });
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/recuperar`, { email });
             Swal.fire({
                 title: "¡Éxito!",
                 text: response.data.mensaje,

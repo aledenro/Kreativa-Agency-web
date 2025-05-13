@@ -27,7 +27,7 @@ const DetalleServicio = () => {
         const fetchServicio = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:4000/api/servicios/${id}`
+                    `${import.meta.env.VITE_API_URL}/servicios/${id}`
                 );
                 const servicioData = response.data;
                 console.log("Servicio recibido:", servicioData.imagen);
@@ -58,8 +58,8 @@ const DetalleServicio = () => {
         if (!servicio) return;
         try {
             const endpoint = servicio.activo
-                ? `http://localhost:4000/api/servicios/${id}/desactivar`
-                : `http://localhost:4000/api/servicios/${id}/activar`;
+                ? `${import.meta.env.VITE_API_URL}/servicios/${id}/desactivar`
+                : `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
 
             const response = await axios.put(endpoint);
             setServicio(response.data.servicio);
@@ -76,8 +76,8 @@ const DetalleServicio = () => {
 
         try {
             const endpoint = estadoActual
-                ? `http://localhost:4000/api/servicios/${id}/paquetes/${paqueteId}/desactivar`
-                : `http://localhost:4000/api/servicios/${id}/paquetes/${paqueteId}/activar`;
+                ? `${import.meta.env.VITE_API_URL}/servicios/${id}/paquetes/${paqueteId}/desactivar`
+                : `${import.meta.env.VITE_API_URL}/servicios/${id}/paquetes/${paqueteId}/activar`;
 
             const response = await axios.put(endpoint);
 

@@ -120,7 +120,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/proyectos/editar/${proyectoId}`,
+                `${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
                 data
             );
 
@@ -155,7 +155,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
         try {
             const response = await axios.put(
-                `http://localhost:4000/api/proyectos/editar/${proyectoId}`,
+                `${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
                 { estado: estadoEdit }
             );
 
@@ -208,7 +208,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
         try {
             const user_id = localStorage.getItem("user_id");
             await axios.put(
-                `http://localhost:4000/api/proyectos/actualizarLog/${proyectoId}`,
+                `${import.meta.env.VITE_API_URL}/proyectos/actualizarLog/${proyectoId}`,
                 {
                     usuario_id: user_id,
                     accion: accion,
@@ -236,7 +236,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
         try {
             const response = await axios.get(
-                `http://localhost:4000/api/proyectos/id/${proyectoId}`
+                `${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`
             );
 
             if (response.status === 200) {
@@ -262,7 +262,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:4000/api/usuarios/empleados",
+                `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -279,7 +279,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:4000/api/usuarios/clientes",
+                `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }

@@ -89,7 +89,7 @@ const Estadisticas = () => {
         const fetchCategories = async () => {
             try {
                 const res = await axios.get(
-                    "http://localhost:4000/api/servicios/categorias"
+                    `${import.meta.env.VITE_API_URL}/servicios/categorias`
                 );
                 setCategories(res.data);
             } catch (error) {
@@ -108,7 +108,7 @@ const Estadisticas = () => {
             // Vista Anual: se obtienen el total y el detalle a través de los endpoints nuevos.
             axios
                 .get(
-                    `http://localhost:4000/api/ingresos/anualesDetalle?anio=${selectedYear}`
+                    `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`
                 )
                 .then((response) => {
                     const data = response.data; // { resumen: { totalIngresos, cantidadIngresos }, detalle: [...] }
@@ -125,7 +125,7 @@ const Estadisticas = () => {
                 });
             axios
                 .get(
-                    `http://localhost:4000/api/egresos/anualesDetalle?anio=${selectedYear}`
+                    `${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`
                 )
                 .then((response) => {
                     const data = response.data; // { resumen: { totalEgresos, cantidadEgresos }, detalle: [...] }
@@ -149,7 +149,7 @@ const Estadisticas = () => {
             // Ingresos mensuales (ya filtrados en el backend: activos, pagados y de clientes)
             axios
                 .get(
-                    `http://localhost:4000/api/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`
+                    `${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`
                 )
                 .then((response) => {
                     const { resumen, detalle } = response.data;
@@ -172,7 +172,7 @@ const Estadisticas = () => {
                 });
             // Egresos mensuales (filtrando activos y estado "Aprobado")
             axios
-                .get(`http://localhost:4000/api/egresos/mes?fecha=${fecha}`)
+                .get(`${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`)
                 .then((response) => {
                     const data = response.data.filter(
                         (e) => e.activo && e.estado === "Aprobado"
@@ -204,7 +204,7 @@ const Estadisticas = () => {
         }
         // Independientemente de la vista, se obtienen totales anuales (para el gráfico de comparación)
         axios
-            .get(`http://localhost:4000/api/ingresos/anio?anio=${selectedYear}`)
+            .get(`${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`)
             .then((response) => {
                 const data = response.data;
                 setTotalIngresosAnuales(data.totalIngresos);
@@ -216,7 +216,7 @@ const Estadisticas = () => {
                 );
             });
         axios
-            .get(`http://localhost:4000/api/egresos/anio?anio=${selectedYear}`)
+            .get(`${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`)
             .then((response) => {
                 const data = response.data;
                 setTotalEgresosAnuales(data.totalEgresos);

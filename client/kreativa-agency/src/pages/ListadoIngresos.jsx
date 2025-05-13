@@ -84,7 +84,7 @@ const ListadoIngresos = () => {
     // Función para refrescar la lista de ingresos
     const fetchIngresos = useCallback(async () => {
         try {
-            const res = await axios.get("http://localhost:4000/api/ingresos");
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/ingresos`);
             setIngresos(res.data);
         } catch (error) {
             console.error("Error al obtener los ingresos:", error.message);
@@ -95,7 +95,7 @@ const ListadoIngresos = () => {
         const fetchCategories = async () => {
             try {
                 const res = await axios.get(
-                    "http://localhost:4000/api/servicios/categorias"
+                    `${import.meta.env.VITE_API_URL}/servicios/categorias`
                 );
                 setCategories(res.data);
             } catch (error) {
@@ -110,7 +110,7 @@ const ListadoIngresos = () => {
             try {
                 const token = localStorage.getItem("token");
                 const res = await axios.get(
-                    "http://localhost:4000/api/usuarios",
+                    `${import.meta.env.VITE_API_URL}/usuarios`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -189,8 +189,8 @@ const ListadoIngresos = () => {
         if (toggleIngreso) {
             try {
                 const url = toggleIngreso.activo
-                    ? `http://localhost:4000/api/ingresos/${toggleIngreso._id}/desactivar`
-                    : `http://localhost:4000/api/ingresos/${toggleIngreso._id}/activar`;
+                    ? `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/desactivar`
+                    : `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/activar`;
                 await axios.put(url);
                 // Actualizamos el estado local sin refrescar desde el backend:
                 setIngresos((prev) =>
@@ -221,7 +221,7 @@ const ListadoIngresos = () => {
     const handleConfirmEdit = async () => {
         try {
             await axios.put(
-                `http://localhost:4000/api/ingresos/${editedIngresoData._id}`,
+                `${import.meta.env.VITE_API_URL}/ingresos/${editedIngresoData._id}`,
                 editedIngresoData
             );
             setShowConfirmEditar(false);

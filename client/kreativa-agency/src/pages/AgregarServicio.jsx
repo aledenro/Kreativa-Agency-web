@@ -44,7 +44,7 @@ const AgregarServicio = () => {
     const fetchCategorias = async () => {
         try {
             const res = await axios.get(
-                "http://localhost:4000/api/servicios/categorias"
+                `${import.meta.env.VITE_API_URL}/servicios/categorias`
             );
             setCategorias(res.data);
         } catch (error) {
@@ -89,7 +89,7 @@ const AgregarServicio = () => {
 
         try {
             const res = await axios.post(
-                "http://localhost:4000/api/servicios/agregar",
+                `${import.meta.env.VITE_API_URL}/servicios/agregar`,
                 {
                     nombre,
                     descripcion,
@@ -115,7 +115,7 @@ const AgregarServicio = () => {
                     }
 
                     await axios.put(
-                        `http://localhost:4000/api/servicios/modificar/${servicioId}`,
+                        `${import.meta.env.VITE_API_URL}/servicios/modificar/${servicioId}`,
                         { imagenes }
                     );
                 } catch (error) {
@@ -143,7 +143,7 @@ const AgregarServicio = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:4000/api/servicios/categorias",
+                `${import.meta.env.VITE_API_URL}/servicios/categorias`,
                 {
                     nombre: nuevaCategoria,
                 }

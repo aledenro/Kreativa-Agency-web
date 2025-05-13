@@ -102,7 +102,7 @@ const AgregarPTO = () => {
                 return;
             }
 
-            await axios.post("http://localhost:4000/api/pto", formData, {
+            await axios.post(`${import.meta.env.VITE_API_URL}/pto`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

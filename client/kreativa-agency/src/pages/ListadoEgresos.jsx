@@ -65,7 +65,7 @@ const ListadoEgresos = () => {
 
     const fetchEgresos = useCallback(async () => {
         try {
-            const res = await axios.get("http://localhost:4000/api/egresos");
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/egresos`);
             setEgresos(res.data);
         } catch (error) {
             console.error("Error al obtener egresos:", error.message);
@@ -140,8 +140,8 @@ const ListadoEgresos = () => {
         if (toggleEgreso) {
             try {
                 const url = toggleEgreso.activo
-                    ? `http://localhost:4000/api/egresos/${toggleEgreso._id}/desactivar`
-                    : `http://localhost:4000/api/egresos/${toggleEgreso._id}/activar`;
+                    ? `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/desactivar`
+                    : `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/activar`;
                 await axios.put(url);
                 setEgresos((prev) =>
                     prev.map((e) =>

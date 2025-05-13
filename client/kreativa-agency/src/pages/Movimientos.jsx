@@ -50,7 +50,7 @@ const Movimientos = () => {
 
     // Función para obtener movimientos según el filtro seleccionado
     const fetchMovimientos = () => {
-        let url = "http://localhost:4000/api/movimientos?";
+        let url = `${import.meta.env.VITE_API_URL}/movimientos?`;
         if (filterType === "fecha") {
             if (fecha) url += `fecha=${fecha}`;
         } else if (filterType === "anio") {
@@ -79,7 +79,7 @@ const Movimientos = () => {
     // Cargar las categorías (para mapear el ID en ingresos)
     useEffect(() => {
         axios
-            .get("http://localhost:4000/api/servicios/categorias")
+            .get(`${import.meta.env.VITE_API_URL}/servicios/categorias`)
             .then((res) => {
                 setCategories(res.data);
             })
@@ -161,7 +161,7 @@ const Movimientos = () => {
         }
         if (mov.entidad === "ingreso") {
             axios
-                .get(`http://localhost:4000/api/ingresos/${mov.idRegistro}`)
+                .get(`${import.meta.env.VITE_API_URL}/ingresos/${mov.idRegistro}`)
                 .then((response) => {
                     setRegistroSeleccionado(response.data);
                     setShowModalVerIngreso(true);
@@ -174,7 +174,7 @@ const Movimientos = () => {
                 });
         } else if (mov.entidad === "egreso") {
             axios
-                .get(`http://localhost:4000/api/egresos/${mov.idRegistro}`)
+                .get(`${import.meta.env.VITE_API_URL}/egresos/${mov.idRegistro}`)
                 .then((response) => {
                     setRegistroSeleccionado(response.data);
                     setShowModalVerEgreso(true);

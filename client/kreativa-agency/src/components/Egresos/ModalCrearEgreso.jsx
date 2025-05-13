@@ -23,7 +23,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/egresos", formData);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/egresos`, formData);
       if (res.status === 201) {
         // Esperamos 1.5 segundos y luego cerramos el modal de creación y mostramos la confirmación
         setTimeout(() => {

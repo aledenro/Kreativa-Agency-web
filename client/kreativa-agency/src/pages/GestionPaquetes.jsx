@@ -45,7 +45,7 @@ const GestionPaquetes = () => {
         const fetchServicios = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/servicios"
+                    `${import.meta.env.VITE_API_URL}/servicios`
                 );
                 setServicios(response.data);
             } catch (err) {
@@ -94,8 +94,8 @@ const GestionPaquetes = () => {
 
         try {
             const endpoint = estadoActual
-                ? `http://localhost:4000/api/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
-                : `http://localhost:4000/api/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
+                ? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
+                : `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
 
             const response = await axios.put(endpoint);
 

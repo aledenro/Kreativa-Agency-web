@@ -14,7 +14,7 @@ const JerarquiaUsuarios = () => {
   useEffect(() => {
     const fetchJerarquia = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/usuarios/jerarquia");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios/jerarquia`);
         setJerarquia(response.data);
       } catch (err) {
         setError("Error al obtener los usuarios.");

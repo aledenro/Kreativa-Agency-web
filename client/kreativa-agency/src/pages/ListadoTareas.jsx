@@ -84,11 +84,11 @@ const ListadoTareas = () => {
     useEffect(() => {
         const fetchTareas = async () => {
             try {
-                let url = "http://localhost:4000/";
+                let url = `${import.meta.env.VITE_API_URL}`;
 
                 const idUsuario = localStorage.getItem("user_id");
 
-                url += "api/tareas";
+                url += "/tareas";
 
                 url += rol === "Colaborador" ? `/getByColab/${idUsuario}` : "";
 
@@ -104,7 +104,7 @@ const ListadoTareas = () => {
                 const token = localStorage.getItem("token");
 
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/empleados",
+                    `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }

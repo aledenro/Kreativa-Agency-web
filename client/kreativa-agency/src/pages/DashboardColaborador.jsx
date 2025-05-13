@@ -87,7 +87,7 @@ const DashboardColaborador = () => {
         const fetchProyectos = async () => {
             try {
                 const token = localStorage.getItem("token");
-                let url = "http://localhost:4000/api/proyectos";
+                let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
                 if (rol === "Cliente") {
                     url += `/cliente/${userId}`;
@@ -125,7 +125,7 @@ const DashboardColaborador = () => {
         const fetchTareas = async () => {
             try {
                 const token = localStorage.getItem("token");
-                let url = "http://localhost:4000/api/tareas";
+                let url = `${import.meta.env.VITE_API_URL}/tareas`;
 
                 const response = await axios.get(url, {
                     headers: { Authorization: `Bearer ${token}` },
@@ -141,7 +141,7 @@ const DashboardColaborador = () => {
             try {
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/empleados",
+                    `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -178,7 +178,7 @@ const DashboardColaborador = () => {
         const fetchProyectos = async () => {
             try {
                 const token = localStorage.getItem("token");
-                let url = "http://localhost:4000/api/proyectos";
+                let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
                 if (rol === "Cliente") {
                     url += `/cliente/${userId}`;
@@ -204,7 +204,7 @@ const DashboardColaborador = () => {
         const fetchTareas = async () => {
             try {
                 const token = localStorage.getItem("token");
-                let url = "http://localhost:4000/api/tareas";
+                let url = `${import.meta.env.VITE_API_URL}/tareas`;
 
                 const response = await axios.get(url, {
                     headers: { Authorization: `Bearer ${token}` },

@@ -28,7 +28,7 @@ const EditarUsuario = () => {
                     return;
                 }
 
-                const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`, {
+                const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -73,7 +73,7 @@ const EditarUsuario = () => {
                         return;
                     }
 
-                    const response = await axios.get(`http://localhost:4000/api/usuarios`, {
+                    const response = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
 
@@ -115,7 +115,7 @@ const EditarUsuario = () => {
                 return;
             }
 
-            await axios.put(`http://localhost:4000/api/usuarios/${id}`, formData, {
+            await axios.put(`${import.meta.env.VITE_API_URL}/usuarios/${id}`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

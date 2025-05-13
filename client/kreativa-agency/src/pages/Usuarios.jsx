@@ -36,7 +36,7 @@ const Usuarios = () => {
                 console.log("Token decodificado:", decodedToken);
 
                 const { data } = await axios.get(
-                    "http://localhost:4000/api/usuarios",
+                    `${import.meta.env.VITE_API_URL}/usuarios`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -69,7 +69,7 @@ const Usuarios = () => {
             }
 
             const { data } = await axios.get(
-                `http://localhost:4000/api/usuarios/${id}`,
+                `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -101,7 +101,7 @@ const Usuarios = () => {
         try {
             const token = localStorage.getItem("token");
             await axios.put(
-                `http://localhost:4000/api/usuarios/${id}`,
+                `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
                 { estado: nuevoEstado },
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -125,7 +125,7 @@ const Usuarios = () => {
 
         try {
             const token = localStorage.getItem("token");
-            await axios.delete(`http://localhost:4000/api/usuarios/${id}`, {
+            await axios.delete(`${import.meta.env.VITE_API_URL}/usuarios/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

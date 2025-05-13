@@ -16,7 +16,7 @@ const VerDetalleCotizacion = () => {
     const fetchCotizacion = useCallback(async () => {
         try {
             const res = await axios.get(
-                `http://localhost:4000/api/cotizaciones/id/${id}`
+                `${import.meta.env.VITE_API_URL}/cotizaciones/id/${id}`
             );
 
             setCotizacion(res.data.cotizacion);
@@ -49,7 +49,7 @@ const VerDetalleCotizacion = () => {
 
         try {
             await axios.put(
-                `http://localhost:4000/api/cotizaciones/agregarRespuesta/${id}`,
+                `${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${id}`,
                 data
             );
 
@@ -85,7 +85,7 @@ const VerDetalleCotizacion = () => {
 
         try {
             axios.put(
-                `http://localhost:4000/api/cotizaciones/cambiarEstado/${id}`,
+                `${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${id}`,
                 { estado: estado }
             );
 

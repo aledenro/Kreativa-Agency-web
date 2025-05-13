@@ -39,7 +39,7 @@ const AgregarCotizacion = () => {
 
         try {
             const res = await axios.post(
-                "http://localhost:4000/api/cotizaciones/crear",
+                `${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
                 data
             );
 

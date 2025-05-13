@@ -35,11 +35,11 @@ const ListadoPagos = () => {
 
     const fetchPagos = useCallback(async () => {
         try {
-            let url = "http://localhost:4000/";
+            let url = `${import.meta.env.VITE_API_URL}`;
 
             const idUsuario = localStorage.getItem("user_id");
 
-            url += "api/pagos";
+            url += "/pagos";
 
             url += rol === "Cliente" ? `/cliente/${idUsuario}` : "";
 
@@ -56,7 +56,7 @@ const ListadoPagos = () => {
                 const token = localStorage.getItem("token");
 
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/clientes",
+                    `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
