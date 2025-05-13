@@ -3,7 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
-import LogoKreativa from "../assets/img/logo.png";
+import LogoKreativa from "https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png";
 
 const Restablecer = () => {
     const { token } = useParams();
