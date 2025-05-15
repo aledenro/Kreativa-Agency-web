@@ -36,7 +36,7 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
             };
 
             const res = await axios.post(
-                `http://localhost:4000/api/pagos/`,
+                `${import.meta.env.VITE_API_URL}/pagos/`,
                 data
             );
 

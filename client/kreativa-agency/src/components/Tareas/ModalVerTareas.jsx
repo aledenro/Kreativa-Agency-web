@@ -59,7 +59,7 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
             return;
         }
 
-        const url = `http://localhost:4000/api/tareas/comment/${editando ? "edit/" : ""}`;
+        const url = `${import.meta.env.VITE_API_URL}/tareas/comment/${editando ? "edit/" : ""}`;
         const data = editando
             ? commentEdit
             : {

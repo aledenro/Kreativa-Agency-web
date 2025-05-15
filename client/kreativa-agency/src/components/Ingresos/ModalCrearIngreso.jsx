@@ -26,7 +26,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
       return;
     }
     try {
-      const res = await axios.get(`http://localhost:4000/api/ingresos/buscarPorCedula/${formData.cedula}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/ingresos/buscarPorCedula/${formData.cedula}`);
       if (res.data) {
         setNombreCliente(res.data.nombre);
         setEmailCliente(res.data.email);
@@ -53,7 +53,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/ingresos", formData);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/ingresos`, formData);
       if (res.status === 201) {
         setMensaje("Ingreso creado exitosamente.");
         setTimeout(() => {

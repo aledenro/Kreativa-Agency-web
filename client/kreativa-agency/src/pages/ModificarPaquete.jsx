@@ -27,7 +27,7 @@ const ModificarPaquete = () => {
         const fetchPaquete = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:4000/api/servicios/${servicioId}`
+                    `${import.meta.env.VITE_API_URL}/servicios/${servicioId}`
                 );
 
                 const servicio = res.data;
@@ -132,7 +132,7 @@ const ModificarPaquete = () => {
     const handleSubmit = async () => {
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/servicios/${servicioId}/paquetes/${paqueteId}`,
+                `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}`,
                 paqueteEditado
             );
             console.log("Respuesta del backend:", res.data);

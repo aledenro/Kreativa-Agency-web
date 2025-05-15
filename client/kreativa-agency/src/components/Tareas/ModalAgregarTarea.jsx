@@ -117,7 +117,7 @@ const ModalAgregarTarea = ({
 
         try {
             const res = await axios.post(
-                "http://localhost:4000/api/tareas/crear",
+                `${import.meta.env.VITE_API_URL}/tareas/crear`,
                 data
             );
 
@@ -174,7 +174,7 @@ const ModalAgregarTarea = ({
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:4000/api/usuarios/empleados",
+                `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -196,7 +196,7 @@ const ModalAgregarTarea = ({
     async function fetchProyectos() {
         try {
             const response = await axios.get(
-                "http://localhost:4000/api/proyectos/getAllProyectosLimitedData"
+                `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`
             );
 
             setProyectos(response.data.proyectos);

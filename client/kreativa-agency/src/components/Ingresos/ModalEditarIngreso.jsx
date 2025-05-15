@@ -35,7 +35,7 @@ const ModalEditarIngreso = ({ show, handleClose, ingreso, categories, onSave }) 
   const handleConfirmEdit = async () => {
     try {
       const res = await axios.put(
-        `http://localhost:4000/api/ingresos/${ingresoEditado._id}`,
+        `${import.meta.env.VITE_API_URL}/ingresos/${ingresoEditado._id}`,
         ingresoEditado
       );
       if (res.status === 200) {

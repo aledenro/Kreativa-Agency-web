@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import LogoKreativa from "../assets/img/logo.png";
+import LogoKreativa from "https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 
 const Recuperar = () => {
@@ -13,7 +13,7 @@ const Recuperar = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post("http://localhost:4000/api/recuperar", { email });
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/recuperar`, { email });
             Swal.fire({
                 title: "¡Éxito!",
                 text: response.data.mensaje,

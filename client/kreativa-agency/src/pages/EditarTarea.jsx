@@ -118,7 +118,7 @@ const EditarTarea = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:4000/api/tareas/editar/${id}`,
+                `${import.meta.env.VITE_API_URL}/tareas/editar/${id}`,
                 { estado: estadoEdit }
             );
 
@@ -170,7 +170,7 @@ const EditarTarea = () => {
 
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/tareas/editar/${id}`,
+                `${import.meta.env.VITE_API_URL}/tareas/editar/${id}`,
                 data
             );
 
@@ -205,7 +205,7 @@ const EditarTarea = () => {
         try {
             const user_id = localStorage.getItem("user_id");
             await axios.put(
-                `http://localhost:4000/api/tareas/actualizarLog/${id}`,
+                `${import.meta.env.VITE_API_URL}/tareas/actualizarLog/${id}`,
                 {
                     usuario_id: user_id,
                     accion: accion,
@@ -222,7 +222,7 @@ const EditarTarea = () => {
 
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/empleados",
+                    `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -238,7 +238,7 @@ const EditarTarea = () => {
         async function fetchProyectos() {
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/proyectos/getAllProyectosLimitedData"
+                    `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`
                 );
 
                 setProyectos(response.data.proyectos);
@@ -252,7 +252,7 @@ const EditarTarea = () => {
         async function fetchTarea() {
             try {
                 const response = await axios.get(
-                    `http://localhost:4000/api/tareas/id/${id}`
+                    `${import.meta.env.VITE_API_URL}/tareas/id/${id}`
                 );
 
                 setTarea(response.data);

@@ -51,7 +51,7 @@ const ModificarServicio = () => {
     const fetchCategorias = async () => {
         try {
             const res = await axios.get(
-                "http://localhost:4000/api/servicios/categorias"
+                `${import.meta.env.VITE_API_URL}/servicios/categorias`
             );
             setCategorias(res.data);
         } catch (error) {
@@ -65,7 +65,7 @@ const ModificarServicio = () => {
             try {
                 setIsLoading(true);
                 const res = await axios.get(
-                    `http://localhost:4000/api/servicios/${id}`
+                    `${import.meta.env.VITE_API_URL}/servicios/${id}`
                 );
                 setServicio(res.data);
 
@@ -148,7 +148,7 @@ const ModificarServicio = () => {
                         );
 
                         const imageUpdateResponse = await axios.put(
-                            `http://localhost:4000/api/servicios/modificar/${id}`,
+                            `${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
                             { imagenes }
                         );
 
@@ -173,7 +173,7 @@ const ModificarServicio = () => {
             };
 
             const updateResponse = await axios.put(
-                `http://localhost:4000/api/servicios/modificar/${id}`,
+                `${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
                 serviceData
             );
 
@@ -200,7 +200,7 @@ const ModificarServicio = () => {
         try {
             setIsLoading(true);
             const response = await axios.post(
-                "http://localhost:4000/api/servicios/categorias",
+                `${import.meta.env.VITE_API_URL}/servicios/categorias`,
                 {
                     nombre: nuevaCategoria,
                 }

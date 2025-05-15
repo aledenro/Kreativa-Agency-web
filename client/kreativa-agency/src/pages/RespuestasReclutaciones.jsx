@@ -30,7 +30,7 @@ const RespuestasReclutaciones = () => {
         const fetchFormularios = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/reclutaciones"
+                    `${import.meta.env.VITE_API_URL}/reclutaciones`
                 );
                 setFormularios(response.data);
             } catch (error) {
@@ -44,7 +44,7 @@ const RespuestasReclutaciones = () => {
         const fetchFormStatus = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/form-status"
+                    `${import.meta.env.VITE_API_URL}/form-status`
                 );
                 setIsFormActive(response.data.active);
             } catch (error) {
@@ -62,7 +62,7 @@ const RespuestasReclutaciones = () => {
         try {
             setLoading(true);
             const response = await axios.put(
-                "http://localhost:4000/api/form-status"
+                `${import.meta.env.VITE_API_URL}/form-status`
             );
             setIsFormActive(response.data.active);
         } catch (error) {

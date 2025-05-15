@@ -117,7 +117,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
         try {
             const response = await axios.put(
-                `http://localhost:4000/api/tareas/editar/${tareaId}`,
+                `${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
                 { estado: estadoEdit }
             );
 
@@ -177,7 +177,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/tareas/editar/${tareaId}`,
+                `${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
                 data
             );
 
@@ -219,7 +219,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
         try {
             const user_id = localStorage.getItem("user_id");
             await axios.put(
-                `http://localhost:4000/api/tareas/actualizarLog/${tareaId}`,
+                `${import.meta.env.VITE_API_URL}/tareas/actualizarLog/${tareaId}`,
                 {
                     usuario_id: user_id,
                     accion: accion,
@@ -235,7 +235,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
         try {
             const response = await axios.get(
-                `http://localhost:4000/api/tareas/id/${tareaId}`
+                `${import.meta.env.VITE_API_URL}/tareas/id/${tareaId}`
             );
 
             setTarea(response.data);
@@ -259,7 +259,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
         try {
             const response = await axios.get(
-                "http://localhost:4000/api/usuarios/empleados",
+                `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -273,7 +273,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
     async function fetchProyectos() {
         try {
             const response = await axios.get(
-                "http://localhost:4000/api/proyectos/getAllProyectosLimitedData"
+                `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`
             );
 
             setProyectos(response.data.proyectos);
