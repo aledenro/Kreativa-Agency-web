@@ -87,7 +87,7 @@ const AgregarPaquete = () => {
 
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/servicios/${id}/nuevoPaquete`,
+                `${import.meta.env.VITE_API_URL}/servicios/${id}/nuevoPaquete`,
                 paqueteData
             );
             console.log(res.data);

@@ -45,7 +45,7 @@ const VerCotizaciones = () => {
 
     const getCotizaciones = useCallback(async () => {
         try {
-            let url = `http://localhost:4000/api/cotizaciones/`;
+            let url = `${import.meta.env.VITE_API_URL}/cotizaciones/`;
 
             url += tipoUsuario === "Cliente" ? `getByUser/${user_id}` : "";
 

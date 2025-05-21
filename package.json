@@ -59,5 +59,13 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aledenro/Herramienta-de-Gesti-n-Integral-para-la-empresa-Kreativa-Agency.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aledenro/Herramienta-de-Gesti-n-Integral-para-la-empresa-Kreativa-Agency/issues"
+  },
+  "homepage": "https://github.com/aledenro/Herramienta-de-Gesti-n-Integral-para-la-empresa-Kreativa-Agency#readme"
 }

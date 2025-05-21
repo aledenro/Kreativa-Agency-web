@@ -46,7 +46,7 @@ const CrearUsuario = () => {
                     const token = localStorage.getItem("token");
                     if (!token) return;
 
-                    const response = await axios.get("http://localhost:4000/api/usuarios", {
+                    const response = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
 
@@ -84,7 +84,7 @@ const CrearUsuario = () => {
         }
 
         try {
-            await axios.post("http://localhost:4000/api/usuarios", formData, {
+            await axios.post(`${import.meta.env.VITE_API_URL}/usuarios`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

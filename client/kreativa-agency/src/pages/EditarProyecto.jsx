@@ -118,7 +118,7 @@ const AgregarProyecto = () => {
 
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/proyectos/editar/${id}`,
+                `${import.meta.env.VITE_API_URL}/proyectos/editar/${id}`,
                 data
             );
 
@@ -145,7 +145,7 @@ const AgregarProyecto = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:4000/api/proyectos/editar/${id}`,
+                `${import.meta.env.VITE_API_URL}/proyectos/editar/${id}`,
                 { estado: estadoEdit }
             );
 
@@ -190,7 +190,7 @@ const AgregarProyecto = () => {
         try {
             const user_id = localStorage.getItem("user_id");
             await axios.put(
-                `http://localhost:4000/api/proyectos/actualizarLog/${id}`,
+                `${import.meta.env.VITE_API_URL}/proyectos/actualizarLog/${id}`,
                 {
                     usuario_id: user_id,
                     accion: accion,
@@ -216,7 +216,7 @@ const AgregarProyecto = () => {
     const fetchProyecto = useCallback(async () => {
         try {
             const response = await axios.get(
-                `http://localhost:4000/api/proyectos/id/${id}`
+                `${import.meta.env.VITE_API_URL}/proyectos/id/${id}`
             );
 
             if (response.status === 200) {
@@ -237,7 +237,7 @@ const AgregarProyecto = () => {
                 const token = localStorage.getItem("token");
 
                 const response = await axios.get(
-                    "http://localhost:4000/api/usuarios/empleados",
+                    `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -259,7 +259,7 @@ const AgregarProyecto = () => {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:4000/api/usuarios/clientes",
+                `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }

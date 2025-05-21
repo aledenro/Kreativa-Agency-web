@@ -18,7 +18,7 @@ import {
     Wallpaper,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import logo from "/src/assets/img/logo.png";
+import logo from "https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png";
 import { AuthContext } from "../../context/AuthContext";
 
 const handleLogout = () => {
@@ -36,7 +36,7 @@ const handleLogout = () => {
             localStorage.removeItem("token");
             localStorage.removeItem("tipo_usuario");
             localStorage.removeItem("user_id");
-            window.location.href = "http://localhost:5173/";
+            window.location.href = import.meta.env.FRONT_IP;
         }
     });
 };

@@ -74,7 +74,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 
         try {
             const res = await axios.post(
-                "http://localhost:4000/api/proyectos/crear",
+                `${import.meta.env.VITE_API_URL}/proyectos/crear`,
                 data
             );
 
@@ -119,7 +119,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:4000/api/usuarios/clientes",
+                `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -136,7 +136,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(
-                "http://localhost:4000/api/usuarios/empleados",
+                `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }

@@ -30,7 +30,7 @@ const RespuestasContacto = () => {
         const fetchFormularios = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/contacto"
+                    `${import.meta.env.VITE_API_URL}/contacto`
                 );
                 setFormularios(response.data.forms);
             } catch (error) {

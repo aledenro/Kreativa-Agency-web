@@ -30,7 +30,7 @@ const FormReclutaciones = () => {
         const checkFormStatus = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/form-status"
+                    `${import.meta.env.VITE_API_URL}/form-status`
                 );
                 setFormActive(response.data.active);
             } catch (error) {
@@ -87,7 +87,7 @@ const FormReclutaciones = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:4000/api/reclutaciones",
+                `${import.meta.env.VITE_API_URL}/reclutaciones`,
                 {
                     nombre,
                     apellido,
@@ -110,7 +110,7 @@ const FormReclutaciones = () => {
                     );
 
                     await axios.put(
-                        `http://localhost:4000/api/reclutaciones/actualizar/${reclutacionId}`,
+                        `${import.meta.env.VITE_API_URL}/reclutaciones/actualizar/${reclutacionId}`,
                         {
                             uploadedFiles,
                         }

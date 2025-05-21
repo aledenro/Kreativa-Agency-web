@@ -21,7 +21,7 @@ const VerUsuario = () => {
                     return;
                 }
 
-                const { data } = await axios.get(`http://localhost:4000/api/usuarios/${id}`, {
+                const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

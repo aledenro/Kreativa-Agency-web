@@ -31,7 +31,7 @@ const VerPerfil = () => {
                 }
 
                 const decoded = jwtDecode(token);
-                const response = await axios.get(`http://localhost:4000/api/usuarios/${decoded.id}`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios/${decoded.id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -61,7 +61,7 @@ const VerPerfil = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem("token");
-            await axios.put(`http://localhost:4000/api/usuarios/${usuario._id}`, formData, {
+            await axios.put(`${import.meta.env.VITE_API_URL}/usuarios/${usuario._id}`, formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

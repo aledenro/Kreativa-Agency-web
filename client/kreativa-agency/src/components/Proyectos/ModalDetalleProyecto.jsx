@@ -51,7 +51,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
         try {
             const res = await axios.get(
-                `http://localhost:4000/api/proyectos/id/${proyectoId}`
+                `${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`
             );
             console.log(res.data.proyecto);
 
@@ -109,7 +109,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
         try {
             const response = await axios.put(
-                `http://localhost:4000/api/proyectos/agregarRespuesta/${proyectoId}`,
+                `${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${proyectoId}`,
                 data
             );
 

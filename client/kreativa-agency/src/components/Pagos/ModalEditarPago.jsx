@@ -26,7 +26,7 @@ const ModalEditarPago = ({
     const handleEditar = async () => {
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/pagos/update/${pagoEditado._id}`,
+                `${import.meta.env.VITE_API_URL}/pagos/update/${pagoEditado._id}`,
                 pagoEditado
             );
 

@@ -50,7 +50,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
         try {
             setLoading(true);
             const res = await axios.get(
-                `http://localhost:4000/api/cotizaciones/id/${cotizacionId}`
+                `${import.meta.env.VITE_API_URL}/cotizaciones/id/${cotizacionId}`
             );
 
             setCotizacion(res.data.cotizacion);
@@ -123,7 +123,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
         try {
             const res = await axios.put(
-                `http://localhost:4000/api/cotizaciones/agregarRespuesta/${cotizacionId}`,
+                `${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${cotizacionId}`,
                 data
             );
             showNotification("success", "Respuesta enviada correctamente.");
@@ -194,7 +194,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
         try {
             axios.put(
-                `http://localhost:4000/api/cotizaciones/cambiarEstado/${cotizacionId}`,
+                `${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${cotizacionId}`,
                 { estado: estado }
             );
 

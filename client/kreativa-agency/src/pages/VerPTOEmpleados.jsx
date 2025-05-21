@@ -26,7 +26,7 @@ const VerPTOEmpleados = () => {
                     return;
                 }
 
-                const response = await axios.get("http://localhost:4000/api/usuarios", {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -60,7 +60,7 @@ const VerPTOEmpleados = () => {
         if (!confirm.isConfirmed) return;
 
         try {
-            await axios.patch(`http://localhost:4000/api/pto/${ptoId}`, { estado: nuevoEstado }, {
+            await axios.patch(`${import.meta.env.VITE_API_URL}/pto/${ptoId}`, { estado: nuevoEstado }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -88,7 +88,7 @@ const VerPTOEmpleados = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get(`http://localhost:4000/api/pto/${empleadoId}`, {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/pto/${empleadoId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

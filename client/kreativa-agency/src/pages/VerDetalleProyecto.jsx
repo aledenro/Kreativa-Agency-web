@@ -21,7 +21,7 @@ const VerDetalleProyecto = () => {
     const fetchproyecto = useCallback(async () => {
         try {
             const res = await axios.get(
-                `http://localhost:4000/api/proyectos/id/${id}`
+                `${import.meta.env.VITE_API_URL}/proyectos/id/${id}`
             );
             console.log(res.data.proyecto);
 
@@ -58,7 +58,7 @@ const VerDetalleProyecto = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:4000/api/proyectos/agregarRespuesta/${id}`,
+                `${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${id}`,
                 data
             );
 

@@ -34,7 +34,7 @@ const GestionServicios = () => {
         const fetchServicios = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/servicios/"
+                    `${import.meta.env.VITE_API_URL}/servicios/`
                 );
                 if (Array.isArray(response.data)) {
                     setServicios(response.data);
@@ -74,8 +74,8 @@ const GestionServicios = () => {
 
         try {
             const endpoint = estadoActual
-                ? `http://localhost:4000/api/servicios/${id}/desactivar`
-                : `http://localhost:4000/api/servicios/${id}/activar`;
+                ? `${import.meta.env.VITE_API_URL}/servicios/${id}/desactivar`
+                : `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
 
             const response = await axios.put(endpoint);
 

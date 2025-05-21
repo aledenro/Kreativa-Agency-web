@@ -48,7 +48,7 @@ const FormContacto = () => {
         const fetchServicios = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:4000/api/servicios/nombres"
+                    `${import.meta.env.VITE_API_URL}/servicios/nombres`
                 );
 
                 if (Array.isArray(response.data)) {
@@ -141,7 +141,7 @@ const FormContacto = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:4000/api/contacto",
+                `${import.meta.env.VITE_API_URL}/contacto`,
                 formData
             );
             openSuccessNotification("Formulario enviado exitosamente");

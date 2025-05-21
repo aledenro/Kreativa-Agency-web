@@ -86,7 +86,7 @@ export default function Navbar() {
                     <div className="container py-1">
                         <a href="/" className="navbar-brand">
                             <img
-                                src="/src/assets/img/logo.png"
+                                src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png"
                                 height="40"
                                 alt="logo"
                             />

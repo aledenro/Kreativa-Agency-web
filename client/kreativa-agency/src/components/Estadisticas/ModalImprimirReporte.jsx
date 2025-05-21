@@ -54,13 +54,13 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
         const data = [];
 
         const resEgresos = await axios.get(
-            `http://localhost:4000/api/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+            `${import.meta.env.VITE_API_URL}/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
         );
 
         data.push(resEgresos.data);
 
         const resIngresos = await axios.get(
-            `http://localhost:4000/api/ingresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+            `${import.meta.env.VITE_API_URL}/ingresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
         );
 
         data.push(resIngresos.data);
@@ -94,7 +94,7 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
         if ((ingresos && !egresos) || (!ingresos && egresos)) {
             const dataReport = ingresos ? "ingresos" : "egresos";
 
-            const url = `http://localhost:4000/api/${dataReport}/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+            const url = `${import.meta.env.VITE_API_URL}/${dataReport}/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
             const fileName = `reporte_de_${dataReport}_${fechaInicio}_${fechaFin}`;
 
             try {

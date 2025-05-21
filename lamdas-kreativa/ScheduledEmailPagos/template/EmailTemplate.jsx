@@ -21,7 +21,7 @@ const EmailTemplate = ({ header, content, btnLabel, accessLink }) => {
                 <Container style={container}>
                     <Section>
                         <Img
-                            src={`http://localhost:5173/logo.png`}
+                            src={`https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png`}
                             width="120"
                             height="36"
                             alt="logo"
@@ -32,7 +32,8 @@ const EmailTemplate = ({ header, content, btnLabel, accessLink }) => {
                     <Text style={text}>{content}</Text>
                     <Section>
                         <Button
-                            href={`http://localhost:5173/${accessLink}`}
+                            href={`${import.meta.env.VITE_API_URL}/${accessLink}`}
+                            // href={`http://localhost:5173/${accessLink}`}
                             style={button}
                         >
                             {btnLabel}
