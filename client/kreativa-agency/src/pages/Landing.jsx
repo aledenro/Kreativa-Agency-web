@@ -22,7 +22,7 @@ const Landing = () => {
                         <div className="video-overlay"></div>
                         <div className="video-content">
                             <img
-                                src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png"
+                                 src="src/assets/img/logo.png"
                                 alt="Logo"
                                 className="video-logo"
                             />
