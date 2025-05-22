@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../AdminPanel.css";
-import logo from "https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png";
+// import logo from "https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png";
 
 import {
     BarChart,
@@ -121,7 +121,7 @@ const AdminPanel = () => {
                 {/* Header */}
                 <div className="header">
                     <div className="logo-header">
-                        <img src={logo} alt="Kreativa Agency" className="logo-img" />
+                        <img src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png" alt="Kreativa Agency" className="logo-img" />
                     </div>
 
                     {/* Buscador */}

@@ -18,7 +18,7 @@ import {
     Wallpaper,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import logo from "https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png";
+// import logo from "https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png";
 import { AuthContext } from "../../context/AuthContext";
 
 const handleLogout = () => {
@@ -360,7 +360,7 @@ const AdminLayout = ({ children }) => {
 
                     <div className="logo-header">
                         <img
-                            src={logo}
+                            src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png"
                             alt="Kreativa Agency"
                             className="logo-img"
                         />
