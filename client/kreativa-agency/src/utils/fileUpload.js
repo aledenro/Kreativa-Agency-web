@@ -16,7 +16,7 @@ const uploadFile = async (files, folder, parent, parent_id) => {
     }
     try {
         const res = await axios.post(
-            "http://localhost:4000/api/fileManagement",
+            `${import.meta.env.VITE_API_URL}/fileManagement`,
             formData,
             {
                 headers: {
