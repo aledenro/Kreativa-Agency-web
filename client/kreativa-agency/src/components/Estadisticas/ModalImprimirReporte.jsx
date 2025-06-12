@@ -108,7 +108,7 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
                 }
 
                 const response = await axios.post(
-                    "http://localhost:3000/printExcel/singlePage",
+                    `${import.meta.env.VITE_MICROSERVICES_URL}/printExcel/singlePage`,
                     {
                         cols: ingresos ? columnasIngresos : columnasEgresos,
                         data: data,
@@ -157,7 +157,7 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
                 }
 
                 const response = await axios.post(
-                    "http://localhost:3000/printExcel/multiPage",
+                    `${import.meta.env.VITE_MICROSERVICES_URL}/printExcel/multiPage`,
                     {
                         cols: [columnasEgresos, columnasIngresos],
                         data: data,
