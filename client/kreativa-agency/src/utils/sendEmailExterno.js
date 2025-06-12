@@ -19,7 +19,7 @@ const sendEmailExterno = async (recipientEmail, emailContent, subject) => {
 
     try {
         const response = await axios.post(
-            "http://localhost:4000/api/email/externo",
+            `${import.meta.env.VITE_API_URL}/email/externo`,
             {
                 recipientEmail,
                 subject,

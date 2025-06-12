@@ -26,7 +26,7 @@ const sendEmail = async (
             emailContent: htmlEmail,
         };
         const response = await axios.post(
-            "http://localhost:4000/api/email",
+            `${import.meta.env.VITE_API_URL}/email`,
             data
         );
 

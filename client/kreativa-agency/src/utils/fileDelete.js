@@ -3,7 +3,7 @@ import axios from "axios";
 const deleteFile = async (fileKey) => {
     try {
         const response = await axios.post(
-            "http://localhost:4000/api/fileManagement/delete",
+            `${import.meta.env.VITE_API_URL}/fileManagement/delete`,
             { key: fileKey }
         );
 

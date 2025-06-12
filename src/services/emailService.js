@@ -4,14 +4,14 @@ const lodash = require("lodash");
 const { getEmailUsuario } = require("./usuarioService");
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+    tls: {
+        rejectUnauthorized: false,
+    },
 });
 
 const kreativaEmailTemplate = (title, message, buttonLink, buttonText) => `
@@ -25,70 +25,70 @@ const kreativaEmailTemplate = (title, message, buttonLink, buttonText) => `
 </div>`;
 
 const enviarCorreoRecuperacion = async (email, token) => {
-  try {
-    const mailOptions = {
-      from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "🔑 Recupera tu contraseña | Kreativa Agency",
-      html: kreativaEmailTemplate(
-        "Recupera tu contraseña",
-        "Para restablecer tu contraseña haz clic en el botón a continuación:",
-        `http://localhost:5173/restablecer/${token}`,
-        "Restablecer contraseña"
-      ),
-    };
+    try {
+        const mailOptions = {
+            from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: "🔑 Recupera tu contraseña | Kreativa Agency",
+            html: kreativaEmailTemplate(
+                "Recupera tu contraseña",
+                "Para restablecer tu contraseña haz clic en el botón a continuación:",
+                `http://localhost:5173/restablecer/${token}`,
+                "Restablecer contraseña"
+            ),
+        };
 
-    await transporter.sendMail(mailOptions);
-    console.log("Correo de recuperación enviado a:", email);
-  } catch (error) {
-    console.error("Error al enviar correo de recuperación:", error);
-    throw new Error("No se pudo enviar el correo.");
-  }
+        await transporter.sendMail(mailOptions);
+        console.log("Correo de recuperación enviado a:", email);
+    } catch (error) {
+        console.error("Error al enviar correo de recuperación:", error);
+        throw new Error("No se pudo enviar el correo.");
+    }
 };
 
 const sendEmail = async (idReceptor, emailContent, subject) => {
-  try {
-    const user = await getEmailUsuario(idReceptor);
+    try {
+        const user = await getEmailUsuario(idReceptor._id);
 
-    if (!user || lodash.isEmpty(user)) {
-      throw new Error("No se pudo enviar el correo, receptor inválido.");
+        if (!user || lodash.isEmpty(user)) {
+            throw new Error("No se pudo enviar el correo, receptor inválido.");
+        }
+
+        const mailOptions = {
+            from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
+            to: user.email,
+            subject,
+            html: kreativaEmailTemplate(subject, emailContent, null, null),
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log("Correo enviado a:", user.email);
+    } catch (error) {
+        console.error("Error al enviar el correo:", error);
+        throw new Error("No se pudo enviar el correo.");
     }
-
-    const mailOptions = {
-      from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject,
-      html: kreativaEmailTemplate(subject, emailContent, null, null),
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log("Correo enviado a:", user.email);
-  } catch (error) {
-    console.error("Error al enviar el correo:", error);
-    throw new Error("No se pudo enviar el correo.");
-  }
 };
 
 const sendEmailExterno = async (recipientEmail, emailContent, subject) => {
-  try {
-    if (!recipientEmail) {
-      throw new Error("Correo electrónico no válido.");
+    try {
+        if (!recipientEmail) {
+            throw new Error("Correo electrónico no válido.");
+        }
+
+        const mailOptions = {
+            from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
+            to: recipientEmail,
+            subject,
+            html: kreativaEmailTemplate(subject, emailContent, null, null),
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log("Correo enviado a:", recipientEmail);
+        return { success: true };
+    } catch (error) {
+        console.error("Error al enviar el correo:", error);
+        return { success: false, error: error.message };
     }
-
-    const mailOptions = {
-      from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
-      to: recipientEmail,
-      subject,
-      html: kreativaEmailTemplate(subject, emailContent, null, null),
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log("Correo enviado a:", recipientEmail);
-    return { success: true };
-  } catch (error) {
-    console.error("Error al enviar el correo:", error);
-    return { success: false, error: error.message };
-  }
 };
 
 module.exports = { enviarCorreoRecuperacion, sendEmail, sendEmailExterno };
