@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../AdminPanel.css";
-// import logo from "https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png";
 
 import {
     BarChart,
@@ -82,14 +81,38 @@ const AdminPanel = () => {
 
                     {/* Menú items */}
                     {[
-                        { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
+                        {
+                            icon: LayoutDashboard,
+                            label: "Dashboard",
+                            path: "/admin",
+                        },
                         { icon: Home, label: "Inicio", path: "/" },
                         { icon: Users, label: "Usuarios", path: "/usuarios" },
-                        { icon: SquareKanban, label: "Tareas", path: "/tareas" },
-                        { icon: FilePlus2, label: "Cotizaciones", path: "/cotizacion" },
-                        { icon: IdCard, label: "Empleados", path: "/jerarquia" },
-                        { icon: Settings, label: "Configuración", path: "/configuracion" },
-                        { icon: Mail, label: "Contactos", path: "/admin/contacto" },
+                        {
+                            icon: SquareKanban,
+                            label: "Tareas",
+                            path: "/tareas",
+                        },
+                        {
+                            icon: FilePlus2,
+                            label: "Cotizaciones",
+                            path: "/cotizacion",
+                        },
+                        {
+                            icon: IdCard,
+                            label: "Empleados",
+                            path: "/jerarquia",
+                        },
+                        {
+                            icon: Settings,
+                            label: "Configuración",
+                            path: "/configuracion",
+                        },
+                        {
+                            icon: Mail,
+                            label: "Contactos",
+                            path: "/admin/contacto",
+                        },
                         { icon: LogOut, label: "Salir", path: "/logout" },
                     ].map((item, index) => (
                         <motion.li
@@ -121,7 +144,11 @@ const AdminPanel = () => {
                 {/* Header */}
                 <div className="header">
                     <div className="logo-header">
-                        <img src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png" alt="Kreativa Agency" className="logo-img" />
+                        <img
+                            src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png"
+                            alt="Kreativa Agency"
+                            className="logo-img"
+                        />
                     </div>
 
                     {/* Buscador */}

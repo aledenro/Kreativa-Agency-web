@@ -169,7 +169,7 @@ const ListadoTareas = () => {
             }
 
             const response = await axios.post(
-                "http://localhost:3000/printExcel/singlePage",
+                `${import.meta.env.VITE_MICROSERVICES_URL}/printExcel/singlePage`,
                 {
                     cols: cols,
                     data: tareasFormateados,
