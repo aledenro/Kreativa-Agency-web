@@ -1,7 +1,7 @@
 /*variables*/
 :root {
-    --kreativa-font: "Century Gothic", sans-serif;
-    --kreativa-title: "Francy", "Century Gothic", sans-serif;
+    --kreativa-font: Century, sans-serif;
+    --kreativa-title: Francy, Century, sans-serif;
     --kreativa-gray: #110d2733;
     --kreativa-gray-rgb: 17, 13, 39, 0.2;
     --kreativa-base-clear: #ff00730f;
@@ -31,6 +31,20 @@
     font-family: Francy;
     src: url(assets/fonts/Francy.otf);
     font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Century;
+    src: url(assets/fonts/CenturyGothic.otf);
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Century;
+    src: url(assets/fonts/CenturyGothicBold.otf);
+    font-weight: bold;
     font-style: normal;
 }
 

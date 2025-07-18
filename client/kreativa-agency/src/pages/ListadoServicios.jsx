@@ -143,7 +143,7 @@ const ListadoServicios = () => {
             <p className="subtitle">
               Soluciones diseñadas para impulsar tu negocio
             </p>
-            <p>
+            {/* <p>
               {rol === "Administrador" && (
                 <button
                   className="thm-btn"
@@ -152,7 +152,7 @@ const ListadoServicios = () => {
                   Nuevo Servicio
                 </button>
               )}
-            </p>
+            </p> */}
           </div>
         </div>
 
