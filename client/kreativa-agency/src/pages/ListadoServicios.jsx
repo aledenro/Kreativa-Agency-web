@@ -136,7 +136,7 @@ const ListadoServicios = () => {
 
   return (
     <div className="services-page">
-      <div className="container main-container">
+      <div className="container">
         <div className="services-header">
           <div className="service-title">
             <h2 className="main-heading">Nuestros Servicios</h2>

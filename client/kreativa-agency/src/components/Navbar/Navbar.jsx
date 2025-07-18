@@ -128,7 +128,7 @@ export default function Navbar() {
                                 >
                                     <a className="navbar-brand" href="/">
                                         <img
-                                            src="/src/assets/img/logo.png"
+                                            src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png"
                                             height="32"
                                             alt="logo"
                                         />
