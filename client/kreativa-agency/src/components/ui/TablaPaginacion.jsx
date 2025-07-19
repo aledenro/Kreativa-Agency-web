@@ -21,7 +21,7 @@ const TablaPaginacion = ({
         className="thm-btn btn-rosado thm-btn-small mx-2 d-none-767"
         onClick={() => onPaginaChange(1)}
         disabled={paginaActual === 1}
-        style={{ height: "45px", width: "80px" }}
+        style={{ height: "45px" }}
       >
         <FontAwesomeIcon icon={faBackward} />
       </button>
@@ -30,7 +30,7 @@ const TablaPaginacion = ({
         className="thm-btn btn-rosado thm-btn-small mx-2"
         onClick={() => onPaginaChange(paginaActual - 1)}
         disabled={paginaActual === 1}
-        style={{ height: "45px", width: "80px" }}
+        style={{ height: "45px"}}
       >
         <FontAwesomeIcon icon={faCaretLeft} />
       </button>
@@ -43,7 +43,7 @@ const TablaPaginacion = ({
         className="thm-btn btn-rosado thm-btn-small mx-2"
         onClick={() => onPaginaChange(paginaActual + 1)}
         disabled={paginaActual === totalPaginas || totalPaginas <= 1}
-        style={{ height: "45px", width: "80px" }}
+        style={{ height: "45px"}}
       >
         <FontAwesomeIcon icon={faCaretRight} />
       </button>
@@ -52,7 +52,7 @@ const TablaPaginacion = ({
         className="thm-btn btn-rosado thm-btn-small mx-2 d-none-767"
         onClick={() => onPaginaChange(totalPaginas)}
         disabled={paginaActual === totalPaginas || totalPaginas <= 1}
-        style={{ height: "45px", width: "80px" }}
+        style={{ height: "45px"}}
       >
         <FontAwesomeIcon icon={faForward} />
       </button>

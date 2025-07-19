@@ -3,20 +3,14 @@ import AdminLayout from "../components/AdminLayout/AdminLayout";
 import axios from "axios";
 import lodash from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faSort,
-	faForward,
-	faCaretRight,
-	faCaretLeft,
-	faBackward,
-	faEye,
-	faPencil,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSort, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
 import { notification } from "antd";
 import forceFileDownload from "../utils/forceFileDownload";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"; // Asegúrate de importar esto si quieres el diseño responsive base
 
 const getEstado = (status) => {
 	switch (status) {
@@ -200,9 +194,9 @@ const ListadoTareas = () => {
 		filterColab !== ""
 			? tareas.filter(
 					(tarea) =>
-						lodash
-							.get(tarea, "colaborador_id._id")
-							.localeCompare(filterColab) === 0
+						(lodash.get(tarea, "colaborador_id._id") ?? "").localeCompare(
+							filterColab
+						) === 0
 				)
 			: tareas;
 
@@ -210,22 +204,23 @@ const ListadoTareas = () => {
 		filterStatus !== ""
 			? tareasFiltradas.filter(
 					(tarea) =>
-						lodash.get(tarea, "estado").localeCompare(filterStatus) === 0
+						(lodash.get(tarea, "estado") ?? "").localeCompare(filterStatus) ===
+						0
 				)
 			: tareasFiltradas;
 
 	const tareasOrdenadas =
-	sortOrder === "asc"
-		? tareasFiltradas.sort((a, b) =>
-				(lodash.get(a, sortField) || "").localeCompare(
-					lodash.get(b, sortField) || ""
+		sortOrder === "asc"
+			? tareasFiltradas.sort((a, b) =>
+					(lodash.get(a, sortField) || "").localeCompare(
+						lodash.get(b, sortField) || ""
+					)
 				)
-		  )
-		: tareasFiltradas.sort((a, b) =>
-				(lodash.get(b, sortField) || "").localeCompare(
-					lodash.get(a, sortField) || ""
-				)
-		  );
+			: tareasFiltradas.sort((a, b) =>
+					(lodash.get(b, sortField) || "").localeCompare(
+						lodash.get(a, sortField) || ""
+					)
+				);
 
 	const tareasPags =
 		itemsPag !== tareasOrdenadas.length
@@ -241,6 +236,15 @@ const ListadoTareas = () => {
 			</div>
 		);
 	}
+
+	const handleSort = (field) => {
+		if (sortField === field) {
+			setsortOrder(sortOrder === "asc" ? "desc" : "asc");
+		} else {
+			setsortField(field);
+			setsortOrder("asc");
+		}
+	};
 
 	return (
 		<AdminLayout>
@@ -258,14 +262,14 @@ const ListadoTareas = () => {
 							<label htmlFor="filterColab">Filtrar por Colaborador:</label>
 							<select
 								className="form-select form_input"
+								value={filterColab}
 								onChange={(e) => {
 									setFilterColab(e.target.value);
-									setFilterStatus(filterStatus);
 									setPagActual(1);
 								}}
 								id="filterColab"
 							>
-								<option defaultValue={""}>Todos</option>
+								<option value="">Todos</option>
 								{renderOptionsColabs()}
 							</select>
 						</div>
@@ -278,12 +282,11 @@ const ListadoTareas = () => {
 							className="form-select form_input"
 							onChange={(e) => {
 								setFilterStatus(e.target.value);
-								setFilterColab(filterColab);
 								setPagActual(1);
 							}}
 							id="filterStatus"
 						>
-							<option defaultValue={""}>Todos</option>
+							<option value="">Todos</option>
 							<option value={"Por Hacer"}>Por Hacer</option>
 							<option value={"En Progreso"}>En Progreso</option>
 							<option value={"Cancelado"}>Cancelado</option>
@@ -314,7 +317,7 @@ const ListadoTareas = () => {
 						</button>
 					</div>
 				</div>
-				<div className="table-responsive">
+				{/* <div className="table-responsive">
 					<table className="table kreativa-proyecto-table">
 						<thead className="table-light">
 							<tr>
@@ -485,9 +488,138 @@ const ListadoTareas = () => {
 								</tr>
 							)}
 						</tbody>
-					</table>
-				</div>
-				<TablaPaginacion
+					</table> 
+				</div>*/}
+				
+				<Table className="main-table">
+					<Thead>
+						<Tr>
+							<Th className="col-nombre" onClick={() => handleSort("nombre")}>
+								Nombre{" "}
+								<span className="sort-icon">
+									<FontAwesomeIcon icon={faSort} />
+								</span>
+							</Th>
+							<Th
+								className="col-proyecto"
+								onClick={() => handleSort("proyecto_id.nombre")}
+							>
+								Proyecto{" "}
+								<span className="sort-icon">
+									<FontAwesomeIcon icon={faSort} />
+								</span>
+							</Th>
+							{rol === "Administrador" && (
+								<Th
+									className="col-colaborador"
+									onClick={() => handleSort("colaborador_id.nombre")}
+								>
+									Colaborador{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+							)}
+							<Th className="col-estado" onClick={() => handleSort("estado")}>
+								Estado{" "}
+								<span className="sort-icon">
+									<FontAwesomeIcon icon={faSort} />
+								</span>
+							</Th>
+							<Th
+								className="col-prioridad"
+								onClick={() => handleSort("prioridad")}
+							>
+								Prioridad{" "}
+								<span className="sort-icon">
+									<FontAwesomeIcon icon={faSort} />
+								</span>
+							</Th>
+							<Th
+								className="col-fecha"
+								onClick={() => handleSort("fecha_vencimiento")}
+							>
+								Entrega{" "}
+								<span className="sort-icon">
+									<FontAwesomeIcon icon={faSort} />
+								</span>
+							</Th>
+							<Th className="col-acciones">Acciones</Th>
+						</Tr>
+					</Thead>
+					<Tbody>
+						{tareasOrdenadas.length > 0 ? (
+							tareasPags.map((tarea) => (
+								<Tr key={tarea._id}>
+									<Td className="col-nombre">{tarea.nombre}</Td>
+									<Td className="col-proyecto">{tarea.proyecto_id.nombre}</Td>
+									{rol === "Administrador" && (
+										<Td className="col-colaborador">
+											<span
+												className="badge badge-gris d-desktop"
+												title={tarea.colaborador_id?.nombre || "Sin asignar"}
+											>
+												{tarea.colaborador_id?.nombre
+													? tarea.colaborador_id.nombre.charAt(0) +
+														(tarea.colaborador_id.nombre.includes(" ")
+															? tarea.colaborador_id.nombre
+																	.split(" ")[1]
+																	.charAt(0)
+															: "")
+													: "?"}
+											</span>
+
+											<span className="d-mobile">
+												{tarea.colaborador_id?.nombre || "Sin asignar"}
+											</span>
+										</Td>
+									)}
+									<Td className="col-estado">
+										<div className={getEstado(tarea.estado)}>
+											{tarea.estado}
+										</div>
+									</Td>
+									<Td className="col-prioridad">
+										<div className={getPrioridad(tarea.prioridad)}>
+											{tarea.prioridad}
+										</div>
+									</Td>
+									<Td className="col-fecha">
+										{new Date(tarea.fecha_vencimiento).toLocaleDateString()}
+									</Td>
+									<Td className="text-center col-acciones">
+										<div className="botones-grupo">
+											<button
+												className="thm-btn thm-btn-small btn-amarillo"
+												onClick={() => {
+													setTareaModal(tarea);
+													setShowModal(true);
+												}}
+											>
+												<FontAwesomeIcon icon={faEye} />
+											</button>
+											{rol === "Administrador" && (
+												<button
+													className="thm-btn thm-btn-small btn-azul"
+													onClick={() => handleEditar(tarea._id)}
+												>
+													<FontAwesomeIcon icon={faPencil} />
+												</button>
+											)}
+										</div>
+									</Td>
+								</Tr>
+							))
+						) : (
+							<Tr>
+								<Td colSpan={rol === "Administrador" ? 7 : 6}>
+									No hay tareas por mostrar.
+								</Td>
+							</Tr>
+						)}
+					</Tbody>
+				</Table>
+                <TablaPaginacion
 					totalItems={tareasFiltradas.length}
 					itemsPorPagina={itemsPag}
 					paginaActual={pagActual}
