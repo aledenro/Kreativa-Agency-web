@@ -19,6 +19,8 @@ import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ModalVerEgreso from "../components/Egresos/ModalVerEgreso";
 import ModalEditarEgreso from "../components/Egresos/ModalEditarEgreso";
 import ModalCrearEgreso from "../components/Egresos/ModalCrearEgreso";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
+
 
 const ListadoEgresos = () => {
     const [egresos, setEgresos] = useState([]);
@@ -427,7 +429,17 @@ const ListadoEgresos = () => {
                     </Table>
                 </div>
 
-                {/* Paginación */}
+                <TablaPaginacion
+                    totalItems={egresosOrdenados.length}
+                    itemsPorPagina={itemsPag}
+                    paginaActual={pagActual}
+                    onItemsPorPaginaChange={(cant) => {
+                        setItemsPag(cant);
+                        setPagActual(1);
+                    }}
+                    onPaginaChange={(pagina) => setPagActual(pagina)}
+                />
+                {/* Paginación
                 <div className="d-flex justify-content-center mt-4">
                     <select
                         className="form-select form-select-sm w-auto me-2"
@@ -477,7 +489,7 @@ const ListadoEgresos = () => {
                     >
                         <FontAwesomeIcon icon={faForward} />
                     </button>
-                </div>
+                </div> */}
             </div>
 
             {/* Modal de confirmación para activar/desactivar */}

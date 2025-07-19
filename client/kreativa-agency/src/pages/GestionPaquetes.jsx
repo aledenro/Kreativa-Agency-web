@@ -16,6 +16,8 @@ import {
 import { notification } from "antd";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
+
 
 const GestionPaquetes = () => {
     const [servicios, setServicios] = useState([]);
@@ -369,56 +371,16 @@ const GestionPaquetes = () => {
                         </table>
                     </div>
 
-                    <div className="d-flex justify-content-center mt-4">
-                        <select
-                            className="form-select form-select-sm w-auto me-2"
-                            onChange={(e) => {
-                                setItemsPag(Number(e.target.value));
-                                setPagActual(1);
-                            }}
-                            value={itemsPag}
-                        >
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={25}>25</option>
-                            <option value={paquetes.length}>Todos</option>
-                        </select>
-                        <button
-                            className={`thm-btn btn-volver thm-btn-small me-2`}
-                            onClick={() => setPagActual(1)}
-                            disabled={pagActual === 1}
-                        >
-                            <FontAwesomeIcon icon={faBackward} />
-                        </button>
-                        <button
-                            className={`thm-btn btn-volver thm-btn-small me-2`}
-                            onClick={() => setPagActual(pagActual - 1)}
-                            disabled={pagActual === 1}
-                        >
-                            <FontAwesomeIcon icon={faCaretLeft} />
-                        </button>
-                        <span className="align-self-center mx-2">
-                            Página {pagActual} de {totalPags || 1}
-                        </span>
-                        <button
-                            className={`thm-btn btn-volver thm-btn-small me-2`}
-                            onClick={() => setPagActual(pagActual + 1)}
-                            disabled={
-                                pagActual === totalPags || totalPags === 0
-                            }
-                        >
-                            <FontAwesomeIcon icon={faCaretRight} />
-                        </button>
-                        <button
-                            className={`thm-btn btn-volver thm-btn-small me-2`}
-                            onClick={() => setPagActual(totalPags)}
-                            disabled={
-                                pagActual === totalPags || totalPags === 0
-                            }
-                        >
-                            <FontAwesomeIcon icon={faForward} />
-                        </button>
-                    </div>
+                    <TablaPaginacion
+    totalItems={paquetes.length}
+    itemsPorPagina={itemsPag}
+    paginaActual={pagActual}
+    onItemsPorPaginaChange={(cant) => {
+        setItemsPag(cant);
+        setPagActual(1);
+    }}
+    onPaginaChange={(pagina) => setPagActual(pagina)}
+/>
 
                     <Modal show={showModal} onHide={() => setShowModal(false)}>
                         <Modal.Header closeButton>

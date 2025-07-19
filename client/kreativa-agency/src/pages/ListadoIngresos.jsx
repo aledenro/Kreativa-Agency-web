@@ -22,6 +22,8 @@ import ModalVerIngreso from "../components/Ingresos/ModalVerIngreso";
 import ModalEditarIngreso from "../components/Ingresos/ModalEditarIngreso";
 import ModalCrearIngreso from "../components/Ingresos/ModalCrearIngreso";
 import sendEmail from "../utils/emailSender";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
+
 
 const ListadoIngresos = () => {
     // Datos principales
@@ -616,7 +618,18 @@ const ListadoIngresos = () => {
                     </Table>
                 </div>
 
-                {/* Paginación inferior con select de ítems por página */}
+                <TablaPaginacion
+          totalItems={ingresosOrdenados.length}
+          itemsPorPagina={itemsPag}
+          paginaActual={pagActual}
+          onItemsPorPaginaChange={(cant) => {
+            setItemsPag(cant);
+            setPagActual(1);
+          }}
+          onPaginaChange={(pagina) => setPagActual(pagina)}
+        />
+
+                {/* Paginación inferior con select de ítems por página
                 <div className="d-flex justify-content-center mt-4">
                     <select
                         className="form-select form-select-sm w-auto me-2"
@@ -666,7 +679,7 @@ const ListadoIngresos = () => {
                     >
                         <FontAwesomeIcon icon={faForward} />
                     </button>
-                </div>
+                </div> */}
             </div>
 
             {/* Modal de confirmación para activar/desactivar */}

@@ -136,14 +136,14 @@ const ListadoServicios = () => {
 
   return (
     <div className="services-page">
-      <div className="container main-container">
+      <div className="container">
         <div className="services-header">
           <div className="service-title">
             <h2 className="main-heading">Nuestros Servicios</h2>
             <p className="subtitle">
               Soluciones diseñadas para impulsar tu negocio
             </p>
-            <p>
+            {/* <p>
               {rol === "Administrador" && (
                 <button
                   className="thm-btn"
@@ -152,7 +152,7 @@ const ListadoServicios = () => {
                   Nuevo Servicio
                 </button>
               )}
-            </p>
+            </p> */}
           </div>
         </div>
 
