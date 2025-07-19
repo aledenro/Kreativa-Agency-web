@@ -18,7 +18,7 @@ const TablaPaginacion = ({
   return (
     <div className="d-flex justify-content-center my-4">
       <button
-        className="thm-btn btn-rosado thm-btn-small me-2 d-none-767"
+        className="thm-btn btn-rosado thm-btn-small mx-2 d-none-767"
         onClick={() => onPaginaChange(1)}
         disabled={paginaActual === 1}
         style={{ height: "45px", width: "80px" }}
@@ -27,7 +27,7 @@ const TablaPaginacion = ({
       </button>
 
       <button
-        className="thm-btn btn-rosado thm-btn-small me-2"
+        className="thm-btn btn-rosado thm-btn-small mx-2"
         onClick={() => onPaginaChange(paginaActual - 1)}
         disabled={paginaActual === 1}
         style={{ height: "45px", width: "80px" }}
@@ -40,7 +40,7 @@ const TablaPaginacion = ({
       </span>
 
       <button
-        className="thm-btn btn-rosado thm-btn-small me-2"
+        className="thm-btn btn-rosado thm-btn-small mx-2"
         onClick={() => onPaginaChange(paginaActual + 1)}
         disabled={paginaActual === totalPaginas || totalPaginas <= 1}
         style={{ height: "45px", width: "80px" }}
@@ -49,7 +49,7 @@ const TablaPaginacion = ({
       </button>
 
       <button
-        className="thm-btn btn-rosado thm-btn-small me-2 d-none-767"
+        className="thm-btn btn-rosado thm-btn-small mx-2 d-none-767"
         onClick={() => onPaginaChange(totalPaginas)}
         disabled={paginaActual === totalPaginas || totalPaginas <= 1}
         style={{ height: "45px", width: "80px" }}
@@ -61,7 +61,7 @@ const TablaPaginacion = ({
         className="form-select form-select-sm me-2 form_input"
         value={itemsPorPagina}
         onChange={(e) => onItemsPorPaginaChange(Number(e.target.value))}
-        style={{ width: "70px" }}
+        style={{ height: "45px", width: "80px" }}
       >
         <option value={5}>5</option>
         <option value={10}>10</option>

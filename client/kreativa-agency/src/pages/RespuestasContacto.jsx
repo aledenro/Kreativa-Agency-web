@@ -15,6 +15,8 @@ import {
 import ModalVerRespuesta from "../components/Contacto/ModalVerRespuesta";
 import ModalResponder from "../components/Contacto/ModalResponder";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
+
 
 const RespuestasContacto = () => {
     const [formularios, setFormularios] = useState([]);
@@ -157,48 +159,16 @@ const RespuestasContacto = () => {
                     </table>
                 </div>
 
-                <div className="d-flex justify-content-center mt-4">
-                    <select
-                        className="form-select form-select-sm w-auto me-2"
-                        onChange={(e) => {
-                            setItemsPag(Number(e.target.value));
-                            setPagActual(1);
-                        }}
-                    >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={formularios.length}>Todos</option>
-                    </select>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faBackward} />
-                    </button>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(pagActual - 1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faCaretLeft} />
-                    </button>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(pagActual + 1)}
-                        disabled={pagActual === totalPags || totalPags === 0}
-                    >
-                        <FontAwesomeIcon icon={faCaretRight} />
-                    </button>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(totalPags)}
-                        disabled={pagActual === totalPags || totalPags === 0}
-                    >
-                        <FontAwesomeIcon icon={faForward} />
-                    </button>
-                </div>
+                <TablaPaginacion
+          totalItems={formularios.length}
+          itemsPorPagina={itemsPag}
+          paginaActual={pagActual}
+          onItemsPorPaginaChange={(cant) => {
+            setItemsPag(cant);
+            setPagActual(1);
+          }}
+          onPaginaChange={(pagina) => setPagActual(pagina)}
+        />
 
                 {mostrarVerModal && (
                     <ModalVerRespuesta

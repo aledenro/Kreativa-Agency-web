@@ -254,7 +254,7 @@ const ListadoTareas = () => {
     return (
         <AdminLayout>
             {contextHolder}
-            <div className="container pt-3" style={{ marginLeft: "70px" }}>
+            <div className="container pt-3 mx-auto" style={{ marginLeft: "70px" }}>
                 <div style={{ height: "90px" }}></div>
 
                 <h1 className="mb-4">
