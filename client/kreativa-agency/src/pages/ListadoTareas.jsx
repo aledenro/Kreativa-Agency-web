@@ -490,7 +490,7 @@ const ListadoTareas = () => {
 						</tbody>
 					</table> 
 				</div>*/}
-				
+				<div className="div-table">
 				<Table className="main-table">
 					<Thead>
 						<Tr>
@@ -619,6 +619,7 @@ const ListadoTareas = () => {
 						)}
 					</Tbody>
 				</Table>
+                </div>
                 <TablaPaginacion
 					totalItems={tareasFiltradas.length}
 					itemsPorPagina={itemsPag}
