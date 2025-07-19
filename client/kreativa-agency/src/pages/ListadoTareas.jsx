@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
 import { notification } from "antd";
 import forceFileDownload from "../utils/forceFileDownload";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
 
 const getEstado = (status) => {
     switch (status) {
@@ -253,7 +254,7 @@ const ListadoTareas = () => {
     return (
         <AdminLayout>
             {contextHolder}
-            <div className="container pt-3 mx-auto">
+            <div className="container pt-3" style={{ marginLeft: "70px" }}>
                 <div style={{ height: "90px" }}></div>
 
                 <h1 className="mb-4">
@@ -565,52 +566,18 @@ const ListadoTareas = () => {
                         </tbody>
                     </table>
                 </div>
+<TablaPaginacion
+    totalItems={tareasFiltradas.length}
+    itemsPorPagina={itemsPag}
+    paginaActual={pagActual}
+    onItemsPorPaginaChange={(cant) => {
+        setItemsPag(cant);
+        setPagActual(1);
+    }}
+    onPaginaChange={(pagina) => setPagActual(pagina)}
+/>
 
-                <div className="d-flex justify-content-center mt-4">
-                    <select
-                        className="form-select form-select-sm me-2 "
-                        onChange={handleChangeCantItems}
-                        style={{ width: "70px" }}
-                    >
-                        <option value={5} selected>
-                            5
-                        </option>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={tareasOrdenadas.length}>Todos</option>
-                    </select>{" "}
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faBackward} />
-                    </button>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(pagActual - 1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faCaretLeft} />
-                    </button>
-                    <span className="align-self-center mx-2">
-                        Página {pagActual} de {totalPags || 1}
-                    </span>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(pagActual + 1)}
-                        disabled={pagActual === totalPags || totalPags - 1 <= 0}
-                    >
-                        <FontAwesomeIcon icon={faCaretRight} />
-                    </button>
-                    <button
-                        className={`thm-btn thm-btn-small btn-volver me-2`}
-                        onClick={() => setPagActual(totalPags)}
-                        disabled={pagActual === totalPags || totalPags - 1 <= 0}
-                    >
-                        <FontAwesomeIcon icon={faForward} />
-                    </button>
-                </div>
+                
             </div>
 
             {showModal && (
