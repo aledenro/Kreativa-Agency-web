@@ -52,6 +52,7 @@
     "react-social-media-embed": "^2.5.18",
     "react-super-responsive-table": "^6.0.2",
     "recharts": "^2.15.1",
+    "responsive-table-react": "^1.2.3",
     "sweetalert2": "^11.22.2",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.12",

@@ -251,7 +251,7 @@ const Estadisticas = () => {
 
     return (
         <AdminLayout>
-            <div className="main-container mx-5">
+            <div className="main-container mx-auto">
                 {/* Selector de Año y Mes */}
                 <div
                     style={{

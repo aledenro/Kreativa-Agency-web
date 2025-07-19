@@ -78,9 +78,15 @@
     transition: margin-left 0.3s ease-in-out;
     border-radius: 0 !important;
     box-shadow: none !important;
-    width: 100%;
+    /* width: 100%; */
     position: relative;
     z-index: 1;
+}
+
+.main-container{
+    max-width: 1200px;
+    margin: 90px auto 0 auto;
+    padding: 0 20px;
 }
 
 /* Ajuste cuando el sidebar está colapsado */
@@ -207,11 +213,11 @@
 }
 
 /*  Evita el Scroll Horizontal Global */
-html,
+/* html,
 body {
     overflow-x: hidden;
     width: 100%;
-}
+} */
 
 .menu-toggle-inside {
     color: white;
@@ -609,6 +615,6 @@ body {
     transform: translateX(-50%) translateY(2px);
 }
 
-.main-container {
+/* .main-container {
     padding-right: 80px;
-  }
+  } */
