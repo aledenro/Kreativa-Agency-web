@@ -3,301 +3,270 @@ import axios from "axios";
 import lodash from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faEye,
-    faPencil,
-    faToggleOn,
-    faToggleOff,
-    faBackward,
-    faCaretLeft,
-    faCaretRight,
-    faForward,
-    faSort,
-    faPlus,
+	faEye,
+	faPencil,
+	faToggleOn,
+	faToggleOff,
+	faSort,
+	faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { Modal } from "react-bootstrap";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
-
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 
 const GestionServicios = () => {
-    const [servicios, setServicios] = useState([]);
-    const [itemsPag, setItemsPag] = useState(5);
-    const [pagActual, setPagActual] = useState(1);
-    const [sortField, setSortField] = useState("nombre");
-    const [sortOrder, setSortOrder] = useState("asc");
-    const navigate = useNavigate();
+	const [servicios, setServicios] = useState([]);
+	const [itemsPag, setItemsPag] = useState(5);
+	const [pagActual, setPagActual] = useState(1);
+	const [sortField, setSortField] = useState("nombre");
+	const [sortOrder, setSortOrder] = useState("asc");
+	const navigate = useNavigate();
 
-    const [showModal, setShowModal] = useState(false);
-    const [selectedServicio, setSelectedServicio] = useState(null);
-    const [modalAction, setModalAction] = useState(""); // "activar" or "desactivar"
+	const [showModal, setShowModal] = useState(false);
+	const [selectedServicio, setSelectedServicio] = useState(null);
+	const [modalAction, setModalAction] = useState(""); // "activar" or "desactivar"
 
-    useEffect(() => {
-        const fetchServicios = async () => {
-            try {
-                const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/`
-                );
-                if (Array.isArray(response.data)) {
-                    setServicios(response.data);
-                } else {
-                    setServicios([]);
-                }
-            } catch (error) {
-                console.error("Error al obtener los servicios:", error);
-            }
-        };
+	useEffect(() => {
+		const fetchServicios = async () => {
+			try {
+				const response = await axios.get(
+					`${import.meta.env.VITE_API_URL}/servicios/`
+				);
+				if (Array.isArray(response.data)) {
+					setServicios(response.data);
+				} else {
+					setServicios([]);
+				}
+			} catch (error) {
+				console.error("Error al obtener los servicios:", error);
+			}
+		};
 
-        fetchServicios();
-    }, []);
+		fetchServicios();
+	}, []);
 
-    const handleVerServicio = (id) => {
-        navigate(`/servicio/${id}`);
-    };
+	const handleVerServicio = (id) => {
+		navigate(`/servicio/${id}`);
+	};
 
-    const handleModificarServicio = (id) => {
-        navigate(`/servicio/modificar/${id}`);
-    };
+	const handleModificarServicio = (id) => {
+		navigate(`/servicio/modificar/${id}`);
+	};
 
-    const handleAgregarServicio = () => {
-        navigate(`/servicio/agregar`);
-    };
+	const handleAgregarServicio = () => {
+		navigate(`/servicio/agregar`);
+	};
 
-    const confirmToggleEstadoServicio = (id, estadoActual) => {
-        setSelectedServicio({ id, estadoActual });
-        setModalAction(estadoActual ? "desactivar" : "activar");
-        setShowModal(true);
-    };
+	const confirmToggleEstadoServicio = (id, estadoActual) => {
+		setSelectedServicio({ id, estadoActual });
+		setModalAction(estadoActual ? "desactivar" : "activar");
+		setShowModal(true);
+	};
 
-    const toggleEstadoServicio = async () => {
-        if (!selectedServicio) return;
+	const toggleEstadoServicio = async () => {
+		if (!selectedServicio) return;
 
-        const { id, estadoActual } = selectedServicio;
+		const { id, estadoActual } = selectedServicio;
 
-        try {
-            const endpoint = estadoActual
-                ? `${import.meta.env.VITE_API_URL}/servicios/${id}/desactivar`
-                : `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
+		try {
+			const endpoint = estadoActual
+				? `${import.meta.env.VITE_API_URL}/servicios/${id}/desactivar`
+				: `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
 
-            const response = await axios.put(endpoint);
+			const response = await axios.put(endpoint);
 
-            setServicios(
-                servicios.map((servicio) =>
-                    servicio._id === id
-                        ? { ...servicio, activo: !estadoActual }
-                        : servicio
-                )
-            );
+			setServicios(
+				servicios.map((servicio) =>
+					servicio._id === id
+						? { ...servicio, activo: !estadoActual }
+						: servicio
+				)
+			);
 
-            setShowModal(false);
-        } catch (error) {
-            console.error("Error al cambiar el estado del servicio:", error);
-            setShowModal(false);
-        }
-    };
+			setShowModal(false);
+		} catch (error) {
+			console.error("Error al cambiar el estado del servicio:", error);
+			setShowModal(false);
+		}
+	};
 
-    const serviciosOrdenados = [...servicios].sort((a, b) => {
-        let valueA = lodash.get(a, sortField);
-        let valueB = lodash.get(b, sortField);
+	const serviciosOrdenados = [...servicios].sort((a, b) => {
+		let valueA = lodash.get(a, sortField);
+		let valueB = lodash.get(b, sortField);
 
-        if (
-            sortField === "fecha_creacion" ||
-            sortField === "fecha_modificacion"
-        ) {
-            return sortOrder === "asc"
-                ? new Date(valueA) - new Date(valueB)
-                : new Date(valueB) - new Date(valueA);
-        }
+		if (sortField === "fecha_creacion" || sortField === "fecha_modificacion") {
+			return sortOrder === "asc"
+				? new Date(valueA) - new Date(valueB)
+				: new Date(valueB) - new Date(valueA);
+		}
 
-        if (typeof valueA === "string" && typeof valueB === "string") {
-            return sortOrder === "asc"
-                ? valueA.localeCompare(valueB)
-                : valueB.localeCompare(valueA);
-        }
+		if (typeof valueA === "string" && typeof valueB === "string") {
+			return sortOrder === "asc"
+				? valueA.localeCompare(valueB)
+				: valueB.localeCompare(valueA);
+		}
 
-        return sortOrder === "asc"
-            ? valueA > valueB
-                ? 1
-                : -1
-            : valueB > valueA
-              ? 1
-              : -1;
-    });
+		return sortOrder === "asc"
+			? valueA > valueB
+				? 1
+				: -1
+			: valueB > valueA
+				? 1
+				: -1;
+	});
 
-    const serviciosPaginados = serviciosOrdenados.slice(
-        (pagActual - 1) * itemsPag,
-        pagActual * itemsPag
-    );
+	const serviciosPaginados = serviciosOrdenados.slice(
+		(pagActual - 1) * itemsPag,
+		pagActual * itemsPag
+	);
 
-    const totalPags = Math.ceil(servicios.length / itemsPag);
+	const totalPags = Math.ceil(servicios.length / itemsPag);
 
-    const handleSort = (field) => {
-        if (sortField === field) {
-            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-        } else {
-            setSortField(field);
-            setSortOrder("asc");
-        }
-    };
+	const handleSort = (field) => {
+		if (sortField === field) {
+			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+		} else {
+			setSortField(field);
+			setSortOrder("asc");
+		}
+	};
 
-    return (
-        <AdminLayout>
-            <div className="container mt-4">
-                <div style={{ height: "90px" }}></div>
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h1>Gestión de Servicios</h1>
-                    <button className="thm-btn" onClick={handleAgregarServicio}>
-                        <FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo
-                        Servicio
-                    </button>
-                </div>
-                <div className="table-responsive-xxl">
-                    <table className="table kreativa-proyecto-table">
-                        <thead>
-                            <tr>
-                                <th
-                                    onClick={() => handleSort("nombre")}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    Nombre <FontAwesomeIcon icon={faSort} />
-                                </th>
-                                <th>Descripción</th>
-                                <th
-                                    onClick={() => handleSort("activo")}
-                                    style={{ cursor: "pointer" }}
-                                >
-                                    Estado <FontAwesomeIcon icon={faSort} />
-                                </th>
-                                <th>Paquetes</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {serviciosPaginados.length > 0 ? (
-                                serviciosPaginados.map((servicio) => (
-                                    <tr key={servicio._id}>
-                                        <td>{servicio.nombre}</td>
-                                        <td>
-                                            {servicio.descripcion &&
-                                            servicio.descripcion.length > 50
-                                                ? `${servicio.descripcion.substring(0, 50)}...`
-                                                : servicio.descripcion}
-                                        </td>
-                                        <td>
-                                            <span
-                                                className={`badge ${servicio.activo ? "badge-verde" : "badge-rojo"}`}
-                                            >
-                                                {servicio.activo
-                                                    ? "Activo"
-                                                    : "Inactivo"}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            {servicio.paquetes
-                                                ? servicio.paquetes.length
-                                                : 0}
-                                        </td>
-                                        <td className="acciones">
-                                            <div className="botones-grupo">
-                                                <button
-                                                    className="thm-btn thm-btn-small btn-amarillo me-1"
-                                                    onClick={() =>
-                                                        handleVerServicio(
-                                                            servicio._id
-                                                        )
-                                                    }
-                                                    title="Ver detalle"
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faEye}
-                                                    />
-                                                </button>
-                                                <button
-                                                    className="thm-btn thm-btn-small btn-azul me-1"
-                                                    onClick={() =>
-                                                        handleModificarServicio(
-                                                            servicio._id
-                                                        )
-                                                    }
-                                                    title="Modificar"
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faPencil}
-                                                    />
-                                                </button>
-                                                <button
-                                                    className={`thm-btn thm-btn-small ${servicio.activo ? "btn-verde" : "btn-rojo"}`}
-                                                    onClick={() =>
-                                                        confirmToggleEstadoServicio(
-                                                            servicio._id,
-                                                            servicio.activo
-                                                        )
-                                                    }
-                                                    title={
-                                                        servicio.activo
-                                                            ? "Desactivar"
-                                                            : "Activar"
-                                                    }
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={
-                                                            servicio.activo
-                                                                ? faToggleOn
-                                                                : faToggleOff
-                                                        }
-                                                    />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="6" className="text-center">
-                                        No hay servicios disponibles
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+	return (
+		<AdminLayout>
+			<div className="main-container mx-auto">
+				<div style={{ height: "70px" }}></div>
 
-                <TablaPaginacion
-    totalItems={servicios.length}
-    itemsPorPagina={itemsPag}
-    paginaActual={pagActual}
-    onItemsPorPaginaChange={(cant) => {
-        setItemsPag(cant);
-        setPagActual(1);
-    }}
-    onPaginaChange={(pagina) => setPagActual(pagina)}
-/>
+				<div className="d-flex justify-content-between align-items-center mb-4">
+					<h1>Gestión de Servicios</h1>
+					<button className="thm-btn" onClick={handleAgregarServicio}>
+						<FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo Servicio
+					</button>
+				</div>
+                
+				<div className="div-table">
+					<Table className="main-table">
+						<Thead>
+							<Tr>
+								<Th onClick={() => handleSort("nombre")} className="col-nombre">
+									Nombre{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th className="col-proyecto">Descripción</Th>
+								<Th onClick={() => handleSort("activo")} className="col-estado">
+									Estado{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th className="col-prioridad">Paquetes</Th>
+								<Th className="col-acciones">Acciones</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{serviciosPaginados.length > 0 ? (
+								serviciosPaginados.map((servicio) => (
+									<Tr key={servicio._id}>
+										<Td className="col-nombre">{servicio.nombre}</Td>
+										<Td className="col-proyecto">
+											{servicio.descripcion?.length > 50
+												? `${servicio.descripcion.substring(0, 50)}...`
+												: servicio.descripcion}
+										</Td>
+										<Td className="col-estado">
+											<span
+												className={`badge ${servicio.activo ? "badge-verde" : "badge-rojo"}`}
+											>
+												{servicio.activo ? "Activo" : "Inactivo"}
+											</span>
+										</Td>
+										<Td className="col-prioridad">
+											{servicio.paquetes?.length || 0}
+										</Td>
+										<Td className="text-center col-acciones">
+											<div className="botones-grupo">
+												<button
+													className="thm-btn thm-btn-small btn-amarillo"
+													onClick={() => handleVerServicio(servicio._id)}
+												>
+													<FontAwesomeIcon icon={faEye} />
+												</button>
+												<button
+													className="thm-btn thm-btn-small btn-azul"
+													onClick={() => handleModificarServicio(servicio._id)}
+												>
+													<FontAwesomeIcon icon={faPencil} />
+												</button>
+												<button
+													className={`thm-btn thm-btn-small ${
+														servicio.activo ? "btn-verde" : "btn-rojo"
+													}`}
+													onClick={() =>
+														confirmToggleEstadoServicio(
+															servicio._id,
+															servicio.activo
+														)
+													}
+												>
+													<FontAwesomeIcon
+														icon={servicio.activo ? faToggleOn : faToggleOff}
+													/>
+												</button>
+											</div>
+										</Td>
+									</Tr>
+								))
+							) : (
+								<Tr>
+									<Td colSpan="5" className="text-center">
+										No hay servicios disponibles
+									</Td>
+								</Tr>
+							)}
+						</Tbody>
+					</Table>
+				</div>
 
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirmar Acción</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        ¿Seguro que desea {modalAction} este servicio?
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button
-                            className="thm-btn thm-btn-small btn-rojo"
-                            onClick={() => setShowModal(false)}
-                        >
-                            No
-                        </button>
-                        <button
-                            className="thm-btn thm-btn-small"
-                            onClick={toggleEstadoServicio}
-                        >
-                            Sí
-                        </button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
-        </AdminLayout>
-    );
+				<TablaPaginacion
+					totalItems={servicios.length}
+					itemsPorPagina={itemsPag}
+					paginaActual={pagActual}
+					onItemsPorPaginaChange={(cant) => {
+						setItemsPag(cant);
+						setPagActual(1);
+					}}
+					onPaginaChange={(pagina) => setPagActual(pagina)}
+				/>
+
+				<Modal show={showModal} onHide={() => setShowModal(false)}>
+					<Modal.Header closeButton>
+						<Modal.Title>Confirmar Acción</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						¿Seguro que desea {modalAction} este servicio?
+					</Modal.Body>
+					<Modal.Footer>
+						<button
+							className="thm-btn thm-btn-small btn-rojo"
+							onClick={() => setShowModal(false)}
+						>
+							No
+						</button>
+						<button
+							className="thm-btn thm-btn-small"
+							onClick={toggleEstadoServicio}
+						>
+							Sí
+						</button>
+					</Modal.Footer>
+				</Modal>
+			</div>
+		</AdminLayout>
+	);
 };
 
 export default GestionServicios;
