@@ -15,6 +15,8 @@ import {
 // Importamos los modales para ver Ingreso y Egreso
 import ModalVerIngreso from "../components/Ingresos/ModalVerIngreso";
 import ModalVerEgreso from "../components/Egresos/ModalVerEgreso";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
+
 
 const Movimientos = () => {
     // Estados para filtros
@@ -364,7 +366,18 @@ const Movimientos = () => {
                     </Table>
                 </div>
 
-                {/* Paginación inferior con select de ítems por página */}
+                <TablaPaginacion
+          totalItems={movimientosOrdenados.length}
+          itemsPorPagina={itemsPag}
+          paginaActual={pagActual}
+          onItemsPorPaginaChange={(cant) => {
+            setItemsPag(cant);
+            setPagActual(1);
+          }}
+          onPaginaChange={(pagina) => setPagActual(pagina)}
+        />
+
+                {/* Paginación inferior con select de ítems por página
                 {movimientosOrdenados.length > 0 && (
                     <div className="d-flex justify-content-center mt-4">
                         <select
@@ -418,7 +431,7 @@ const Movimientos = () => {
                             <FontAwesomeIcon icon={faForward} />
                         </button>
                     </div>
-                )}
+                )} */}
 
                 {/* Modal para ver Ingreso */}
                 {showModalVerIngreso && registroSeleccionado && (
