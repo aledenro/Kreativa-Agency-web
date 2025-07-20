@@ -159,24 +159,24 @@ const ListadoIngresos = () => {
 	// 					.localeCompare(lodash.get(a, sortField).toString())
 	// 			);
 
-    const ingresosOrdenados = [...ingresosFiltrados].sort((a, b) => {
-	const valA = lodash.get(a, sortField) ?? "";
-	const valB = lodash.get(b, sortField) ?? "";
+	const ingresosOrdenados = [...ingresosFiltrados].sort((a, b) => {
+		const valA = lodash.get(a, sortField) ?? "";
+		const valB = lodash.get(b, sortField) ?? "";
 
-	if (sortField.toLowerCase().includes("fecha")) {
-		const dateA = new Date(valA);
-		const dateB = new Date(valB);
-		return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-	}
+		if (sortField.toLowerCase().includes("fecha")) {
+			const dateA = new Date(valA);
+			const dateB = new Date(valB);
+			return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+		}
 
-	if (!isNaN(valA) && !isNaN(valB)) {
-		return sortOrder === "asc" ? valA - valB : valB - valA;
-	}
+		if (!isNaN(valA) && !isNaN(valB)) {
+			return sortOrder === "asc" ? valA - valB : valB - valA;
+		}
 
-	return sortOrder === "asc"
-		? valA.toString().localeCompare(valB.toString())
-		: valB.toString().localeCompare(valA.toString());
-});
+		return sortOrder === "asc"
+			? valA.toString().localeCompare(valB.toString())
+			: valB.toString().localeCompare(valA.toString());
+	});
 
 	const totalPaginas = Math.ceil(ingresosOrdenados.length / itemsPag);
 	const ingresosPaginados = ingresosOrdenados.slice(
@@ -365,12 +365,12 @@ const ListadoIngresos = () => {
 							>
 								<option value="">Todos</option>
 								{clientes
-	.filter((c) => c.tipo_usuario === "Cliente")
-	.map((cliente) => (
-		<option key={cliente._id} value={cliente.nombre}>
-			{cliente.nombre}
-		</option>
-	))}
+									.filter((c) => c.tipo_usuario === "Cliente")
+									.map((cliente) => (
+										<option key={cliente._id} value={cliente.nombre}>
+											{cliente.nombre}
+										</option>
+									))}
 							</Form.Select>
 						</Form.Group>
 						<Form.Group controlId="filterFecha">

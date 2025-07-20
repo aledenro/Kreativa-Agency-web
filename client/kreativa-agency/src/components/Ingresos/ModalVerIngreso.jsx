@@ -49,7 +49,7 @@ const ModalVerIngreso = ({ show, handleClose, ingreso, categories = [] }) => {
         </p>
       </Modal.Body>
       <Modal.Footer>
-        <button className="thm-btn-2 thm-btn-small" onClick={handleClose}>
+        <button className="thm-btn thm-btn-small btn-gris " onClick={handleClose}>
           Cerrar
         </button>
       </Modal.Footer>

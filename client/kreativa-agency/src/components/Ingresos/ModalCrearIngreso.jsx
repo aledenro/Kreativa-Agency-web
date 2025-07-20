@@ -144,7 +144,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" className="thm-btn-2 thm-btn-small" onClick={handleClose}>
+          <button type="button" className="thm-btn thm-btn-small btn-gris mx-1" onClick={handleClose}>
             Cancelar
           </button>
           <button type="submit" className="thm-btn thm-btn-small">

@@ -171,7 +171,7 @@ const ModalEditarIngreso = ({ show, handleClose, ingreso, categories, onSave }) 
           <Modal.Footer>
             <button
               type="button"
-              className="thm-btn-2 thm-btn-small"
+              className="thm-btn thm-btn-small btn-gris mx-1"
               onClick={handleClose}
             >
               Cancelar
