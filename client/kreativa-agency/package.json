@@ -43,7 +43,8 @@
     "react-router-dom": "^7.1.4",
     "react-tsparticles": "^2.12.2",
     "recharts": "^2.15.1",
-    "sweetalert2": "^11.6.13",
+    "responsive-table-react": "^1.2.3",
+    "sweetalert2": "^11.22.2",
     "tailwindcss": "^4.0.12",
     "tsparticles": "^3.8.1"
   },

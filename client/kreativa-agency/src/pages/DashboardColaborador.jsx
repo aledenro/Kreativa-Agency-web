@@ -3,11 +3,8 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSort,
-  faForward,
   faCaretRight,
-  faCaretLeft,
   faCaretDown,
-  faBackward,
   faEye,
   faPencil,
   faSortUp,
@@ -24,6 +21,8 @@ import lodash from "lodash";
 import { notification } from "antd";
 import forceFileDownload from "../utils/forceFileDownload";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 
 const DashboardColaborador = () => {
   const [proyectos, setProyectos] = useState([]);
@@ -577,12 +576,11 @@ const DashboardColaborador = () => {
             </button>
           </div>
         </div>
-        <div className="table-responsive">
-          <table className="main-table">
-            <thead className="table-light">
-              <tr>
-                <th
-                  style={{ cursor: "pointer" }}
+        <div className="div-table">
+          <Table className="main-table tabla-backlog">
+            <Thead>
+              <Tr>
+                <Th className="col-nombre"
                   onClick={() => {
                     setSortOrder(
                       sortField === "nombre" && sortOrder === "asc"
@@ -593,22 +591,18 @@ const DashboardColaborador = () => {
                   }}
                 >
                   Proyecto <FontAwesomeIcon icon={faSort} />
-                </th>
-                <th style={{ width: "200px" }} className="text-center">
+                </Th>
+                <Th className="col-cliente">
                   Cliente
-                </th>
-                <th style={{ width: "120px" }} className="text-center">
+                </Th>
+                <Th className="col-estado">
                   Estado
-                </th>
-                <th style={{ width: "100px" }} className="text-center">
+                </Th>
+                <Th className="col-prioridad">
                   Urgente
-                </th>
-                <th
-                  style={{
-                    width: "150px",
-                    cursor: "pointer",
-                  }}
-                  className="text-center"
+                </Th>
+                <Th
+                  className="col-fecha"
                   onClick={() => {
                     setSortOrder(
                       sortField === "fecha_entrega" && sortOrder === "asc"
@@ -619,18 +613,14 @@ const DashboardColaborador = () => {
                   }}
                 >
                   Entrega <FontAwesomeIcon icon={faSort} />
-                </th>
-                <th
-                  style={{
-                    width: "120px",
-                  }}
-                  className="text-center"
+                </Th>
+                <Th className="col-acciones"
                 >
                   Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
               {proyectosPaginados.length > 0 ? (
                 proyectosPaginados.map((proyecto) => {
                   const projectTasks = getTareasForProyecto(proyecto._id);
@@ -651,8 +641,8 @@ const DashboardColaborador = () => {
 
                   return (
                     <React.Fragment key={proyecto._id}>
-                      <tr>
-                        <td>
+                      <Tr>
+                        <Td className="col-nombre">
                           <div className="d-flex align-items-center">
                             <button
                               className="btn btn-sm"
@@ -666,30 +656,30 @@ const DashboardColaborador = () => {
                             </button>
                             {proyecto.nombre}
                           </div>
-                        </td>
-                        <td className="text-center">
+                        </Td>
+                        <Td className="col-cliente">
                           {proyecto.cliente_id?.nombre || "-"}
-                        </td>
-                        <td className="text-center">
+                        </Td>
+                        <Td className="col-estado">
                           <div className={`${getEstado(proyecto.estado)}`}>
                             {proyecto.estado}
                           </div>
-                        </td>
-                        <td className="text-center">
+                        </Td>
+                        <Td className="col-prioridad">
                           <div
                             className={`${getUrgencyClass(proyecto.urgente)}`}
                           >
                             {proyecto.urgente ? "Sí" : "No"}
                           </div>
-                        </td>
-                        <td className="text-center">
+                        </Td>
+                        <Td className="col-fecha">
                           {proyecto.fecha_entrega
                             ? new Date(
                                 proyecto.fecha_entrega
                               ).toLocaleDateString()
                             : "-"}
-                        </td>
-                        <td className="text-center">
+                        </Td>
+                        <Td className="col-acciones">
                           <div className="botones-grupo">
                             {canView && (
                               <button
@@ -710,54 +700,40 @@ const DashboardColaborador = () => {
                               </button>
                             )}
                           </div>
-                        </td>
-                      </tr>
+                        </Td>
+                      </Tr>
 
                       {expandedProjects[proyecto._id] && (
-                        <tr>
-                          <td colSpan="6" className="p-0">
+                        <Tr>
+                          <Td colSpan="6" className="p-0">
                             <div className="ms-5">
-                              <table className="table kreativa-tareas-table border border-0 my-2">
-                                <thead className="table-light">
-                                  <tr>
-                                    <th
-                                      style={{
-                                        cursor: "pointer",
-                                      }}
+                              <Table className="main-table subtabla-backlog">
+                                <Thead>
+                                  <Tr>
+                                    <Th
                                       onClick={() =>
                                         handleTaskSort(proyecto._id, "nombre")
                                       }
                                     >
                                       Tarea{" "}
                                       {getSortIcon(proyecto._id, "nombre")}
-                                    </th>
-                                    <th
-                                      style={{
-                                        width: "80px",
-                                      }}
-                                      className="text-center"
+                                    </Th>
+                                    <Th
+                                      className="col-colaborador"
                                     >
                                       Resp.
-                                    </th>
-                                    <th
-                                      style={{
-                                        width: "120px",
-                                        cursor: "pointer",
-                                      }}
-                                      className="text-center"
+                                    </Th>
+                                    <Th
+                                      className="col-estado"
                                       onClick={() =>
                                         handleTaskSort(proyecto._id, "estado")
                                       }
                                     >
                                       Estado{" "}
                                       {getSortIcon(proyecto._id, "estado")}
-                                    </th>
-                                    <th
-                                      style={{
-                                        width: "100px",
-                                        cursor: "pointer",
-                                      }}
-                                      className="text-center"
+                                    </Th>
+                                    <Th
+                                      className="col-prioridad"
                                       onClick={() =>
                                         handleTaskSort(
                                           proyecto._id,
@@ -766,13 +742,9 @@ const DashboardColaborador = () => {
                                       }
                                     >
                                       Prioridad
-                                    </th>
-                                    <th
-                                      style={{
-                                        width: "120px",
-                                        cursor: "pointer",
-                                      }}
-                                      className="text-center"
+                                    </Th>
+                                    <Th
+                                      className="col-vencimiento"
                                       onClick={() =>
                                         handleTaskSort(
                                           proyecto._id,
@@ -785,23 +757,18 @@ const DashboardColaborador = () => {
                                         proyecto._id,
                                         "fecha_vencimiento"
                                       )}
-                                    </th>
-                                    <th
-                                      style={{
-                                        width: "120px",
-                                      }}
-                                      className="text-center"
-                                    >
+                                    </Th>
+                                    <Th className="col-acciones">
                                       Acciones
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
+                                    </Th>
+                                  </Tr>
+                                </Thead>
+                                <Tbody>
                                   {filteredTasks.length > 0 ? (
                                     filteredTasks.map((tarea) => (
-                                      <tr key={tarea._id}>
-                                        <td>{tarea.nombre}</td>
-                                        <td className="text-center">
+                                      <Tr key={tarea._id}>
+                                        <Td className="col-nombre">{tarea.nombre}</Td>
+                                        <Td className="col-colaborador">
                                           <span
                                             className="badge badge-gris"
                                             title={
@@ -822,29 +789,29 @@ const DashboardColaborador = () => {
                                                   : "")
                                               : "?"}
                                           </span>
-                                        </td>
-                                        <td className="text-center">
+                                        </Td>
+                                        <Td className="col-estado">
                                           <div
                                             className={`${getEstado(tarea.estado)}`}
                                           >
                                             {tarea.estado}
                                           </div>
-                                        </td>
-                                        <td className="text-center">
+                                        </Td>
+                                        <Td className="col-prioridad">
                                           <div
                                             className={`${getPrioridad(tarea.prioridad)}`}
                                           >
                                             {tarea.prioridad}
                                           </div>
-                                        </td>
-                                        <td className="text-center">
+                                        </Td>
+                                        <Td className="col-vencimiento">
                                           {tarea.fecha_vencimiento
                                             ? new Date(
                                                 tarea.fecha_vencimiento
                                               ).toLocaleDateString()
                                             : "-"}
-                                        </td>
-                                        <td className="text-center">
+                                        </Td>
+                                        <Td className="col-acciones">
                                           <div className="botones-grupo">
                                             {canView && (
                                               <button
@@ -869,23 +836,20 @@ const DashboardColaborador = () => {
                                               </button>
                                             )}
                                           </div>
-                                        </td>
-                                      </tr>
+                                        </Td>
+                                      </Tr>
                                     ))
                                   ) : (
-                                    <tr>
-                                      <td
-                                        colSpan="7"
-                                        className="text-center text-muted"
-                                      >
+                                    <Tr>
+                                      <Td>
                                         No hay tareas para este proyecto.
-                                      </td>
-                                    </tr>
+                                      </Td>
+                                    </Tr>
                                   )}
 
                                   {canEdit && (
-                                    <tr>
-                                      <td colSpan="7" className="text-muted">
+                                    <Tr>
+                                      <Td>
                                         <a
                                           href="#"
                                           className="text-decoration-none"
@@ -896,27 +860,27 @@ const DashboardColaborador = () => {
                                         >
                                           + Agregar tarea
                                         </a>
-                                      </td>
-                                    </tr>
+                                      </Td>
+                                    </Tr>
                                   )}
-                                </tbody>
-                              </table>
+                                </Tbody>
+                              </Table>
                             </div>
-                          </td>
-                        </tr>
+                          </Td>
+                        </Tr>
                       )}
                     </React.Fragment>
                   );
                 })
               ) : (
-                <tr>
-                  <td colSpan="6" className="text-center">
+                <Tr>
+                  <Td colSpan="6" className="text-center">
                     No hay proyectos disponibles.
-                  </td>
-                </tr>
+                  </Td>
+                </Tr>
               )}
-            </tbody>
-          </table>
+            </Tbody>
+          </Table>
         </div>
 
         <TablaPaginacion
