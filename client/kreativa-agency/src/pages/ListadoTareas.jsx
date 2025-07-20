@@ -250,7 +250,7 @@ const ListadoTareas = () => {
 		<AdminLayout>
 			{contextHolder}
 			<div className="main-container mx-auto">
-				<div style={{ height: "70px" }}></div>
+				<div className="espacio-top-responsive"></div>
 
 				<h1 className="mb-4">
 					{rol === "Administrador" ? "Listado de Tareas" : "Mis Tareas"}
@@ -316,6 +316,137 @@ const ListadoTareas = () => {
 							Imprimir Reporte
 						</button>
 					</div>
+				</div>
+
+                <div className="div-table">
+					<Table className="main-table">
+						<Thead>
+							<Tr>
+								<Th className="col-nombre" onClick={() => handleSort("nombre")}>
+									Nombre{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th
+									className="col-proyecto"
+									onClick={() => handleSort("proyecto_id.nombre")}
+								>
+									Proyecto{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								{rol === "Administrador" && (
+									<Th
+										className="col-colaborador"
+										onClick={() => handleSort("colaborador_id.nombre")}
+									>
+										Colaborador{" "}
+										<span className="sort-icon">
+											<FontAwesomeIcon icon={faSort} />
+										</span>
+									</Th>
+								)}
+								<Th className="col-estado" onClick={() => handleSort("estado")}>
+									Estado{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th
+									className="col-prioridad"
+									onClick={() => handleSort("prioridad")}
+								>
+									Prioridad{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th
+									className="col-fecha"
+									onClick={() => handleSort("fecha_vencimiento")}
+								>
+									Entrega{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th className="col-acciones">Acciones</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{tareasOrdenadas.length > 0 ? (
+								tareasPags.map((tarea) => (
+									<Tr key={tarea._id}>
+										<Td className="col-nombre">{tarea.nombre}</Td>
+										<Td className="col-proyecto">{tarea.proyecto_id.nombre}</Td>
+										{rol === "Administrador" && (
+											<Td className="col-colaborador">
+												<span
+													className="badge badge-gris d-desktop"
+													title={tarea.colaborador_id?.nombre || "Sin asignar"}
+												>
+													{tarea.colaborador_id?.nombre
+														? tarea.colaborador_id.nombre.charAt(0) +
+															(tarea.colaborador_id.nombre.includes(" ")
+																? tarea.colaborador_id.nombre
+																		.split(" ")[1]
+																		.charAt(0)
+																: "")
+														: "?"}
+												</span>
+
+												<span className="d-mobile">
+													{tarea.colaborador_id?.nombre || "Sin asignar"}
+												</span>
+											</Td>
+										)}
+										<Td className="col-estado">
+											<div className={getEstado(tarea.estado)}>
+												{tarea.estado}
+											</div>
+										</Td>
+										<Td className="col-prioridad">
+											<div className={getPrioridad(tarea.prioridad)}>
+												{tarea.prioridad}
+											</div>
+										</Td>
+										<Td className="col-fecha">
+											{new Date(tarea.fecha_vencimiento).toLocaleDateString()}
+										</Td>
+										<Td className="text-center col-acciones">
+											<div className="botones-grupo">
+												<button
+													className="thm-btn thm-btn-small btn-amarillo"
+													onClick={() => {
+														setTareaModal(tarea);
+														setShowModal(true);
+													}}
+												>
+													<FontAwesomeIcon icon={faEye} />
+												</button>
+												{rol === "Administrador" && (
+													<button
+														className="thm-btn thm-btn-small btn-azul"
+														onClick={() => handleEditar(tarea._id)}
+													>
+														<FontAwesomeIcon icon={faPencil} />
+													</button>
+												)}
+											</div>
+										</Td>
+									</Tr>
+								))
+							) : (
+								<Tr>
+									<Td colSpan={rol === "Administrador" ? 7 : 6}>
+										No hay tareas por mostrar.
+									</Td>
+								</Tr>
+							)}
+						</Tbody>
+					</Table>
 				</div>
 
 				{/* ---------------TABLA ANTERIOR NO RESPONSIVE---------------- */}
@@ -492,136 +623,7 @@ const ListadoTareas = () => {
 						</tbody>
 					</table> 
 				</div>*/}
-				<div className="div-table">
-					<Table className="main-table">
-						<Thead>
-							<Tr>
-								<Th className="col-nombre" onClick={() => handleSort("nombre")}>
-									Nombre{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
-								</Th>
-								<Th
-									className="col-proyecto"
-									onClick={() => handleSort("proyecto_id.nombre")}
-								>
-									Proyecto{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
-								</Th>
-								{rol === "Administrador" && (
-									<Th
-										className="col-colaborador"
-										onClick={() => handleSort("colaborador_id.nombre")}
-									>
-										Colaborador{" "}
-										<span className="sort-icon">
-											<FontAwesomeIcon icon={faSort} />
-										</span>
-									</Th>
-								)}
-								<Th className="col-estado" onClick={() => handleSort("estado")}>
-									Estado{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
-								</Th>
-								<Th
-									className="col-prioridad"
-									onClick={() => handleSort("prioridad")}
-								>
-									Prioridad{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
-								</Th>
-								<Th
-									className="col-fecha"
-									onClick={() => handleSort("fecha_vencimiento")}
-								>
-									Entrega{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
-								</Th>
-								<Th className="col-acciones">Acciones</Th>
-							</Tr>
-						</Thead>
-						<Tbody>
-							{tareasOrdenadas.length > 0 ? (
-								tareasPags.map((tarea) => (
-									<Tr key={tarea._id}>
-										<Td className="col-nombre">{tarea.nombre}</Td>
-										<Td className="col-proyecto">{tarea.proyecto_id.nombre}</Td>
-										{rol === "Administrador" && (
-											<Td className="col-colaborador">
-												<span
-													className="badge badge-gris d-desktop"
-													title={tarea.colaborador_id?.nombre || "Sin asignar"}
-												>
-													{tarea.colaborador_id?.nombre
-														? tarea.colaborador_id.nombre.charAt(0) +
-															(tarea.colaborador_id.nombre.includes(" ")
-																? tarea.colaborador_id.nombre
-																		.split(" ")[1]
-																		.charAt(0)
-																: "")
-														: "?"}
-												</span>
-
-												<span className="d-mobile">
-													{tarea.colaborador_id?.nombre || "Sin asignar"}
-												</span>
-											</Td>
-										)}
-										<Td className="col-estado">
-											<div className={getEstado(tarea.estado)}>
-												{tarea.estado}
-											</div>
-										</Td>
-										<Td className="col-prioridad">
-											<div className={getPrioridad(tarea.prioridad)}>
-												{tarea.prioridad}
-											</div>
-										</Td>
-										<Td className="col-fecha">
-											{new Date(tarea.fecha_vencimiento).toLocaleDateString()}
-										</Td>
-										<Td className="text-center col-acciones">
-											<div className="botones-grupo">
-												<button
-													className="thm-btn thm-btn-small btn-amarillo"
-													onClick={() => {
-														setTareaModal(tarea);
-														setShowModal(true);
-													}}
-												>
-													<FontAwesomeIcon icon={faEye} />
-												</button>
-												{rol === "Administrador" && (
-													<button
-														className="thm-btn thm-btn-small btn-azul"
-														onClick={() => handleEditar(tarea._id)}
-													>
-														<FontAwesomeIcon icon={faPencil} />
-													</button>
-												)}
-											</div>
-										</Td>
-									</Tr>
-								))
-							) : (
-								<Tr>
-									<Td colSpan={rol === "Administrador" ? 7 : 6}>
-										No hay tareas por mostrar.
-									</Td>
-								</Tr>
-							)}
-						</Tbody>
-					</Table>
-				</div>
+				
 				<TablaPaginacion
 					totalItems={tareasFiltradas.length}
 					itemsPorPagina={itemsPag}

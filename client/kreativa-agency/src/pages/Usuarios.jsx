@@ -14,6 +14,8 @@ import {
 	faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 
 const Usuarios = () => {
 	const navigate = useNavigate();
@@ -158,7 +160,7 @@ const Usuarios = () => {
 		<AdminLayout>
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
-				<h1>Gestión de Usuarios</h1>
+				<h1 className="mb-4">Gestión de Usuarios</h1>
 				{error && <div className="alert alert-danger">{error}</div>}
 				<div style={{ marginBottom: "30px" }}></div>
 
@@ -194,7 +196,86 @@ const Usuarios = () => {
 					</div>
 				</div>
 
-				<table className="table kreativa-table">
+				<div className="div-table">
+					<Table className="main-table tabla-usuarios">
+						<Thead>
+							<Tr>
+								<Th className="col-nombreu">Nombre</Th>
+								<Th className="col-usuario">Usuario</Th>
+								<Th className="col-cedula">Cédula</Th>
+								<Th className="col-email">Email</Th>
+								<Th className="col-tipo">Tipo</Th>
+								<Th className="col-estadou">Estado</Th>
+								<Th className="col-acciones">Acciones</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{usuariosPaginados.map((usuario) => (
+								<Tr key={usuario._id}>
+									<Td className="col-nombreu" data-label="Nombre">{usuario.nombre}</Td>
+									<Td className="col-usuario" data-label="Usuario">{usuario.usuario}</Td>
+									<Td className="col-cedula" data-label="Cédula">{usuario.cedula}</Td>
+									<Td className="col-email" data-label="Email">{usuario.email}</Td>
+									<Td className="col-tipo" data-label="Tipo">{usuario.tipo_usuario}</Td>
+									<Td className="col-estadou" data-label="Estado">
+										<span
+											className={`badge ${
+												usuario.estado === "Activo"
+													? "badge-verde"
+													: "badge-rojo"
+											}`}
+										>
+											{usuario.estado}
+										</span>
+									</Td>
+									<Td className="text-center col-acciones" data-label="Acciones">
+										<div className="botones-grupo">
+											<button
+												className="thm-btn thm-btn-small btn-amarillo"
+												onClick={() => handleVerUsuario(usuario._id)}
+											>
+												<FontAwesomeIcon icon={faEye} />
+											</button>
+											<button
+												className="thm-btn thm-btn-small btn-azul"
+												onClick={() => handleEditarUsuario(usuario._id)}
+											>
+												<FontAwesomeIcon icon={faPencil} />
+											</button>
+											<button
+												className={`thm-btn thm-btn-small ${
+													usuario.estado === "Activo"
+														? "btn-verde"
+														: "btn-rojo"
+												}`}
+												onClick={() =>
+													handleActivarDesactivar(usuario._id, usuario.estado)
+												}
+											>
+												<FontAwesomeIcon
+													icon={
+														usuario.estado === "Activo"
+															? faToggleOff
+															: faToggleOn
+													}
+												/>
+											</button>
+											{/* <button
+												className="thm-btn thm-btn-small btn-rojo"
+												onClick={() => handleEliminar(usuario._id)}
+											>
+												<FontAwesomeIcon icon={faTrash} />
+											</button> */}
+										</div>
+									</Td>
+								</Tr>
+							))}
+						</Tbody>
+					</Table>
+				</div>
+
+				{/* ---------------TABLA ANTERIOR---------------- */}
+				{/* <table className="table kreativa-table">
 					<thead>
 						<tr>
 							<th>Nombre</th>
@@ -252,7 +333,7 @@ const Usuarios = () => {
 							</tr>
 						))}
 					</tbody>
-				</table>
+				</table> */}
 
 				{/* <div className="kreativa-paginacion">
                     {Array.from({ length: totalPaginas }, (_, i) => (
