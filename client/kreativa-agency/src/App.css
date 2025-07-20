@@ -3790,14 +3790,10 @@ h3 {
 }
 
 .col-acciones {
-	min-width: 150px;
+	min-width: 50px;
 	text-align: center;
 }
 
-.tabla-cotizaciones .col-acciones {
-    width: 50px;
-	text-align: center;
-}
 
 .tabla-ingresos .col-estado{
     white-space: normal;
