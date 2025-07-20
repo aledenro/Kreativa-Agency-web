@@ -3726,7 +3726,7 @@ h3 {
 	background-color: var(--kreativa-rosado);
 	font-weight: 600;
 	color: var(--kreativa-white);
-	padding: 12px 10px;
+	padding: 12px 12px;
 	text-align: left;
 	border: solid 1px #fff;
 	border-radius: var(--kreativa-bdr-radius);
@@ -3789,14 +3789,19 @@ h3 {
 	text-align: center;
 }
 
+.tabla-cotizaciones .col-acciones {
+    width: 50px;
+	text-align: center;
+}
+
 .d-mobile {
 	display: none;
 }
 
 /* exclusivo para tabla usuarios */
 @media (max-width: 1152px) {
-	.col-estadou,
-	.col-prioridad,
+	.tabla-usuarios .col-estado,
+	.tabla-usuarios .col-prioridad,
     .col-tipo,
     .col-cedula{
 		display: none;

@@ -200,24 +200,24 @@ const Usuarios = () => {
 					<Table className="main-table tabla-usuarios">
 						<Thead>
 							<Tr>
-								<Th className="col-nombreu">Nombre</Th>
+								<Th className="col-nombre">Nombre</Th>
 								<Th className="col-usuario">Usuario</Th>
 								<Th className="col-cedula">Cédula</Th>
 								<Th className="col-email">Email</Th>
 								<Th className="col-tipo">Tipo</Th>
-								<Th className="col-estadou">Estado</Th>
+								<Th className="col-estado">Estado</Th>
 								<Th className="col-acciones">Acciones</Th>
 							</Tr>
 						</Thead>
 						<Tbody>
 							{usuariosPaginados.map((usuario) => (
 								<Tr key={usuario._id}>
-									<Td className="col-nombreu" data-label="Nombre">{usuario.nombre}</Td>
+									<Td className="col-nombre" data-label="Nombre">{usuario.nombre}</Td>
 									<Td className="col-usuario" data-label="Usuario">{usuario.usuario}</Td>
 									<Td className="col-cedula" data-label="Cédula">{usuario.cedula}</Td>
 									<Td className="col-email" data-label="Email">{usuario.email}</Td>
 									<Td className="col-tipo" data-label="Tipo">{usuario.tipo_usuario}</Td>
-									<Td className="col-estadou" data-label="Estado">
+									<Td className="col-estado" data-label="Estado">
 										<span
 											className={`badge ${
 												usuario.estado === "Activo"
