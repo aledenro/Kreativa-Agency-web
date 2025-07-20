@@ -3772,6 +3772,15 @@ h3 {
     
 }
 
+.tabla-contacto .col-nombre,
+.tabla-contacto .col-correo,
+.tabla-trabajo .col-nombre,
+.tabla-trabajo .col-correo  {
+	min-width: 40px;
+	width: 25%;
+    white-space: nowrap;
+}
+
 .col-colaborador,
 .col-fecha,
 .col-estado,
@@ -3783,7 +3792,8 @@ h3 {
 .col-vencimiento,
 .col-categoria,
 .col-monto,
-.tabla-ingresos .col-nombre {
+.tabla-ingresos .col-nombre,
+.col-telefono {
 	white-space: nowrap;
 	min-width: 100px;
 	text-align: center;
@@ -3810,7 +3820,9 @@ h3 {
     .col-tipo,
     .col-cedula,
     .col-categoria,
-    .tabla-ingresos .col-estado{
+    .tabla-ingresos .col-estado,
+    .tabla-contacto .col-telefono,
+    .tabla-contacto .col-negocio{
 		display: none;
 	}
 
@@ -3885,8 +3897,17 @@ h3 {
 
 	.col-nombre,
 	.col-proyecto,
-    .tabla-ingresos .col-descripcion {
+    .tabla-ingresos .col-descripcion,
+    .tabla-contacto .col-nombre,
+    .tabla-contacto .col-correo,
+    .tabla-trabajo .col-nombre,
+    .tabla-trabajo .col-correo   {
 		width: 100%;
+	}
+
+    .tabla-contacto .col-telefono,
+    .tabla-contacto .col-negocio{
+		display: block;
 	}
 
 }
