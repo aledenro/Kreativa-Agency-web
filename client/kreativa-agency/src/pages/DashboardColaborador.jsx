@@ -517,7 +517,7 @@ const DashboardColaborador = () => {
     <AdminLayout>
       {contextHolder}
       <div className="main-container mx-auto">
-        <div style={{ height: "90px" }}></div>
+        <div className="espacio-top-responsive"></div>
         <h1 className="mb-4">Backlog Proyectos</h1>
         <div className="row mb-3">
           {rol === "Administrador" && (
@@ -578,7 +578,7 @@ const DashboardColaborador = () => {
           </div>
         </div>
         <div className="table-responsive">
-          <table className="table kreativa-proyecto-table">
+          <table className="main-table">
             <thead className="table-light">
               <tr>
                 <th
