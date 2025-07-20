@@ -2782,9 +2782,9 @@ h3 {
 }
 
 @media (min-width: 2560px) {
-	.thm-btn.btn-verde {
+	/* .thm-btn.btn-verde {
 		min-width: 180px;
-	}
+	} */
 
 	.search-container {
 		position: absolute;
@@ -3765,7 +3765,8 @@ h3 {
 }
 
 .col-nombre,
-.col-proyecto {
+.col-proyecto,
+.tabla-ingresos .col-descripcion {
 	min-width: 40px;
 	width: 30%;
     
@@ -3778,7 +3779,11 @@ h3 {
 .col-email,
 .col-usuario,
 .col-cedula,
-.col-tipo {
+.col-tipo,
+.col-vencimiento,
+.col-categoria,
+.col-monto,
+.tabla-ingresos .col-nombre {
 	white-space: nowrap;
 	min-width: 100px;
 	text-align: center;
@@ -3794,6 +3799,10 @@ h3 {
 	text-align: center;
 }
 
+.tabla-ingresos .col-estado{
+    white-space: normal;
+}
+
 .d-mobile {
 	display: none;
 }
@@ -3803,7 +3812,9 @@ h3 {
 	.tabla-usuarios .col-estado,
 	.tabla-usuarios .col-prioridad,
     .col-tipo,
-    .col-cedula{
+    .col-cedula,
+    .col-categoria,
+    .tabla-ingresos .col-estado{
 		display: none;
 	}
 
@@ -3826,6 +3837,12 @@ h3 {
 		justify-content: center;
 	}
 }
+
+@media (max-width: 768px) {
+    .tabla-ingresos .col-fecha,
+    .tabla-ingresos .col-vencimiento{
+		display: none;
+	}}
 
 @media (max-width: 640px) {
 
@@ -3851,7 +3868,6 @@ h3 {
     .main-table td .tdBefore{
         color: var(--kreativa-base);
         font-size: 15px;
-        width: calc(40% - 20px) !important;
     }
     
 	.d-desktop {
@@ -3873,7 +3889,7 @@ h3 {
 
 	.col-nombre,
 	.col-proyecto,
-    .col-descripcion {
+    .tabla-ingresos .col-descripcion {
 		width: 100%;
 	}
 
