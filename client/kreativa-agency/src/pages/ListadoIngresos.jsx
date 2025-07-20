@@ -364,11 +364,13 @@ const ListadoIngresos = () => {
 								className="thm-btn"
 							>
 								<option value="">Todos</option>
-								{clientes.map((cliente) => (
-									<option key={cliente._id} value={cliente.nombre}>
-										{cliente.nombre}
-									</option>
-								))}
+								{clientes
+	.filter((c) => c.tipo_usuario === "Cliente")
+	.map((cliente) => (
+		<option key={cliente._id} value={cliente.nombre}>
+			{cliente.nombre}
+		</option>
+	))}
 							</Form.Select>
 						</Form.Group>
 						<Form.Group controlId="filterFecha">
