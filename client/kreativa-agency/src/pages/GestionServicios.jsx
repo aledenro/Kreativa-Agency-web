@@ -7,10 +7,6 @@ import {
     faPencil,
     faToggleOn,
     faToggleOff,
-    faBackward,
-    faCaretLeft,
-    faCaretRight,
-    faForward,
     faSort,
     faPlus,
 } from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +14,8 @@ import { Modal } from "react-bootstrap";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 
 
 const GestionServicios = () => {
@@ -142,8 +140,8 @@ const GestionServicios = () => {
 
     return (
         <AdminLayout>
-            <div className="container mt-4">
-                <div style={{ height: "90px" }}></div>
+            <div className="main-container mx-auto">
+                <div className="espacio-top-responsive"></div>
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <h1>Gestión de Servicios</h1>
                     <button className="thm-btn" onClick={handleAgregarServicio}>
@@ -151,7 +149,95 @@ const GestionServicios = () => {
                         Servicio
                     </button>
                 </div>
-                <div className="table-responsive-xxl">
+
+				<div className="div-table">
+					<Table className="main-table">
+						<Thead>
+							<Tr>
+								<Th onClick={() => handleSort("nombre")} className="col-nombre">
+									Nombre{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th className="col-descripcion">Descripción</Th>
+								<Th onClick={() => handleSort("activo")} className="col-estado">
+									Estado{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th className="col-paquetes">Paquetes</Th>
+								<Th className="col-acciones">Acciones</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{serviciosPaginados.length > 0 ? (
+								serviciosPaginados.map((servicio) => (
+									<Tr key={servicio._id}>
+										<Td className="col-nombre">{servicio.nombre}</Td>
+										<Td className="col-descripcion">
+											{servicio.descripcion?.length > 50
+												? `${servicio.descripcion.substring(0, 50)}...`
+												: servicio.descripcion}
+										</Td>
+										<Td className="col-estado">
+											<span
+												className={`badge ${servicio.activo ? "badge-verde" : "badge-rojo"}`}
+											>
+												{servicio.activo ? "Activo" : "Inactivo"}
+											</span>
+										</Td>
+										<Td className="col-paquetes">
+											{servicio.paquetes?.length || 0}
+										</Td>
+										<Td className="text-center col-acciones">
+											<div className="botones-grupo">
+												<button
+													className="thm-btn thm-btn-small btn-amarillo"
+													onClick={() => handleVerServicio(servicio._id)}
+												>
+													<FontAwesomeIcon icon={faEye} />
+												</button>
+												<button
+													className="thm-btn thm-btn-small btn-azul"
+													onClick={() => handleModificarServicio(servicio._id)}
+												>
+													<FontAwesomeIcon icon={faPencil} />
+												</button>
+												<button
+													className={`thm-btn thm-btn-small ${
+														servicio.activo ? "btn-verde" : "btn-rojo"
+													}`}
+													onClick={() =>
+														confirmToggleEstadoServicio(
+															servicio._id,
+															servicio.activo
+														)
+													}
+												>
+													<FontAwesomeIcon
+														icon={servicio.activo ? faToggleOn : faToggleOff}
+													/>
+												</button>
+											</div>
+										</Td>
+									</Tr>
+								))
+							) : (
+								<Tr>
+									<Td colSpan="5" className="text-center">
+										No hay servicios disponibles
+									</Td>
+								</Tr>
+							)}
+						</Tbody>
+					</Table>
+				</div>
+
+
+				
+                {/* <div className="table-responsive-xxl">
                     <table className="table kreativa-proyecto-table">
                         <thead>
                             <tr>
@@ -260,7 +346,7 @@ const GestionServicios = () => {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </div> */}
 
                 <TablaPaginacion
     totalItems={servicios.length}

@@ -516,7 +516,7 @@ const DashboardColaborador = () => {
   return (
     <AdminLayout>
       {contextHolder}
-      <div className="container pt-3 mx-auto">
+      <div className="main-container mx-auto">
         <div style={{ height: "90px" }}></div>
         <h1 className="mb-4">Backlog Proyectos</h1>
         <div className="row mb-3">
