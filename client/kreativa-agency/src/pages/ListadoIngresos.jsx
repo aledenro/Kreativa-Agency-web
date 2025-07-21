@@ -36,7 +36,7 @@ const ListadoIngresos = () => {
 		return `${year}-${month}-${day}`;
 	};
 
-	// Filtros globales:
+	// Filtros
 	const [filterEstadoPago, setFilterEstadoPago] = useState("Pendiente de pago");
 	const [filterEstado, setFilterEstado] = useState("Activo");
 	const [filterCliente, setFilterCliente] = useState("");
@@ -62,7 +62,7 @@ const ListadoIngresos = () => {
 	const [editedIngresoData, setEditedIngresoData] = useState(null);
 	const [showConfirmCrear, setShowConfirmCrear] = useState(false);
 
-	// Estados para notificaciones (modales de confirmación y éxito)
+	// Estados para notificaciones
 	const [showModalConfirmNotificacion, setShowModalConfirmNotificacion] =
 		useState(false);
 	const [showModalExitoNotificacion, setShowModalExitoNotificacion] =
@@ -71,13 +71,11 @@ const ListadoIngresos = () => {
 
 	const navigate = useNavigate();
 
-	// Función para mapear el id de la categoría al nombre
 	const getCategoryName = (catId) => {
 		const cat = categories.find((c) => c._id.toString() === catId.toString());
 		return cat ? cat.nombre : catId;
 	};
 
-	// Función para refrescar la lista de ingresos
 	const fetchIngresos = useCallback(async () => {
 		try {
 			const res = await axios.get(`${import.meta.env.VITE_API_URL}/ingresos`);
@@ -119,7 +117,7 @@ const ListadoIngresos = () => {
 		fetchClientes();
 	}, [fetchIngresos]);
 
-	// Filtrado global
+	// Filtro global
 	let ingresosFiltrados = ingresos;
 	if (filterEstadoPago !== "" && filterEstadoPago !== "Todos") {
 		ingresosFiltrados = ingresosFiltrados.filter(
@@ -143,21 +141,6 @@ const ListadoIngresos = () => {
 			return formatLocalDate(ingreso.fecha) === filterFecha;
 		});
 	}
-
-	// const ingresosOrdenados =
-	// 	sortOrder === "asc"
-	// 		? ingresosFiltrados.sort((a, b) =>
-	// 				lodash
-	// 					.get(a, sortField)
-	// 					.toString()
-	// 					.localeCompare(lodash.get(b, sortField).toString())
-	// 			)
-	// 		: ingresosFiltrados.sort((a, b) =>
-	// 				lodash
-	// 					.get(b, sortField)
-	// 					.toString()
-	// 					.localeCompare(lodash.get(a, sortField).toString())
-	// 			);
 
 	const ingresosOrdenados = [...ingresosFiltrados].sort((a, b) => {
 		const valA = lodash.get(a, sortField) ?? "";
@@ -201,7 +184,6 @@ const ListadoIngresos = () => {
 					? `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/desactivar`
 					: `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/activar`;
 				await axios.put(url);
-				// Actualizamos el estado local sin refrescar desde el backend:
 				setIngresos((prev) =>
 					prev.map((i) =>
 						i._id === toggleIngreso._id ? { ...i, activo: !i.activo } : i
@@ -256,34 +238,49 @@ const ListadoIngresos = () => {
 		}
 	};
 
-	// Función para confirmar la notificación (enviar correo y registrar movimiento)
+	// Confirmar la notificación
 	const handleConfirmNotificacion = async () => {
 		setShowModalConfirmNotificacion(false);
-		const emailContent = `
-      <html>
-        <body>
-          Estimado ${ingresoNotificar.nombre_cliente},<br>
-          Le recordamos que tiene un pago pendiente de ₡${ingresoNotificar.monto} con fecha de vencimiento ${new Date(
-						ingresoNotificar.fecha
-					).toLocaleDateString()}.<br>
-          Por favor, realice el pago a la brevedad.
-        </body>
-      </html>
-    `;
-		const subject = "Notificación de Pago Pendiente";
+
 		try {
-			// Enviamos el correo; se usa ingresoNotificar.cedula para que getEmailUsuario funcione correctamente
-			await sendEmail(ingresoNotificar.cedula, emailContent, subject, "", "");
+			const cliente = clientes.find(c =>
+				c.nombre === ingresoNotificar.nombre_cliente &&
+				c.tipo_usuario === "Cliente"
+			);
+
+			if (!cliente) {
+				throw new Error("Cliente no encontrado");
+			}
+
+			if (!cliente.email) {
+				throw new Error("El cliente no tiene email registrado");
+			}
+
+			const emailContent = `
+            <html>
+                <body>
+                    Estimado ${ingresoNotificar.nombre_cliente},<br>
+                    Le recordamos que tiene un pago pendiente de ₡${ingresoNotificar.monto} 
+                    con fecha de vencimiento ${new Date(ingresoNotificar.fecha).toLocaleDateString()}.<br>
+                    Por favor, realice el pago a la brevedad.
+                </body>
+            </html>
+        `;
+
+			const subject = "Notificación de Pago Pendiente";
+
+			await axios.post(`${import.meta.env.VITE_API_URL}/email/externo`, {
+				recipientEmail: cliente.email,
+				subject,
+				emailContent,
+			});
+
 			setShowModalExitoNotificacion(true);
-			// Aquí puedes registrar el movimiento de notificación en el backend si lo deseas,
-			// realizando una llamada a un endpoint que invoque movimientosService.registrarMovimiento.
 		} catch (error) {
 			console.error("Error al enviar notificación: ", error);
-			alert("Error al enviar la notificación.");
+			alert(`Error al enviar la notificación: ${error.message}`);
 		}
 	};
-
-	// Componentes inline para los modales de notificación
 
 	const ModalConfirmarNotificacion = ({
 		show,
@@ -349,9 +346,9 @@ const ListadoIngresos = () => {
 					</button>
 				</div>
 
-				{/* Filtros globales en dos columnas */}
+				{/* Filtros*/}
 				<div className="row mb-3">
-					{/* Columna izquierda: Filtro por Cliente */}
+					{/* Filtro por Cliente */}
 					<div className="col-md-4">
 						<Form.Group controlId="filterCliente">
 							<Form.Label>Cliente:</Form.Label>
@@ -386,7 +383,7 @@ const ListadoIngresos = () => {
 							/>
 						</Form.Group>
 					</div>
-					{/* Columna derecha: Filtros por Estado de Pago y Estado del Ingreso */}
+					{/* Filtros por Estado de Pago y Estado del Ingreso */}
 					<div className="col-md-4" style={{ paddingRight: "80px" }}>
 						<Form.Group controlId="filterEstado">
 							<Form.Label>Activo/Inactivo:</Form.Label>
@@ -525,9 +522,8 @@ const ListadoIngresos = () => {
 													<FontAwesomeIcon icon={faBell} />
 												</button>
 												<button
-													className={`thm-btn thm-btn-small ${
-														ingreso.activo ? "btn-verde" : "btn-rojo"
-													}`}
+													className={`thm-btn thm-btn-small ${ingreso.activo ? "btn-verde" : "btn-rojo"
+														}`}
 													onClick={() => handleToggleClick(ingreso)}
 													title={ingreso.activo ? "Desactivar" : "Activar"}
 												>
@@ -544,182 +540,6 @@ const ListadoIngresos = () => {
 					</Table>
 				</div>
 
-				{/* <div className="table-responsive">
-                    <Table className="table kreativa-proyecto-table">
-                        <thead>
-                            <tr>
-                                <th
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => handleSort("fecha_creacion")}
-                                >
-                                    Fecha Creación{" "}
-                                    <FontAwesomeIcon icon={faSort} />
-                                </th>
-                                <th>Nombre Cliente</th>
-                                <th>Categoría</th>
-                                <th>Descripción</th>
-                                <th
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => handleSort("monto")}
-                                >
-                                    Monto <FontAwesomeIcon icon={faSort} />
-                                </th>
-                                <th
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => handleSort("fecha")}
-                                >
-                                    Fecha Vencimiento{" "}
-                                    <FontAwesomeIcon icon={faSort} />
-                                </th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {ingresosPaginados.length === 0 ? (
-                                <tr>
-                                    <td colSpan="7" className="text-center">
-                                        No hay ingresos para mostrar.
-                                    </td>
-                                </tr>
-                            ) : (
-                                ingresosPaginados.map((ingreso) => (
-                                    <tr key={ingreso._id}>
-                                        <td>
-                                            {new Date(
-                                                ingreso.fecha_creacion
-                                            ).toLocaleDateString()}
-                                        </td>
-                                        <td>{ingreso.nombre_cliente}</td>
-                                        <td>
-                                            {getCategoryName(ingreso.categoria)}
-                                        </td>
-                                        <td>{ingreso.descripcion}</td>
-                                        <td>₡{ingreso.monto}</td>
-                                        <td>
-                                            {new Date(
-                                                ingreso.fecha
-                                            ).toLocaleDateString()}
-                                        </td>
-                                        <td>{ingreso.estado}</td>
-                                        <td>
-                                            <div
-                                                className="botones-grupo"
-                                                style={{
-                                                    display: "flex",
-                                                    flexDirection: "column",
-                                                    gap: "5px",
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        gap: "5px",
-                                                    }}
-                                                >
-                                                    <button
-                                                        className="thm-btn thm-btn-small btn-amarillo"
-                                                        onClick={() => {
-                                                            setIngresoVer(
-                                                                ingreso
-                                                            );
-                                                            setShowModalVer(
-                                                                true
-                                                            );
-                                                        }}
-                                                        title="Ver detalle"
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faEye}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="thm-btn thm-btn-small btn-azul"
-                                                        onClick={() => {
-                                                            setIngresoEditar(
-                                                                ingreso
-                                                            );
-                                                            setShowModalEditar(
-                                                                true
-                                                            );
-                                                        }}
-                                                        title="Modificar"
-                                                        disabled={
-                                                            !ingreso.activo ||
-                                                            ingreso.estado ===
-                                                                "Pagado"
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faPencil}
-                                                        />
-                                                    </button>
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        gap: "5px",
-                                                    }}
-                                                >
-                                                    <button
-                                                        className="thm-btn thm-btn-small btn-notificar"
-                                                        onClick={() => {
-                                                            if (
-                                                                ingreso.estado !==
-                                                                "Pendiente de pago"
-                                                            )
-                                                                return;
-                                                            setIngresoNotificar(
-                                                                ingreso
-                                                            );
-                                                            setShowModalConfirmNotificacion(
-                                                                true
-                                                            );
-                                                        }}
-                                                        title="Notificar"
-                                                        disabled={
-                                                            !ingreso.activo ||
-                                                            ingreso.estado !==
-                                                                "Pendiente de pago"
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faBell}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className={`thm-btn thm-btn-small ${ingreso.activo ? "btn-verde" : "btn-rojo"}`}
-                                                        onClick={() =>
-                                                            handleToggleClick(
-                                                                ingreso
-                                                            )
-                                                        }
-                                                        title={
-                                                            ingreso.activo
-                                                                ? "Desactivar"
-                                                                : "Activar" ||
-                                                                  ingreso.estado ===
-                                                                      "Pagado"
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={
-                                                                ingreso.activo
-                                                                    ? faToggleOn
-                                                                    : faToggleOff
-                                                            }
-                                                        />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </Table>
-                </div> */}
-
 				<TablaPaginacion
 					totalItems={ingresosOrdenados.length}
 					itemsPorPagina={itemsPag}
@@ -730,58 +550,6 @@ const ListadoIngresos = () => {
 					}}
 					onPaginaChange={(pagina) => setPagActual(pagina)}
 				/>
-
-				{/* Paginación inferior con select de ítems por página
-                <div className="d-flex justify-content-center mt-4">
-                    <select
-                        className="form-select form-select-sm w-auto me-2"
-                        onChange={(e) => {
-                            setItemsPag(Number(e.target.value));
-                            setPagActual(1);
-                        }}
-                        value={itemsPag}
-                    >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={ingresosOrdenados.length}>Todos</option>
-                    </select>
-                    <button
-                        className="thm-btn btn-volver thm-btn-small me-2"
-                        onClick={() => setPagActual(1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faBackward} />
-                    </button>
-                    <button
-                        className="thm-btn btn-volver thm-btn-small me-2"
-                        onClick={() => setPagActual(pagActual - 1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faCaretLeft} />
-                    </button>
-                    <span className="align-self-center mx-2">
-                        Página {pagActual} de {totalPaginas || 1}
-                    </span>
-                    <button
-                        className="thm-btn btn-volver thm-btn-small me-2"
-                        onClick={() => setPagActual(pagActual + 1)}
-                        disabled={
-                            pagActual === totalPaginas || totalPaginas === 0
-                        }
-                    >
-                        <FontAwesomeIcon icon={faCaretRight} />
-                    </button>
-                    <button
-                        className="thm-btn btn-volver thm-btn-small me-2"
-                        onClick={() => setPagActual(totalPaginas)}
-                        disabled={
-                            pagActual === totalPaginas || totalPaginas === 0
-                        }
-                    >
-                        <FontAwesomeIcon icon={faForward} />
-                    </button>
-                </div> */}
 			</div>
 
 			{/* Modal de confirmación para activar/desactivar */}

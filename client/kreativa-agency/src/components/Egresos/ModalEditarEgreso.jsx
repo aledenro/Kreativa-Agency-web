@@ -20,7 +20,6 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // La fecha se muestra de solo lectura, no se edita.
     try {
       const res = await axios.put(
         `${import.meta.env.VITE_API_URL}/egresos/${egresoEditado._id}`,

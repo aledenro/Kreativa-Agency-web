@@ -19,16 +19,16 @@ import AdminLayout from "../components/AdminLayout/AdminLayout";
 import "../AdminPanel.css";
 import ModalImprimirReportes from "../components/Estadisticas/ModalImprimirReporte";
 
-// Colores para gráficos
+// Colores de los gráficos
 const COLORS = ["#ff0072", "#8d25fc", "#007bff", "#ffc02c"];
-// Lista fija para egresos (si se agrupa por categorías fijas)
+
 const CATEGORIAS = [
     "Salarios",
     "Software",
     "Servicios de contabilidad",
     "Servicios",
 ];
-// Nombres de meses para el selector
+
 const monthNames = [
     "Enero",
     "Febrero",
@@ -66,16 +66,17 @@ const Estadisticas = () => {
     const [totalEgresosAnuales, setTotalEgresosAnuales] = useState(0);
     const [detalleEgresosAnuales, setDetalleEgresosAnuales] = useState([]);
 
-    // Categorías (para mapear ID en ingresos)
+    // Categorias
+
     const [categories, setCategories] = useState([]);
 
-    // Selección de fechas
+    // Seleccionar busqueda
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(
         new Date().getMonth() + 1
     );
 
-    // Determinar vista anual:
+    // Vista anual
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
@@ -84,7 +85,7 @@ const Estadisticas = () => {
         selectedYear > currentYear ||
         (selectedYear === currentYear && selectedMonth > currentMonth);
 
-    // Cargar categorías (para mapear el ID de categoría en ingresos)
+    // Carga de categorías
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -102,16 +103,16 @@ const Estadisticas = () => {
         fetchCategories();
     }, []);
 
-    // Cargar datos según la vista
+    // Carga de datos según la vista
     useEffect(() => {
         if (isAnnualView) {
-            // Vista Anual: se obtienen el total y el detalle a través de los endpoints nuevos.
+            // Vista Anual
             axios
                 .get(
                     `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`
                 )
                 .then((response) => {
-                    const data = response.data; // { resumen: { totalIngresos, cantidadIngresos }, detalle: [...] }
+                    const data = response.data;
                     setTotalIngresosAnuales(data.resumen.totalIngresos);
                     setDetalleIngresosAnuales(data.detalle);
                 })
@@ -128,7 +129,7 @@ const Estadisticas = () => {
                     `${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`
                 )
                 .then((response) => {
-                    const data = response.data; // { resumen: { totalEgresos, cantidadEgresos }, detalle: [...] }
+                    const data = response.data;
                     setTotalEgresosAnuales(data.resumen.totalEgresos);
                     setDetalleEgresosAnuales(data.detalle);
                 })
@@ -141,36 +142,43 @@ const Estadisticas = () => {
                     setDetalleEgresosAnuales([]);
                 });
         } else {
-            // Vista Mensual:
+            // Vista Mensual
             const formattedMonth =
                 selectedMonth < 10 ? `0${selectedMonth}` : selectedMonth;
             const fecha = `${selectedYear}-${formattedMonth}`;
-
-            // Ingresos mensuales (ya filtrados en el backend: activos, pagados y de clientes)
-            axios
-                .get(
-                    `${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`
-                )
+            axios.get(`${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`)
                 .then((response) => {
-                    const { resumen, detalle } = response.data;
+                    console.log("Respuesta de ingresos mensuales:", response.data);
+
+                    if (!response.data.success) {
+                        console.error("Error en la respuesta:", response.data.message);
+                        throw new Error(response.data.message);
+                    }
+
+                    const { resumen, detalle, datosGrafico } = response.data;
+
                     setTotalIngresos(resumen.totalIngresos);
                     setCantidadIngresos(resumen.cantidadIngresos);
+
                     setResumenIngresos({
                         total: resumen.totalIngresos,
                         cantidad: resumen.cantidadIngresos,
-                        detalle,
+                        detalle: detalle,
+                        datosGrafico: datosGrafico
                     });
                 })
                 .catch((error) => {
-                    console.error(
-                        "Error al obtener los ingresos mensuales:",
-                        error
-                    );
+                    console.error("Error al obtener ingresos mensuales:", error);
                     setTotalIngresos(0);
                     setCantidadIngresos(0);
-                    setResumenIngresos({ total: 0, cantidad: 0, detalle: [] });
+                    setResumenIngresos({
+                        total: 0,
+                        cantidad: 0,
+                        detalle: [],
+                        datosGrafico: []
+                    });
                 });
-            // Egresos mensuales (filtrando activos y estado "Aprobado")
+            // Egresos mensuales activos y con estado aprobado
             axios
                 .get(`${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`)
                 .then((response) => {
@@ -202,7 +210,7 @@ const Estadisticas = () => {
                     );
                 });
         }
-        // Independientemente de la vista, se obtienen totales anuales (para el gráfico de comparación)
+
         axios
             .get(`${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`)
             .then((response) => {
@@ -226,7 +234,6 @@ const Estadisticas = () => {
             });
     }, [selectedYear, selectedMonth, isAnnualView]);
 
-    // Helper para mapear el ID de categoría al nombre
     const getCategoryName = (catId) => {
         const cat = categories.find(
             (c) => c._id && c._id.toString() === catId.toString()
@@ -245,7 +252,7 @@ const Estadisticas = () => {
     }
 
     // Verificar si los datos están vacíos para los gráficos
-    const noDatosEgresos = totalEgresos === 0 || egresos.length === 0;
+    const noDatosEgresosMensuales = totalEgresos === 0 || egresos.length === 0;
     const noDatosIngresos =
         totalIngresos === 0 || resumenIngresos.detalle.length === 0;
 
@@ -302,7 +309,7 @@ const Estadisticas = () => {
                 {isAnnualView ? (
                     // Vista Anual
                     <>
-                        {/* Fila 1: Gráfico de barras anual centrado y de menor tamaño */}
+                        {/* Gráfico de barras anual*/}
                         <div
                             className="chart-box"
                             style={{ marginBottom: "30px" }}
@@ -358,7 +365,7 @@ const Estadisticas = () => {
                             )}
                         </div>
 
-                        {/* Fila 2: Dos columnas para gráficos pastel y listados anuales */}
+                        {/* Gráficos pastel y listados anuales */}
                         <div
                             className="row"
                             style={{
@@ -367,7 +374,7 @@ const Estadisticas = () => {
                                 justifyContent: "center",
                             }}
                         >
-                            {/* Columna izquierda: Ingresos Anuales */}
+                            {/* Ingresos Anuales */}
                             <div
                                 className="chart-box"
                                 style={{
@@ -454,8 +461,8 @@ const Estadisticas = () => {
                                                                 key={`cell-${index}`}
                                                                 fill={
                                                                     COLORS[
-                                                                        index %
-                                                                            COLORS.length
+                                                                    index %
+                                                                    COLORS.length
                                                                     ]
                                                                 }
                                                             />
@@ -588,7 +595,7 @@ const Estadisticas = () => {
                                 )}
                             </div>
 
-                            {/* Columna derecha: Egresos Anuales */}
+                            {/* Egresos Anuales */}
                             <div
                                 className="chart-box"
                                 style={{ flex: 1, minWidth: "350px" }}
@@ -656,8 +663,8 @@ const Estadisticas = () => {
                                                             key={`cell-${index}`}
                                                             fill={
                                                                 COLORS[
-                                                                    index %
-                                                                        COLORS.length
+                                                                index %
+                                                                COLORS.length
                                                                 ]
                                                             }
                                                         />
@@ -798,16 +805,16 @@ const Estadisticas = () => {
                             className="row"
                             style={{ display: "flex", gap: "20px" }}
                         >
-                            {/* Primera fila: Dos columnas */}
                             <div className="chart-box" style={{ flex: 1 }}>
                                 <h3 style={{ textAlign: "center" }}>
                                     Ingresos y Egresos Mensuales
                                 </h3>
-                                {!noDatosEgresos ? (
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={300}
-                                    >
+                                {totalIngresos === 0 && totalEgresos === 0 ? (
+                                    <p style={{ textAlign: "center" }}>
+                                        No hay datos disponibles para este mes.
+                                    </p>
+                                ) : (
+                                    <ResponsiveContainer width="100%" height={300}>
                                         <BarChart
                                             data={[
                                                 {
@@ -824,9 +831,7 @@ const Estadisticas = () => {
                                             <XAxis dataKey="name" />
                                             <YAxis />
                                             <Tooltip
-                                                formatter={(value) =>
-                                                    `₡${value.toLocaleString()}`
-                                                }
+                                                formatter={(value) => `₡${value.toLocaleString()}`}
                                             />
                                             <Bar
                                                 dataKey="ingresos"
@@ -838,58 +843,43 @@ const Estadisticas = () => {
                                             />
                                         </BarChart>
                                     </ResponsiveContainer>
-                                ) : (
-                                    <p style={{ textAlign: "center" }}>
-                                        No hay datos disponibles para este mes.
-                                    </p>
                                 )}
                             </div>
+
+                            {/* Gráfico Anual siempre visible */}
                             <div className="chart-box" style={{ flex: 1 }}>
                                 <h3 style={{ textAlign: "center" }}>
                                     Ingresos y Egresos Anuales
                                 </h3>
-                                {!noDatosEgresos ? (
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={300}
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <BarChart
+                                        data={[
+                                            {
+                                                name: "Ingresos",
+                                                ingresos: totalIngresosAnuales || 0,
+                                            },
+                                            {
+                                                name: "Egresos",
+                                                egresos: totalEgresosAnuales || 0,
+                                            },
+                                        ]}
                                     >
-                                        <BarChart
-                                            data={[
-                                                {
-                                                    name: "Ingresos",
-                                                    ingresos:
-                                                        totalIngresosAnuales,
-                                                },
-                                                {
-                                                    name: "Egresos",
-                                                    egresos:
-                                                        totalEgresosAnuales,
-                                                },
-                                            ]}
-                                        >
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
-                                            <Tooltip
-                                                formatter={(value) =>
-                                                    `₡${value.toLocaleString()}`
-                                                }
-                                            />
-                                            <Bar
-                                                dataKey="ingresos"
-                                                fill="#ff0072"
-                                            />
-                                            <Bar
-                                                dataKey="egresos"
-                                                fill="#8d25fc"
-                                            />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                ) : (
-                                    <p style={{ textAlign: "center" }}>
-                                        No hay datos disponibles para este año.
-                                    </p>
-                                )}
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip
+                                            formatter={(value) => `₡${value.toLocaleString()}`}
+                                        />
+                                        <Bar
+                                            dataKey="ingresos"
+                                            fill="#ff0072"
+                                        />
+                                        <Bar
+                                            dataKey="egresos"
+                                            fill="#8d25fc"
+                                        />
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
 
@@ -901,7 +891,6 @@ const Estadisticas = () => {
                                 marginTop: "30px",
                             }}
                         >
-                            {/* Segunda fila: Dos columnas */}
                             <div className="chart-box" style={{ flex: 1 }}>
                                 <h3 style={{ textAlign: "center" }}>
                                     Ingresos del Mes
@@ -924,89 +913,17 @@ const Estadisticas = () => {
                                             >
                                                 <PieChart>
                                                     <Pie
-                                                        className="pie-chart"
-                                                        data={resumenIngresos.detalle.reduce(
-                                                            (acc, ingreso) => {
-                                                                const nombreCategoria =
-                                                                    getCategoryName(
-                                                                        ingreso.categoria
-                                                                    );
-                                                                const existente =
-                                                                    acc.find(
-                                                                        (
-                                                                            item
-                                                                        ) =>
-                                                                            item.name ===
-                                                                            nombreCategoria
-                                                                    );
-                                                                if (existente) {
-                                                                    existente.value +=
-                                                                        ingreso.monto;
-                                                                } else {
-                                                                    acc.push({
-                                                                        name: nombreCategoria,
-                                                                        value: ingreso.monto,
-                                                                    });
-                                                                }
-                                                                return acc;
-                                                            },
-                                                            []
-                                                        )}
+                                                        data={resumenIngresos.datosGrafico}
                                                         cx="50%"
                                                         cy="50%"
                                                         innerRadius={80}
                                                         outerRadius={150}
                                                         dataKey="value"
-                                                        label={({ percent }) =>
-                                                            ` ${(percent * 100).toFixed(1)}%`
-                                                        }
+                                                        label={({ percent }) => `${(percent * 100).toFixed(1)}%`}
                                                     >
-                                                        {resumenIngresos.detalle
-                                                            .reduce(
-                                                                (
-                                                                    acc,
-                                                                    ingreso
-                                                                ) => {
-                                                                    const nombreCategoria =
-                                                                        getCategoryName(
-                                                                            ingreso.categoria
-                                                                        );
-                                                                    if (
-                                                                        !acc.find(
-                                                                            (
-                                                                                item
-                                                                            ) =>
-                                                                                item.name ===
-                                                                                nombreCategoria
-                                                                        )
-                                                                    ) {
-                                                                        acc.push(
-                                                                            {
-                                                                                name: nombreCategoria,
-                                                                                value: ingreso.monto,
-                                                                            }
-                                                                        );
-                                                                    }
-                                                                    return acc;
-                                                                },
-                                                                []
-                                                            )
-                                                            .map(
-                                                                (
-                                                                    entry,
-                                                                    index
-                                                                ) => (
-                                                                    <Cell
-                                                                        key={`cell-${index}`}
-                                                                        fill={
-                                                                            COLORS[
-                                                                                index %
-                                                                                    COLORS.length
-                                                                            ]
-                                                                        }
-                                                                    />
-                                                                )
-                                                            )}
+                                                        {resumenIngresos.datosGrafico.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                        ))}
                                                     </Pie>
                                                     <text
                                                         x="50%"
@@ -1016,14 +933,9 @@ const Estadisticas = () => {
                                                         fontSize={20}
                                                         fontWeight="bold"
                                                     >
-                                                        ₡
-                                                        {resumenIngresos.total.toLocaleString()}
+                                                        ₡{resumenIngresos.total.toLocaleString()}
                                                     </text>
-                                                    <Tooltip
-                                                        formatter={(value) =>
-                                                            `₡${value.toLocaleString()}`
-                                                        }
-                                                    />
+                                                    <Tooltip formatter={(value) => `₡${value.toLocaleString()}`} />
                                                     <Legend />
                                                 </PieChart>
                                             </ResponsiveContainer>
@@ -1138,7 +1050,7 @@ const Estadisticas = () => {
                                 <h3 style={{ textAlign: "center" }}>
                                     Egresos por Mes
                                 </h3>
-                                {!noDatosEgresos ? (
+                                {!noDatosEgresosMensuales ? (
                                     <div
                                         style={{
                                             width: "400px",
@@ -1167,8 +1079,8 @@ const Estadisticas = () => {
                                                                 key={`cell-${index}`}
                                                                 fill={
                                                                     COLORS[
-                                                                        index %
-                                                                            COLORS.length
+                                                                    index %
+                                                                    COLORS.length
                                                                     ]
                                                                 }
                                                             />
@@ -1208,7 +1120,7 @@ const Estadisticas = () => {
                                 >
                                     Resumen de Egresos del Mes
                                 </h3>
-                                {!noDatosEgresos ? (
+                                {!noDatosEgresosMensuales ? (
                                     <div>
                                         <div
                                             style={{

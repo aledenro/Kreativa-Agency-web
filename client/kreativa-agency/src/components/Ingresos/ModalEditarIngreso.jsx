@@ -10,15 +10,12 @@ const ModalEditarIngreso = ({ show, handleClose, ingreso, categories, onSave }) 
 
   useEffect(() => {
     if (ingreso && Object.keys(ingreso).length > 0) {
-      // Asumimos que ingreso.categoria ya es el _id o se usa para buscar en categories,
-      // pero en esta versión no se permite editar la categoría.
       setIngresoEditado({ ...ingreso });
     }
   }, [ingreso]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // No permitimos cambiar la categoría
     if (name === "categoria") return;
     setIngresoEditado((prev) => ({
       ...prev,
@@ -26,7 +23,6 @@ const ModalEditarIngreso = ({ show, handleClose, ingreso, categories, onSave }) 
     }));
   };
 
-  // Al presionar "Guardar Cambios" se muestra el modal de confirmación
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowConfirm(true);
@@ -107,7 +103,6 @@ const ModalEditarIngreso = ({ show, handleClose, ingreso, categories, onSave }) 
             </div>
             <div className="mb-3">
               <label>Categoría:</label>
-              {/* Deshabilitamos la edición de la categoría, se muestra el nombre */}
               <Form.Control
                 type="text"
                 value={
@@ -183,7 +178,7 @@ const ModalEditarIngreso = ({ show, handleClose, ingreso, categories, onSave }) 
         </form>
       </Modal>
 
-      {/* Modal de confirmación para edición */}
+      {/* Modal de confirmación para editar */}
       <Modal show={showConfirm} onHide={handleCancelConfirm} centered>
         <Modal.Header closeButton>
           <Modal.Title>Confirmar Edición</Modal.Title>
