@@ -8,14 +8,14 @@ const ingresosController = {
 
             const nuevoIngreso = await ingresosService.registrarIngreso(req.body);
             // Registrar el movimiento de creación
-      await movimientosService.registrarMovimiento({
-        entidad: "ingreso", // <-- Aquí cambiamos "tipo" por "entidad"
-        idRegistro: nuevoIngreso._id,
-        accion: "creación",
-        descripcion: "Creación del ingreso",
-        detalle: { datosNuevos: nuevoIngreso },
-        usuario: req.user ? req.user.username : "sistema",
-      });
+            await movimientosService.registrarMovimiento({
+                entidad: "ingreso",
+                idRegistro: nuevoIngreso._id,
+                accion: "creación",
+                descripcion: "Creación del ingreso",
+                detalle: { datosNuevos: nuevoIngreso },
+                usuario: req.user ? req.user.username : "sistema",
+            });
 
             res.status(201).json({
                 message: "Ingreso registrado con éxito.",
@@ -67,19 +67,17 @@ const ingresosController = {
 
     async actualizarIngreso(req, res) {
         try {
-
-            // Obtener el registro anterior para comparar (opcional)
             const ingresoAnterior = await ingresosService.obtenerIngresoPorId(req.params.id);
             const ingresoActualizado = await ingresosService.actualizarIngreso(req.params.id, req.body);
             // Registrar el movimiento de edición
-      await movimientosService.registrarMovimiento({
-        entidad: "ingreso",
-        idRegistro: ingresoActualizado._id,
-        accion: "edición",
-        descripcion: "Edición del ingreso",
-        detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingresoActualizado },
-        usuario: req.user ? req.user.username : "sistema",
-      });
+            await movimientosService.registrarMovimiento({
+                entidad: "ingreso",
+                idRegistro: ingresoActualizado._id,
+                accion: "edición",
+                descripcion: "Edición del ingreso",
+                detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingresoActualizado },
+                usuario: req.user ? req.user.username : "sistema",
+            });
 
             res.status(200).json({
                 message: "Ingreso actualizado con éxito.",
@@ -104,7 +102,7 @@ const ingresosController = {
                 descripcion: "Activación del ingreso",
                 detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingreso },
                 usuario: req.user ? req.user.username : "sistema",
-              });
+            });
             return res.status(200).json({ mensaje: "Ingreso activado", ingreso });
 
         } catch (error) {
@@ -126,7 +124,7 @@ const ingresosController = {
                 descripcion: "Desactivación del ingreso",
                 detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingreso },
                 usuario: req.user ? req.user.username : "sistema",
-              });
+            });
             return res.status(200).json({ mensaje: "Ingreso desactivado", ingreso });
 
         } catch (error) {
@@ -137,30 +135,45 @@ const ingresosController = {
 
     async obtenerIngresosPorMes(req, res) {
         try {
+            const { mes, anio } = req.query;
 
-            const { mes, año } = req.query; // Recibe los parámetros mes y año del query string
+            console.log(`Solicitud de ingresos para mes: ${mes}, año: ${anio}`);
 
-            if (!mes || !año) {
-                return res
-                    .status(400)
-                    .json({ message: "Debe proporcionar mes y año." });
+            if (!mes || !anio) {
+                return res.status(400).json({
+                    message: "Debe proporcionar mes y año.",
+                    received: { mes, anio }
+                });
             }
 
             const ingresosPorMes = await ingresosService.obtenerIngresosPorMes(
                 mes,
-                año
+                anio
             );
-            res.status(200).json(ingresosPorMes);
+
+            console.log('Datos devueltos por el servicio:', ingresosPorMes);
+
+            res.status(200).json({
+                success: true,
+                resumen: {
+                    totalIngresos: ingresosPorMes.totalIngresos || 0,
+                    cantidadIngresos: ingresosPorMes.cantidadIngresos || 0
+                },
+                detalle: ingresosPorMes.detalle || [],
+                datosGrafico: ingresosPorMes.datosGrafico || []
+            });
         } catch (error) {
+            console.error('Error en obtenerIngresosPorMes:', error);
             res.status(500).json({
+                success: false,
                 message: "Error al obtener los ingresos por mes.",
-                error: error.message,
+                error: error.message
             });
         }
     },
 
     async obtenerIngresosPorAnio(req, res) {
-        const { anio } = req.query; // Obtener el año desde los parámetros de la URL
+        const { anio } = req.query;
 
         try {
             const totalIngresos =

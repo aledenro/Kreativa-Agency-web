@@ -23,7 +23,6 @@ const movimientosController = {
 				const fin = new Date(`${fechaFin}T23:59:59.999`);
 				filtro.fecha = { $gte: inicio, $lte: fin };
 			}
-			// Puedes agregar otros filtros si lo requieres, por ejemplo, por tipo de movimiento.
 			const movimientos = await Movimiento.find(filtro).sort({ fecha: -1 });
 			res.json(movimientos);
 		} catch (error) {

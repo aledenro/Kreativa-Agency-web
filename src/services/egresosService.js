@@ -16,7 +16,7 @@ class EgresosService {
     //Todos los egresos activos
     async obtenerEgresos() {
         try {
-            return await EgresosModel.find({ activo: true }); // Solo devuelve los egresos activos
+            return await EgresosModel.find({ activo: true });
         } catch (error) {
             throw error;
         }
@@ -25,7 +25,7 @@ class EgresosService {
     // Obtener un egreso por ID
     async obtenerEgresoPorId(id) {
         try {
-            const egreso = await EgresosModel.findById(id); // Buscamos el egreso por su ID
+            const egreso = await EgresosModel.findById(id);
             return egreso;
         } catch (error) {
             throw new Error(
@@ -37,7 +37,7 @@ class EgresosService {
     // Editar egreso
     async editarEgreso(id, datos) {
         try {
-            datos.ultima_modificacion = new Date(); // Actualizar la fecha de modificación
+            datos.ultima_modificacion = new Date();
             return await EgresosModel.findByIdAndUpdate(id, datos, {
                 new: true,
             });
@@ -51,8 +51,8 @@ class EgresosService {
         try {
             const egresoDesactivado = await EgresosModel.findByIdAndUpdate(
                 id,
-                { activo: false, ultima_modificacion: Date.now() }, // Desactivar y actualizar la última modificación
-                { new: true } // Retorna el documento actualizado
+                { activo: false, ultima_modificacion: Date.now() },
+                { new: true }
             );
             if (!egresoDesactivado) {
                 throw new Error(`Egreso ${id} no encontrado`);
@@ -70,8 +70,8 @@ class EgresosService {
         try {
             const egresoActivado = await EgresosModel.findByIdAndUpdate(
                 id,
-                { activo: true, ultima_modificacion: new Date() }, // Activar y actualizar la última modificación
-                { new: true } // Retorna el documento actualizado
+                { activo: true, ultima_modificacion: new Date() },
+                { new: true }
             );
             if (!egresoActivado) {
                 throw new Error(`Egreso ${id} no encontrado`);
@@ -88,8 +88,8 @@ class EgresosService {
         try {
             return await Egreso.find({
                 fecha: {
-                    $gte: inicioDelMes, // Mayor o igual a la fecha de inicio
-                    $lte: finDelMes, // Menor o igual a la fecha de fin
+                    $gte: inicioDelMes,
+                    $lte: finDelMes,
                 },
             });
         } catch (error) {
@@ -104,8 +104,8 @@ class EgresosService {
         try {
             let fechaInicio, fechaFin;
             if (anio) {
-                fechaInicio = new Date(anio, 0, 1); // 1 de enero del año dado
-                fechaFin = new Date(anio, 11, 31, 23, 59, 59, 999); // 31 de diciembre del año dado
+                fechaInicio = new Date(anio, 0, 1);
+                fechaFin = new Date(anio, 11, 31, 23, 59, 59, 999);
             } else {
                 const today = new Date();
                 fechaInicio = new Date(today.getFullYear(), 0, 1);
@@ -119,15 +119,11 @@ class EgresosService {
                     999
                 );
             }
-
-            // Filtramos solo los egresos activos y con estado "Aprobado" dentro del rango de fechas
             const egresos = await EgresosModel.find({
                 fecha: { $gte: fechaInicio, $lte: fechaFin },
                 activo: true,
                 estado: "Aprobado",
             });
-
-            // Sumamos el monto de todos los egresos filtrados
             const totalEgresos = egresos.reduce(
                 (total, egreso) => total + egreso.monto,
                 0
@@ -159,7 +155,6 @@ class EgresosService {
                     999
                 );
             }
-            // Filtrar egresos activos y con estado "Aprobado"
             const egresos = await EgresosModel.find({
                 fecha: { $gte: fechaInicio, $lte: fechaFin },
                 activo: true,
@@ -195,7 +190,6 @@ class EgresosService {
         }
     }
 
-    // Este método estaba fuera de la clase
     async getEgresosDateRange(fechaInicio, fechaFin) {
         try {
             fechaInicio = new Date(fechaInicio);
@@ -222,17 +216,17 @@ class EgresosService {
             const egresosFormated =
                 egresos.length > 0
                     ? egresos.map((egreso) => {
-                          return {
-                              fecha: new Date(
-                                  egreso.fecha
-                              ).toLocaleDateString(),
-                              monto: egreso.monto,
-                              categoria: egreso.categoria,
-                              descripcion: egreso.descripcion,
-                              proveedor: egreso.proveedor,
-                              estado: egreso.estado,
-                          };
-                      })
+                        return {
+                            fecha: new Date(
+                                egreso.fecha
+                            ).toLocaleDateString(),
+                            monto: egreso.monto,
+                            categoria: egreso.categoria,
+                            descripcion: egreso.descripcion,
+                            proveedor: egreso.proveedor,
+                            estado: egreso.estado,
+                        };
+                    })
                     : [];
 
             return egresosFormated;

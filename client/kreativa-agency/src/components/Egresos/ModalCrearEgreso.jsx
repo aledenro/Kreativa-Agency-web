@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 
 const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
-  const [mensaje, setMensaje] = useState(""); // Para errores (si ocurren)
+  const [mensaje, setMensaje] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [formData, setFormData] = useState({
     fecha: "",
@@ -25,10 +25,9 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/egresos`, formData);
       if (res.status === 201) {
-        // Esperamos 1.5 segundos y luego cerramos el modal de creación y mostramos la confirmación
         setTimeout(() => {
-          handleClose(); // Se cierra el modal de creación
-          setShowConfirm(true); // Se activa el modal de confirmación
+          handleClose();
+          setShowConfirm(true);
         }, 1500);
       }
     } catch (error) {
@@ -50,7 +49,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
         </Modal.Header>
         <form onSubmit={handleSubmit}>
           <Modal.Body>
-            {/* Solo se muestra mensaje en caso de error */}
+            {/* Mensaje en caso de error */}
             {mensaje && <Alert variant="danger">{mensaje}</Alert>}
             <div className="mb-3">
               <label>Fecha:</label>
@@ -142,7 +141,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
         </form>
       </Modal>
 
-      {/* Modal de confirmación para creación */}
+      {/* Modal de confirmación para crear */}
       <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Egreso Creado</Modal.Title>

@@ -18,6 +18,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
   });
 
   const validarCedula = (cedula) => /^[0-9]{8,9}$/.test(cedula);
+  const [estadoCliente, setEstadoCliente] = useState("Activo");
 
   const buscarNombreCliente = async () => {
     if (!formData.cedula.trim()) return;
@@ -25,19 +26,30 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
       setErrorCedula("La cédula debe tener entre 8 y 9 dígitos.");
       return;
     }
+
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/ingresos/buscarPorCedula/${formData.cedula}`);
       if (res.data) {
         setNombreCliente(res.data.nombre);
         setEmailCliente(res.data.email);
-        setErrorCedula("");
+        setEstadoCliente(res.data.estado || "Inactivo");
+
+        if (res.data.estado !== "Activo") {
+          setErrorCedula("El cliente está inactivo.");
+        } else {
+          setErrorCedula("");
+        }
       } else {
         setNombreCliente("");
         setEmailCliente("");
+        setEstadoCliente("Inactivo");
         setErrorCedula("Cliente no encontrado");
       }
     } catch (error) {
       console.error("Error buscando cliente:", error);
+      setNombreCliente("");
+      setEmailCliente("");
+      setEstadoCliente("Inactivo");
       setErrorCedula("Error al buscar cliente");
     }
   };
@@ -58,7 +70,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
         setMensaje("Ingreso creado exitosamente.");
         setTimeout(() => {
           setMensaje("");
-          onSave && onSave(); // Notifica al padre para refrescar el listado
+          onSave && onSave();
           handleClose();
         }, 1500);
       }
@@ -147,7 +159,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
           <button type="button" className="thm-btn thm-btn-small btn-gris mx-1" onClick={handleClose}>
             Cancelar
           </button>
-          <button type="submit" className="thm-btn thm-btn-small">
+          <button type="submit" className="thm-btn thm-btn-small" disabled={estadoCliente !== "Activo"}>
             Crear
           </button>
         </Modal.Footer>

@@ -39,12 +39,12 @@ const ListadoEgresos = () => {
 		return `${year}-${month}-${day}`;
 	};
 
-	// Filtro para el flag activo/inactivo
+	// Filtro activo/inactivo
 	const [filterEstado, setFilterEstado] = useState("Activo");
 	const [filterFecha, setFilterFecha] = useState("");
 	const [filterCategoria, setFilterCategoria] = useState("Todos");
 
-	// Filtro para el estado
+	// Filtro  estado
 	const [filterEgresoEstado, setFilterEgresoEstado] = useState("Pendiente");
 
 	// Ordenamiento y paginación
@@ -79,29 +79,29 @@ const ListadoEgresos = () => {
 		fetchEgresos();
 	}, [fetchEgresos]);
 
-	// Filtrado de egresos
+	// Filtro de egresos
 	let egresosFiltrados = egresos;
 
-	// Filtrar por activo/inactivo
+	// Filtro activo/inactivo
 	if (filterEstado !== "" && filterEstado !== "Todos") {
 		egresosFiltrados =
 			filterEstado === "Activo"
 				? egresosFiltrados.filter((e) => e.activo)
 				: egresosFiltrados.filter((e) => !e.activo);
 	}
-	// Filtrar por fecha
+	// Filtro fecha
 	if (filterFecha !== "") {
 		egresosFiltrados = egresosFiltrados.filter(
 			(e) => formatLocalDate(e.fecha) === filterFecha
 		);
 	}
-	// Filtrar por categoría
+	// Filtro categoría
 	if (filterCategoria !== "Todos") {
 		egresosFiltrados = egresosFiltrados.filter(
 			(e) => e.categoria === filterCategoria
 		);
 	}
-	// Filtrar por estado textual
+	// Filtro estado
 	if (filterEgresoEstado !== "Todos") {
 		egresosFiltrados = egresosFiltrados.filter(
 			(e) => e.estado === filterEgresoEstado
@@ -133,7 +133,7 @@ const ListadoEgresos = () => {
 		if (num >= 1 && num <= totalPaginas) setPagActual(num);
 	};
 
-	// Función para activar/desactivar egresos
+	// Activar/desactivar egresos
 	const handleToggleClick = (egreso) => {
 		setToggleEgreso(egreso);
 		setShowConfirmToggle(true);
@@ -190,7 +190,6 @@ const ListadoEgresos = () => {
 		}
 	};
 
-	// getCategoryName retorna directamente el valor de las categorias
 	const getCategoryName = (cat) => cat;
 
 	return (
@@ -210,7 +209,7 @@ const ListadoEgresos = () => {
 
 				{/* Filtros en dos columnas */}
 				<div className="row mb-3">
-					{/* Columna izquierda: Fecha y Categoría */}
+					{/* Fecha y Categoría */}
 					<div className="col-md-4">
 						<Form.Group controlId="filterCategoria">
 							<Form.Label>Categoría:</Form.Label>
@@ -243,7 +242,7 @@ const ListadoEgresos = () => {
 							/>
 						</Form.Group>
 					</div>
-					{/* Columna derecha: Activo/Inactivo y Estado */}
+					{/* Activo/Inactivo y Estado */}
 					<div className="col-md-3">
 						<Form.Group
 							controlId="filterEstado"
@@ -377,139 +376,6 @@ const ListadoEgresos = () => {
 					</Table>
 				</div>
 
-				{/* <div className="table-responsive">
-                    <Table className="table kreativa-proyecto-table">
-                        <thead>
-                            <tr>
-                                <th
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => handleSort("fecha")}
-                                >
-                                    Fecha <FontAwesomeIcon icon={faSort} />
-                                </th>
-                                <th
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => handleSort("monto")}
-                                >
-                                    Monto <FontAwesomeIcon icon={faSort} />
-                                </th>
-                                <th>Categoría</th>
-                                <th>Descripción</th>
-                                <th>Proveedor</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {egresosPaginados.length === 0 ? (
-                                <tr>
-                                    <td colSpan="7" className="text-center">
-                                        No hay egresos para mostrar.
-                                    </td>
-                                </tr>
-                            ) : (
-                                egresosPaginados.map((egreso) => (
-                                    <tr key={egreso._id}>
-                                        <td>
-                                            {new Date(
-                                                egreso.fecha
-                                            ).toLocaleDateString()}
-                                        </td>
-                                        <td>₡{egreso.monto}</td>
-                                        <td>
-                                            {getCategoryName(egreso.categoria)}
-                                        </td>
-                                        <td>{egreso.descripcion}</td>
-                                        <td>{egreso.proveedor}</td>
-                                        <td>{egreso.estado}</td>
-                                        <td>
-                                            <div
-                                                className="botones-grupo"
-                                                style={{
-                                                    display: "flex",
-                                                    flexDirection: "column",
-                                                    gap: "5px",
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        gap: "5px",
-                                                    }}
-                                                >
-                                                    <button
-                                                        className="thm-btn thm-btn-small btn-amarillo"
-                                                        onClick={() => {
-                                                            setEgresoVer(
-                                                                egreso
-                                                            );
-                                                            setShowModalVer(
-                                                                true
-                                                            );
-                                                        }}
-                                                        title="Ver detalle"
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faEye}
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        className="thm-btn thm-btn-small btn-azul"
-                                                        onClick={() => {
-                                                            setEgresoEditar(
-                                                                egreso
-                                                            );
-                                                            setShowModalEditar(
-                                                                true
-                                                            );
-                                                        }}
-                                                        title="Modificar"
-                                                        disabled={
-                                                            !egreso.activo
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faPencil}
-                                                        />
-                                                    </button>
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        gap: "5px",
-                                                    }}
-                                                >
-                                                    <button
-                                                        className={`thm-btn thm-btn-small ${egreso.activo ? "btn-verde" : "btn-rojo"}`}
-                                                        onClick={() =>
-                                                            handleToggleClick(
-                                                                egreso
-                                                            )
-                                                        }
-                                                        title={
-                                                            egreso.activo
-                                                                ? "Desactivar"
-                                                                : "Activar"
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={
-                                                                egreso.activo
-                                                                    ? faToggleOn
-                                                                    : faToggleOff
-                                                            }
-                                                        />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </Table>
-                </div> */}
-
 				<TablaPaginacion
 					totalItems={egresosOrdenados.length}
 					itemsPorPagina={itemsPag}
@@ -520,57 +386,6 @@ const ListadoEgresos = () => {
 					}}
 					onPaginaChange={(pagina) => setPagActual(pagina)}
 				/>
-				{/* Paginación
-                <div className="d-flex justify-content-center mt-4">
-                    <select
-                        className="form-select form-select-sm w-auto me-2"
-                        onChange={(e) => {
-                            setItemsPag(Number(e.target.value));
-                            setPagActual(1);
-                        }}
-                        value={itemsPag}
-                    >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={egresosOrdenados.length}>Todos</option>
-                    </select>
-                    <button
-                        className="thm-btn btn-volver thm-btn-small me-2"
-                        onClick={() => setPagActual(1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faBackward} />
-                    </button>
-                    <button
-                        className="thm-btn btn-volver thm-btn-small me-2"
-                        onClick={() => setPagActual(pagActual - 1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faCaretLeft} />
-                    </button>
-                    <span className="align-self-center mx-2">
-                        Página {pagActual} de {totalPaginas || 1}
-                    </span>
-                    <button
-                        className="thm-btn btn-volver thm-btn-small me-2"
-                        onClick={() => setPagActual(pagActual + 1)}
-                        disabled={
-                            pagActual === totalPaginas || totalPaginas === 0
-                        }
-                    >
-                        <FontAwesomeIcon icon={faCaretRight} />
-                    </button>
-                    <button
-                        className="thm-btn btn-volver thm-btn-small me-2"
-                        onClick={() => setPagActual(totalPaginas)}
-                        disabled={
-                            pagActual === totalPaginas || totalPaginas === 0
-                        }
-                    >
-                        <FontAwesomeIcon icon={faForward} />
-                    </button>
-                </div> */}
 			</div>
 
 			{/* Modal de confirmación para activar/desactivar */}
@@ -599,7 +414,7 @@ const ListadoEgresos = () => {
 				</Modal.Footer>
 			</Modal>
 
-			{/* Modal de confirmación para edición */}
+			{/* Modal de confirmación para editar */}
 			<Modal
 				show={showConfirmEditar}
 				onHide={() => setShowConfirmEditar(false)}

@@ -2,7 +2,6 @@ import { Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 const ModalVerIngreso = ({ show, handleClose, ingreso, categories = [] }) => {
-  // Función que busca en el array de categorías el documento cuyo _id coincida con el id recibido
   const getCategoryName = (catId) => {
     console.log("catId recibido:", catId);
     console.log("array de categorías:", categories);
@@ -64,7 +63,7 @@ ModalVerIngreso.propTypes = {
     fecha_creacion: PropTypes.string,
     nombre_cliente: PropTypes.string,
     cedula: PropTypes.string,
-    categoria: PropTypes.string, // Se espera que sea el id de la categoría
+    categoria: PropTypes.string,
     descripcion: PropTypes.string,
     monto: PropTypes.number,
     fecha: PropTypes.string,
