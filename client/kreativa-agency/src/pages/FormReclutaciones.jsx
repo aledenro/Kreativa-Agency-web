@@ -28,9 +28,14 @@ const FormReclutaciones = () => {
 
     useEffect(() => {
         const checkFormStatus = async () => {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/form-status`
+                    `${import.meta.env.VITE_API_URL}/form-status`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
                 setFormActive(response.data.active);
             } catch (error) {
@@ -84,16 +89,20 @@ const FormReclutaciones = () => {
             setLoading(false);
             return;
         }
+        const token = localStorage.getItem("token");
 
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/reclutaciones`,
                 {
-                    nombre,
-                    apellido,
-                    correo,
-                    telefono,
-                    cv: [],
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: {
+                        nombre,
+                        apellido,
+                        correo,
+                        telefono,
+                        cv: [],
+                    },
                 }
             );
 
@@ -108,11 +117,15 @@ const FormReclutaciones = () => {
                         "reclutacion",
                         reclutacionId
                     );
+                    const token = localStorage.getItem("token");
 
                     await axios.put(
                         `${import.meta.env.VITE_API_URL}/reclutaciones/actualizar/${reclutacionId}`,
                         {
-                            uploadedFiles,
+                            headers: { Authorization: `Bearer ${token}` },
+                            body: {
+                                uploadedFiles,
+                            },
                         }
                     );
                 } catch (error) {

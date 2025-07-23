@@ -45,7 +45,11 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
     };
 
     const getDataSinglePageData = async (url) => {
-        const res = await axios.get(url);
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(url, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
         return res.data;
     };
@@ -53,14 +57,22 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
     const getDataMultiPageData = async (fechaInicio, fechaFin) => {
         const data = [];
 
+        const token = localStorage.getItem("token");
+
         const resEgresos = await axios.get(
-            `${import.meta.env.VITE_API_URL}/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+            `${import.meta.env.VITE_API_URL}/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
         );
 
         data.push(resEgresos.data);
 
         const resIngresos = await axios.get(
-            `${import.meta.env.VITE_API_URL}/ingresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+            `${import.meta.env.VITE_API_URL}/ingresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
         );
 
         data.push(resIngresos.data);

@@ -25,9 +25,14 @@ const DetalleServicio = () => {
 
     useEffect(() => {
         const fetchServicio = async () => {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/${id}`
+                    `${import.meta.env.VITE_API_URL}/servicios/${id}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
                 const servicioData = response.data;
                 console.log("Servicio recibido:", servicioData.imagen);
@@ -60,8 +65,11 @@ const DetalleServicio = () => {
             const endpoint = servicio.activo
                 ? `${import.meta.env.VITE_API_URL}/servicios/${id}/desactivar`
                 : `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
+            const token = localStorage.getItem("token");
 
-            const response = await axios.put(endpoint);
+            const response = await axios.put(endpoint, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             setServicio(response.data.servicio);
         } catch (err) {
             console.error(
@@ -79,7 +87,11 @@ const DetalleServicio = () => {
                 ? `${import.meta.env.VITE_API_URL}/servicios/${id}/paquetes/${paqueteId}/desactivar`
                 : `${import.meta.env.VITE_API_URL}/servicios/${id}/paquetes/${paqueteId}/activar`;
 
-            const response = await axios.put(endpoint);
+            const token = localStorage.getItem("token");
+
+            const response = await axios.put(endpoint, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
             setServicio(response.data);
         } catch (err) {

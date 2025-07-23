@@ -46,9 +46,14 @@ const FormContacto = () => {
 
     useEffect(() => {
         const fetchServicios = async () => {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/nombres`
+                    `${import.meta.env.VITE_API_URL}/servicios/nombres`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 if (Array.isArray(response.data)) {
@@ -138,11 +143,15 @@ const FormContacto = () => {
         }
 
         setLoading(true);
+        const token = localStorage.getItem("token");
 
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/contacto`,
-                formData
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: formData,
+                }
             );
             openSuccessNotification("Formulario enviado exitosamente");
             setFormData({

@@ -102,10 +102,15 @@ const ModalAgregar = ({ show, handleClose }) => {
 
         const data = construirJsonRequest(titulo, descripcion, urgente);
 
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
-                data
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: data,
+                }
             );
 
             if (res.status == 201) {

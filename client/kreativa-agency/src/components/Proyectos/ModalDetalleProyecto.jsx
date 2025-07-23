@@ -49,11 +49,15 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
     const fetchProyecto = useCallback(async () => {
         if (!proyectoId) return;
 
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.get(
-                `${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`
+                `${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
-            console.log(res.data.proyecto);
 
             setProyecto(res.data.proyecto);
         } catch (error) {
@@ -107,10 +111,15 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
             fecha_envio: Date.now(),
         };
 
+        const token = localStorage.getItem("token");
+
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${proyectoId}`,
-                data
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: data,
+                }
             );
 
             const respuestaDb = response.data.respuesta;

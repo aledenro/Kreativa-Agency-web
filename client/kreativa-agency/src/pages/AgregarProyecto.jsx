@@ -71,10 +71,15 @@ const AgregarProyecto = () => {
             colabFormateado
         );
 
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/proyectos/crear`,
-                data
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: data,
+                }
             );
 
             if (res.status == 201) {
