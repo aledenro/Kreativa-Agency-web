@@ -7,7 +7,7 @@ import {
 	faCaretDown,
 	faEye,
 	faPencil,
-	faPlus
+	faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
@@ -549,7 +549,7 @@ const DashboardColaborador = () => {
 						)}
 
 						<button
-							className="btn thm-btn  m-1"
+							className="thm-btn  m-1"
 							onClick={() => {
 								handleImprimirReporte();
 							}}
@@ -573,7 +573,10 @@ const DashboardColaborador = () => {
 										setSortField("nombre");
 									}}
 								>
-									Proyecto <FontAwesomeIcon icon={faSort} />
+									Proyecto{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
 								</Th>
 								<Th className="col-cliente">Cliente</Th>
 								<Th className="col-estado">Estado</Th>
@@ -589,7 +592,10 @@ const DashboardColaborador = () => {
 										setSortField("fecha_entrega");
 									}}
 								>
-									Entrega <FontAwesomeIcon icon={faSort} />
+									Entrega{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
 								</Th>
 								<Th className="col-acciones">Acciones</Th>
 							</Tr>
@@ -678,181 +684,304 @@ const DashboardColaborador = () => {
 											</Tr>
 
 											{expandedProjects[proyecto._id] && (
-  <Tr>
-    <Td colSpan="6" className="p-0">
-      <div className="ms-5">
-        {/* Tabla para escritorio */}
-        <div className="subtabla-backlog table-desktop">
-          <Table className="main-table subtabla-backlog">
-            <Thead>
-              <Tr>
-                <Th onClick={() => handleTaskSort(proyecto._id, "nombre")} className="col-nombre">
-                  Tarea <span className="sort-icon"><FontAwesomeIcon icon={faSort} /></span>
-                </Th>
-                <Th className="col-colaborador">Resp.</Th>
-                <Th className="col-estado" onClick={() => handleTaskSort(proyecto._id, "estado")}>
-                  Estado <span className="sort-icon"><FontAwesomeIcon icon={faSort} /></span>
-                </Th>
-                <Th className="col-prioridad" onClick={() => handleTaskSort(proyecto._id, "prioridad")}>
-                  Prioridad <span className="sort-icon"><FontAwesomeIcon icon={faSort} /></span>
-                </Th>
-                <Th className="col-vencimiento" onClick={() => handleTaskSort(proyecto._id, "fecha_vencimiento")}>
-                  Fecha <span className="sort-icon"><FontAwesomeIcon icon={faSort} /></span>
-                </Th>
-                <Th className="col-acciones">Acciones</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {filteredTasks.length > 0 ? (
-                filteredTasks.map((tarea) => (
-                  <Tr key={tarea._id}>
-                    <Td className="col-nombre">{tarea.nombre}</Td>
-                    <Td className="col-colaborador">
-                      <span
-                        className="badge badge-gris"
-                        title={tarea.colaborador_id?.nombre || "Sin asignar"}
-                      >
-                        {tarea.colaborador_id?.nombre
-                          ? tarea.colaborador_id.nombre.charAt(0) +
-                            (tarea.colaborador_id.nombre.includes(" ")
-                              ? tarea.colaborador_id.nombre.split(" ")[1].charAt(0)
-                              : "")
-                          : "?"}
-                      </span>
-                    </Td>
-                    <Td className="col-estado">
-                      <div className={getEstado(tarea.estado)}>{tarea.estado}</div>
-                    </Td>
-                    <Td className="col-prioridad">
-                      <div className={getPrioridad(tarea.prioridad)}>{tarea.prioridad}</div>
-                    </Td>
-                    <Td className="col-vencimiento">
-                      {tarea.fecha_vencimiento
-                        ? new Date(tarea.fecha_vencimiento).toLocaleDateString()
-                        : "-"}
-                    </Td>
-                    <Td className="col-acciones">
-                      <div className="botones-grupo">
-                        {canView && (
-                          <button
-                            className="thm-btn thm-btn-small btn-amarillo"
-                            onClick={() => handleVerTarea(tarea)}
-                          >
-                            <FontAwesomeIcon icon={faEye} />
-                          </button>
-                        )}
-                        {canEdit && (
-                          <button
-                            className="thm-btn thm-btn-small btn-azul"
-                            onClick={() => handleEditarTarea(tarea._id)}
-                          >
-                            <FontAwesomeIcon icon={faPencil} />
-                          </button>
-                        )}
-                      </div>
-                    </Td>
-                  </Tr>
-                ))
-              ) : (
-                <Tr>
-                  <Td>No hay tareas para este proyecto.</Td>
-                </Tr>
-              )}
-              {canEdit && (
-                <Tr>
-                  <Td>
-                    <a
-                      href="#"
-                      className="text-decoration-none"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleAgregarTarea(proyecto._id);
-                      }}
-                    >
-                      + Agregar tarea
-                    </a>
-                  </Td>
-                </Tr>
-              )}
-            </Tbody>
-          </Table>
-        </div>
+												<Tr>
+													<Td colSpan="6" className="p-0">
+														<div className="ms-5">
+															{/* Tabla para escritorio */}
+															<div className="table-desktop">
+																<Table className="main-table subtabla-backlog">
+																	<Thead>
+																		<Tr>
+																			<Th
+																				onClick={() =>
+																					handleTaskSort(proyecto._id, "nombre")
+																				}
+																				className="col-nombre"
+																			>
+																				Tarea{" "}
+																				<span className="sort-icon">
+																					<FontAwesomeIcon icon={faSort} />
+																				</span>
+																			</Th>
+																			<Th className="col-colaborador">Resp.</Th>
+																			<Th
+																				className="col-estado"
+																				onClick={() =>
+																					handleTaskSort(proyecto._id, "estado")
+																				}
+																			>
+																				Estado{" "}
+																				<span className="sort-icon">
+																					<FontAwesomeIcon icon={faSort} />
+																				</span>
+																			</Th>
+																			<Th
+																				className="col-prioridad"
+																				onClick={() =>
+																					handleTaskSort(
+																						proyecto._id,
+																						"prioridad"
+																					)
+																				}
+																			>
+																				Prioridad{" "}
+																				<span className="sort-icon">
+																					<FontAwesomeIcon icon={faSort} />
+																				</span>
+																			</Th>
+																			<Th
+																				className="col-vencimiento"
+																				onClick={() =>
+																					handleTaskSort(
+																						proyecto._id,
+																						"fecha_vencimiento"
+																					)
+																				}
+																			>
+																				Fecha{" "}
+																				<span className="sort-icon">
+																					<FontAwesomeIcon icon={faSort} />
+																				</span>
+																			</Th>
+																			<Th className="col-acciones">Acciones</Th>
+																		</Tr>
+																	</Thead>
+																	<Tbody>
+																		{filteredTasks.length > 0 ? (
+																			filteredTasks.map((tarea) => (
+																				<Tr key={tarea._id}>
+																					<Td className="col-nombre">
+																						{tarea.nombre}
+																					</Td>
+																					<Td className="col-colaborador">
+																						<span
+																							className="badge badge-gris"
+																							title={
+																								tarea.colaborador_id?.nombre ||
+																								"Sin asignar"
+																							}
+																						>
+																							{tarea.colaborador_id?.nombre
+																								? tarea.colaborador_id.nombre.charAt(
+																										0
+																									) +
+																									(tarea.colaborador_id.nombre.includes(
+																										" "
+																									)
+																										? tarea.colaborador_id.nombre
+																												.split(" ")[1]
+																												.charAt(0)
+																										: "")
+																								: "?"}
+																						</span>
+																					</Td>
+																					<Td className="col-estado">
+																						<div
+																							className={getEstado(
+																								tarea.estado
+																							)}
+																						>
+																							{tarea.estado}
+																						</div>
+																					</Td>
+																					<Td className="col-prioridad">
+																						<div
+																							className={getPrioridad(
+																								tarea.prioridad
+																							)}
+																						>
+																							{tarea.prioridad}
+																						</div>
+																					</Td>
+																					<Td className="col-vencimiento">
+																						{tarea.fecha_vencimiento
+																							? new Date(
+																									tarea.fecha_vencimiento
+																								).toLocaleDateString()
+																							: "-"}
+																					</Td>
+																					<Td className="col-acciones">
+																						<div className="botones-grupo">
+																							{canView && (
+																								<button
+																									className="thm-btn thm-btn-small btn-amarillo"
+																									onClick={() =>
+																										handleVerTarea(tarea)
+																									}
+																								>
+																									<FontAwesomeIcon
+																										icon={faEye}
+																									/>
+																								</button>
+																							)}
+																							{canEdit && (
+																								<button
+																									className="thm-btn thm-btn-small btn-azul"
+																									onClick={() =>
+																										handleEditarTarea(tarea._id)
+																									}
+																								>
+																									<FontAwesomeIcon
+																										icon={faPencil}
+																									/>
+																								</button>
+																							)}
+																						</div>
+																					</Td>
+																				</Tr>
+																			))
+																		) : (
+																			<Tr>
+																				<Td>
+																					No hay tareas para este proyecto.
+																				</Td>
+																			</Tr>
+																		)}
+																		{canEdit && (
+																			<Tr>
+																				<Td>
+																					<a
+																						href="#"
+																						className="text-decoration-none"
+																						onClick={(e) => {
+																							e.preventDefault();
+																							handleAgregarTarea(proyecto._id);
+																						}}
+																					>
+																						+ Agregar tarea
+																					</a>
+																				</Td>
+																			</Tr>
+																		)}
+																	</Tbody>
+																</Table>
+															</div>
 
-        {/* Acordeón móvil */}
-        <div className={`tareas-acordeon ${proyecto ? "acordeon-proyecto" : "acordeon-global"}`}>
-          {filteredTasks.length > 0 ? (
-            filteredTasks.map((tarea) => (
-              <div className="acordeon-tarea-card" key={tarea._id}>
-                <div
-                  className="acordeon-tarea-header"
-                  onClick={() =>
-                    setExpandedProjects((prev) => ({
-                      ...prev,
-                      [`${proyecto._id}_${tarea._id}`]:
-                        !prev[`${proyecto._id}_${tarea._id}`],
-                    }))
-                  }
-                >
-                  {tarea.nombre}
-                  <FontAwesomeIcon
-                    icon={
-                      expandedProjects[`${proyecto._id}_${tarea._id}`]
-                        ? faCaretDown
-                        : faCaretRight
-                    }
-                  />
-                </div>
-                {expandedProjects[`${proyecto._id}_${tarea._id}`] && (
-                  <div className="acordeon-tarea-body">
-                    <p><strong>Responsable:</strong> {tarea.colaborador_id?.nombre || "Sin asignar"}</p>
-                    <p><strong>Estado:</strong> <span className={getEstado(tarea.estado)}>{tarea.estado}</span></p>
-                    <p><strong>Prioridad:</strong> <span className={getPrioridad(tarea.prioridad)}>{tarea.prioridad}</span></p>
-                    <p><strong>Fecha:</strong> {tarea.fecha_vencimiento ? new Date(tarea.fecha_vencimiento).toLocaleDateString() : "-"}</p>
-                    <p><strong>Acciones:</strong>
-  <span className="botones-grupo ms-2">
-    {canView && (
-      <button
-        className="thm-btn thm-btn-small btn-amarillo me-1"
-        onClick={() => handleVerTarea(tarea)}
-      >
-        <FontAwesomeIcon icon={faEye} />
-      </button>
-    )}
-    {canEdit && (
-      <button
-        className="thm-btn thm-btn-small btn-azul"
-        onClick={() => handleEditarTarea(tarea._id)}
-      >
-        <FontAwesomeIcon icon={faPencil} />
-      </button>
-    )}
-  </span>
-</p>
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <p>No hay tareas para este proyecto.</p>
-          )}
-          {canEdit && (
-            <div className="d-flex flex-row-reverse"><button
-  className="thm-btn"
-  onClick={(e) => {
-    e.preventDefault();
-    handleAgregarTarea(proyecto._id);
-  }}
->
-  <FontAwesomeIcon icon={faPlus} /> Agregar tarea
-</button></div>
-            
-          )}
-        </div>
-      </div>
-    </Td>
-  </Tr>
-)}
-
+															{/* Acordeón móvil */}
+															<div
+																className={`tareas-acordeon ${proyecto ? "acordeon-proyecto" : "acordeon-global"}`}
+															>
+																{filteredTasks.length > 0 ? (
+																	filteredTasks.map((tarea) => (
+																		<div
+																			className="acordeon-tarea-card"
+																			key={tarea._id}
+																		>
+																			<div
+																				className="acordeon-tarea-header"
+																				onClick={() =>
+																					setExpandedProjects((prev) => ({
+																						...prev,
+																						[`${proyecto._id}_${tarea._id}`]:
+																							!prev[
+																								`${proyecto._id}_${tarea._id}`
+																							],
+																					}))
+																				}
+																			>
+																				{tarea.nombre}
+																				<FontAwesomeIcon
+																					icon={
+																						expandedProjects[
+																							`${proyecto._id}_${tarea._id}`
+																						]
+																							? faCaretDown
+																							: faCaretRight
+																					}
+																				/>
+																			</div>
+																			{expandedProjects[
+																				`${proyecto._id}_${tarea._id}`
+																			] && (
+																				<div className="acordeon-tarea-body">
+																					<p>
+																						<strong>Responsable:</strong>{" "}
+																						{tarea.colaborador_id?.nombre ||
+																							"Sin asignar"}
+																					</p>
+																					<p>
+																						<strong>Estado:</strong>{" "}
+																						<span
+																							className={getEstado(
+																								tarea.estado
+																							)}
+																						>
+																							{tarea.estado}
+																						</span>
+																					</p>
+																					<p>
+																						<strong>Prioridad:</strong>{" "}
+																						<span
+																							className={getPrioridad(
+																								tarea.prioridad
+																							)}
+																						>
+																							{tarea.prioridad}
+																						</span>
+																					</p>
+																					<p>
+																						<strong>Fecha:</strong>{" "}
+																						{tarea.fecha_vencimiento
+																							? new Date(
+																									tarea.fecha_vencimiento
+																								).toLocaleDateString()
+																							: "-"}
+																					</p>
+																					<p>
+																						<strong>Acciones:</strong>
+																						<span className="botones-grupo ms-2">
+																							{canView && (
+																								<button
+																									className="thm-btn thm-btn-small btn-amarillo me-1"
+																									onClick={() =>
+																										handleVerTarea(tarea)
+																									}
+																								>
+																									<FontAwesomeIcon
+																										icon={faEye}
+																									/>
+																								</button>
+																							)}
+																							{canEdit && (
+																								<button
+																									className="thm-btn thm-btn-small btn-azul"
+																									onClick={() =>
+																										handleEditarTarea(tarea._id)
+																									}
+																								>
+																									<FontAwesomeIcon
+																										icon={faPencil}
+																									/>
+																								</button>
+																							)}
+																						</span>
+																					</p>
+																				</div>
+																			)}
+																		</div>
+																	))
+																) : (
+																	<p>No hay tareas para este proyecto.</p>
+																)}
+																{canEdit && (
+																	<div className="d-flex flex-row-reverse">
+																		<button
+																			className="thm-btn"
+																			onClick={(e) => {
+																				e.preventDefault();
+																				handleAgregarTarea(proyecto._id);
+																			}}
+																		>
+																			<FontAwesomeIcon icon={faPlus} /> Agregar
+																			tarea
+																		</button>
+																	</div>
+																)}
+															</div>
+														</div>
+													</Td>
+												</Tr>
+											)}
 										</React.Fragment>
 									);
 								})

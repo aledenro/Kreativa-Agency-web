@@ -57,7 +57,7 @@ a {
 }
 
 body {
-    min-width: 360px;
+	min-width: 360px;
 }
 
 .main-container {
@@ -3730,9 +3730,9 @@ h3 {
 	text-align: left;
 	border: solid 1px #fff;
 	border-radius: var(--kreativa-bdr-radius);
-    text-transform: uppercase;
-    font-size: 15px;
-    margin-bottom: 5px !important;
+	text-transform: uppercase;
+	font-size: 15px;
+	margin-bottom: 5px !important;
 }
 
 .main-table .subtabla-backlog thead th {
@@ -3743,11 +3743,10 @@ h3 {
 	text-align: left;
 	border: solid 1px #fff;
 	border-radius: var(--kreativa-bdr-radius);
-    text-transform: uppercase;
-    font-size: 15px;
-    margin-bottom: 5px !important;
+	text-transform: uppercase;
+	font-size: 15px;
+	margin-bottom: 5px !important;
 }
-
 
 .main-table tbody td {
 	border-top: solid 1px #fff;
@@ -3763,25 +3762,26 @@ h3 {
 	vertical-align: middle;
 	transition: background-color 0.2s ease-in-out;
 	border-radius: 6px;
-    font-size: 14px;
+	font-size: 14px;
 }
 
 .main-table tbody tr {
 	border-radius: 12px;
 	transition: background-color 0.3s;
-    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
+	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
 }
 
 .main-table tbody tr:hover {
 	background-color: var(--kreativa-rosado-claro);
 	color: var(--kreativa-azul);
-    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.0);
+	box-shadow: 0 0px 4px rgba(0, 0, 0, 0);
 }
 
 /* en tabla backlog no hover effect para no recargar */
 .tabla-backlog tbody tr:hover {
 	color: var(--kreativa-azul);
-    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.0);
+	box-shadow: 0 0px 4px rgba(0, 0, 0, 0);
+	background-color: transparent;
 }
 
 .col-nombre,
@@ -3789,16 +3789,15 @@ h3 {
 .tabla-ingresos .col-descripcion {
 	min-width: 40px;
 	width: 30%;
-    
 }
 
 .tabla-contacto .col-nombre,
 .tabla-contacto .col-correo,
 .tabla-trabajo .col-nombre,
-.tabla-trabajo .col-correo  {
+.tabla-trabajo .col-correo {
 	min-width: 40px;
 	width: 25%;
-    white-space: nowrap;
+	white-space: nowrap;
 }
 
 .col-colaborador,
@@ -3824,67 +3823,74 @@ h3 {
 	text-align: center;
 }
 
-
-.tabla-ingresos .col-estado{
-    white-space: normal;
+.tabla-ingresos .col-estado {
+	white-space: normal;
 }
 
 .d-mobile {
 	display: none;
 }
 
+.tabla-backlog tbody tr .fa-caret-right,
+.tabla-backlog tbody tr .fa-caret-down {
+	color: var(--kreativa-rosado);
+}
+
+.tareas-acordeon .fa-caret-right,
+.tareas-acordeon .fa-caret-down {
+	color: var(--kreativa-rosado-claro) !important;
+}
+
 /* exclusivo para tabla usuarios */
 @media (max-width: 1152px) {
 	.tabla-usuarios .col-estado,
 	.tabla-usuarios .col-prioridad,
-    .col-tipo,
-    .col-cedula,
-    .col-categoria,
-    .tabla-ingresos .col-estado,
-    .tabla-contacto .col-telefono,
-    .tabla-contacto .col-negocio{
+	.col-tipo,
+	.col-cedula,
+	.col-categoria,
+	.tabla-ingresos .col-estado,
+	.tabla-contacto .col-telefono,
+	.tabla-contacto .col-negocio {
 		display: none;
 	}
 
-    .tabla-usuarios .botones-grupo {
+	.tabla-usuarios .botones-grupo {
 		flex-wrap: wrap;
 		justify-content: center;
 	}
 }
 
-
 @media (max-width: 992px) {
 	.col-estado,
 	.col-prioridad,
-    .col-paquetes{
+	.col-paquetes {
 		display: none;
 	}
 
-    .botones-grupo {
+	.botones-grupo {
 		flex-wrap: wrap;
 		justify-content: center;
 	}
 }
 
 @media (max-width: 768px) {
-    .tabla-ingresos .col-fecha,
-    .tabla-ingresos .col-vencimiento{
+	.tabla-ingresos .col-fecha,
+	.tabla-ingresos .col-vencimiento {
 		display: none;
-	}}
-
-@media (max-width: 640px) {
-
-    .div-table {
-        background-color: var(--kreativa-rosado);
-        border-radius: 20px;
-    }
-	.div-table:has(.tabla-backlog){
-	background-color: var(--kreativa-rosado-claro);
-	
+	}
 }
 
-    .main-table tbody tr {
-	    border: solid 0px var(--kreativa-rosado) !important;
+@media (max-width: 640px) {
+	.div-table {
+		background-color: var(--kreativa-rosado);
+		border-radius: 20px;
+	}
+	.div-table:has(.tabla-backlog) {
+		background-color: var(--kreativa-rosado-claro);
+	}
+
+	.main-table tbody tr {
+		border: solid 0px var(--kreativa-rosado) !important;
 		display: block;
 		margin: 15px;
 		border-radius: 15px;
@@ -3892,16 +3898,16 @@ h3 {
 		padding: 10px;
 	}
 
-    .main-table tbody tr:hover {
-	background-color: white;
-    color: black;
-    }
+	.main-table tbody tr:hover {
+		background-color: white;
+		color: black;
+	}
 
-    .main-table td .tdBefore{
-        color: var(--kreativa-base);
-        font-size: 15px;
-    }
-    
+	.main-table td .tdBefore {
+		color: var(--kreativa-base);
+		font-size: 15px;
+	}
+
 	.d-desktop {
 		display: none !important;
 	}
@@ -3921,85 +3927,82 @@ h3 {
 
 	.col-nombre,
 	.col-proyecto,
-    .tabla-ingresos .col-descripcion,
-    .tabla-contacto .col-nombre,
-    .tabla-contacto .col-correo,
-    .tabla-trabajo .col-nombre,
-    .tabla-trabajo .col-correo   {
+	.tabla-ingresos .col-descripcion,
+	.tabla-contacto .col-nombre,
+	.tabla-contacto .col-correo,
+	.tabla-trabajo .col-nombre,
+	.tabla-trabajo .col-correo {
 		width: 100%;
 	}
 
-    .tabla-contacto .col-telefono,
-    .tabla-contacto .col-negocio{
+	.tabla-contacto .col-telefono,
+	.tabla-contacto .col-negocio {
 		display: block;
 	}
 
 	.subtabla-backlog {
-    display: none !important;
-  }
-  .tareas-acordeon {
-    display: block !important;
-  }
-
+		display: none !important;
+	}
+	.tareas-acordeon {
+		display: block !important;
+	}
 }
 
 .tareas-acordeon {
-  display: none;
-  border-radius: 15px;
-  padding-bottom: 12px;
+	display: none;
+	border-radius: 15px;
+	padding-bottom: 12px;
 }
 
-.ms-5{
+.ms-5 {
 	margin-left: 1rem !important;
 }
 
-.tareas-acordeon a{
+.tareas-acordeon a {
 	padding-left: 12px;
 }
 
-.main-table tbody tr:has(.ms-5){
+.main-table tbody tr:has(.ms-5) {
 	background-color: transparent;
 	border: 0px solid #ddd !important;
 	box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
 	padding: 0 !important;
-	
 }
 
-.main-table tbody td:has(.ms-5){
+.main-table tbody td:has(.ms-5) {
 	background-color: transparent;
 	border: 0px solid #ddd !important;
-	
 }
 
 .acordeon-tarea-card {
-  border: 0px solid #ddd;
-  border-radius: 15px;
-  margin-bottom: 12px;
-  background-color: white;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+	border: 0px solid #ddd;
+	border-radius: 15px;
+	margin-bottom: 12px;
+	background-color: white;
+	overflow: hidden;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .acordeon-tarea-header {
-  background-color: var(--kreativa-rosado);
-  padding: 10px 15px;
-  font-weight: bold;
-  font-size: 15px;
-  color: var(--kreativa-rosado-claro);
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+	background-color: var(--kreativa-rosado);
+	padding: 10px 15px;
+	font-weight: bold;
+	font-size: 15px;
+	color: var(--kreativa-rosado-claro);
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .acordeon-tarea-body {
-  padding: 10px 15px;
-  background-color: #fff;
-  font-size: 14px;
-  border-top: 1px solid #eee;
+	padding: 10px 15px;
+	background-color: #fff;
+	font-size: 14px;
+	border-top: 1px solid #eee;
 }
 
-.tareas-acordeon p{
+.tareas-acordeon p {
 	background-color: white;
 	padding: 12px;
 	border-radius: 15px;
