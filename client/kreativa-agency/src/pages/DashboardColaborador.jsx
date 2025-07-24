@@ -623,18 +623,28 @@ const DashboardColaborador = () => {
 										<React.Fragment key={proyecto._id}>
 											<Tr>
 												<Td className="col-nombre">
-													<div className="d-flex align-items-center">
+													<div className="d-flex align-items-center justify-switch w-100">
 														<button
-															className="btn btn-sm"
+															className="btn btn-sm d-desktop"
 															onClick={() => toggleExpand(proyecto._id)}
 														>
-															{expandedProjects[proyecto._id] ? (
-																<FontAwesomeIcon icon={faCaretDown} />
-															) : (
-																<FontAwesomeIcon icon={faCaretRight} />
-															)}
+															<FontAwesomeIcon
+																icon={
+																	expandedProjects[proyecto._id]
+																		? faCaretDown
+																		: faCaretRight
+																}
+															/>
 														</button>
-														{proyecto.nombre}
+														<span>{proyecto.nombre}</span>{" "}
+														<button
+															className="thm-btn thm-btn-small btn-gris d-mobile"
+															onClick={() => toggleExpand(proyecto._id)}
+														>
+															{expandedProjects[proyecto._id]
+																? "Ocultar"
+																: "Mostrar"}
+														</button>
 													</div>
 												</Td>
 												<Td className="col-cliente">
@@ -840,16 +850,14 @@ const DashboardColaborador = () => {
 																		{canEdit && (
 																			<Tr>
 																				<Td>
-																					<a
-																						href="#"
-																						className="text-decoration-none"
-																						onClick={(e) => {
-																							e.preventDefault();
-																							handleAgregarTarea(proyecto._id);
-																						}}
+																					<button
+																						className="thm-btn btn-gris"
+																						onClick={() =>
+																							handleAgregarTarea(proyecto._id)
+																						}
 																					>
 																						+ Agregar tarea
-																					</a>
+																					</button>
 																				</Td>
 																			</Tr>
 																		)}

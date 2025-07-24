@@ -3841,6 +3841,10 @@ h3 {
 	color: var(--kreativa-rosado-claro) !important;
 }
 
+.justify-switch {
+	justify-content: flex-start;
+}
+
 /* exclusivo para tabla usuarios */
 @media (max-width: 1152px) {
 	.tabla-usuarios .col-estado,
@@ -3945,6 +3949,21 @@ h3 {
 	}
 	.tareas-acordeon {
 		display: block !important;
+	}
+
+	.justify-switch {
+		justify-content: space-between;
+
+		flex-wrap: wrap;
+	}
+}
+
+@media (min-width: 641px) {
+	.d-desktop {
+		display: inline-block !important;
+	}
+	.d-mobile {
+		display: none !important;
 	}
 }
 
