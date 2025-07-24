@@ -3812,7 +3812,9 @@ h3 {
 .col-categoria,
 .col-monto,
 .tabla-ingresos .col-nombre,
-.col-telefono {
+.col-telefono,
+.col-nivel,
+.col-precio {
 	white-space: nowrap;
 	min-width: 100px;
 	text-align: center;
