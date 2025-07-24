@@ -41,10 +41,8 @@ const AgregarCotizacion = () => {
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: data,
-                }
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 201) {

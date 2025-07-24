@@ -123,10 +123,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: data,
-                }
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 200) {
@@ -162,10 +160,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: { estado: estadoEdit },
-                }
+                { estado: estadoEdit },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (response.status === 200) {
@@ -220,12 +216,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/actualizarLog/${proyectoId}`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: {
-                        usuario_id: user_id,
-                        accion: accion,
-                    },
-                }
+                    usuario_id: user_id,
+                    accion: accion,
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
         } catch (error) {
             console.error(error.message);

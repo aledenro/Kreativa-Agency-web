@@ -40,10 +40,8 @@ const ModalEditarIngreso = ({
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/ingresos/${ingresoEditado._id}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: ingresoEditado,
-                }
+                ingresoEditado,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res.status === 200) {
                 setMensaje("Ingreso actualizado exitosamente.");

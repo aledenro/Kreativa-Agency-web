@@ -130,10 +130,8 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${cotizacionId}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: data,
-                }
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             showNotification("success", "Respuesta enviada correctamente.");
 
@@ -205,10 +203,9 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
         try {
             axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${cotizacionId}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: { estado: estado },
-                }
+
+                { estado: estado },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             showNotification("success", "Estado cambiado  correctamente.");

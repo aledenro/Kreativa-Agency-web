@@ -2,9 +2,11 @@ const jwt = require("jsonwebtoken");
 
 const verificarToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ mensaje: "Acceso no autorizado. Token no proporcionado." });
+        return res
+            .status(401)
+            .json({ mensaje: "Acceso no autorizado. Token no proporcionado." });
     }
 
     const token = authHeader.split(" ")[1]; // Obtener solo el token

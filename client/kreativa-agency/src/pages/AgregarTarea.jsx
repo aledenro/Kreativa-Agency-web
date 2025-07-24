@@ -72,10 +72,8 @@ const AgregarTarea = () => {
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/tareas/crear`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: data,
-                }
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 201) {

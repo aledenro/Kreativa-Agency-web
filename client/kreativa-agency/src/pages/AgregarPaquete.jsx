@@ -89,10 +89,8 @@ const AgregarPaquete = () => {
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/servicios/${id}/nuevoPaquete`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: paqueteData,
-                }
+                paqueteData,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             console.log(res.data);
             openSuccessNotification("Paquete agregado exitosamente");

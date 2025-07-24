@@ -98,14 +98,12 @@ const AgregarServicio = () => {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/servicios/agregar`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: {
-                        nombre,
-                        descripcion,
-                        categoria_id: selectedCategoria,
-                        imagenes: [],
-                    },
-                }
+                    nombre,
+                    descripcion,
+                    categoria_id: selectedCategoria,
+                    imagenes: [],
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             const servicioId = res.data._id;
@@ -128,10 +126,8 @@ const AgregarServicio = () => {
 
                     await axios.put(
                         `${import.meta.env.VITE_API_URL}/servicios/modificar/${servicioId}`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` },
-                            body: { imagenes },
-                        }
+                        imagenes,
+                        { headers: { Authorization: `Bearer ${token}` } }
                     );
                 } catch (error) {
                     console.error("Error al subir archivos:", error);
@@ -170,11 +166,9 @@ const AgregarServicio = () => {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/servicios/categorias`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: {
-                        nombre: nuevaCategoria,
-                    },
-                }
+                    nombre: nuevaCategoria,
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             await fetchCategorias();

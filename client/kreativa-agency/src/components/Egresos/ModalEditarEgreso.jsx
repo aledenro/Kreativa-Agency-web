@@ -24,11 +24,8 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/egresos/${egresoEditado._id}`,
-
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: egresoEditado,
-                }
+                egresoEditado,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res.status === 200) {
                 setMensaje("Egreso actualizado exitosamente.");

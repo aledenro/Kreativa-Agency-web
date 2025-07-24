@@ -143,15 +143,11 @@ const FormContacto = () => {
         }
 
         setLoading(true);
-        const token = localStorage.getItem("token");
 
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/contacto`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: formData,
-                }
+                formData
             );
             openSuccessNotification("Formulario enviado exitosamente");
             setFormData({

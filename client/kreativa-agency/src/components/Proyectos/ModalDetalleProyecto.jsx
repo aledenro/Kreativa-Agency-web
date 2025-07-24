@@ -116,10 +116,8 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${proyectoId}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: data,
-                }
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             const respuestaDb = response.data.respuesta;

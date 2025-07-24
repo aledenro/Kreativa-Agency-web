@@ -10,13 +10,8 @@ const upload = multer({ storage });
 
 const uploadMiddleware = upload.fields([{ name: "files" }]);
 
-router.post(
-    "/",
-    verificarToken,
-    uploadMiddleware,
-    fileSystemController.uploadFile
-);
-router.get("/", verificarToken, fileSystemController.generateUrls);
-router.post("/delete", verificarToken, fileSystemController.deleteFile);
+router.post("/", uploadMiddleware, fileSystemController.uploadFile);
+router.get("/", fileSystemController.generateUrls);
+router.post("/delete", fileSystemController.deleteFile);
 
 module.exports = router;

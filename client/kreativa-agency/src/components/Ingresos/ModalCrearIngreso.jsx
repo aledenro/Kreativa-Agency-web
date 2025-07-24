@@ -76,10 +76,8 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/ingresos`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: formData,
-                }
+                formData,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res.status === 201) {
                 setMensaje("Ingreso creado exitosamente.");

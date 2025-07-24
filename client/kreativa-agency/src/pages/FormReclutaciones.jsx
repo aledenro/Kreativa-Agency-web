@@ -4,6 +4,7 @@ import axios from "axios";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import fileUpload from "../utils/fileUpload";
+import sendEmailExterno from "../utils/sendEmailExterno";
 
 const { Dragger } = Upload;
 
@@ -28,14 +29,9 @@ const FormReclutaciones = () => {
 
     useEffect(() => {
         const checkFormStatus = async () => {
-            const token = localStorage.getItem("token");
-
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/form-status`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
+                    `${import.meta.env.VITE_API_URL}/form-status`
                 );
                 setFormActive(response.data.active);
             } catch (error) {
@@ -89,20 +85,16 @@ const FormReclutaciones = () => {
             setLoading(false);
             return;
         }
-        const token = localStorage.getItem("token");
 
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/reclutaciones`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: {
-                        nombre,
-                        apellido,
-                        correo,
-                        telefono,
-                        cv: [],
-                    },
+                    nombre,
+                    apellido,
+                    correo,
+                    telefono,
+                    cv: [],
                 }
             );
 
@@ -117,16 +109,11 @@ const FormReclutaciones = () => {
                         "reclutacion",
                         reclutacionId
                     );
-                    const token = localStorage.getItem("token");
 
                     await axios.put(
                         `${import.meta.env.VITE_API_URL}/reclutaciones/actualizar/${reclutacionId}`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` },
-                            body: {
-                                uploadedFiles,
-                            },
-                        }
+
+                        uploadedFiles
                     );
                 } catch (error) {
                     console.error(
