@@ -25,9 +25,14 @@ const ModificarPaquete = () => {
 
     useEffect(() => {
         const fetchPaquete = async () => {
+            const token = localStorage.getItem("token");
+
             try {
                 const res = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/${servicioId}`
+                    `${import.meta.env.VITE_API_URL}/servicios/${servicioId}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 const servicio = res.data;
@@ -130,10 +135,13 @@ const ModificarPaquete = () => {
     };
 
     const handleSubmit = async () => {
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}`,
-                paqueteEditado
+                paqueteEditado,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             console.log("Respuesta del backend:", res.data);
             openSuccessNotification("Paquete editado exitosamente");

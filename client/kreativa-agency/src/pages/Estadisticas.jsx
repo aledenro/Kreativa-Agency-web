@@ -88,9 +88,14 @@ const Estadisticas = () => {
     // Carga de categorías
     useEffect(() => {
         const fetchCategories = async () => {
+            const token = localStorage.getItem("token");
+
             try {
                 const res = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/categorias`
+                    `${import.meta.env.VITE_API_URL}/servicios/categorias`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
                 setCategories(res.data);
             } catch (error) {
@@ -146,12 +151,26 @@ const Estadisticas = () => {
             const formattedMonth =
                 selectedMonth < 10 ? `0${selectedMonth}` : selectedMonth;
             const fecha = `${selectedYear}-${formattedMonth}`;
-            axios.get(`${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`)
+            const token = localStorage.getItem("token");
+
+            axios
+                .get(
+                    `${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                )
                 .then((response) => {
-                    console.log("Respuesta de ingresos mensuales:", response.data);
+                    console.log(
+                        "Respuesta de ingresos mensuales:",
+                        response.data
+                    );
 
                     if (!response.data.success) {
-                        console.error("Error en la respuesta:", response.data.message);
+                        console.error(
+                            "Error en la respuesta:",
+                            response.data.message
+                        );
                         throw new Error(response.data.message);
                     }
 
@@ -164,23 +183,28 @@ const Estadisticas = () => {
                         total: resumen.totalIngresos,
                         cantidad: resumen.cantidadIngresos,
                         detalle: detalle,
-                        datosGrafico: datosGrafico
+                        datosGrafico: datosGrafico,
                     });
                 })
                 .catch((error) => {
-                    console.error("Error al obtener ingresos mensuales:", error);
+                    console.error(
+                        "Error al obtener ingresos mensuales:",
+                        error
+                    );
                     setTotalIngresos(0);
                     setCantidadIngresos(0);
                     setResumenIngresos({
                         total: 0,
                         cantidad: 0,
                         detalle: [],
-                        datosGrafico: []
+                        datosGrafico: [],
                     });
                 });
             // Egresos mensuales activos y con estado aprobado
             axios
-                .get(`${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`)
+                .get(
+                    `${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`
+                )
                 .then((response) => {
                     const data = response.data.filter(
                         (e) => e.activo && e.estado === "Aprobado"
@@ -212,7 +236,9 @@ const Estadisticas = () => {
         }
 
         axios
-            .get(`${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`)
+            .get(
+                `${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`
+            )
             .then((response) => {
                 const data = response.data;
                 setTotalIngresosAnuales(data.totalIngresos);
@@ -224,7 +250,9 @@ const Estadisticas = () => {
                 );
             });
         axios
-            .get(`${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`)
+            .get(
+                `${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`
+            )
             .then((response) => {
                 const data = response.data;
                 setTotalEgresosAnuales(data.totalEgresos);
@@ -461,8 +489,8 @@ const Estadisticas = () => {
                                                                 key={`cell-${index}`}
                                                                 fill={
                                                                     COLORS[
-                                                                    index %
-                                                                    COLORS.length
+                                                                        index %
+                                                                            COLORS.length
                                                                     ]
                                                                 }
                                                             />
@@ -663,8 +691,8 @@ const Estadisticas = () => {
                                                             key={`cell-${index}`}
                                                             fill={
                                                                 COLORS[
-                                                                index %
-                                                                COLORS.length
+                                                                    index %
+                                                                        COLORS.length
                                                                 ]
                                                             }
                                                         />
@@ -814,7 +842,10 @@ const Estadisticas = () => {
                                         No hay datos disponibles para este mes.
                                     </p>
                                 ) : (
-                                    <ResponsiveContainer width="100%" height={300}>
+                                    <ResponsiveContainer
+                                        width="100%"
+                                        height={300}
+                                    >
                                         <BarChart
                                             data={[
                                                 {
@@ -831,7 +862,9 @@ const Estadisticas = () => {
                                             <XAxis dataKey="name" />
                                             <YAxis />
                                             <Tooltip
-                                                formatter={(value) => `₡${value.toLocaleString()}`}
+                                                formatter={(value) =>
+                                                    `₡${value.toLocaleString()}`
+                                                }
                                             />
                                             <Bar
                                                 dataKey="ingresos"
@@ -856,11 +889,13 @@ const Estadisticas = () => {
                                         data={[
                                             {
                                                 name: "Ingresos",
-                                                ingresos: totalIngresosAnuales || 0,
+                                                ingresos:
+                                                    totalIngresosAnuales || 0,
                                             },
                                             {
                                                 name: "Egresos",
-                                                egresos: totalEgresosAnuales || 0,
+                                                egresos:
+                                                    totalEgresosAnuales || 0,
                                             },
                                         ]}
                                     >
@@ -868,16 +903,15 @@ const Estadisticas = () => {
                                         <XAxis dataKey="name" />
                                         <YAxis />
                                         <Tooltip
-                                            formatter={(value) => `₡${value.toLocaleString()}`}
+                                            formatter={(value) =>
+                                                `₡${value.toLocaleString()}`
+                                            }
                                         />
                                         <Bar
                                             dataKey="ingresos"
                                             fill="#ff0072"
                                         />
-                                        <Bar
-                                            dataKey="egresos"
-                                            fill="#8d25fc"
-                                        />
+                                        <Bar dataKey="egresos" fill="#8d25fc" />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
@@ -913,17 +947,31 @@ const Estadisticas = () => {
                                             >
                                                 <PieChart>
                                                     <Pie
-                                                        data={resumenIngresos.datosGrafico}
+                                                        data={
+                                                            resumenIngresos.datosGrafico
+                                                        }
                                                         cx="50%"
                                                         cy="50%"
                                                         innerRadius={80}
                                                         outerRadius={150}
                                                         dataKey="value"
-                                                        label={({ percent }) => `${(percent * 100).toFixed(1)}%`}
+                                                        label={({ percent }) =>
+                                                            `${(percent * 100).toFixed(1)}%`
+                                                        }
                                                     >
-                                                        {resumenIngresos.datosGrafico.map((entry, index) => (
-                                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                        ))}
+                                                        {resumenIngresos.datosGrafico.map(
+                                                            (entry, index) => (
+                                                                <Cell
+                                                                    key={`cell-${index}`}
+                                                                    fill={
+                                                                        COLORS[
+                                                                            index %
+                                                                                COLORS.length
+                                                                        ]
+                                                                    }
+                                                                />
+                                                            )
+                                                        )}
                                                     </Pie>
                                                     <text
                                                         x="50%"
@@ -933,9 +981,14 @@ const Estadisticas = () => {
                                                         fontSize={20}
                                                         fontWeight="bold"
                                                     >
-                                                        ₡{resumenIngresos.total.toLocaleString()}
+                                                        ₡
+                                                        {resumenIngresos.total.toLocaleString()}
                                                     </text>
-                                                    <Tooltip formatter={(value) => `₡${value.toLocaleString()}`} />
+                                                    <Tooltip
+                                                        formatter={(value) =>
+                                                            `₡${value.toLocaleString()}`
+                                                        }
+                                                    />
                                                     <Legend />
                                                 </PieChart>
                                             </ResponsiveContainer>
@@ -1079,8 +1132,8 @@ const Estadisticas = () => {
                                                                 key={`cell-${index}`}
                                                                 fill={
                                                                     COLORS[
-                                                                    index %
-                                                                    COLORS.length
+                                                                        index %
+                                                                            COLORS.length
                                                                     ]
                                                                 }
                                                             />

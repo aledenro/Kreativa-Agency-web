@@ -17,7 +17,6 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 
-
 const GestionServicios = () => {
     const [servicios, setServicios] = useState([]);
     const [itemsPag, setItemsPag] = useState(5);
@@ -32,9 +31,14 @@ const GestionServicios = () => {
 
     useEffect(() => {
         const fetchServicios = async () => {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/`
+                    `${import.meta.env.VITE_API_URL}/servicios/`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
                 if (Array.isArray(response.data)) {
                     setServicios(response.data);
@@ -77,7 +81,11 @@ const GestionServicios = () => {
                 ? `${import.meta.env.VITE_API_URL}/servicios/${id}/desactivar`
                 : `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
 
-            const response = await axios.put(endpoint);
+            const token = localStorage.getItem("token");
+
+            const response = await axios.put(endpoint, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
             setServicios(
                 servicios.map((servicio) =>
@@ -150,93 +158,119 @@ const GestionServicios = () => {
                     </button>
                 </div>
 
-				<div className="div-table">
-					<Table className="main-table">
-						<Thead>
-							<Tr>
-								<Th onClick={() => handleSort("nombre")} className="col-nombre">
-									Nombre{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
-								</Th>
-								<Th className="col-descripcion">Descripción</Th>
-								<Th onClick={() => handleSort("activo")} className="col-estado">
-									Estado{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
-								</Th>
-								<Th className="col-paquetes">Paquetes</Th>
-								<Th className="col-acciones">Acciones</Th>
-							</Tr>
-						</Thead>
-						<Tbody>
-							{serviciosPaginados.length > 0 ? (
-								serviciosPaginados.map((servicio) => (
-									<Tr key={servicio._id}>
-										<Td className="col-nombre">{servicio.nombre}</Td>
-										<Td className="col-descripcion">
-											{servicio.descripcion?.length > 50
-												? `${servicio.descripcion.substring(0, 50)}...`
-												: servicio.descripcion}
-										</Td>
-										<Td className="col-estado">
-											<span
-												className={`badge ${servicio.activo ? "badge-verde" : "badge-rojo"}`}
-											>
-												{servicio.activo ? "Activo" : "Inactivo"}
-											</span>
-										</Td>
-										<Td className="col-paquetes">
-											{servicio.paquetes?.length || 0}
-										</Td>
-										<Td className="text-center col-acciones">
-											<div className="botones-grupo">
-												<button
-													className="thm-btn thm-btn-small btn-amarillo"
-													onClick={() => handleVerServicio(servicio._id)}
-												>
-													<FontAwesomeIcon icon={faEye} />
-												</button>
-												<button
-													className="thm-btn thm-btn-small btn-azul"
-													onClick={() => handleModificarServicio(servicio._id)}
-												>
-													<FontAwesomeIcon icon={faPencil} />
-												</button>
-												<button
-													className={`thm-btn thm-btn-small ${
-														servicio.activo ? "btn-verde" : "btn-rojo"
-													}`}
-													onClick={() =>
-														confirmToggleEstadoServicio(
-															servicio._id,
-															servicio.activo
-														)
-													}
-												>
-													<FontAwesomeIcon
-														icon={servicio.activo ? faToggleOn : faToggleOff}
-													/>
-												</button>
-											</div>
-										</Td>
-									</Tr>
-								))
-							) : (
-								<Tr>
-									<Td colSpan="5" className="text-center">
-										No hay servicios disponibles
-									</Td>
-								</Tr>
-							)}
-						</Tbody>
-					</Table>
-				</div>
+                <div className="div-table">
+                    <Table className="main-table">
+                        <Thead>
+                            <Tr>
+                                <Th
+                                    onClick={() => handleSort("nombre")}
+                                    className="col-nombre"
+                                >
+                                    Nombre{" "}
+                                    <span className="sort-icon">
+                                        <FontAwesomeIcon icon={faSort} />
+                                    </span>
+                                </Th>
+                                <Th className="col-descripcion">Descripción</Th>
+                                <Th
+                                    onClick={() => handleSort("activo")}
+                                    className="col-estado"
+                                >
+                                    Estado{" "}
+                                    <span className="sort-icon">
+                                        <FontAwesomeIcon icon={faSort} />
+                                    </span>
+                                </Th>
+                                <Th className="col-paquetes">Paquetes</Th>
+                                <Th className="col-acciones">Acciones</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {serviciosPaginados.length > 0 ? (
+                                serviciosPaginados.map((servicio) => (
+                                    <Tr key={servicio._id}>
+                                        <Td className="col-nombre">
+                                            {servicio.nombre}
+                                        </Td>
+                                        <Td className="col-descripcion">
+                                            {servicio.descripcion?.length > 50
+                                                ? `${servicio.descripcion.substring(0, 50)}...`
+                                                : servicio.descripcion}
+                                        </Td>
+                                        <Td className="col-estado">
+                                            <span
+                                                className={`badge ${servicio.activo ? "badge-verde" : "badge-rojo"}`}
+                                            >
+                                                {servicio.activo
+                                                    ? "Activo"
+                                                    : "Inactivo"}
+                                            </span>
+                                        </Td>
+                                        <Td className="col-paquetes">
+                                            {servicio.paquetes?.length || 0}
+                                        </Td>
+                                        <Td className="text-center col-acciones">
+                                            <div className="botones-grupo">
+                                                <button
+                                                    className="thm-btn thm-btn-small btn-amarillo"
+                                                    onClick={() =>
+                                                        handleVerServicio(
+                                                            servicio._id
+                                                        )
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faEye}
+                                                    />
+                                                </button>
+                                                <button
+                                                    className="thm-btn thm-btn-small btn-azul"
+                                                    onClick={() =>
+                                                        handleModificarServicio(
+                                                            servicio._id
+                                                        )
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faPencil}
+                                                    />
+                                                </button>
+                                                <button
+                                                    className={`thm-btn thm-btn-small ${
+                                                        servicio.activo
+                                                            ? "btn-verde"
+                                                            : "btn-rojo"
+                                                    }`}
+                                                    onClick={() =>
+                                                        confirmToggleEstadoServicio(
+                                                            servicio._id,
+                                                            servicio.activo
+                                                        )
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={
+                                                            servicio.activo
+                                                                ? faToggleOn
+                                                                : faToggleOff
+                                                        }
+                                                    />
+                                                </button>
+                                            </div>
+                                        </Td>
+                                    </Tr>
+                                ))
+                            ) : (
+                                <Tr>
+                                    <Td colSpan="5" className="text-center">
+                                        No hay servicios disponibles
+                                    </Td>
+                                </Tr>
+                            )}
+                        </Tbody>
+                    </Table>
+                </div>
 
-
-				
                 {/* <div className="table-responsive-xxl">
                     <table className="table kreativa-proyecto-table">
                         <thead>
@@ -349,15 +383,15 @@ const GestionServicios = () => {
                 </div> */}
 
                 <TablaPaginacion
-    totalItems={servicios.length}
-    itemsPorPagina={itemsPag}
-    paginaActual={pagActual}
-    onItemsPorPaginaChange={(cant) => {
-        setItemsPag(cant);
-        setPagActual(1);
-    }}
-    onPaginaChange={(pagina) => setPagActual(pagina)}
-/>
+                    totalItems={servicios.length}
+                    itemsPorPagina={itemsPag}
+                    paginaActual={pagActual}
+                    onItemsPorPaginaChange={(cant) => {
+                        setItemsPag(cant);
+                        setPagActual(1);
+                    }}
+                    onPaginaChange={(pagina) => setPagActual(pagina)}
+                />
 
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>

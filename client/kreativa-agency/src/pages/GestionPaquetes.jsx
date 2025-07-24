@@ -18,7 +18,6 @@ import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 
-
 const GestionPaquetes = () => {
     const [servicios, setServicios] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -45,9 +44,14 @@ const GestionPaquetes = () => {
 
     useEffect(() => {
         const fetchServicios = async () => {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios`
+                    `${import.meta.env.VITE_API_URL}/servicios`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
                 setServicios(response.data);
             } catch (err) {
@@ -99,7 +103,11 @@ const GestionPaquetes = () => {
                 ? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
                 : `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
 
-            const response = await axios.put(endpoint);
+            const token = localStorage.getItem("token");
+
+            const response = await axios.put(endpoint, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
             setServicios((prevServicios) =>
                 prevServicios.map((servicio) => {
@@ -372,15 +380,15 @@ const GestionPaquetes = () => {
                     </div>
 
                     <TablaPaginacion
-    totalItems={paquetes.length}
-    itemsPorPagina={itemsPag}
-    paginaActual={pagActual}
-    onItemsPorPaginaChange={(cant) => {
-        setItemsPag(cant);
-        setPagActual(1);
-    }}
-    onPaginaChange={(pagina) => setPagActual(pagina)}
-/>
+                        totalItems={paquetes.length}
+                        itemsPorPagina={itemsPag}
+                        paginaActual={pagActual}
+                        onItemsPorPaginaChange={(cant) => {
+                            setItemsPag(cant);
+                            setPagActual(1);
+                        }}
+                        onPaginaChange={(pagina) => setPagActual(pagina)}
+                    />
 
                     <Modal show={showModal} onHide={() => setShowModal(false)}>
                         <Modal.Header closeButton>
