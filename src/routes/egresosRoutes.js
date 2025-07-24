@@ -1,17 +1,30 @@
 const express = require("express");
 const EgresosController = require("../controllers/egresosController");
+const verificarToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/", EgresosController.agregarEgreso);
-router.get("/", EgresosController.obtenerEgresos);
-router.get("/anio", EgresosController.obtenerEgresosPorAnio);
-router.get("/mes", EgresosController.obtenerEgresosPorMes);
-router.get("/anualesDetalle", EgresosController.obtenerEgresosAnualesDetalle);
-router.get("/getByDateRange", EgresosController.getEgresosDateRange);
-router.get("/:id", EgresosController.obtenerEgresoPorId);
-router.put("/:id", EgresosController.editarEgreso);
-router.put("/:id/desactivar", EgresosController.desactivarEgreso);
-router.put("/:id/activar", EgresosController.activarEgreso);
+router.post("/", verificarToken, EgresosController.agregarEgreso);
+router.get("/", verificarToken, EgresosController.obtenerEgresos);
+router.get("/anio", verificarToken, EgresosController.obtenerEgresosPorAnio);
+router.get("/mes", verificarToken, EgresosController.obtenerEgresosPorMes);
+router.get(
+    "/anualesDetalle",
+    verificarToken,
+    EgresosController.obtenerEgresosAnualesDetalle
+);
+router.get(
+    "/getByDateRange",
+    verificarToken,
+    EgresosController.getEgresosDateRange
+);
+router.get("/:id", verificarToken, EgresosController.obtenerEgresoPorId);
+router.put("/:id", verificarToken, EgresosController.editarEgreso);
+router.put(
+    "/:id/desactivar",
+    verificarToken,
+    EgresosController.desactivarEgreso
+);
+router.put("/:id/activar", verificarToken, EgresosController.activarEgreso);
 
 module.exports = router;

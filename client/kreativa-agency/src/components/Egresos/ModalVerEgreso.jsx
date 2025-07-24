@@ -2,7 +2,6 @@ import { Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 const ModalVerEgreso = ({ show, handleClose, egreso, categories = [] }) => {
-  // Función similar para obtener el nombre de la categoría
   const getCategoryName = (catId) => {
     if (!catId) return "";
     const cat = categories.find((c) => c._id?.toString() === catId.toString());

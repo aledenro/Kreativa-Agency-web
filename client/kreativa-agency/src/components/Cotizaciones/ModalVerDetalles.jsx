@@ -47,10 +47,14 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
     };
 
     const fetchCotizacion = useCallback(async (cotizacionId) => {
+        const token = localStorage.getItem("token");
         try {
             setLoading(true);
             const res = await axios.get(
-                `${import.meta.env.VITE_API_URL}/cotizaciones/id/${cotizacionId}`
+                `${import.meta.env.VITE_API_URL}/cotizaciones/id/${cotizacionId}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
 
             setCotizacion(res.data.cotizacion);
@@ -121,10 +125,13 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
             fecha_envio: Date.now(),
         };
 
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${cotizacionId}`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             showNotification("success", "Respuesta enviada correctamente.");
 
@@ -191,11 +198,14 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
     function handleChangeEstado(event) {
         const estado = event.target.value;
+        const token = localStorage.getItem("token");
 
         try {
             axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${cotizacionId}`,
-                { estado: estado }
+
+                { estado: estado },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             showNotification("success", "Estado cambiado  correctamente.");

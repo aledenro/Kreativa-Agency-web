@@ -42,8 +42,11 @@ const ListadoPagos = () => {
             url += "/pagos";
 
             url += rol === "Cliente" ? `/cliente/${idUsuario}` : "";
+            const token = localStorage.getItem("token");
 
-            const response = await axios.get(url);
+            const response = await axios.get(url, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             setPagos(response.data);
         } catch (error) {
             console.error(error.message);

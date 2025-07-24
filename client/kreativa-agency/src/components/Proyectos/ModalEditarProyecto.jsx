@@ -118,10 +118,13 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             colabFormateado
         );
 
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 200) {
@@ -152,11 +155,13 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
     const handleChangeEstado = async (event) => {
         event.preventDefault();
         const estadoEdit = event.target.value;
+        const token = localStorage.getItem("token");
 
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
-                { estado: estadoEdit }
+                { estado: estadoEdit },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (response.status === 200) {
@@ -206,13 +211,15 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
     const addActionLog = async (accion) => {
         try {
+            const token = localStorage.getItem("token");
             const user_id = localStorage.getItem("user_id");
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/actualizarLog/${proyectoId}`,
                 {
                     usuario_id: user_id,
                     accion: accion,
-                }
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
         } catch (error) {
             console.error(error.message);
@@ -233,10 +240,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
     const fetchProyecto = useCallback(async () => {
         if (!proyectoId) return;
+        const token = localStorage.getItem("token");
 
         try {
             const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`
+                `${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
 
             if (response.status === 200) {

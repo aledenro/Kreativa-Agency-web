@@ -74,6 +74,7 @@ const AgregarPaquete = () => {
 		}
 	};
 
+
 	const handleFocus = (index) => {
 		if (index === paquete.beneficios.length - 1) {
 			agregarBeneficio();
@@ -81,26 +82,44 @@ const AgregarPaquete = () => {
 	};
 
 	const handleSubmit = async () => {
-		const duracionNumero = Number(paquete.duracionNumero);
+	const duracionNumero = Number(paquete.duracionNumero);
 
-		if (
-			isNaN(duracionNumero) ||
-			duracionNumero < 1 ||
-			!paquete.duracionUnidad
-		) {
-			openErrorNotification(
-				"Por favor ingrese una duración válida (mayor o igual a 1)"
-			);
-			return;
-		}
+	if (
+		isNaN(duracionNumero) ||
+		duracionNumero < 1 ||
+		!paquete.duracionUnidad
+	) {
+		openErrorNotification(
+			"Por favor ingrese una duración válida (mayor o igual a 1)"
+		);
+		return;
+	}
 
-		const duracion = `${duracionNumero} ${paquete.duracionUnidad}`;
+	const duracion = `${duracionNumero} ${paquete.duracionUnidad}`;
 
-		const paqueteData = {
-			...paquete,
-			duracion,
-			precio: parseFloat(paquete.precio),
-		};
+	const paqueteData = {
+		...paquete,
+		duracion,
+		precio: parseFloat(paquete.precio),
+	};
+
+	const token = localStorage.getItem("token");
+
+	try {
+		const res = await axios.put(
+			`${import.meta.env.VITE_API_URL}/servicios/${id}/nuevoPaquete`,
+			paqueteData,
+			{ headers: { Authorization: `Bearer ${token}` } }
+		);
+		console.log(res.data);
+		openSuccessNotification("Paquete agregado exitosamente");
+		setShowModal(false);
+	} catch (error) {
+		console.error(error);
+		openErrorNotification("Hubo un error al agregar el paquete");
+	}
+};
+
 
 		try {
 			const res = await axios.put(

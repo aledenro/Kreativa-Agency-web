@@ -67,9 +67,12 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
                   contenido: content,
                   fecha: Date.now(),
               };
+        const token = localStorage.getItem("token");
 
         try {
-            const response = await axios.put(`${url}${tarea._id}`, data);
+            const response = await axios.put(`${url}${tarea._id}`, data, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
             if (response.status === 200) {
                 showNotification(

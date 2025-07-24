@@ -35,9 +35,12 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
                 fecha_vencimiento: fecha_vencimiento,
             };
 
+            const token = localStorage.getItem("token");
+
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/pagos/`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status === 201) {

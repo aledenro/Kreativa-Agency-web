@@ -115,11 +115,13 @@ const AgregarProyecto = () => {
             fechaEntrega,
             colabFormateado
         );
+        const token = localStorage.getItem("token");
 
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/editar/${id}`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 200) {
@@ -143,10 +145,13 @@ const AgregarProyecto = () => {
         event.preventDefault();
         const estadoEdit = event.target.value;
 
+        const token = localStorage.getItem("token");
+
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/editar/${id}`,
-                { estado: estadoEdit }
+                { estado: estadoEdit },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (response.status === 200) {
@@ -189,12 +194,15 @@ const AgregarProyecto = () => {
     const addActionLog = async (accion) => {
         try {
             const user_id = localStorage.getItem("user_id");
+            const token = localStorage.getItem("token");
+
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/actualizarLog/${id}`,
                 {
                     usuario_id: user_id,
                     accion: accion,
-                }
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
         } catch (error) {
             console.error(error.message);
@@ -214,9 +222,14 @@ const AgregarProyecto = () => {
     }
 
     const fetchProyecto = useCallback(async () => {
+        const token = localStorage.getItem("token");
+
         try {
             const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/proyectos/id/${id}`
+                `${import.meta.env.VITE_API_URL}/proyectos/id/${id}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
 
             if (response.status === 200) {

@@ -36,11 +36,13 @@ const AgregarCotizacion = () => {
         const urgente = formData.get("urgente") === "on";
 
         const data = construirJsonRequest(titulo, descripcion, urgente);
+        const token = localStorage.getItem("token");
 
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 201) {

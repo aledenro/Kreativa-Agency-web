@@ -14,9 +14,14 @@ const VerDetalleCotizacion = () => {
     const [alertVariant, setAlertVariant] = useState("danger");
 
     const fetchCotizacion = useCallback(async () => {
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.get(
-                `${import.meta.env.VITE_API_URL}/cotizaciones/id/${id}`
+                `${import.meta.env.VITE_API_URL}/cotizaciones/id/${id}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
 
             setCotizacion(res.data.cotizacion);
@@ -46,11 +51,13 @@ const VerDetalleCotizacion = () => {
             usuario_id: user_id,
             contenido: content,
         };
+        const token = localStorage.getItem("token");
 
         try {
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${id}`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             setAlertMessage("Respuesta enviada correctamente.");
@@ -82,11 +89,13 @@ const VerDetalleCotizacion = () => {
 
     function handleChangeEstado(event) {
         const estado = event.target.value;
+        const token = localStorage.getItem("token");
 
         try {
             axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${id}`,
-                { estado: estado }
+                { estado: estado },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             setAlertMessage("Estado cambiado  correctamente.");

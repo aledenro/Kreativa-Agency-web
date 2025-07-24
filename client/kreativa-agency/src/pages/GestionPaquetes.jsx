@@ -44,23 +44,29 @@ const GestionPaquetes = () => {
 		});
 	};
 
-	useEffect(() => {
-		const fetchServicios = async () => {
-			try {
-				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/servicios`
-				);
-				setServicios(response.data);
-			} catch (err) {
-				setError("Error al cargar los servicios: " + err.message);
-				openErrorNotification("No se pudieron cargar los servicios.");
-			} finally {
-				setLoading(false);
-			}
-		};
+useEffect(() => {
+	const fetchServicios = async () => {
+		const token = localStorage.getItem("token");
 
-		fetchServicios();
-	}, []);
+		try {
+			const response = await axios.get(
+				`${import.meta.env.VITE_API_URL}/servicios`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+			setServicios(response.data);
+		} catch (err) {
+			setError("Error al cargar los servicios: " + err.message);
+			openErrorNotification("No se pudieron cargar los servicios.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	fetchServicios();
+}, []);
+
 
 	const obtenerTodosLosPaquetes = () => {
 		const todosPaquetes = [];
@@ -87,32 +93,33 @@ const GestionPaquetes = () => {
 	};
 
 	const toggleEstadoPaquete = async () => {
-		if (!selectedPaquete) return;
+	if (!selectedPaquete) return;
 
-		const { servicioId, paqueteId, estadoActual } = selectedPaquete;
+	const { servicioId, paqueteId, estadoActual } = selectedPaquete;
+	const token = localStorage.getItem("token");
 
-		try {
-			const endpoint = estadoActual
-				? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
-				: `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
+	try {
+		const endpoint = estadoActual
+			? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
+			: `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
 
-			const response = await axios.put(endpoint);
+		const response = await axios.put(endpoint, null, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
 
-			setServicios((prevServicios) =>
-				prevServicios.map((servicio) => {
-					if (servicio._id === servicioId) {
-						return response.data;
-					}
-					return servicio;
-				})
-			);
-			setShowModal(false);
-		} catch (err) {
-			console.error("Error al cambiar el estado del paquete:", err.message);
-			openErrorNotification("Error al cambiar el estado del paquete.");
-			setShowModal(false);
-		}
-	};
+		setServicios((prevServicios) =>
+			prevServicios.map((servicio) =>
+				servicio._id === servicioId ? response.data : servicio
+			)
+		);
+		setShowModal(false);
+	} catch (err) {
+		console.error("Error al cambiar el estado del paquete:", err.message);
+		openErrorNotification("Error al cambiar el estado del paquete.");
+		setShowModal(false);
+	}
+};
+
 
 	const handleEditarPaquete = (paquete) => {
 		navigate(`/paquete/modificar/${paquete.servicioId}/${paquete._id}`);

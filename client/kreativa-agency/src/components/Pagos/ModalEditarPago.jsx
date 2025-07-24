@@ -24,10 +24,13 @@ const ModalEditarPago = ({
     }, [pago]);
 
     const handleEditar = async () => {
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/pagos/update/${pagoEditado._id}`,
-                pagoEditado
+                pagoEditado,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status === 200) {

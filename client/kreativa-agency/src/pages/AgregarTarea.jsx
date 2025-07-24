@@ -67,10 +67,13 @@ const AgregarTarea = () => {
             fechaEntrega
         );
 
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/tareas/crear`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 201) {
@@ -124,9 +127,14 @@ const AgregarTarea = () => {
         }
 
         async function fetchProyectos() {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`
+                    `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 setProyectos(response.data.proyectos);

@@ -19,9 +19,14 @@ const VerDetalleProyecto = () => {
     const [alertVariant, setAlertVariant] = useState("danger");
 
     const fetchproyecto = useCallback(async () => {
+        const token = localStorage.getItem("token");
+
         try {
             const res = await axios.get(
-                `${import.meta.env.VITE_API_URL}/proyectos/id/${id}`
+                `${import.meta.env.VITE_API_URL}/proyectos/id/${id}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
             console.log(res.data.proyecto);
 
@@ -56,10 +61,13 @@ const VerDetalleProyecto = () => {
             fecha_envio: Date.now(),
         };
 
+        const token = localStorage.getItem("token");
+
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${id}`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             const respuestaDb = response.data.respuesta;

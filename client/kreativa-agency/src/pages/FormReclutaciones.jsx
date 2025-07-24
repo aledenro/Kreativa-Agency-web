@@ -4,6 +4,7 @@ import axios from "axios";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import fileUpload from "../utils/fileUpload";
+import sendEmailExterno from "../utils/sendEmailExterno";
 
 const { Dragger } = Upload;
 
@@ -111,9 +112,8 @@ const FormReclutaciones = () => {
 
                     await axios.put(
                         `${import.meta.env.VITE_API_URL}/reclutaciones/actualizar/${reclutacionId}`,
-                        {
-                            uploadedFiles,
-                        }
+
+                        uploadedFiles
                     );
                 } catch (error) {
                     console.error(
