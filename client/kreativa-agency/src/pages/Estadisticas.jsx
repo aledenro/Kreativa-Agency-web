@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import {
     PieChart,
@@ -112,9 +112,13 @@ const Estadisticas = () => {
     useEffect(() => {
         if (isAnnualView) {
             // Vista Anual
+            const token = localStorage.getItem("token");
             axios
                 .get(
-                    `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`
+                    `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 )
                 .then((response) => {
                     const data = response.data;
@@ -131,7 +135,10 @@ const Estadisticas = () => {
                 });
             axios
                 .get(
-                    `${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`
+                    `${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 )
                 .then((response) => {
                     const data = response.data;
@@ -203,7 +210,10 @@ const Estadisticas = () => {
             // Egresos mensuales activos y con estado aprobado
             axios
                 .get(
-                    `${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`
+                    `${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 )
                 .then((response) => {
                     const data = response.data.filter(
@@ -234,10 +244,14 @@ const Estadisticas = () => {
                     );
                 });
         }
+		const token = localStorage.getItem("token");
 
         axios
             .get(
-                `${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`
+                `${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`,
+                {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
             )
             .then((response) => {
                 const data = response.data;
@@ -251,7 +265,10 @@ const Estadisticas = () => {
             });
         axios
             .get(
-                `${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`
+                `${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`,
+                {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
             )
             .then((response) => {
                 const data = response.data;

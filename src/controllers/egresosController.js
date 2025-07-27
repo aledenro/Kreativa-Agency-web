@@ -288,7 +288,7 @@ class EgresosController {
             const fechaInicio = req.query.fechaInicio;
             const fechaFin = req.query.fechaFin;
 
-            const egresos = await egresosService.getEgresosDateRange(
+            const egresos = await EgresosService.getEgresosDateRange(
                 fechaInicio,
                 fechaFin
             );

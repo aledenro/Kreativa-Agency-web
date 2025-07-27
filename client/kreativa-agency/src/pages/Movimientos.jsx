@@ -60,9 +60,12 @@ const Movimientos = () => {
 				url += `fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
 			}
 		}
-		console.log("Consultando con URL:", url);
+
+		const token = localStorage.getItem("token");
 		axios
-			.get(url)
+			.get(url, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
 			.then((response) => {
 				setMovimientos(response.data);
 				setPagActual(1); // Reinicia a la primera página al buscar
@@ -79,8 +82,11 @@ const Movimientos = () => {
 
 	// Cargar las categorías (para mapear el ID en ingresos)
 	useEffect(() => {
+		const token = localStorage.getItem("token");
 		axios
-			.get(`${import.meta.env.VITE_API_URL}/servicios/categorias`)
+			.get(`${import.meta.env.VITE_API_URL}/servicios/categorias`,  {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
 			.then((res) => {
 				setCategories(res.data);
 			})
@@ -148,9 +154,13 @@ const Movimientos = () => {
 			console.error("El movimiento no tiene idRegistro");
 			return;
 		}
+const token = localStorage.getItem("token");
+
 		if (mov.entidad === "ingreso") {
 			axios
-				.get(`${import.meta.env.VITE_API_URL}/ingresos/${mov.idRegistro}`)
+				.get(`${import.meta.env.VITE_API_URL}/ingresos/${mov.idRegistro}`,  {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
 				.then((response) => {
 					setRegistroSeleccionado(response.data);
 					setShowModalVerIngreso(true);
@@ -160,7 +170,11 @@ const Movimientos = () => {
 				});
 		} else if (mov.entidad === "egreso") {
 			axios
-				.get(`${import.meta.env.VITE_API_URL}/egresos/${mov.idRegistro}`)
+				.get(`${import.meta.env.VITE_API_URL}/egresos/${mov.idRegistro}`,
+					 {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+				)
 				.then((response) => {
 					setRegistroSeleccionado(response.data);
 					setShowModalVerEgreso(true);
@@ -312,8 +326,14 @@ const Movimientos = () => {
 											setFechaFin("");
 
 											setTimeout(() => {
+												const token = localStorage.getItem("token");
 												axios
-													.get(`${import.meta.env.VITE_API_URL}/movimientos`)
+													.get(`${import.meta.env.VITE_API_URL}/movimientos`,
+														
+														{
+															headers: { Authorization: `Bearer ${token}` },
+														}
+													)
 													.then((response) => {
 														setMovimientos(response.data);
 														setPagActual(1);
