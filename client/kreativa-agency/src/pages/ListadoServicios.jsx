@@ -13,6 +13,7 @@ import {
     usePrevNextButtons,
 } from "../components/ui/EmblaCarouselArrowButtons";
 import useEmblaCarousel from "embla-carousel-react";
+import validToken from "../utils/validateToken";
 
 const EmblaCarousel = (props) => {
     const { servicios, options, onClickServicio } = props;
@@ -102,6 +103,7 @@ const ListadoServicios = () => {
         async function getServicios() {
             const token = localStorage.getItem("token");
 
+            validToken();
             try {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/`,
