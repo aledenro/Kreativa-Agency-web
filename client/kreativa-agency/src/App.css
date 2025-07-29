@@ -672,6 +672,81 @@ h3 {
 	--kreativa-transition: all 0.3s ease-in-out;
 }
 
+.card-paquete {
+	-webkit-box-shadow: 0px 0px 6px 0px rgba(17, 13, 39, 0.72);
+	box-shadow: 0px 0px 6px 0px rgba(17, 13, 39, 0.72);
+	border: transparent solid 1px;
+	border-radius: var(--kreativa-bdr-radius);
+}
+
+.card-paquete .card-title {
+	font-family: var(--kreativa-title);
+	font-size: 1.5rem;
+}
+
+.doodle-servicio {
+	position: absolute;
+	width: 130px;
+	z-index: 2;
+	pointer-events: none;
+	opacity: 0.9;
+}
+
+.doodle-servicio .doodle-top-left {
+	top: -30px;
+	left: -20px;
+}
+
+.doodle-servicio .doodle-bottom-right {
+	bottom: -20px;
+	right: -20px;
+}
+
+.doodle-top-left {
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	width: 250px;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.doodle-bottom-right {
+	position: absolute;
+	bottom: -15px;
+	right: 20px;
+	width: 250px;
+	z-index: 0;
+	pointer-events: none;
+}
+
+@media (max-width: 920px) {
+	.doodle-top-left,
+	.doodle-bottom-right {
+		display: none;
+	}
+}
+
+@media (max-width: 768px) {
+	.doodle-servicio {
+		width: 100px;
+	}
+
+	.doodle-top-left,
+	.doodle-bottom-right {
+		display: none;
+	}
+}
+.form-container {
+	position: relative;
+	z-index: 1;
+}
+.check-icon {
+	font-size: 16px;
+	color: var(--kreativa-rosado);
+	margin-right: 10px;
+}
+
 .services-page {
 	background-color: white;
 	padding: 60px 0;
@@ -1323,7 +1398,6 @@ h3 {
 .row {
 	display: flex;
 	justify-content: space-between;
-	gap: 30px;
 }
 
 /* =================== */
