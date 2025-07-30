@@ -4,6 +4,7 @@ import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from "sweetalert2";
 import {
 	faSearch,
 	faChevronDown,
@@ -89,33 +90,56 @@ const Usuarios = () => {
 		navigate(`/usuario/editar/${id}`);
 	};
 
-	const handleActivarDesactivar = async (id, estadoActual) => {
-		const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
-		if (
-			!window.confirm(
-				`¿Seguro que deseas ${nuevoEstado.toLowerCase()} este usuario?`
-			)
-		)
-			return;
-		try {
-			const token = localStorage.getItem("token");
-			await axios.put(
-				`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-				{ estado: nuevoEstado },
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
 
-			setUsuarios(
-				usuarios.map((usuario) =>
-					usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
-				)
-			);
-		} catch (error) {
-			setError("Error al cambiar el estado del usuario.");
-		}
-	};
+const handleActivarDesactivar = async (id, estadoActual) => {
+	const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
+
+	const result = await Swal.fire({
+		title: `¿Estás seguro?`,
+		text: `Este usuario será marcado como ${nuevoEstado.toLowerCase()}.`,
+		icon: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: `Sí, ${nuevoEstado.toLowerCase()}`,
+		cancelButtonText: "Cancelar",
+	});
+
+	if (!result.isConfirmed) return;
+
+	try {
+		const token = localStorage.getItem("token");
+		await axios.put(
+			`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
+			{ estado: nuevoEstado },
+			{
+				headers: { Authorization: `Bearer ${token}` },
+			}
+		);
+
+		setUsuarios(
+			usuarios.map((usuario) =>
+				usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
+			)
+		);
+
+		Swal.fire({
+			title: "¡Éxito!",
+			text: `El usuario ha sido marcado como ${nuevoEstado.toLowerCase()}.`,
+			icon: "success",
+			timer: 2000,
+			showConfirmButton: false,
+		});
+	} catch (error) {
+		setError("Error al cambiar el estado del usuario.");
+
+		Swal.fire({
+			title: "Error",
+			text: "No se pudo actualizar el estado del usuario.",
+			icon: "error",
+		});
+	}
+};
 
 	const handleEliminar = async (id) => {
 		if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?"))
