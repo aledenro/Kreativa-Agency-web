@@ -199,46 +199,48 @@ const DetalleServicio = () => {
 						</div>
 
 						<div className="row row-cols-1 g-3 g-lg-4">
-							{servicio.paquetes.map((paquete) => (
-								<div key={paquete._id} className="col h-100 d-flex">
-									<div className="card mb-2 card-paquete w-100">
-										<div className="card-body">
-											<div className="row justify-content-between">
-												<div className="col">
-													<h5 className="card-title">{paquete.nombre}</h5>
+							{servicio.paquetes
+								.filter((paquete) => paquete.activo === true)
+								.map((paquete) => (
+									<div key={paquete._id} className="col h-100 d-flex">
+										<div className="card mb-2 card-paquete w-100">
+											<div className="card-body">
+												<div className="row justify-content-between">
+													<div className="col">
+														<h5 className="card-title">{paquete.nombre}</h5>
+													</div>
+													<div className="col text-end">
+														<h6 className="card-subtitle mb-2 text-muted">
+															Nivel: {paquete.nivel}
+														</h6>
+													</div>
 												</div>
-												<div className="col text-end">
-													<h6 className="card-subtitle mb-2 text-muted">
-														Nivel: {paquete.nivel}
-													</h6>
-												</div>
-											</div>
-											<p className="card-text">{paquete.descripcion}</p>
-											<p>
-												<strong>Duración:</strong> {paquete.duracion}
-											</p>
-											<p>
-												<strong>Beneficios:</strong>
-											</p>
-											<ul className="list-unstyled">
-												{paquete.beneficios.map((beneficio, i) => (
-													<li key={i} className="d-flex align-items-center">
-														<FontAwesomeIcon
-															icon={faCheck}
-															className="check-icon"
-															style={{ marginRight: "10px" }}
-														/>
-														{beneficio}
-													</li>
-												))}
-											</ul>
-											<div className="row">
-												<div className="col">
-													<p className="card-text">
-														<strong>Precio:</strong> ${paquete.precio}
-													</p>
-												</div>
-												{/* {rol === "Administrador" ? (
+												<p className="card-text">{paquete.descripcion}</p>
+												<p>
+													<strong>Duración:</strong> {paquete.duracion}
+												</p>
+												<p>
+													<strong>Beneficios:</strong>
+												</p>
+												<ul className="list-unstyled">
+													{paquete.beneficios.map((beneficio, i) => (
+														<li key={i} className="d-flex align-items-center">
+															<FontAwesomeIcon
+																icon={faCheck}
+																className="check-icon"
+																style={{ marginRight: "10px" }}
+															/>
+															{beneficio}
+														</li>
+													))}
+												</ul>
+												<div className="row">
+													<div className="col">
+														<p className="card-text">
+															<strong>Precio:</strong> ${paquete.precio}
+														</p>
+													</div>
+													{/* {rol === "Administrador" ? (
                                                     <div className="col text-end">
                                                         <div
                                                             className="btn-group"
@@ -290,11 +292,11 @@ const DetalleServicio = () => {
                                                 ) : (
                                                     ""
                                                 )} */}
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							))}
+								))}
 						</div>
 
 						{servicio.paquetes.length === 0 && (
