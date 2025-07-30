@@ -181,6 +181,16 @@ const FormReclutaciones = () => {
 	return (
 		<div style={{ position: "relative" }}>
 			{contextHolder}
+			<img
+				src="/src/assets/img/75.svg"
+				alt="decoración"
+				className="doodle-top-left"
+			/>
+			<img
+				src="/src/assets/img/103.svg"
+				alt="decoración"
+				className="doodle-bottom-right"
+			/>
 			<div className="container mt-4">
 				<div className="mx-auto align-items-center justify-content-center d-flex">
 					<div className="col-lg-8 mx-4 form-container">
@@ -280,10 +290,10 @@ const FormReclutaciones = () => {
 											maxCount={1}
 											style={{
 												borderRadius: "12px",
-												borderColor: isHovered ? "#110d27" : "#8788ab",
+												borderColor: isHovered ? "#110d27" : "#eee",
 												borderWidth: "1px",
 												borderStyle: "solid",
-												backgroundColor: "transparent",
+												backgroundColor: "white",
 												transition: "border-color 0.3s",
 											}}
 											onMouseEnter={handleMouseEnter}

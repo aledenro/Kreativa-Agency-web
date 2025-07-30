@@ -305,7 +305,7 @@ h3 {
 }
 
 .custom-dragger {
-	background-color: transparent !important;
+	background-color: white !important;
 }
 
 .section-title {
@@ -684,7 +684,9 @@ h3 {
 	font-size: 1.5rem;
 }
 
-.doodle-servicio {
+.doodle-servicio-left {
+	top: -30px;
+	left: -20px;
 	position: absolute;
 	width: 130px;
 	z-index: 2;
@@ -692,21 +694,30 @@ h3 {
 	opacity: 0.9;
 }
 
-.doodle-servicio .doodle-top-left {
-	top: -30px;
-	left: -20px;
-}
-
-.doodle-servicio .doodle-bottom-right {
+.doodle-servicio-right {
 	bottom: -20px;
 	right: -20px;
+	position: absolute;
+	width: 130px;
+	z-index: 2;
+	pointer-events: none;
+	opacity: 0.9;
+}
+
+.doodle-landing {
+	position: sticky;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 200px;
+	z-index: -1;
+	pointer-events: none;
 }
 
 .doodle-top-left {
 	position: absolute;
-	top: -20px;
+	top: 100px;
 	left: -20px;
-	width: 250px;
+	width: 270px;
 	z-index: 0;
 	pointer-events: none;
 }

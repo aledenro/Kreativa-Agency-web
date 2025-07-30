@@ -157,12 +157,12 @@ const DetalleServicio = () => {
 								<img
 									src="/src/assets/img/76.svg"
 									alt=""
-									className="doodle-servicio doodle-top-left"
+									className="doodle-servicio-left"
 								/>
 
 								<img
 									src="/src/assets/img/104.svg"
-									className="doodle-servicio doodle-bottom-right"
+									className="doodle-servicio-right"
 								/>
 							</div>
 						</div>

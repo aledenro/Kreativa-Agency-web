@@ -57,7 +57,10 @@ const FormContacto = () => {
 				);
 
 				if (Array.isArray(response.data)) {
-					setServicios(response.data);
+					const serviciosActivos = response.data.filter(
+						(servicio) => servicio.activo === true
+					);
+					setServicios(serviciosActivos);
 				} else {
 					setServicios([]);
 				}
