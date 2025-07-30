@@ -305,7 +305,7 @@ h3 {
 }
 
 .custom-dragger {
-	background-color: transparent !important;
+	background-color: white !important;
 }
 
 .section-title {
@@ -583,7 +583,7 @@ h3 {
 
 .login-button {
 	background-color: var(--kreativa-base);
-	color: var(--kreativa-black);
+	color: var(--kreativa-white);
 	border: none;
 	padding: 8px 16px;
 	font-size: 16px;
@@ -594,7 +594,7 @@ h3 {
 }
 
 .login-button:hover {
-	color: var(--kreativa-white);
+	color: var(--kreativa-azul);
 }
 
 .hamburger {
@@ -670,6 +670,91 @@ h3 {
 	--kreativa-light-bg: #f9f7fe;
 	--kreativa-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 	--kreativa-transition: all 0.3s ease-in-out;
+}
+
+.card-paquete {
+	-webkit-box-shadow: 0px 0px 6px 0px rgba(17, 13, 39, 0.72);
+	box-shadow: 0px 0px 6px 0px rgba(17, 13, 39, 0.72);
+	border: transparent solid 1px;
+	border-radius: var(--kreativa-bdr-radius);
+}
+
+.card-paquete .card-title {
+	font-family: var(--kreativa-title);
+	font-size: 1.5rem;
+}
+
+.doodle-servicio-left {
+	top: -30px;
+	left: -20px;
+	position: absolute;
+	width: 130px;
+	z-index: 2;
+	pointer-events: none;
+	opacity: 0.9;
+}
+
+.doodle-servicio-right {
+	bottom: -20px;
+	right: -20px;
+	position: absolute;
+	width: 130px;
+	z-index: 2;
+	pointer-events: none;
+	opacity: 0.9;
+}
+
+.doodle-landing {
+	position: sticky;
+	top: 0;
+	width: 250px;
+	z-index: -1;
+	pointer-events: none;
+	max-width: 100vw;
+}
+
+.doodle-top-left {
+	position: absolute;
+	top: 100px;
+	left: -200px;
+	width: 600px;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.doodle-bottom-right {
+	position: absolute;
+	bottom: -15px;
+	right: 20px;
+	width: 400px;
+	z-index: 0;
+	pointer-events: none;
+}
+
+@media (max-width: 1200px) {
+	.doodle-bottom-right {
+		width: 250px;
+	}
+	.doodle-top-left {
+		width: 300px;
+		left: -70px;
+	}
+}
+
+@media (max-width: 920px) {
+	.doodle-top-left,
+	.doodle-bottom-right {
+		display: none;
+	}
+}
+.form-container {
+	position: relative;
+	z-index: 1;
+}
+.check-icon {
+	font-size: 16px;
+	color: var(--kreativa-rosado);
+	margin-right: 10px;
 }
 
 .services-page {
@@ -1323,7 +1408,6 @@ h3 {
 .row {
 	display: flex;
 	justify-content: space-between;
-	gap: 30px;
 }
 
 /* =================== */
