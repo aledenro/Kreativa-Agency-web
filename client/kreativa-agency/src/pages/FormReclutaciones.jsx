@@ -36,7 +36,6 @@ const FormReclutaciones = () => {
 				setFormActive(response.data.active);
 			} catch (error) {
 				console.error("Error al verificar estado del formulario:", error);
-				// Si hay error, asumimos que el formulario está activo
 				setFormActive(true);
 			} finally {
 				setCheckingStatus(false);
@@ -86,13 +85,7 @@ const FormReclutaciones = () => {
 		try {
 			const response = await axios.post(
 				`${import.meta.env.VITE_API_URL}/reclutaciones`,
-				{
-					nombre,
-					apellido,
-					correo,
-					telefono,
-					cv: [],
-				}
+				{ nombre, apellido, correo, telefono, cv: [] }
 			);
 
 			const reclutacionId = response.data._id;
@@ -109,17 +102,16 @@ const FormReclutaciones = () => {
 
 					await axios.put(
 						`${import.meta.env.VITE_API_URL}/reclutaciones/actualizar/${reclutacionId}`,
-
-						uploadedFiles
+						{ cv: uploadedFiles }
 					);
 				} catch (error) {
-					console.error(
-						"Error al subir archivos:",
-						error.response?.data || error.message
-					);
+					console.error("Error al subir archivos:", error);
 					showNotification(
 						"error",
 						"No se pudo subir el CV. Inténtalo de nuevo."
+					);
+					await axios.delete(
+						`${import.meta.env.VITE_API_URL}/reclutaciones/${reclutacionId}`
 					);
 					setLoading(false);
 					return;
@@ -127,6 +119,7 @@ const FormReclutaciones = () => {
 			}
 
 			showNotification("success", "Formulario enviado exitosamente.");
+
 			setFormData({
 				nombre: "",
 				apellido: "",
@@ -134,21 +127,17 @@ const FormReclutaciones = () => {
 				telefono: "",
 				cv: [],
 			});
+			setFiles([]);
 
-			if (response.status == 201) {
+			if (response.status === 201) {
 				await sendEmailExterno(
 					formData.correo,
 					"Tu mensaje ha sido enviado. Pronto un miembro del equipo de Kreativa se pondrá en contacto.",
 					"Mensaje enviado"
 				);
 			}
-
-			setFiles([]);
 		} catch (error) {
-			console.error(
-				"Error al enviar el formulario:",
-				error.response?.data || error.message
-			);
+			console.error("Error al enviar el formulario:", error);
 			showNotification(
 				"error",
 				"Hubo un error al enviar el formulario. Inténtalo de nuevo."

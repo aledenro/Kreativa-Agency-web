@@ -583,7 +583,7 @@ h3 {
 
 .login-button {
 	background-color: var(--kreativa-base);
-	color: var(--kreativa-black);
+	color: var(--kreativa-white);
 	border: none;
 	padding: 8px 16px;
 	font-size: 16px;
@@ -594,7 +594,7 @@ h3 {
 }
 
 .login-button:hover {
-	color: var(--kreativa-white);
+	color: var(--kreativa-azul);
 }
 
 .hamburger {
@@ -708,7 +708,7 @@ h3 {
 	position: sticky;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 200px;
+	width: 250px;
 	z-index: -1;
 	pointer-events: none;
 }
@@ -716,8 +716,8 @@ h3 {
 .doodle-top-left {
 	position: absolute;
 	top: 100px;
-	left: -20px;
-	width: 270px;
+	left: -200px;
+	width: 600px;
 	z-index: 0;
 	pointer-events: none;
 }
@@ -726,23 +726,22 @@ h3 {
 	position: absolute;
 	bottom: -15px;
 	right: 20px;
-	width: 250px;
+	width: 400px;
 	z-index: 0;
 	pointer-events: none;
 }
 
-@media (max-width: 920px) {
-	.doodle-top-left,
+@media (max-width: 1200px) {
 	.doodle-bottom-right {
-		display: none;
+		width: 250px;
+	}
+	.doodle-top-left {
+		width: 300px;
+		left: -70px;
 	}
 }
 
-@media (max-width: 768px) {
-	.doodle-servicio {
-		width: 100px;
-	}
-
+@media (max-width: 920px) {
 	.doodle-top-left,
 	.doodle-bottom-right {
 		display: none;
