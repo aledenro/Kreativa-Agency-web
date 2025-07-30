@@ -24,6 +24,7 @@ const Recuperar = () => {
                 customClass: {
                     confirmButton: "swal-button-kreativa",
                 },
+                confirmButtonColor: " #ff0072",
             }).then((result) => {
                 if (result.isConfirmed) {
                     navigate("/login");
@@ -43,6 +44,7 @@ const Recuperar = () => {
                 customClass: {
                     confirmButton: "swal-button-kreativa",
                 },
+                confirmButtonColor: " #ff0072",
             });
         }
     };
