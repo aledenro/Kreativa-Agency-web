@@ -35,7 +35,13 @@ const Landing = () => {
 			<section id="servicios">
 				<ListadoServicios></ListadoServicios>
 			</section>
-			<div style={{ position: "relative" }}>
+			<div
+				style={{
+					position: "relative",
+					display: "flex",
+					justifyContent: "center",
+				}}
+			>
 				<img
 					src="/src/assets/img/25.svg"
 					alt="decoración"
