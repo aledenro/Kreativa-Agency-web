@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { UserPlus } from "lucide-react";
-import Swal from "sweetalert2"; 
+import Swal from "sweetalert2";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const CrearUsuario = () => {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ const CrearUsuario = () => {
         estado: "Activo",
     });
 
+    const [mostrarContrasena, setMostrarContrasena] = useState(false); // 👈 estado nuevo
     const [errors, setErrors] = useState({});
     const [errorServidor, setErrorServidor] = useState("");
 
@@ -88,7 +90,6 @@ const CrearUsuario = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            // SweetAlert2 de éxito 🎉
             Swal.fire({
                 title: '¡Usuario creado!',
                 text: 'El usuario se ha creado correctamente.',
@@ -206,18 +207,40 @@ const CrearUsuario = () => {
                             </select>
                         </div>
 
-                        <div className="form-group mb-3">
+
+                        <div className="form-group mb-3" style={{ position: "relative" }}>
                             <label className="form-label">Contraseña</label>
                             <input
-                                type="password"
+                                type={mostrarContrasena ? "text" : "password"}
                                 name="contraseña"
                                 placeholder="Contraseña"
                                 value={formData.contraseña}
                                 onChange={handleChange}
                                 className="form_input"
                                 required
+                                style={{ paddingRight: "2.5rem" }}
                             />
-                            {errors.contraseña && <small className="text-danger">{errors.contraseña}</small>}
+                            <span
+                                onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                                style={{
+                                    position: "absolute",
+                                    top: "50px",
+                                    right: "10px",
+                                    transform: "translateY(-50%)",
+                                    cursor: "pointer",
+                                    zIndex: 2,
+                                }}
+                            >
+                                {mostrarContrasena ? (
+                                    <EyeSlashIcon style={{ width: "22px", height: "22px", stroke: "#666", fill: "none" }} />
+                                ) : (
+                                    <EyeIcon style={{ width: "22px", height: "22px", stroke: "#666", fill: "none" }} />
+                                )}
+                            </span>
+
+                            {errors.contraseña && (
+                                <small className="text-danger">{errors.contraseña}</small>
+                            )}
                         </div>
 
                         <div className="kreativa-btn-wrapper">

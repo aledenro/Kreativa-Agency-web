@@ -85,6 +85,7 @@ const Login = () => {
                 text:
                     error.response?.data?.mensaje ||
                     "Usuario o contraseña incorrectos",
+                confirmButtonColor: " #ff0072",
             });
         }
     };
