@@ -105,14 +105,19 @@ class ProyectoService {
 
 	async addRespuesta(id, respuesta) {
 		try {
-			const proyecto = await ProyectoModel.findById(id);
+			const resultado = await ProyectoModel.findByIdAndUpdate(
+				id,
+				{ $push: { historial_respuestas: respuesta } },
+				{ new: true, runValidators: false }
+			);
 
-			proyecto["historial_respuestas"].push(respuesta);
-			await proyecto.save();
+			if (!resultado) {
+				throw new Error("Proyecto no encontrado");
+			}
 
-			return proyecto["historial_respuestas"].at(-1);
+			return resultado.historial_respuestas.at(-1);
 		} catch (error) {
-			throw new Error("Error al agregar la respuesta " + error.message);
+			throw new Error("Error al agregar la respuesta: " + error.message);
 		}
 	}
 
