@@ -14,7 +14,7 @@ const EgresosModel = new mongoose.Schema(
         },
         categoria: {
             type: String,
-            enum: ['Salarios', 'Software', 'Servicios de contabilidad', 'Servicios'],
+            enum: ["Salarios", "Software", "Servicios de contabilidad", "Servicios"],
             required: true
         },
         descripcion: {

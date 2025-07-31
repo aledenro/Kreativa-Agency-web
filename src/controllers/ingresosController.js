@@ -137,8 +137,6 @@ const ingresosController = {
         try {
             const { mes, anio } = req.query;
 
-            console.log(`Solicitud de ingresos para mes: ${mes}, año: ${anio}`);
-
             if (!mes || !anio) {
                 return res.status(400).json({
                     message: "Debe proporcionar mes y año.",
@@ -146,14 +144,8 @@ const ingresosController = {
                 });
             }
 
-            const ingresosPorMes = await ingresosService.obtenerIngresosPorMes(
-                mes,
-                anio
-            );
-
-            console.log('Datos devueltos por el servicio:', ingresosPorMes);
-
-            res.status(200).json({
+            const ingresosPorMes = await ingresosService.obtenerIngresosPorMes(mes, anio);
+            const respuesta = {
                 success: true,
                 resumen: {
                     totalIngresos: ingresosPorMes.totalIngresos || 0,
@@ -161,13 +153,16 @@ const ingresosController = {
                 },
                 detalle: ingresosPorMes.detalle || [],
                 datosGrafico: ingresosPorMes.datosGrafico || []
-            });
+            };
+
+            console.log(`Ingresos por mes obtenidos: ${respuesta.resumen.cantidadIngresos} registros`);
+
+            res.status(200).json(respuesta);
         } catch (error) {
-            console.error('Error en obtenerIngresosPorMes:', error);
+            console.error('Error en obtenerIngresosPorMes:', error.message);
             res.status(500).json({
                 success: false,
-                message: "Error al obtener los ingresos por mes.",
-                error: error.message
+                message: "Error al obtener los ingresos por mes."
             });
         }
     },

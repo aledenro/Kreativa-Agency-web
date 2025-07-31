@@ -154,9 +154,11 @@ const ListadoEgresos = () => {
                 const url = toggleEgreso.activo
                     ? `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/desactivar`
                     : `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/activar`;
-                await axios.put(url, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                await axios.put(
+                    url,
+                    {},
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
                 setEgresos((prev) =>
                     prev.map((e) =>
                         e._id === toggleEgreso._id
@@ -492,6 +494,7 @@ const ListadoEgresos = () => {
                 show={showModalVer}
                 handleClose={() => setShowModalVer(false)}
                 egreso={egresoVer}
+                categories={fixedCategories.map(cat => ({ _id: cat, nombre: cat }))}
             />
             <ModalEditarEgreso
                 show={showModalEditar}

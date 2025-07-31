@@ -26,9 +26,12 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/egresos`,
+                formData,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: formData,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 }
             );
             if (res.status === 201) {
