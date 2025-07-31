@@ -4113,3 +4113,14 @@ h3 {
 	border-radius: 15px;
 }
 
+.estado-aprobado {
+	color: green;
+	font-weight: bold;
+	text-transform: capitalize;
+}
+
+.estado-pendiente {
+	color: #ff0072;
+	font-weight: bold;
+	text-transform: capitalize;
+}
