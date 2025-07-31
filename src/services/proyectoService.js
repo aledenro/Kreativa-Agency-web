@@ -90,12 +90,8 @@ class ProyectoService {
 		try {
 			const proyecto = await ProyectoModel.findById(id);
 			if (proyecto && !lodash.isEmpty(proyecto)) {
-				console.log("a");
 				proyecto.log.push(data);
-				console.log("b");
-				console.log(data);
 				await proyecto.save();
-				console.log("c");
 			}
 
 			return proyecto;
