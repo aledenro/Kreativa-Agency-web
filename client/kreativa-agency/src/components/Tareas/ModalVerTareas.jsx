@@ -34,7 +34,7 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 		api[type]({
 			message: type === "success" ? "Éxito" : "Error",
 			description: message,
-			placement: "bottomRight",
+			placement: "top",
 			duration: 4,
 		});
 	};

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
-import Alert from "react-bootstrap/Alert";
 import sendEmail from "../../utils/emailSender";
+import { notification } from "antd";
 
 function construirJsonRequest(
 	proyecto,
@@ -89,13 +89,11 @@ function renderOptionsEstados(opcion, estadoTarea) {
 const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 	const [empleados, setEmpleados] = useState([]);
 	const [proyectos, setProyectos] = useState([]);
-	const [showAlert, setShowAlert] = useState(false);
-	const [alertMessage, setAlertMessage] = useState("");
-	const [alertVariant, setAlertVariant] = useState("danger");
 	const [tarea, setTarea] = useState(null);
 	const [estado, setEstado] = useState("");
 	const [colaboradorOriginal, setColaboradorOriginal] = useState("");
 	const [formRef, setFormRef] = useState(null);
+	const [api, contextHolder] = notification.useNotification();
 
 	const prioridades = ["Baja", "Media", "Alta"];
 	const estados = [
@@ -105,6 +103,24 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		"Finalizado",
 		"En Revisión",
 	];
+
+	const openSuccessNotification = (message) => {
+		api.success({
+			message: "Éxito",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
+
+	const openErrorNotification = (message) => {
+		api.error({
+			message: "Error",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -124,19 +140,15 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			);
 
 			if (response.status === 200) {
-				setAlertMessage("Estado cambiado correctamente.");
-				setAlertVariant("success");
-				setShowAlert(true);
+				openSuccessNotification("Estado cambiado correctamente.");
 				setEstado(estadoEdit);
 				await addActionLog(`Cambió el estado de la tarea a: ${estadoEdit}.`);
 
 				if (typeof onUpdate === "function") {
 					onUpdate();
 				}
-
-				setTimeout(() => {
-					setShowAlert(false);
-				}, 3000);
+			} else {
+				openErrorNotification("Error al cambiar el estado.");
 			}
 		} catch (error) {
 			console.error(error.message);
@@ -151,12 +163,6 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-		const enviar = confirm("¿Desea guardar los cambios en la tarea?");
-
-		if (!enviar) {
-			return;
-		}
-
 		const formData = new FormData(event.target);
 
 		const nombre = formData.get("nombre").trim();
@@ -165,6 +171,21 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		const prioridad = formData.get("prioridad");
 		const proyecto = formData.get("proyecto");
 		const fechaEntrega = formData.get("fecha_entrega");
+
+		if (
+			!nombre ||
+			!descripcion ||
+			!colab ||
+			!prioridad ||
+			!proyecto ||
+			!fechaEntrega
+		) {
+			openErrorNotification("Todos los campos son obligatorios.");
+			return;
+		}
+
+		const enviar = confirm("¿Desea guardar los cambios en la tarea?");
+		if (!enviar) return;
 
 		const data = construirJsonRequest(
 			proyecto,
@@ -184,16 +205,12 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
-			if (res.status == 200) {
-				setAlertMessage("Tarea editada correctamente.");
-				setAlertVariant("success");
-				setShowAlert(true);
+			if (res.status === 200) {
+				openSuccessNotification("Tarea editada correctamente.");
 				await addActionLog("Editó la tarea.");
-
 				if (typeof onUpdate === "function") {
 					onUpdate();
 				}
-
 				if (colaboradorOriginal !== colab) {
 					await sendEmail(
 						colab,
@@ -203,18 +220,15 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 						"test"
 					);
 				}
-				setTimeout(() => {
-					setShowAlert(false);
-				}, 3000);
+			} else {
+				openErrorNotification("Error al editar la tarea.");
 			}
 		} catch (error) {
 			console.error(error.message);
 
-			setAlertMessage(
-				"Error al editar la tarea, por favor trate nuevamente o comuniquese con el soporte técnico."
+			openErrorNotification(
+				"Error al editar la tarea, por favor trate nuevamente o comuníquese con el soporte técnico."
 			);
-			setAlertVariant("danger");
-			setShowAlert(true);
 		}
 	};
 
@@ -319,6 +333,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			centered
 			dialogClassName="tarea-modal"
 		>
+			{contextHolder}
 			<Modal.Header closeButton>
 				<Modal.Title>{tarea?.nombre || ""}</Modal.Title>
 			</Modal.Header>
@@ -357,16 +372,6 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 								</div>
 							</div>
 						</div>
-
-						{showAlert && (
-							<Alert
-								variant={alertVariant}
-								onClose={() => setShowAlert(false)}
-								dismissible
-							>
-								{alertMessage}
-							</Alert>
-						)}
 
 						<form onSubmit={handleSubmit} ref={(el) => setFormRef(el)}>
 							<div className="mb-3">
