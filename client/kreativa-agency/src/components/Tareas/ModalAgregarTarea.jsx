@@ -40,6 +40,7 @@ const ModalAgregarTarea = ({
 }) => {
 	const [empleados, setEmpleados] = useState([]);
 	const [proyectos, setProyectos] = useState([]);
+	const [colaboradoresFiltrados, setColaboradoresFiltrados] = useState([]);
 	const [api, contextHolder] = notification.useNotification();
 	const prioridades = ["Baja", "Media", "Alta"];
 	const formRef = useRef(null);
@@ -71,12 +72,22 @@ const ModalAgregarTarea = ({
 		});
 	};
 
-	const handleChange = (e) => {
+	const handleChange = async (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({
-			...prevData,
-			[name]: value,
-		}));
+
+		if (name === "proyecto") {
+			setFormData((prevData) => ({
+				...prevData,
+				[name]: value,
+				colab: "",
+			}));
+			await filtrarColaboradores(value);
+		} else {
+			setFormData((prevData) => ({
+				...prevData,
+				[name]: value,
+			}));
+		}
 	};
 
 	const resetForm = () => {
@@ -169,6 +180,103 @@ const ModalAgregarTarea = ({
 		return today.toISOString().split("T")[0];
 	};
 
+	const filtrarColaboradores = async (proyectoSeleccionado) => {
+		if (!proyectoSeleccionado) {
+			setColaboradoresFiltrados([]);
+			return;
+		}
+
+		const proyectoEncontrado = proyectos.find(
+			(proyecto) => proyecto._id === proyectoSeleccionado
+		);
+
+		if (
+			proyectoEncontrado &&
+			proyectoEncontrado.colaboradores &&
+			proyectoEncontrado.colaboradores.length > 0
+		) {
+			const colaboradoresAsignados = proyectoEncontrado.colaboradores.map(
+				(colab) => {
+					const id =
+						typeof colab.colaborador_id === "object"
+							? colab.colaborador_id._id
+							: colab.colaborador_id;
+					return id;
+				}
+			);
+
+			const colaboradoresDelProyecto = empleados.filter((empleado) => {
+				const estaAsignado = colaboradoresAsignados.includes(empleado._id);
+				return estaAsignado;
+			});
+
+			setColaboradoresFiltrados(colaboradoresDelProyecto);
+
+			if (colaboradoresDelProyecto.length > 0) {
+				setFormData((prev) => ({
+					...prev,
+					colab: colaboradoresDelProyecto[0]._id,
+				}));
+			} else {
+				setFormData((prev) => ({
+					...prev,
+					colab: "",
+				}));
+			}
+		} else {
+			try {
+				const token = localStorage.getItem("token");
+
+				const response = await axios.get(
+					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionado}`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
+
+				const proyectoData = response.data.proyecto || response.data;
+
+				const colaboradoresAsignados = proyectoData.colaboradores
+					? proyectoData.colaboradores.map((colab) => {
+							const id =
+								typeof colab.colaborador_id === "object"
+									? colab.colaborador_id._id
+									: colab.colaborador_id;
+							return id;
+						})
+					: [];
+
+				const colaboradoresDelProyecto = empleados.filter((empleado) => {
+					const estaAsignado = colaboradoresAsignados.includes(empleado._id);
+					return estaAsignado;
+				});
+
+				setColaboradoresFiltrados(colaboradoresDelProyecto);
+
+				if (colaboradoresDelProyecto.length > 0) {
+					setFormData((prev) => ({
+						...prev,
+						colab: colaboradoresDelProyecto[0]._id,
+					}));
+				} else {
+					setFormData((prev) => ({
+						...prev,
+						colab: "",
+					}));
+				}
+			} catch (error) {
+				setColaboradoresFiltrados(empleados);
+
+				if (empleados.length > 0) {
+					setFormData((prev) => ({
+						...prev,
+						colab: empleados[0]._id,
+					}));
+				}
+			}
+		}
+	};
+
 	useEffect(() => {
 		if (show) {
 			fetchEmpleados();
@@ -176,6 +284,12 @@ const ModalAgregarTarea = ({
 			resetForm();
 		}
 	}, [show, proyectoId]);
+
+	useEffect(() => {
+		if (formData.proyecto && empleados.length > 0) {
+			filtrarColaboradores(formData.proyecto);
+		}
+	}, [empleados, formData.proyecto]);
 
 	async function fetchEmpleados() {
 		try {
@@ -189,13 +303,6 @@ const ModalAgregarTarea = ({
 			);
 
 			setEmpleados(response.data);
-
-			if (response.data.length > 0 && !formData.colab) {
-				setFormData((prev) => ({
-					...prev,
-					colab: response.data[0]._id,
-				}));
-			}
 		} catch (error) {
 			console.error(`Error al obtener los empleados: ${error.message}`);
 		}
@@ -203,25 +310,28 @@ const ModalAgregarTarea = ({
 
 	async function fetchProyectos() {
 		const token = localStorage.getItem("token");
+		const rol = localStorage.getItem("tipo_usuario");
+		const userId = localStorage.getItem("user_id");
 
 		try {
-			const response = await axios.get(
-				`${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
+			let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
-			setProyectos(response.data.proyectos);
+			if (rol === "Cliente") {
+				url += `/cliente/${userId}`;
+			} else if (rol === "Colaborador") {
+				url += `/colaborador/${userId}`;
+			}
 
-			if (
-				response.data.proyectos.length > 0 &&
-				!formData.proyecto &&
-				!proyectoId
-			) {
+			const response = await axios.get(url, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+
+			setProyectos(response.data);
+
+			if (response.data.length > 0 && !formData.proyecto && !proyectoId) {
 				setFormData((prev) => ({
 					...prev,
-					proyecto: response.data.proyectos[0]._id,
+					proyecto: response.data[0]._id,
 				}));
 			}
 		} catch (error) {
@@ -308,14 +418,24 @@ const ModalAgregarTarea = ({
 							value={formData.colab}
 							onChange={handleChange}
 							required
+							disabled={!formData.proyecto}
 						>
-							<option value="">Seleccione un colaborador</option>
-							{empleados.map((colab) => (
+							<option value="">
+								{formData.proyecto
+									? "Seleccione un colaborador"
+									: "Primero seleccione un proyecto"}
+							</option>
+							{colaboradoresFiltrados.map((colab) => (
 								<option key={colab._id} value={colab._id}>
 									{colab.nombre}
 								</option>
 							))}
 						</select>
+						{formData.proyecto && colaboradoresFiltrados.length === 0 && (
+							<small className="text-muted">
+								No hay colaboradores asignados a este proyecto.
+							</small>
+						)}
 					</div>
 					<div className="row">
 						<div className="col-md-6">

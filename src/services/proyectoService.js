@@ -137,6 +137,26 @@ class ProyectoService {
 			);
 		}
 	}
+
+	async getProyectosByColaborador(colaboradorId) {
+		try {
+			const mongoose = require("mongoose");
+			const objectId = new mongoose.Types.ObjectId(colaboradorId);
+
+			const proyectos = await ProyectoModel.find({
+				"colaboradores.colaborador_id": objectId,
+			})
+				.populate("cliente_id", "nombre")
+				.populate("colaboradores.colaborador_id", "nombre")
+				.sort({ fecha_creacion: -1 });
+
+			return proyectos;
+		} catch (error) {
+			throw new Error(
+				`Error al obtener los proyectos del colaborador: ${error.message}`
+			);
+		}
+	}
 }
 
 module.exports = new ProyectoService();
