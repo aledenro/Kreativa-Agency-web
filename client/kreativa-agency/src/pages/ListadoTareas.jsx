@@ -669,7 +669,8 @@ const ListadoTareas = () => {
 					show={showModal}
 					handleClose={() => setShowModal(false)}
 					tareaModal={tareaModal}
-				></ModalVerTareas>
+					onUpdated={reloadData}
+				/>
 			)}
 
 			<ModalEditarTarea
