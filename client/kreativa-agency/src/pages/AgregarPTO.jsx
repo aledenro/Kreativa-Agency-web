@@ -112,7 +112,7 @@ const AgregarPTO = () => {
                 icon: "success",
                 confirmButtonColor: "#ff0072",
             }).then(() => {
-                navigate("/ver-pto");
+                navigate("/mis-pto");
             });
         } catch (error) {
             console.error("Error al enviar PTO:", error);
