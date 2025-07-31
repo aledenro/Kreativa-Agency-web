@@ -348,11 +348,6 @@ const DashboardColaborador = () => {
 		setShowModalProyecto(true);
 	};
 
-	const handleChangeCantItems = (event) => {
-		setItemsPag(parseInt(event.target.value));
-		setPagActual(1);
-	};
-
 	const handleCloseEditModal = () => {
 		setShowEditProyectoModal(false);
 		reloadData();
