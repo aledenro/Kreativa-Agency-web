@@ -26,42 +26,40 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 const DashboardColaborador = () => {
 	const [proyectos, setProyectos] = useState([]);
 	const [tareas, setTareas] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [expandedProjects, setExpandedProjects] = useState({});
 	const [empleados, setEmpleados] = useState([]);
+	const [estadosProyecto, setEstadosProyecto] = useState([]);
+	const [loading, setLoading] = useState(true);
 
+	const [expandedProjects, setExpandedProjects] = useState({});
 	const [sortField, setSortField] = useState("fecha_creacion");
 	const [sortOrder, setSortOrder] = useState("desc");
 	const [filterColab, setFilterColab] = useState("");
 	const [filterStatus, setFilterStatus] = useState("");
-
 	const [taskSortByProject, setTaskSortByProject] = useState({});
 
 	const [pagActual, setPagActual] = useState(1);
 	const [itemsPag, setItemsPag] = useState(5);
 
-	const [showModal, setShowModal] = useState(false);
+	const [showModalVerTarea, setShowModalVerTarea] = useState(false);
 	const [tareaModal, setTareaModal] = useState({});
 
-	const [showProyectoModal, setShowProyectoModal] = useState(false);
-	const [selectedProyectoId, setSelectedProyectoId] = useState(null);
+	const [showModalVerProyecto, setShowModalVerProyecto] = useState(false);
+	const [proyectoModal, setProyectoModal] = useState(null);
 
-	const [showEditProyectoModal, setShowEditProyectoModal] = useState(false);
+	const [showModalEditarProyecto, setShowModalEditarProyecto] = useState(false);
 	const [editingProyectoId, setEditingProyectoId] = useState(null);
 
-	const [showEditTareaModal, setShowEditTareaModal] = useState(false);
+	const [showModalEditarTarea, setShowModalEditarTarea] = useState(false);
 	const [editingTareaId, setEditingTareaId] = useState(null);
 
-	const [showModalAgregarProyecto, setShowModalProyecto] = useState(false);
+	const [showModalAgregarProyecto, setShowModalAgregarProyecto] =
+		useState(false);
 
 	const [showModalAgregarTarea, setShowModalAgregarTarea] = useState(false);
 	const [selectedProyectoTarea, setSelectedProyectoTarea] = useState(null);
 
 	const rol = localStorage.getItem("tipo_usuario");
 	const userId = localStorage.getItem("user_id");
-
-	const [estadosProyecto, setEstadosProyecto] = useState([]);
-
 	const [api, contextHolder] = notification.useNotification();
 
 	const openSuccessNotification = (message) => {
@@ -82,140 +80,156 @@ const DashboardColaborador = () => {
 		});
 	};
 
-	useEffect(() => {
-		const fetchProyectos = async () => {
-			try {
-				const token = localStorage.getItem("token");
-				let url = `${import.meta.env.VITE_API_URL}/proyectos`;
+	const fetchProyectos = async () => {
+		try {
+			const token = localStorage.getItem("token");
+			let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
-				if (rol === "Cliente") {
-					url += `/cliente/${userId}`;
+			if (rol === "Cliente") {
+				url += `/cliente/${userId}`;
+			}
+
+			const response = await axios.get(url, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+
+			setProyectos(response.data);
+
+			const estados = [...new Set(response.data.map((p) => p.estado))].filter(
+				Boolean
+			);
+			setEstadosProyecto(estados);
+
+			const expanded = {};
+			const taskSort = {};
+			response.data.forEach((proyecto) => {
+				expanded[proyecto._id] = false;
+				taskSort[proyecto._id] = {
+					field: "nombre",
+					order: "asc",
+				};
+			});
+			setExpandedProjects(expanded);
+			setTaskSortByProject(taskSort);
+		} catch (error) {
+			console.error(`Error al obtener los proyectos: ${error.message}`);
+		}
+	};
+
+	const fetchTareas = async () => {
+		try {
+			const token = localStorage.getItem("token");
+			let url = `${import.meta.env.VITE_API_URL}/tareas`;
+
+			const response = await axios.get(url, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+
+			setTareas(response.data.tareas || []);
+		} catch (error) {
+			console.error(`Error al obtener las tareas: ${error.message}`);
+		}
+	};
+
+	const fetchEmpleados = async () => {
+		try {
+			const token = localStorage.getItem("token");
+			const response = await axios.get(
+				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
 				}
+			);
 
-				const response = await axios.get(url, {
-					headers: { Authorization: `Bearer ${token}` },
-				});
+			setEmpleados(response.data);
+		} catch (error) {
+			console.error(`Error al obtener los empleados: ${error.message}`);
+		}
+	};
 
-				setProyectos(response.data);
-
-				const estados = [...new Set(response.data.map((p) => p.estado))].filter(
-					Boolean
-				);
-				setEstadosProyecto(estados);
-
-				const expanded = {};
-				const taskSort = {};
-				response.data.forEach((proyecto) => {
-					expanded[proyecto._id] = false;
-					taskSort[proyecto._id] = {
-						field: "nombre",
-						order: "asc",
-					};
-				});
-				setExpandedProjects(expanded);
-				setTaskSortByProject(taskSort);
-			} catch (error) {
-				console.error(`Error al obtener los proyectos: ${error.message}`);
+	const reloadData = useCallback(async () => {
+		try {
+			if (rol === "Administrador") {
+				await Promise.all([fetchProyectos(), fetchTareas(), fetchEmpleados()]);
+			} else {
+				await Promise.all([fetchProyectos(), fetchTareas()]);
 			}
-		};
-
-		const fetchTareas = async () => {
-			try {
-				const token = localStorage.getItem("token");
-				let url = `${import.meta.env.VITE_API_URL}/tareas`;
-
-				const response = await axios.get(url, {
-					headers: { Authorization: `Bearer ${token}` },
-				});
-
-				setTareas(response.data.tareas || []);
-			} catch (error) {
-				console.error(`Error al obtener las tareas: ${error.message}`);
-			}
-		};
-
-		const fetchEmpleados = async () => {
-			try {
-				const token = localStorage.getItem("token");
-				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
-					{
-						headers: { Authorization: `Bearer ${token}` },
-					}
-				);
-
-				setEmpleados(response.data);
-			} catch (error) {
-				console.error(`Error al obtener los empleados: ${error.message}`);
-			}
-		};
-
-		if (rol === "Administrador") {
-			Promise.all([fetchProyectos(), fetchTareas(), fetchEmpleados()])
-				.then(() => setLoading(false))
-				.catch((error) => {
-					console.error("Error fetching data:", error);
-					setLoading(false);
-				});
-		} else {
-			Promise.all([fetchProyectos(), fetchTareas()])
-				.then(() => setLoading(false))
-				.catch((error) => {
-					console.error("Error fetching data:", error);
-					setLoading(false);
-				});
+		} catch (error) {
+			console.error("Error al recargar datos:", error);
 		}
 	}, [rol, userId]);
 
-	const reloadData = useCallback(() => {
-		setLoading(true);
-
-		const fetchProyectos = async () => {
-			try {
-				const token = localStorage.getItem("token");
-				let url = `${import.meta.env.VITE_API_URL}/proyectos`;
-
-				if (rol === "Cliente") {
-					url += `/cliente/${userId}`;
-				}
-
-				const response = await axios.get(url, {
-					headers: { Authorization: `Bearer ${token}` },
-				});
-
-				setProyectos(response.data);
-
-				const estados = [...new Set(response.data.map((p) => p.estado))].filter(
-					Boolean
-				);
-				setEstadosProyecto(estados);
-			} catch (error) {
-				console.error(`Error al obtener los proyectos: ${error.message}`);
-			}
+	useEffect(() => {
+		const loadInitialData = async () => {
+			setLoading(true);
+			await reloadData();
+			setLoading(false);
 		};
 
-		const fetchTareas = async () => {
-			try {
-				const token = localStorage.getItem("token");
-				let url = `${import.meta.env.VITE_API_URL}/tareas`;
+		loadInitialData();
+	}, [reloadData]);
 
-				const response = await axios.get(url, {
-					headers: { Authorization: `Bearer ${token}` },
-				});
+	const handleVerTarea = (tarea) => {
+		setTareaModal(tarea);
+		setShowModalVerTarea(true);
+	};
 
-				setTareas(response.data.tareas || []);
-			} catch (error) {
-				console.error(`Error al obtener las tareas: ${error.message}`);
-			}
-		};
+	const handleCloseVerTareaModal = () => {
+		setShowModalVerTarea(false);
+		setTareaModal({});
+	};
 
-		Promise.all([fetchProyectos(), fetchTareas()])
-			.then(() => setLoading(false))
-			.catch((error) => {
-				console.error("Error fetching data:", error);
-				setLoading(false);
-			});
-	}, [rol, userId]);
+	const handleVerProyecto = (proyectoId) => {
+		setProyectoModal(proyectoId);
+		setShowModalVerProyecto(true);
+	};
+
+	const handleCloseVerProyectoModal = () => {
+		setShowModalVerProyecto(false);
+		setProyectoModal(null);
+	};
+
+	const handleEditarProyecto = (proyectoId) => {
+		setEditingProyectoId(proyectoId);
+		setShowModalEditarProyecto(true);
+	};
+
+	const handleCloseEditarProyectoModal = () => {
+		setShowModalEditarProyecto(false);
+		setEditingProyectoId(null);
+		reloadData();
+	};
+
+	const handleEditarTarea = (tareaId) => {
+		setEditingTareaId(tareaId);
+		setShowModalEditarTarea(true);
+	};
+
+	const handleCloseEditarTareaModal = () => {
+		setShowModalEditarTarea(false);
+		setEditingTareaId(null);
+		reloadData();
+	};
+
+	const handleAgregarProyecto = () => {
+		setShowModalAgregarProyecto(true);
+	};
+
+	const handleCloseAgregarProyectoModal = () => {
+		setShowModalAgregarProyecto(false);
+		reloadData();
+	};
+
+	const handleAgregarTarea = (proyectoId) => {
+		setSelectedProyectoTarea(proyectoId);
+		setShowModalAgregarTarea(true);
+	};
+
+	const handleCloseAgregarTareaModal = () => {
+		setShowModalAgregarTarea(false);
+		setSelectedProyectoTarea(null);
+		reloadData();
+	};
 
 	const toggleExpand = (proyectoId) => {
 		setExpandedProjects((prev) => ({
@@ -319,57 +333,10 @@ const DashboardColaborador = () => {
 		return urgente ? "badge badge-rojo" : "badge badge-gris";
 	};
 
-	const handleEditarTarea = (tareaId) => {
-		setEditingTareaId(tareaId);
-		setShowEditTareaModal(true);
-	};
-
-	const handleVerTarea = (tarea) => {
-		setTareaModal(tarea);
-		setShowModal(true);
-	};
-
-	const handleEditarProyecto = (proyectoId) => {
-		setEditingProyectoId(proyectoId);
-		setShowEditProyectoModal(true);
-	};
-
-	const handleVerProyecto = (proyectoId) => {
-		setSelectedProyectoId(proyectoId);
-		setShowProyectoModal(true);
-	};
-
-	const handleAgregarTarea = (proyectoId) => {
-		setSelectedProyectoTarea(proyectoId);
-		setShowModalAgregarTarea(true);
-	};
-
-	const handleAgregarProyecto = () => {
-		setShowModalProyecto(true);
-	};
-
-	const handleChangeCantItems = (event) => {
-		setItemsPag(parseInt(event.target.value));
-		setPagActual(1);
-	};
-
-	const handleCloseEditModal = () => {
-		setShowEditProyectoModal(false);
-		reloadData();
-	};
-
-	const handleCloseEditTareaModal = () => {
-		setShowEditTareaModal(false);
-		reloadData();
-	};
-
-	const handleCloseAgregarProyectoModal = () => {
-		setShowModalProyecto(false);
-	};
-
-	const handleCloseAgregarTareaModal = () => {
-		setShowModalAgregarTarea(false);
-		setSelectedProyectoTarea(null);
+	const getIniciales = (colab) => {
+		if (!colab || !colab.nombre) return "?";
+		const nombres = colab.nombre.trim().split(" ");
+		return nombres[0].charAt(0) + (nombres[1] ? nombres[1].charAt(0) : "");
 	};
 
 	const handleImprimirReporte = async () => {
@@ -418,14 +385,12 @@ const DashboardColaborador = () => {
 				});
 
 				forceFileDownload(blob, "reporte_proyectos");
-
 				openSuccessNotification(`Reporte de proyectos generado correctamente.`);
-
 				return;
 			}
 		} catch (error) {
 			console.error(error.message);
-			openErrorNotification(`Error al generar el  reporte de proyectos.`);
+			openErrorNotification(`Error al generar el reporte de proyectos.`);
 		}
 	};
 
@@ -465,9 +430,22 @@ const DashboardColaborador = () => {
 		let valA, valB;
 
 		if (sortField === "fecha_entrega") {
+			// fecha
 			valA = new Date(a.fecha_entrega || 0);
 			valB = new Date(b.fecha_entrega || 0);
 			return sortOrder === "asc" ? valA - valB : valB - valA;
+		} else if (sortField === "urgente") {
+			// urgencia
+			valA = a.urgente ? 1 : 0;
+			valB = b.urgente ? 1 : 0;
+			return sortOrder === "asc" ? valA - valB : valB - valA;
+		} else if (sortField === "estado") {
+			// estado
+			valA = a.estado || "";
+			valB = b.estado || "";
+			return sortOrder === "asc"
+				? valA.toString().localeCompare(valB.toString())
+				: valB.toString().localeCompare(valA.toString());
 		} else {
 			valA = a[sortField] || "";
 			valB = b[sortField] || "";
@@ -477,7 +455,6 @@ const DashboardColaborador = () => {
 		}
 	});
 
-	const totalPags = Math.ceil(proyectosFiltrados.length / itemsPag);
 	const proyectosPaginados = proyectosFiltrados.slice(
 		(pagActual - 1) * itemsPag,
 		pagActual * itemsPag
@@ -489,7 +466,7 @@ const DashboardColaborador = () => {
 	if (loading) {
 		return (
 			<div className="container d-flex align-items-center justify-content-center">
-				<p>Cargando..</p>
+				<p>Cargando proyectos...</p>
 			</div>
 		);
 	}
@@ -500,6 +477,7 @@ const DashboardColaborador = () => {
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
 				<h1 className="mb-4">Backlog Proyectos</h1>
+
 				<div className="row mb-3">
 					{rol === "Administrador" && (
 						<div className="col">
@@ -543,21 +521,17 @@ const DashboardColaborador = () => {
 					</div>
 					<div className="col text-end">
 						{canEdit && (
-							<button className="thm-btn  m-1" onClick={handleAgregarProyecto}>
-								Crear Proyecto
+							<button className="thm-btn m-1" onClick={handleAgregarProyecto}>
+								+ Crear Proyecto
 							</button>
 						)}
 
-						<button
-							className="thm-btn  m-1"
-							onClick={() => {
-								handleImprimirReporte();
-							}}
-						>
+						<button className="thm-btn m-1" onClick={handleImprimirReporte}>
 							Imprimir Reporte
 						</button>
 					</div>
 				</div>
+
 				<div className="div-table">
 					<Table className="main-table tabla-backlog">
 						<Thead>
@@ -579,8 +553,38 @@ const DashboardColaborador = () => {
 									</span>
 								</Th>
 								<Th className="col-cliente">Cliente</Th>
-								<Th className="col-estado">Estado</Th>
-								<Th className="col-prioridad">Urgente</Th>
+								<Th
+									className="col-estado"
+									onClick={() => {
+										setSortOrder(
+											sortField === "estado" && sortOrder === "asc"
+												? "desc"
+												: "asc"
+										);
+										setSortField("estado");
+									}}
+								>
+									Estado{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th
+									className="col-prioridad"
+									onClick={() => {
+										setSortOrder(
+											sortField === "urgente" && sortOrder === "asc"
+												? "desc"
+												: "asc"
+										);
+										setSortField("urgente");
+									}}
+								>
+									Urgente{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
 								<Th
 									className="col-fecha"
 									onClick={() => {
@@ -765,24 +769,15 @@ const DashboardColaborador = () => {
 																					</Td>
 																					<Td className="col-colaborador">
 																						<span
-																							className="badge badge-gris"
+																							className="badge badge-gris d-desktop"
 																							title={
 																								tarea.colaborador_id?.nombre ||
 																								"Sin asignar"
 																							}
 																						>
-																							{tarea.colaborador_id?.nombre
-																								? tarea.colaborador_id.nombre.charAt(
-																										0
-																									) +
-																									(tarea.colaborador_id.nombre.includes(
-																										" "
-																									)
-																										? tarea.colaborador_id.nombre
-																												.split(" ")[1]
-																												.charAt(0)
-																										: "")
-																								: "?"}
+																							{getIniciales(
+																								tarea.colaborador_id
+																							)}
 																						</span>
 																					</Td>
 																					<Td className="col-estado">
@@ -842,14 +837,14 @@ const DashboardColaborador = () => {
 																			))
 																		) : (
 																			<Tr>
-																				<Td>
+																				<Td colSpan="6">
 																					No hay tareas para este proyecto.
 																				</Td>
 																			</Tr>
 																		)}
 																		{canEdit && (
 																			<Tr>
-																				<Td>
+																				<Td colSpan="6">
 																					<button
 																						className="thm-btn btn-gris"
 																						onClick={() =>
@@ -1016,46 +1011,57 @@ const DashboardColaborador = () => {
 				/>
 			</div>
 
-			{showModal && (
+			{showModalVerTarea && (
 				<ModalVerTareas
-					show={showModal}
-					handleClose={() => setShowModal(false)}
+					show={showModalVerTarea}
+					handleClose={handleCloseVerTareaModal}
 					tareaModal={tareaModal}
+					onUpdated={reloadData}
 				/>
 			)}
 
-			<ModalVerProyecto
-				show={showProyectoModal}
-				handleClose={() => setShowProyectoModal(false)}
-				proyectoId={selectedProyectoId}
-			/>
+			{showModalVerProyecto && (
+				<ModalVerProyecto
+					show={showModalVerProyecto}
+					handleClose={handleCloseVerProyectoModal}
+					proyectoId={proyectoModal}
+				/>
+			)}
 
-			<ModalEditarProyecto
-				show={showEditProyectoModal}
-				handleClose={handleCloseEditModal}
-				proyectoId={editingProyectoId}
-				onUpdate={reloadData}
-			/>
+			{showModalEditarProyecto && (
+				<ModalEditarProyecto
+					show={showModalEditarProyecto}
+					handleClose={handleCloseEditarProyectoModal}
+					proyectoId={editingProyectoId}
+					onUpdate={reloadData}
+				/>
+			)}
 
-			<ModalEditarTarea
-				show={showEditTareaModal}
-				handleClose={handleCloseEditTareaModal}
-				tareaId={editingTareaId}
-				onUpdate={reloadData}
-			/>
+			{showModalEditarTarea && (
+				<ModalEditarTarea
+					show={showModalEditarTarea}
+					handleClose={handleCloseEditarTareaModal}
+					tareaId={editingTareaId}
+					onUpdate={reloadData}
+				/>
+			)}
 
-			<ModalAgregarProyecto
-				show={showModalAgregarProyecto}
-				handleClose={handleCloseAgregarProyectoModal}
-				onUpdate={reloadData}
-			/>
+			{showModalAgregarProyecto && (
+				<ModalAgregarProyecto
+					show={showModalAgregarProyecto}
+					handleClose={handleCloseAgregarProyectoModal}
+					onUpdate={reloadData}
+				/>
+			)}
 
-			<ModalAgregarTarea
-				show={showModalAgregarTarea}
-				handleClose={handleCloseAgregarTareaModal}
-				proyectoId={selectedProyectoTarea}
-				onUpdate={reloadData}
-			/>
+			{showModalAgregarTarea && (
+				<ModalAgregarTarea
+					show={showModalAgregarTarea}
+					handleClose={handleCloseAgregarTareaModal}
+					proyectoId={selectedProyectoTarea}
+					onUpdate={reloadData}
+				/>
+			)}
 		</AdminLayout>
 	);
 };
