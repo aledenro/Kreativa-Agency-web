@@ -123,7 +123,11 @@ const Estadisticas = () => {
                 .then((response) => {
                     const data = response.data;
                     setTotalIngresosAnuales(data.resumen.totalIngresos);
-                    setDetalleIngresosAnuales(data.detalle);
+                    setDetalleIngresosAnuales(data.detalle.map(item => ({
+                    fecha: item.fecha,
+                    monto: item.monto,
+                    categoria: item.categoria
+                })));
                 })
                 .catch((error) => {
                     console.error(
@@ -168,16 +172,8 @@ const Estadisticas = () => {
                     }
                 )
                 .then((response) => {
-                    console.log(
-                        "Respuesta de ingresos mensuales:",
-                        response.data
-                    );
-
                     if (!response.data.success) {
-                        console.error(
-                            "Error en la respuesta:",
-                            response.data.message
-                        );
+                        console.error("Error en la respuesta de ingresos mensuales");
                         throw new Error(response.data.message);
                     }
 
@@ -185,7 +181,6 @@ const Estadisticas = () => {
 
                     setTotalIngresos(resumen.totalIngresos);
                     setCantidadIngresos(resumen.cantidadIngresos);
-
                     setResumenIngresos({
                         total: resumen.totalIngresos,
                         cantidad: resumen.cantidadIngresos,
@@ -194,10 +189,8 @@ const Estadisticas = () => {
                     });
                 })
                 .catch((error) => {
-                    console.error(
-                        "Error al obtener ingresos mensuales:",
-                        error
-                    );
+                    console.error("Error al obtener ingresos mensuales");
+
                     setTotalIngresos(0);
                     setCantidadIngresos(0);
                     setResumenIngresos({
@@ -364,12 +357,9 @@ const Estadisticas = () => {
                             </h3>
                             {totalIngresosAnuales || totalEgresosAnuales ? (
                                 <div
-                                    style={{ width: "500px", margin: "0 auto" }}
+                                    style={{ width: '100%', height: '400px', maxWidth: '400px', margin: '0 auto' }}
                                 >
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={300}
-                                    >
+                                    <ResponsiveContainer>
                                         <BarChart
                                             data={[
                                                 {
@@ -431,15 +421,9 @@ const Estadisticas = () => {
                                 <h3>Ingresos Anuales</h3>
                                 {totalIngresosAnuales > 0 ? (
                                     <div
-                                        style={{
-                                            width: "400px",
-                                            margin: "0 auto",
-                                        }}
+                                        style={{ width: '100%', height: '400px', maxWidth: '400px', margin: '0 auto' }}
                                     >
-                                        <ResponsiveContainer
-                                            width="100%"
-                                            height={400}
-                                        >
+                                        <ResponsiveContainer>
                                             <PieChart>
                                                 <Pie
                                                     data={detalleIngresosAnuales.reduce(
@@ -649,10 +633,8 @@ const Estadisticas = () => {
                                     Egresos Anuales
                                 </h3>
                                 {totalEgresosAnuales > 0 ? (
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={400}
-                                    >
+                                    <div style={{ width: '100%', height: '400px', maxWidth: '400px', margin: '0 auto' }}>
+                                    <ResponsiveContainer>
                                         <PieChart>
                                             <Pie
                                                 data={detalleEgresosAnuales.reduce(
@@ -734,6 +716,7 @@ const Estadisticas = () => {
                                             <Legend />
                                         </PieChart>
                                     </ResponsiveContainer>
+                                    </div>
                                 ) : (
                                     <p style={{ textAlign: "center" }}>
                                         No hay datos para Egresos Anuales.
@@ -859,10 +842,8 @@ const Estadisticas = () => {
                                         No hay datos disponibles para este mes.
                                     </p>
                                 ) : (
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={300}
-                                    >
+                                    <div style={{ width: '100%', height: '300px', margin: '0 auto' }}>
+                                    <ResponsiveContainer>
                                         <BarChart
                                             data={[
                                                 {
@@ -893,6 +874,7 @@ const Estadisticas = () => {
                                             />
                                         </BarChart>
                                     </ResponsiveContainer>
+                                    </div>
                                 )}
                             </div>
 
@@ -901,7 +883,8 @@ const Estadisticas = () => {
                                 <h3 style={{ textAlign: "center" }}>
                                     Ingresos y Egresos Anuales
                                 </h3>
-                                <ResponsiveContainer width="100%" height={300}>
+                                <div style={{ width: '100%', height: '300px', margin: '0 auto' }}>
+                                <ResponsiveContainer>
                                     <BarChart
                                         data={[
                                             {
@@ -931,6 +914,7 @@ const Estadisticas = () => {
                                         <Bar dataKey="egresos" fill="#8d25fc" />
                                     </BarChart>
                                 </ResponsiveContainer>
+                                </div>
                             </div>
                         </div>
 
@@ -952,16 +936,9 @@ const Estadisticas = () => {
                                     </p>
                                 ) : (
                                     <>
-                                        <div
-                                            style={{
-                                                width: "400px",
-                                                margin: "0 auto",
-                                            }}
+                                        <div style={{ width: '100%', height: '400px', maxWidth: '400px', margin: '0 auto' }}
                                         >
-                                            <ResponsiveContainer
-                                                width={400}
-                                                height={400}
-                                            >
+                                            <ResponsiveContainer>
                                                 <PieChart>
                                                     <Pie
                                                         data={
@@ -1121,16 +1098,9 @@ const Estadisticas = () => {
                                     Egresos por Mes
                                 </h3>
                                 {!noDatosEgresosMensuales ? (
-                                    <div
-                                        style={{
-                                            width: "400px",
-                                            margin: "0 auto",
-                                        }}
+                                    <div style={{ width: '100%', height: '400px', maxWidth: '400px', margin: '0 auto' }}
                                     >
-                                        <ResponsiveContainer
-                                            width={400}
-                                            height={400}
-                                        >
+                                        <ResponsiveContainer>
                                             <PieChart>
                                                 <Pie
                                                     data={egresos}

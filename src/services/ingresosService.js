@@ -181,7 +181,6 @@ const ingresosService = {
       const cantidadIngresos = ingresos.length;
 
       const detalle = ingresos.map(ingreso => ({
-        nombre_cliente: ingreso.nombre_cliente,
         fecha: ingreso.fecha,
         monto: ingreso.monto,
         categoria: ingreso.categoria._id,

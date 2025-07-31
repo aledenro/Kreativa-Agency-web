@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 
 const ModalVerIngreso = ({ show, handleClose, ingreso, categories = [] }) => {
   const getCategoryName = (catId) => {
-    console.log("catId recibido:", catId);
-    console.log("array de categorías:", categories);
+    //console.log("catId recibido:", catId);
+    //console.log("array de categorías:", categories);
     if (!catId) return "";
     const cat = categories.find((c) => c._id.toString() === catId.toString());
-    console.log("Categoría encontrada:", cat);
+    //console.log("Categoría encontrada:", cat);
     return cat ? cat.nombre : catId;
   };
 
