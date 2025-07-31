@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import ModalVerTareas from "../components/Tareas/ModalVerTareas";
+import ModalAgregarTarea from "../components/Tareas/ModalAgregarTarea";
 import ModalEditarTarea from "../components/Tareas/ModalEditarTarea";
 import { notification } from "antd";
 import forceFileDownload from "../utils/forceFileDownload";
@@ -59,6 +60,9 @@ const ListadoTareas = () => {
 
 	const [showEditTareaModal, setShowEditTareaModal] = useState(false);
 	const [editingTareaId, setEditingTareaId] = useState(null);
+
+	const [showModalAgregarTarea, setShowModalAgregarTarea] = useState(false);
+	const [selectedProyectoTarea, setSelectedProyectoTarea] = useState(null);
 
 	const openSuccessNotification = (message) => {
 		api.success({
@@ -135,6 +139,16 @@ const ListadoTareas = () => {
 	const handleCloseEditTareaModal = () => {
 		setShowEditTareaModal(false);
 		reloadData();
+	};
+
+	const handleAgregarTarea = (proyectoId) => {
+		setSelectedProyectoTarea(null);
+		setShowModalAgregarTarea(true);
+	};
+
+	const handleCloseAgregarTareaModal = () => {
+		setShowModalAgregarTarea(false);
+		setSelectedProyectoTarea(null);
 	};
 
 	const renderOptionsColabs = () => {
@@ -312,9 +326,9 @@ const ListadoTareas = () => {
 						{rol === "Administrador" ? (
 							<button
 								className="thm-btn  m-1"
-								onClick={() => navigate("/tarea/agregar")}
+								onClick={() => handleAgregarTarea()}
 							>
-								Crear Tarea
+								+ Agregar tarea
 							</button>
 						) : (
 							""
@@ -661,6 +675,13 @@ const ListadoTareas = () => {
 				show={showEditTareaModal}
 				handleClose={handleCloseEditTareaModal}
 				tareaId={editingTareaId}
+				onUpdate={reloadData}
+			/>
+
+			<ModalAgregarTarea
+				show={showModalAgregarTarea}
+				handleClose={handleCloseAgregarTareaModal}
+				proyectoId={selectedProyectoTarea}
 				onUpdate={reloadData}
 			/>
 		</AdminLayout>
