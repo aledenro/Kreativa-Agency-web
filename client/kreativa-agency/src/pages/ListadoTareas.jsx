@@ -273,6 +273,12 @@ const ListadoTareas = () => {
 		}
 	};
 
+	const getIniciales = (colab) => {
+		if (!colab || !colab.nombre) return "?";
+		const nombres = colab.nombre.trim().split(" ");
+		return nombres[0].charAt(0) + (nombres[1] ? nombres[1].charAt(0) : "");
+	};
+
 	return (
 		<AdminLayout>
 			{contextHolder}
@@ -407,25 +413,20 @@ const ListadoTareas = () => {
 								tareasPags.map((tarea) => (
 									<Tr key={tarea._id}>
 										<Td className="col-nombre">{tarea.nombre}</Td>
-										<Td className="col-proyecto">{tarea.proyecto_id.nombre}</Td>
+										<Td className="col-proyecto">
+											{lodash.get(tarea, "proyecto_id.nombre", "Sin proyecto")}
+										</Td>
 										{rol === "Administrador" && (
 											<Td className="col-colaborador">
 												<span
 													className="badge badge-gris d-desktop"
-													title={tarea.colaborador_id?.nombre || "Sin asignar"}
+													title={tarea.colaborador_id?.nombre ?? "Sin asignar"}
 												>
-													{tarea.colaborador_id?.nombre
-														? tarea.colaborador_id.nombre.charAt(0) +
-															(tarea.colaborador_id.nombre.includes(" ")
-																? tarea.colaborador_id.nombre
-																		.split(" ")[1]
-																		.charAt(0)
-																: "")
-														: "?"}
+													{getIniciales(tarea.colaborador_id)}
 												</span>
 
 												<span className="d-mobile">
-													{tarea.colaborador_id?.nombre || "Sin asignar"}
+													{tarea.colaborador_id?.nombre ?? "Sin asignar"}
 												</span>
 											</Td>
 										)}

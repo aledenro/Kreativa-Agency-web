@@ -489,6 +489,12 @@ const DashboardColaborador = () => {
 		);
 	}
 
+	const getIniciales = (colab) => {
+		if (!colab || !colab.nombre) return "?";
+		const nombres = colab.nombre.trim().split(" ");
+		return nombres[0].charAt(0) + (nombres[1] ? nombres[1].charAt(0) : "");
+	};
+
 	return (
 		<AdminLayout>
 			{contextHolder}
@@ -760,24 +766,15 @@ const DashboardColaborador = () => {
 																					</Td>
 																					<Td className="col-colaborador">
 																						<span
-																							className="badge badge-gris"
+																							className="badge badge-gris d-desktop"
 																							title={
 																								tarea.colaborador_id?.nombre ||
 																								"Sin asignar"
 																							}
 																						>
-																							{tarea.colaborador_id?.nombre
-																								? tarea.colaborador_id.nombre.charAt(
-																										0
-																									) +
-																									(tarea.colaborador_id.nombre.includes(
-																										" "
-																									)
-																										? tarea.colaborador_id.nombre
-																												.split(" ")[1]
-																												.charAt(0)
-																										: "")
-																								: "?"}
+																							{getIniciales(
+																								tarea.colaborador_id
+																							)}
 																						</span>
 																					</Td>
 																					<Td className="col-estado">
