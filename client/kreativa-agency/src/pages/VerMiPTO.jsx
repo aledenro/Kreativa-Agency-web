@@ -4,20 +4,27 @@ import "../App.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Swal from "sweetalert2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSort } from "@fortawesome/free-solid-svg-icons";
 
 const VerMiPTO = () => {
 	const [ptoList, setPtoList] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
 
+	const [itemsPag, setItemsPag] = useState(5);
+	const [pagActual, setPagActual] = useState(1);
+	const [sortOrder, setSortOrder] = useState("asc");
+
 	useEffect(() => {
 		const fetchMisPTO = async () => {
 			try {
 				const token = localStorage.getItem("token");
-				const userId = localStorage.getItem("user_id"); 
+				const userId = localStorage.getItem("user_id");
 
 				if (!token || !userId) {
 					Swal.fire({
@@ -48,6 +55,21 @@ const VerMiPTO = () => {
 		fetchMisPTO();
 	}, []);
 
+	const handleSort = () => {
+		setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+	};
+
+	const ptoOrdenado = [...ptoList].sort((a, b) => {
+		const dateA = new Date(a.fecha_inicio);
+		const dateB = new Date(b.fecha_inicio);
+		return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+	});
+
+	const ptoPaginado = ptoOrdenado.slice(
+		(pagActual - 1) * itemsPag,
+		pagActual * itemsPag
+	);
+
 	return (
 		<AdminLayout>
 			<div className="main-container mx-auto">
@@ -63,30 +85,46 @@ const VerMiPTO = () => {
 						Aún no has realizado ninguna solicitud de PTO.
 					</p>
 				) : (
-					<div className="div-table">
-						<Table className="main-table">
-							<Thead>
-								<Tr>
-									<Th>Fecha de Inicio</Th>
-									<Th>Fecha de Fin</Th>
-									<Th>Comentario</Th>
-									<Th>Estado</Th>
-								</Tr>
-							</Thead>
-							<Tbody>
-								{ptoList.map((pto) => (
-									<Tr key={pto._id}>
-										<Td>{new Date(pto.fecha_inicio).toLocaleDateString()}</Td>
-										<Td>{new Date(pto.fecha_fin).toLocaleDateString()}</Td>
-										<Td>{pto.comentario || "Sin comentario"}</Td>
-										<Td className={`estado-${pto.estado.toLowerCase()}`}>
-											{pto.estado}
-										</Td>
+					<>
+						<div className="div-table">
+							<Table className="main-table">
+								<Thead>
+									<Tr>
+										<Th onClick={handleSort} style={{ cursor: "pointer" }}>
+											Fecha de Inicio{" "}
+											<FontAwesomeIcon icon={faSort} />
+										</Th>
+										<Th>Fecha de Fin</Th>
+										<Th>Comentario</Th>
+										<Th>Estado</Th>
 									</Tr>
-								))}
-							</Tbody>
-						</Table>
-					</div>
+								</Thead>
+								<Tbody>
+									{ptoPaginado.map((pto) => (
+										<Tr key={pto._id}>
+											<Td>{new Date(pto.fecha_inicio).toLocaleDateString()}</Td>
+											<Td>{new Date(pto.fecha_fin).toLocaleDateString()}</Td>
+											<Td>{pto.comentario || "Sin comentario"}</Td>
+											<Td className={`estado-${pto.estado.toLowerCase()}`}>
+												{pto.estado}
+											</Td>
+										</Tr>
+									))}
+								</Tbody>
+							</Table>
+						</div>
+
+						<TablaPaginacion
+							totalItems={ptoList.length}
+							itemsPorPagina={itemsPag}
+							paginaActual={pagActual}
+							onItemsPorPaginaChange={(cant) => {
+								setItemsPag(cant);
+								setPagActual(1);
+							}}
+							onPaginaChange={(pagina) => setPagActual(pagina)}
+						/>
+					</>
 				)}
 
 				<div className="text-center mt-4">

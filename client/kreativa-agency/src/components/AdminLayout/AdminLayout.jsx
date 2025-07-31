@@ -105,7 +105,7 @@ const fullMenuStructure = [
             {
                 label: "Ver mi PTO",
                 path: "/mis-pto",
-                roles: ["Colaborador"],
+                roles: ["Administrador", "Colaborador"],
             },
         ],
     },
