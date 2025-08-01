@@ -12,12 +12,18 @@ function construirJsonRequest(
 	colaboradores
 ) {
 	const user_id = localStorage.getItem("user_id");
+
+	let fechaFormateada = fechaEntrega;
+	if (fechaEntrega) {
+		fechaFormateada = fechaEntrega + "T12:00:00.000Z";
+	}
+
 	return {
 		cliente_id: cliente,
 		nombre: nombre,
 		descripcion: descripcion,
 		urgente: urgente,
-		fecha_entrega: fechaEntrega,
+		fecha_entrega: fechaFormateada,
 		log: [
 			{
 				usuario_id: user_id,

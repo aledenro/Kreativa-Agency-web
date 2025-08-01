@@ -12,13 +12,17 @@ function construirJsonRequest(
 	prioridad,
 	fechaEntrega
 ) {
+	let fechaFormateada = fechaEntrega;
+	if (fechaEntrega) {
+		fechaFormateada = fechaEntrega + "T12:00:00.000Z";
+	}
 	return {
 		proyecto_id: proyecto,
 		nombre: nombre,
 		descripcion: descripcion,
 		colaborador_id: colaborador,
 		prioridad: prioridad,
-		fecha_vencimiento: fechaEntrega,
+		fecha_vencimiento: fechaFormateada,
 	};
 }
 
@@ -29,6 +33,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 	const [tarea, setTarea] = useState(null);
 	const [estado, setEstado] = useState("");
 	const [colaboradorOriginal, setColaboradorOriginal] = useState("");
+	const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
 	const [formRef, setFormRef] = useState(null);
 	const [api, contextHolder] = notification.useNotification();
 
@@ -40,6 +45,32 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		"Finalizado",
 		"En Revisión",
 	];
+
+	const formatearFechaParaInput = (fechaString) => {
+		if (!fechaString) return "";
+
+		const fecha = new Date(fechaString);
+		const year = fecha.getFullYear();
+		const month = String(fecha.getMonth() + 1).padStart(2, "0");
+		const day = String(fecha.getDate()).padStart(2, "0");
+
+		return `${year}-${month}-${day}`;
+	};
+
+	const getFechaHoy = () => {
+		const today = new Date();
+		const year = today.getFullYear();
+		const month = String(today.getMonth() + 1).padStart(2, "0");
+		const day = String(today.getDate()).padStart(2, "0");
+		return `${year}-${month}-${day}`;
+	};
+
+	const getFechaMaxima = () => {
+		if (proyectoSeleccionado && proyectoSeleccionado.fecha_entrega) {
+			return formatearFechaParaInput(proyectoSeleccionado.fecha_entrega);
+		}
+		return null;
+	};
 
 	const openSuccessNotification = (message) => {
 		api.success({
@@ -65,24 +96,53 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		if (name === "proyecto") {
 			setTarea((prevTarea) => ({
 				...prevTarea,
-				[name]: value,
+				proyecto_id: value,
 				colaborador_id: "",
+				fecha_vencimiento: "",
 			}));
 			await filtrarColaboradores(value);
+		} else if (name === "fecha_entrega") {
+			setTarea((prevTarea) => ({
+				...prevTarea,
+				fecha_vencimiento: value,
+			}));
+		} else if (name === "colab") {
+			setTarea((prevTarea) => ({
+				...prevTarea,
+				colaborador_id: value,
+			}));
 		} else {
 			setTarea((prevTarea) => ({ ...prevTarea, [name]: value }));
 		}
 	};
 
-	const filtrarColaboradores = async (proyectoSeleccionado) => {
-		if (!proyectoSeleccionado) {
+	const filtrarColaboradores = async (proyectoSeleccionadoId) => {
+		if (!proyectoSeleccionadoId) {
 			setColaboradoresFiltrados([]);
+			setProyectoSeleccionado(null);
 			return;
 		}
 
-		const proyectoEncontrado = proyectos.find(
-			(proyecto) => proyecto._id === proyectoSeleccionado
+		let proyectoEncontrado = proyectos.find(
+			(proyecto) => proyecto._id === proyectoSeleccionadoId
 		);
+
+		if (!proyectoEncontrado) {
+			try {
+				const token = localStorage.getItem("token");
+				const response = await axios.get(
+					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
+				proyectoEncontrado = response.data.proyecto || response.data;
+			} catch (error) {
+				console.error("Error al obtener proyecto:", error);
+			}
+		}
+
+		setProyectoSeleccionado(proyectoEncontrado);
 
 		if (
 			proyectoEncontrado &&
@@ -124,13 +184,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				const token = localStorage.getItem("token");
 
 				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionado}`,
+					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
 						headers: { Authorization: `Bearer ${token}` },
 					}
 				);
 
 				const proyectoData = response.data.proyecto || response.data;
+				setProyectoSeleccionado(proyectoData);
 
 				const colaboradoresAsignados = proyectoData.colaboradores
 					? proyectoData.colaboradores.map((colab) => {
@@ -230,6 +291,31 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			return;
 		}
 
+		if (proyectoSeleccionado && proyectoSeleccionado.fecha_entrega) {
+			const fechaTarea = new Date(fechaEntrega + "T00:00:00");
+			const fechaProyecto = new Date(proyectoSeleccionado.fecha_entrega);
+
+			const fechaTareaSoloFecha = new Date(
+				fechaTarea.getFullYear(),
+				fechaTarea.getMonth(),
+				fechaTarea.getDate()
+			);
+			const fechaProyectoSoloFecha = new Date(
+				fechaProyecto.getFullYear(),
+				fechaProyecto.getMonth(),
+				fechaProyecto.getDate()
+			);
+
+			if (fechaTareaSoloFecha > fechaProyectoSoloFecha) {
+				const fechaMaximaFormatted =
+					fechaProyectoSoloFecha.toLocaleDateString("es-ES");
+				openErrorNotification(
+					`La fecha de entrega de la tarea no puede ser posterior a la fecha de entrega del proyecto (${fechaMaximaFormatted}).`
+				);
+				return;
+			}
+		}
+
 		const enviar = confirm("¿Desea guardar los cambios en la tarea?");
 		if (!enviar) return;
 
@@ -254,9 +340,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			if (res.status === 200) {
 				openSuccessNotification("Tarea editada correctamente.");
 				await addActionLog("Editó la tarea.");
-				if (typeof onUpdate === "function") {
-					onUpdate();
-				}
+
 				if (colaboradorOriginal !== colab) {
 					await sendEmail(
 						colab,
@@ -266,6 +350,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 						"test"
 					);
 				}
+
+				if (typeof onUpdate === "function") {
+					onUpdate();
+				}
+
+				setTimeout(() => {
+					handleClose();
+				}, 2000);
 			} else {
 				openErrorNotification("Error al editar la tarea.");
 			}
@@ -310,7 +402,11 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
 			setTarea(response.data);
 			setEstado(response.data.estado);
-			setColaboradorOriginal(response.data.colaborador_id._id);
+			setColaboradorOriginal(
+				typeof response.data.colaborador_id === "object"
+					? response.data.colaborador_id._id
+					: response.data.colaborador_id
+			);
 		} catch (error) {
 			console.error(`Error al obtener la tarea: ${error.message}`);
 		}
@@ -376,11 +472,6 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				new Event("submit", { cancelable: true, bubbles: true })
 			);
 		}
-	};
-
-	const getFechaHoy = () => {
-		const today = new Date();
-		return today.toISOString().split("T")[0];
 	};
 
 	return (
@@ -496,7 +587,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 									className="form-select form_input"
 									name="colab"
 									id="colab"
-									value={tarea.colaborador_id}
+									value={tarea.colaborador_id._id || tarea.colaborador_id}
 									onChange={handleChange}
 									required
 									disabled={
@@ -559,17 +650,30 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 											id="fecha_entrega"
 											name="fecha_entrega"
 											required
-											value={
-												new Date(tarea.fecha_vencimiento)
-													.toISOString()
-													.split("T")[0]
-											}
+											value={formatearFechaParaInput(tarea.fecha_vencimiento)}
 											min={getFechaHoy()}
+											max={getFechaMaxima()}
 											onChange={handleChange}
 											disabled={
-												estado === "Cancelado" || estado === "Finalizado"
+												estado === "Cancelado" ||
+												estado === "Finalizado" ||
+												!tarea.proyecto_id
 											}
 										/>
+										{proyectoSeleccionado &&
+											proyectoSeleccionado.fecha_entrega && (
+												<small className="text-muted">
+													Fecha máxima:{" "}
+													{new Date(
+														proyectoSeleccionado.fecha_entrega
+													).toLocaleDateString("es-ES")}
+												</small>
+											)}
+										{!tarea.proyecto_id && (
+											<small className="text-muted">
+												Primero seleccione un proyecto
+											</small>
+										)}
 									</div>
 								</div>
 							</div>
