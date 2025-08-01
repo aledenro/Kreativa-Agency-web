@@ -279,9 +279,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				}
 			);
 
+			const empleadosActivos = response.data.filter(
+				(empleado) => empleado.estado === "Activo"
+			);
+
 			setEmpleados(response.data);
 		} catch (error) {
 			console.error(`Error al obtener los empleados: ${error.message}`);
+			openErrorNotification("Error al cargar la lista de empleados.");
 		}
 	}
 
