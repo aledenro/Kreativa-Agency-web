@@ -45,4 +45,21 @@ const actualizarEstadoPTO = async (req, res) => {
     }
 };
 
-module.exports = { crearPTO, obtenerTodosPTO, obtenerPTOPorEmpleado, actualizarEstadoPTO };
+
+const obtenerEmpleadosConPTO = async (req, res) => {
+    try {
+        const empleados = await PTOService.obtenerEmpleadosConPTO();
+        res.status(200).json(empleados);
+    } catch (error) {
+        console.error("Error en obtenerEmpleadosConPTO:", error);
+        res.status(500).json({ message: "Error al obtener empleados con PTO", error: error.message });
+    }
+};
+
+module.exports = {
+    crearPTO,
+    obtenerTodosPTO,
+    obtenerPTOPorEmpleado,
+    actualizarEstadoPTO,
+    obtenerEmpleadosConPTO, 
+};

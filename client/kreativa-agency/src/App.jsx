@@ -44,6 +44,7 @@ import RespuestasReclutaciones from "./pages/RespuestasReclutaciones";
 import GestionServicios from "./pages/GestionServicios";
 import GestionPaquetes from "./pages/GestionPaquetes";
 import DashboardColaborador from "./pages/DashboardColaborador";
+import VerMiPTO from "./pages/VerMiPTO";
 
 function App() {
     return (
@@ -182,6 +183,7 @@ function App() {
                 <Route path="/admin/servicios" element={<GestionServicios />} />
                 <Route path="/admin/paquetes" element={<GestionPaquetes />} />
                 <Route path="/dashboard" element={<DashboardColaborador />} />
+                <Route path="/mis-pto" element={<VerMiPTO />} />
             </Routes>
         </Router>
     );

@@ -4113,3 +4113,45 @@ h3 {
 	border-radius: 15px;
 }
 
+.estado-aprobado {
+	color: green;
+	font-weight: bold;
+	text-transform: capitalize;
+}
+
+.estado-pendiente {
+	color: #ff0072;
+	font-weight: bold;
+	text-transform: capitalize;
+}
+
+/* Estilo del select dentro del SweetAlert Solicitudes de PTO Admin */
+.modal-filtro-container {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	margin-bottom: 16px;
+	gap: 8px;
+}
+
+.modal-select-container {
+	position: relative;
+}
+
+.modal-select-input {
+	padding: 6px 30px 6px 12px;
+	border: 1px solid #ccc;
+	border-radius: 12px;
+	background-color: #fff;
+	font-size: 0.9rem;
+	min-width: 180px;
+}
+
+.modal-icon-arrow {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+	color: #999;
+}

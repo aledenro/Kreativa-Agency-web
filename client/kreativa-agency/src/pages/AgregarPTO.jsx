@@ -72,23 +72,55 @@ const AgregarPTO = () => {
         return today.toISOString().split("T")[0];
     };
 
+
     const validateForm = () => {
         let newErrors = {};
+
         if (!formData.fecha_inicio)
             newErrors.fecha_inicio = "La fecha de inicio es obligatoria";
+
         if (!formData.fecha_fin)
             newErrors.fecha_fin = "La fecha de fin es obligatoria";
-        if (new Date(formData.fecha_inicio) > new Date(formData.fecha_fin)) {
+
+        if (
+            formData.fecha_inicio &&
+            formData.fecha_fin &&
+            new Date(formData.fecha_inicio) > new Date(formData.fecha_fin)
+        ) {
             newErrors.fecha_fin =
                 "La fecha de fin debe ser posterior a la fecha de inicio";
         }
+
+        if (!formData.comentario.trim())
+            newErrors.comentario = "El comentario es obligatorio";
+
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return newErrors;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
+        const validationErrors = validateForm();
+
+        if (Object.keys(validationErrors).length > 0) {
+            // Si hay un error específico en comentario, lo mostramos como prioridad
+            if (validationErrors.comentario) {
+                Swal.fire({
+                    title: "Campo requerido",
+                    text: validationErrors.comentario,
+                    icon: "warning",
+                    confirmButtonColor: "#ff0072",
+                });
+            } else {
+                Swal.fire({
+                    title: "Formulario incompleto",
+                    text: "Por favor, completá todos los campos obligatorios correctamente.",
+                    icon: "warning",
+                    confirmButtonColor: "#ff0072",
+                });
+            }
+            return;
+        }
 
         try {
             const token = localStorage.getItem("token");
@@ -112,7 +144,7 @@ const AgregarPTO = () => {
                 icon: "success",
                 confirmButtonColor: "#ff0072",
             }).then(() => {
-                navigate("/ver-pto");
+                navigate("/mis-pto");
             });
         } catch (error) {
             console.error("Error al enviar PTO:", error);
@@ -168,7 +200,7 @@ const AgregarPTO = () => {
                         </div>
 
                         <div className="form-group mb-3">
-                            <label className="form-label">Comentario (Opcional)</label>
+                            <label className="form-label">Comentario</label>
                             <textarea
                                 name="comentario"
                                 value={formData.comentario}
