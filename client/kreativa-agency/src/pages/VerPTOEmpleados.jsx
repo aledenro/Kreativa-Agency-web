@@ -15,7 +15,6 @@ const VerPTOEmpleados = () => {
 	const [empleados, setEmpleados] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
-
 	const [itemsPag, setItemsPag] = useState(5);
 	const [pagActual, setPagActual] = useState(1);
 	const [sortField, setSortField] = useState("nombre");
@@ -36,7 +35,7 @@ const VerPTOEmpleados = () => {
 				}
 
 				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/usuarios`,
+					`${import.meta.env.VITE_API_URL}/pto/empleados-con-pto/listado`,
 					{
 						headers: { Authorization: `Bearer ${token}` },
 					}
@@ -64,12 +63,8 @@ const VerPTOEmpleados = () => {
 				: valueB.localeCompare(valueA);
 		}
 		return sortOrder === "asc"
-			? valueA > valueB
-				? 1
-				: -1
-			: valueB > valueA
-				? 1
-				: -1;
+			? valueA > valueB ? 1 : -1
+			: valueB > valueA ? 1 : -1;
 	});
 
 	const empleadosPaginados = empleadosOrdenados.slice(
@@ -86,7 +81,6 @@ const VerPTOEmpleados = () => {
 		}
 	};
 
-	// Función global de cambio de estado PTO
 	window.toggleEstadoPTO = async (ptoId, estadoActual, empleadoId, nombre) => {
 		const token = localStorage.getItem("token");
 		const nuevoEstado = estadoActual === "aprobado" ? "pendiente" : "aprobado";
@@ -107,9 +101,7 @@ const VerPTOEmpleados = () => {
 			await axios.patch(
 				`${import.meta.env.VITE_API_URL}/pto/${ptoId}`,
 				{ estado: nuevoEstado },
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
+				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
 			Swal.fire({
@@ -119,7 +111,7 @@ const VerPTOEmpleados = () => {
 				confirmButtonColor: "#ff0072",
 			});
 
-			verDetallesPTO(empleadoId, nombre); // Recargar tabla modal
+			verDetallesPTO(empleadoId, nombre);
 		} catch (error) {
 			console.error("Error al cambiar estado:", error);
 			Swal.fire({
@@ -131,38 +123,38 @@ const VerPTOEmpleados = () => {
 		}
 	};
 
-	const verDetallesPTO = async (empleadoId, nombre) => {
+	const verDetallesPTO = async (empleadoId, nombre, estadoInicial = "todos") => {
 		try {
 			const token = localStorage.getItem("token");
 
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/pto/${empleadoId}`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
+				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
 			const ptoList = response.data;
 
-			if (!Array.isArray(ptoList) || ptoList.length === 0) {
-				Swal.fire({
-					title: "Sin registros",
-					text: `${nombre} no tiene solicitudes de PTO.`,
-					icon: "info",
-					confirmButtonColor: "#ff0072",
-				});
-				return;
-			}
+			const renderTabla = (filtro) => {
+				const listaFiltrada =
+					filtro === "todos"
+						? ptoList
+						: ptoList.filter(
+							(pto) => pto.estado.toLowerCase() === filtro.toLowerCase()
+						);
 
-			let html = `<table class="verpto-modal-table"><thead><tr>
+				if (listaFiltrada.length === 0) {
+					return "<p class='sin-pto-msg'>No hay PTOs en este estado.</p>";
+				}
+
+				let html = `<table class="verpto-modal-table"><thead><tr>
                 <th>Fecha de Inicio</th><th>Fecha de Fin</th><th>Comentario</th><th>Estado</th><th>Acción</th>
               </tr></thead><tbody>`;
 
-			ptoList.forEach((pto) => {
-				const estado = pto.estado.toLowerCase();
-				const btnText = estado === "pendiente" ? "Aprobar" : "Desaprobar";
+				listaFiltrada.forEach((pto) => {
+					const estado = pto.estado.toLowerCase();
+					const btnText = estado === "pendiente" ? "Aprobar" : "Desaprobar";
 
-				html += `<tr>
+					html += `<tr>
                     <td>${new Date(pto.fecha_inicio).toLocaleDateString()}</td>
                     <td>${new Date(pto.fecha_fin).toLocaleDateString()}</td>
                     <td>${pto.comentario || "Sin comentario"}</td>
@@ -173,14 +165,43 @@ const VerPTOEmpleados = () => {
                         </button>
                     </td>
                 </tr>`;
-			});
+				});
 
-			html += "</tbody></table>";
+				html += "</tbody></table>";
+				return html;
+			};
 
-			Swal.fire({
+			const renderSelect = (estadoActual) => {
+				return `
+		<div class="modal-filtro-container">
+			<div class="modal-select-container">
+				<select id="estado-select" class="modal-select-input">
+					<option value="todos" ${estadoActual === "todos" ? "selected" : ""}>Todos</option>
+					<option value="pendiente" ${estadoActual === "pendiente" ? "selected" : ""}>Pendiente</option>
+					<option value="aprobado" ${estadoActual === "aprobado" ? "selected" : ""}>Aprobado</option>
+				</select>
+				
+			</div>
+		</div>
+	`;
+			};
+
+			await Swal.fire({
 				title: `Solicitudes de PTO de ${nombre}`,
-				html: html,
+				html: `
+				<div>
+					${renderSelect(estadoInicial)}
+					${renderTabla(estadoInicial)}
+				</div>
+			`,
 				width: "90%",
+				didOpen: () => {
+					const select = Swal.getPopup().querySelector("#estado-select");
+					select.addEventListener("change", (e) => {
+						const nuevoFiltro = e.target.value;
+						verDetallesPTO(empleadoId, nombre, nuevoFiltro);
+					});
+				},
 				confirmButtonColor: "#ff0072",
 			});
 		} catch (error) {
@@ -198,26 +219,23 @@ const VerPTOEmpleados = () => {
 		<AdminLayout>
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
-				<h1 className="mb-4">Administrar PTO de Empleados</h1>
+				<h1 className="mb-2">Administrar PTO de Empleados</h1>
+				<p className="mb-3" style={{ color: "#888", fontSize: "0.9rem" }}>
+					Se muestran únicamente los empleados que han solicitado al menos un PTO.
+				</p>
+
+				{/* FILTRO DE ESTADO ELIMINADO */}
+
 				<div className="div-table">
 					<Table className="main-table">
 						<Thead>
 							<Tr>
 								<Th onClick={() => handleSort("nombre")} className="col-nombre">
-									Nombre{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
+									Nombre <span className="sort-icon"><FontAwesomeIcon icon={faSort} /></span>
 								</Th>
 								<Th className="col-email">Email</Th>
-								<Th
-									onClick={() => handleSort("tipo_usuario")}
-									className="col-rol"
-								>
-									Rol{" "}
-									<span className="sort-icon">
-										<FontAwesomeIcon icon={faSort} />
-									</span>
+								<Th onClick={() => handleSort("tipo_usuario")} className="col-rol">
+									Rol <span className="sort-icon"><FontAwesomeIcon icon={faSort} /></span>
 								</Th>
 								<Th className="col-acciones">Acción</Th>
 							</Tr>
@@ -266,60 +284,6 @@ const VerPTOEmpleados = () => {
 					</button>
 				</div>
 			</div>
-			{/* <div className="verpto-wrapper">
-                <div className="verpto-content">
-                    <div className="verpto-title-wrapper">
-                        <div className="verpto-icon-wrapper">
-                            <CalendarCheck size={60} color="#ff0072" strokeWidth={2.5} />
-                        </div>
-                        <h1 className="verpto-title">Administrar PTO de Empleados</h1>
-                    </div>
-
-                    {loading ? (
-                        <p className="text-center">Cargando...</p>
-                    ) : error ? (
-                        <p className="text-danger text-center">{error}</p>
-                    ) : empleados.length === 0 ? (
-                        <p className="text-center text-muted">No hay empleados registrados.</p>
-                    ) : (
-                        <div className="verpto-table-responsive">
-                            <table className="verpto-table">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Email</th>
-                                        <th>Rol</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {empleados.map((empleado) => (
-                                        <tr key={empleado._id}>
-                                            <td>{empleado.nombre}</td>
-                                            <td>{empleado.email}</td>
-                                            <td>{empleado.tipo_usuario}</td>
-                                            <td>
-                                                <button
-                                                    className="verpto-btn"
-                                                    onClick={() => verDetallesPTO(empleado._id, empleado.nombre)}
-                                                >
-                                                    Ver PTO
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-
-                    <div className="text-center mt-4">
-                        <button className="verpto-btn verpto-volver" onClick={() => navigate("/dashboard")}>
-                            Volver
-                        </button>
-                    </div>
-                </div>
-            </div> */}
 		</AdminLayout>
 	);
 };
