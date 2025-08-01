@@ -15,6 +15,7 @@ const VerMiPTO = () => {
 	const [ptoList, setPtoList] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
+	const [estadoFiltro, setEstadoFiltro] = useState("todos");
 
 	const [itemsPag, setItemsPag] = useState(5);
 	const [pagActual, setPagActual] = useState(1);
@@ -59,7 +60,11 @@ const VerMiPTO = () => {
 		setSortOrder(sortOrder === "asc" ? "desc" : "asc");
 	};
 
-	const ptoOrdenado = [...ptoList].sort((a, b) => {
+	const ptoFiltrado = estadoFiltro === "todos"
+		? ptoList
+		: ptoList.filter((pto) => pto.estado.toLowerCase() === estadoFiltro);
+
+	const ptoOrdenado = [...ptoFiltrado].sort((a, b) => {
 		const dateA = new Date(a.fecha_inicio);
 		const dateB = new Date(b.fecha_inicio);
 		return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
@@ -86,6 +91,25 @@ const VerMiPTO = () => {
 					</p>
 				) : (
 					<>
+						{/* Filtro por estado */}
+						<div className="modal-filtro-container mb-3">
+							<div className="modal-select-container">
+								<select
+									className="modal-select-input"
+									value={estadoFiltro}
+									onChange={(e) => {
+										setEstadoFiltro(e.target.value);
+										setPagActual(1);
+									}}
+								>
+									<option value="todos">Todos</option>
+									<option value="pendiente">Pendiente</option>
+									<option value="aprobado">Aprobado</option>
+								</select>
+							</div>
+						</div>
+
+						{/* Tabla de resultados */}
 						<div className="div-table">
 							<Table className="main-table">
 								<Thead>
@@ -115,7 +139,7 @@ const VerMiPTO = () => {
 						</div>
 
 						<TablaPaginacion
-							totalItems={ptoList.length}
+							totalItems={ptoFiltrado.length}
 							itemsPorPagina={itemsPag}
 							paginaActual={pagActual}
 							onItemsPorPaginaChange={(cant) => {
