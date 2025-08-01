@@ -22,73 +22,10 @@ function construirJsonRequest(
 	};
 }
 
-function renderProyectos(proyecto, proyectoTareaId) {
-	if (proyecto._id === proyectoTareaId) {
-		return (
-			<option key={proyecto._id} value={proyecto._id} selected>
-				{proyecto.nombre}
-			</option>
-		);
-	} else {
-		return (
-			<option key={proyecto._id} value={proyecto._id}>
-				{proyecto.nombre}
-			</option>
-		);
-	}
-}
-
-function renderColab(colab, proyectoColabId) {
-	if (colab._id === proyectoColabId) {
-		return (
-			<option key={colab._id} value={colab._id} selected>
-				{colab.nombre}
-			</option>
-		);
-	} else {
-		return (
-			<option key={colab._id} value={colab._id}>
-				{colab.nombre}
-			</option>
-		);
-	}
-}
-
-function renderPrioridades(prioridad, tareaPrioridad) {
-	if (prioridad === tareaPrioridad) {
-		return (
-			<option key={prioridad} defaultValue={prioridad} selected>
-				{prioridad}
-			</option>
-		);
-	} else {
-		return (
-			<option key={prioridad} value={prioridad}>
-				{prioridad}
-			</option>
-		);
-	}
-}
-
-function renderOptionsEstados(opcion, estadoTarea) {
-	if (opcion === estadoTarea) {
-		return (
-			<option key={estadoTarea} value={estadoTarea} selected>
-				{estadoTarea}
-			</option>
-		);
-	} else {
-		return (
-			<option key={opcion} value={opcion}>
-				{opcion}
-			</option>
-		);
-	}
-}
-
 const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 	const [empleados, setEmpleados] = useState([]);
 	const [proyectos, setProyectos] = useState([]);
+	const [colaboradoresFiltrados, setColaboradoresFiltrados] = useState([]);
 	const [tarea, setTarea] = useState(null);
 	const [estado, setEstado] = useState("");
 	const [colaboradorOriginal, setColaboradorOriginal] = useState("");
@@ -122,9 +59,120 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		});
 	};
 
-	const handleChange = (e) => {
+	const handleChange = async (e) => {
 		const { name, value } = e.target;
-		setTarea((prevTarea) => ({ ...prevTarea, [name]: value }));
+
+		if (name === "proyecto") {
+			setTarea((prevTarea) => ({
+				...prevTarea,
+				[name]: value,
+				colaborador_id: "",
+			}));
+			await filtrarColaboradores(value);
+		} else {
+			setTarea((prevTarea) => ({ ...prevTarea, [name]: value }));
+		}
+	};
+
+	const filtrarColaboradores = async (proyectoSeleccionado) => {
+		if (!proyectoSeleccionado) {
+			setColaboradoresFiltrados([]);
+			return;
+		}
+
+		const proyectoEncontrado = proyectos.find(
+			(proyecto) => proyecto._id === proyectoSeleccionado
+		);
+
+		if (
+			proyectoEncontrado &&
+			proyectoEncontrado.colaboradores &&
+			proyectoEncontrado.colaboradores.length > 0
+		) {
+			const colaboradoresAsignados = proyectoEncontrado.colaboradores.map(
+				(colab) => {
+					const id =
+						typeof colab.colaborador_id === "object"
+							? colab.colaborador_id._id
+							: colab.colaborador_id;
+					return id;
+				}
+			);
+
+			const colaboradoresDelProyecto = empleados.filter((empleado) => {
+				const estaAsignado = colaboradoresAsignados.includes(empleado._id);
+				return estaAsignado;
+			});
+
+			setColaboradoresFiltrados(colaboradoresDelProyecto);
+
+			if (tarea && !colaboradoresAsignados.includes(tarea.colaborador_id)) {
+				if (colaboradoresDelProyecto.length > 0) {
+					setTarea((prev) => ({
+						...prev,
+						colaborador_id: colaboradoresDelProyecto[0]._id,
+					}));
+				} else {
+					setTarea((prev) => ({
+						...prev,
+						colaborador_id: "",
+					}));
+				}
+			}
+		} else {
+			try {
+				const token = localStorage.getItem("token");
+
+				const response = await axios.get(
+					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionado}`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
+
+				const proyectoData = response.data.proyecto || response.data;
+
+				const colaboradoresAsignados = proyectoData.colaboradores
+					? proyectoData.colaboradores.map((colab) => {
+							const id =
+								typeof colab.colaborador_id === "object"
+									? colab.colaborador_id._id
+									: colab.colaborador_id;
+							return id;
+						})
+					: [];
+
+				const colaboradoresDelProyecto = empleados.filter((empleado) => {
+					const estaAsignado = colaboradoresAsignados.includes(empleado._id);
+					return estaAsignado;
+				});
+
+				setColaboradoresFiltrados(colaboradoresDelProyecto);
+
+				if (tarea && !colaboradoresAsignados.includes(tarea.colaborador_id)) {
+					if (colaboradoresDelProyecto.length > 0) {
+						setTarea((prev) => ({
+							...prev,
+							colaborador_id: colaboradoresDelProyecto[0]._id,
+						}));
+					} else {
+						setTarea((prev) => ({
+							...prev,
+							colaborador_id: "",
+						}));
+					}
+				}
+			} catch (error) {
+				setColaboradoresFiltrados(empleados);
+
+				if (empleados.length > 0 && tarea && !tarea.colaborador_id) {
+					setTarea((prev) => ({
+						...prev,
+						colaborador_id: empleados[0]._id,
+					}));
+				}
+			}
+		}
 	};
 
 	const handleChangeEstado = async (event) => {
@@ -152,11 +200,9 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			}
 		} catch (error) {
 			console.error(error.message);
-			setAlertMessage(
-				"Error al editar el estado de su tarea, por favor trate nuevamente o comuniquese con el soporte técnico."
+			openErrorNotification(
+				"Error al editar el estado de su tarea, por favor trate nuevamente o comuníquese con el soporte técnico."
 			);
-			setAlertVariant("danger");
-			setShowAlert(true);
 		}
 	};
 
@@ -278,6 +324,12 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		}
 	}, [show, tareaId, fetchTarea]);
 
+	useEffect(() => {
+		if (tarea && empleados.length > 0) {
+			filtrarColaboradores(tarea.proyecto_id);
+		}
+	}, [empleados, tarea?.proyecto_id]);
+
 	async function fetchEmpleados() {
 		const token = localStorage.getItem("token");
 
@@ -296,16 +348,23 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
 	async function fetchProyectos() {
 		const token = localStorage.getItem("token");
+		const rol = localStorage.getItem("tipo_usuario");
+		const userId = localStorage.getItem("user_id");
 
 		try {
-			const response = await axios.get(
-				`${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
+			let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
-			setProyectos(response.data.proyectos);
+			if (rol === "Cliente") {
+				url += `/cliente/${userId}`;
+			} else if (rol === "Colaborador") {
+				url += `/colaborador/${userId}`;
+			}
+
+			const response = await axios.get(url, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+
+			setProyectos(response.data);
 		} catch (error) {
 			console.error(`Error al obtener los proyectos: ${error.message}`);
 		}
@@ -363,11 +422,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 										className="form-select form_input"
 										name="estado"
 										id="estado"
+										value={estado}
 										onChange={handleChangeEstado}
 									>
-										{estados.map((opcion) =>
-											renderOptionsEstados(opcion, tarea.estado)
-										)}
+										{estados.map((opcion) => (
+											<option key={opcion} value={opcion}>
+												{opcion}
+											</option>
+										))}
 									</select>
 								</div>
 							</div>
@@ -382,11 +444,17 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 									className="form-select form_input"
 									name="proyecto"
 									id="proyecto"
+									value={tarea.proyecto_id}
+									onChange={handleChange}
 									disabled={estado === "Cancelado" || estado === "Finalizado"}
+									required
 								>
-									{proyectos.map((proyecto) =>
-										renderProyectos(proyecto, tarea.proyecto_id)
-									)}
+									<option value="">Seleccione un proyecto</option>
+									{proyectos.map((proyecto) => (
+										<option key={proyecto._id} value={proyecto._id}>
+											{proyecto.nombre}
+										</option>
+									))}
 								</select>
 							</div>
 							<div className="mb-3">
@@ -428,12 +496,31 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 									className="form-select form_input"
 									name="colab"
 									id="colab"
-									disabled={estado === "Cancelado" || estado === "Finalizado"}
+									value={tarea.colaborador_id}
+									onChange={handleChange}
+									required
+									disabled={
+										estado === "Cancelado" ||
+										estado === "Finalizado" ||
+										!tarea.proyecto_id
+									}
 								>
-									{empleados.map((colab) =>
-										renderColab(colab, tarea.colaborador_id)
-									)}
+									<option value="">
+										{tarea.proyecto_id
+											? "Seleccione un colaborador"
+											: "Primero seleccione un proyecto"}
+									</option>
+									{colaboradoresFiltrados.map((colab) => (
+										<option key={colab._id} value={colab._id}>
+											{colab.nombre}
+										</option>
+									))}
 								</select>
+								{tarea.proyecto_id && colaboradoresFiltrados.length === 0 && (
+									<small className="text-muted">
+										No hay colaboradores asignados a este proyecto.
+									</small>
+								)}
 							</div>
 							<div className="row">
 								<div className="col-md-6">
@@ -445,13 +532,19 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 											className="form-select form_input"
 											name="prioridad"
 											id="prioridad"
+											value={tarea.prioridad}
+											onChange={handleChange}
+											required
 											disabled={
 												estado === "Cancelado" || estado === "Finalizado"
 											}
 										>
-											{prioridades.map((prioridad) =>
-												renderPrioridades(prioridad, tarea.prioridad)
-											)}
+											<option value="">Seleccione prioridad</option>
+											{prioridades.map((prioridad) => (
+												<option key={prioridad} value={prioridad}>
+													{prioridad}
+												</option>
+											))}
 										</select>
 									</div>
 								</div>
