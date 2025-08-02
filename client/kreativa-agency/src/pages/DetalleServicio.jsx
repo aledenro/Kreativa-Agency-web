@@ -10,6 +10,7 @@ import {
 	faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/Navbar/Navbar";
+import Loading from "../components/ui/LoadingComponent.jsx";
 
 const DetalleServicio = () => {
 	const { id } = useParams();
@@ -96,7 +97,16 @@ const DetalleServicio = () => {
 		}
 	};
 
-	if (loading) return <p>Cargando...</p>;
+	if (loading) {
+		return (
+			<Navbar>
+				<div className="container main-container mt-4">
+					<Loading />
+				</div>
+			</Navbar>
+		);
+	}
+
 	if (error) return <p>Error: {error}</p>;
 	if (!servicio) return <p>No se encontró el servicio.</p>;
 

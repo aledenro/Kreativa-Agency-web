@@ -13,13 +13,13 @@ import {
 	usePrevNextButtons,
 } from "../components/ui/EmblaCarouselArrowButtons";
 import useEmblaCarousel from "embla-carousel-react";
+import Loading from "../components/ui/LoadingComponent";
 
 const EmblaCarousel = (props) => {
 	const { servicios, options, onClickServicio } = props;
 	const [emblaRef, emblaApi] = useEmblaCarousel(options);
 	const { selectedIndex, scrollSnaps, onDotButtonClick } =
 		useDotButton(emblaApi);
-
 	const {
 		prevBtnDisabled,
 		nextBtnDisabled,

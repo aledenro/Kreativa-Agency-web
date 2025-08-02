@@ -13,6 +13,8 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { Modal } from "react-bootstrap";
+import Loading from "../components/ui/LoadingComponent";
+import { useFormStatus } from "../context/FormStatusContext";
 
 const RespuestasReclutaciones = () => {
 	const [formularios, setFormularios] = useState([]);
@@ -23,8 +25,9 @@ const RespuestasReclutaciones = () => {
 	const [sortField, setSortField] = useState("fecha_envio");
 	const [sortOrder, setSortOrder] = useState("desc");
 
-	const [isFormActive, setIsFormActive] = useState(true);
+	const { formActive: isFormActive, setFormActive } = useFormStatus();
 	const [loading, setLoading] = useState(true);
+	const [toggleLoading, setToggleLoading] = useState(false);
 
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [modalAction, setModalAction] = useState("");
@@ -46,29 +49,12 @@ const RespuestasReclutaciones = () => {
 					"Error al obtener los formularios de reclutamiento:",
 					error
 				);
-			}
-		};
-
-		const fetchFormStatus = async () => {
-			const token = localStorage.getItem("token");
-
-			try {
-				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/form-status`,
-					{
-						headers: { Authorization: `Bearer ${token}` },
-					}
-				);
-				setIsFormActive(response.data.active);
-			} catch (error) {
-				console.error("Error al obtener estado del formulario:", error);
 			} finally {
 				setLoading(false);
 			}
 		};
 
 		fetchFormularios();
-		fetchFormStatus();
 	}, []);
 
 	const confirmToggleFormStatus = () => {
@@ -80,7 +66,7 @@ const RespuestasReclutaciones = () => {
 		const token = localStorage.getItem("token");
 
 		try {
-			setLoading(true);
+			setToggleLoading(true);
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/form-status`,
 				null,
@@ -89,11 +75,11 @@ const RespuestasReclutaciones = () => {
 				}
 			);
 
-			setIsFormActive(response.data.active);
+			setFormActive(response.data.active);
 		} catch (error) {
 			console.error("Error al cambiar estado del formulario:", error);
 		} finally {
-			setLoading(false);
+			setToggleLoading(false);
 			setShowConfirmModal(false);
 		}
 	};
@@ -142,6 +128,16 @@ const RespuestasReclutaciones = () => {
 		}
 	};
 
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
+
 	return (
 		<AdminLayout>
 			<div className="main-container mx-auto">
@@ -159,10 +155,10 @@ const RespuestasReclutaciones = () => {
 						</span>
 						<button
 							onClick={confirmToggleFormStatus}
-							disabled={loading}
+							disabled={toggleLoading}
 							className={`thm-btn thm-btn-small ${isFormActive ? "btn-rojo" : "btn-verde"}`}
 						>
-							{loading
+							{toggleLoading
 								? "Cargando..."
 								: isFormActive
 									? "Desactivar"
@@ -220,6 +216,7 @@ const RespuestasReclutaciones = () => {
 												<button
 													className="thm-btn thm-btn-small btn-azul"
 													onClick={() => handleResponderFormulario(form)}
+													title="Responder solicitud"
 												>
 													<FontAwesomeIcon icon={faEnvelope} />
 												</button>
@@ -237,67 +234,6 @@ const RespuestasReclutaciones = () => {
 						</Tbody>
 					</Table>
 				</div>
-
-				{/* <div className="table-responsive-xxl">
-          <table className="table kreativa-proyecto-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Teléfono</th>
-                <th
-                  onClick={() => handleSort("fecha_envio")}
-                  style={{ cursor: "pointer" }}
-                >
-                  Fecha <FontAwesomeIcon icon={faSort} />
-                </th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {formulariosPaginados.length > 0 ? (
-                formulariosPaginados.map((form) => (
-                  <tr key={form._id}>
-                    <td>
-                      {form.nombre} {form.apellido}
-                    </td>
-                    <td>{form.correo}</td>
-                    <td>{form.telefono}</td>
-                    <td>{new Date(form.fecha_envio).toLocaleDateString()}</td>
-                    <td className="acciones">
-                      <div className="botones-grupo">
-                        <button
-                          className="thm-btn thm-btn-small btn-amarillo"
-                          onClick={() => handleDescargarCV(form)}
-                          disabled={!form.file || form.file.length === 0}
-                          title={
-                            !form.files || form.file.length === 0
-                              ? "No hay CV disponible"
-                              : "Descargar CV"
-                          }
-                        >
-                          <FontAwesomeIcon icon={faDownload} />
-                        </button>
-                        <button
-                          className="thm-btn thm-btn-small btn-azul"
-                          onClick={() => handleResponderFormulario(form)}
-                        >
-                          <FontAwesomeIcon icon={faEnvelope} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" className="text-center">
-                    No hay formularios disponibles
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div> */}
 
 				<TablaPaginacion
 					totalItems={formularios.length}

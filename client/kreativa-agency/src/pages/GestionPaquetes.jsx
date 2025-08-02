@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import Loading from "../components/ui/LoadingComponent";
 
 const GestionPaquetes = () => {
 	const [servicios, setServicios] = useState([]);
@@ -44,29 +45,29 @@ const GestionPaquetes = () => {
 		});
 	};
 
-useEffect(() => {
-	const fetchServicios = async () => {
-		const token = localStorage.getItem("token");
+	useEffect(() => {
+		const fetchServicios = async () => {
+			const token = localStorage.getItem("token");
 
-		try {
-			const response = await axios.get(
-				`${import.meta.env.VITE_API_URL}/servicios`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-			setServicios(response.data);
-		} catch (err) {
-			setError("Error al cargar los servicios: " + err.message);
-			openErrorNotification("No se pudieron cargar los servicios.");
-		} finally {
-			setLoading(false);
-		}
-	};
+			try {
+				const response = await axios.get(
+					`${import.meta.env.VITE_API_URL}/servicios`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
 
-	fetchServicios();
-}, []);
+				setServicios(response.data);
+			} catch (err) {
+				setError("Error al cargar los servicios: " + err.message);
+				openErrorNotification("No se pudieron cargar los servicios.");
+			} finally {
+				setLoading(false);
+			}
+		};
 
+		fetchServicios();
+	}, []);
 
 	const obtenerTodosLosPaquetes = () => {
 		const todosPaquetes = [];
@@ -93,33 +94,32 @@ useEffect(() => {
 	};
 
 	const toggleEstadoPaquete = async () => {
-	if (!selectedPaquete) return;
+		if (!selectedPaquete) return;
 
-	const { servicioId, paqueteId, estadoActual } = selectedPaquete;
-	const token = localStorage.getItem("token");
+		const { servicioId, paqueteId, estadoActual } = selectedPaquete;
+		const token = localStorage.getItem("token");
 
-	try {
-		const endpoint = estadoActual
-			? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
-			: `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
+		try {
+			const endpoint = estadoActual
+				? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
+				: `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
 
-		const response = await axios.put(endpoint, null, {
-			headers: { Authorization: `Bearer ${token}` },
-		});
+			const response = await axios.put(endpoint, null, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
 
-		setServicios((prevServicios) =>
-			prevServicios.map((servicio) =>
-				servicio._id === servicioId ? response.data : servicio
-			)
-		);
-		setShowModal(false);
-	} catch (err) {
-		console.error("Error al cambiar el estado del paquete:", err.message);
-		openErrorNotification("Error al cambiar el estado del paquete.");
-		setShowModal(false);
-	}
-};
-
+			setServicios((prevServicios) =>
+				prevServicios.map((servicio) =>
+					servicio._id === servicioId ? response.data : servicio
+				)
+			);
+			setShowModal(false);
+		} catch (err) {
+			console.error("Error al cambiar el estado del paquete:", err.message);
+			openErrorNotification("Error al cambiar el estado del paquete.");
+			setShowModal(false);
+		}
+	};
 
 	const handleEditarPaquete = (paquete) => {
 		navigate(`/paquete/modificar/${paquete.servicioId}/${paquete._id}`);
@@ -169,6 +169,16 @@ useEffect(() => {
 			setSortOrder("asc");
 		}
 	};
+
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
 
 	return (
 		<div>
