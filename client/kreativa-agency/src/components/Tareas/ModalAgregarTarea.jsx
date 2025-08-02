@@ -14,13 +14,18 @@ function construirJsonRequest(
 ) {
 	const user_id = localStorage.getItem("user_id");
 
+	let fechaFormateada = fechaEntrega;
+	if (fechaEntrega) {
+		fechaFormateada = fechaEntrega + "T12:00:00.000Z";
+	}
+
 	return {
 		proyecto_id: proyecto,
 		nombre: nombre,
 		descripcion: descripcion,
 		colaborador_id: colaborador,
 		prioridad: prioridad,
-		fecha_vencimiento: fechaEntrega,
+		fecha_vencimiento: fechaFormateada,
 		log: [
 			{
 				usuario_id: user_id,
@@ -40,6 +45,8 @@ const ModalAgregarTarea = ({
 }) => {
 	const [empleados, setEmpleados] = useState([]);
 	const [proyectos, setProyectos] = useState([]);
+	const [colaboradoresFiltrados, setColaboradoresFiltrados] = useState([]);
+	const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
 	const [api, contextHolder] = notification.useNotification();
 	const prioridades = ["Baja", "Media", "Alta"];
 	const formRef = useRef(null);
@@ -52,6 +59,32 @@ const ModalAgregarTarea = ({
 		prioridad: "",
 		fecha_entrega: "",
 	});
+
+	const formatearFechaParaInput = (fechaString) => {
+		if (!fechaString) return "";
+
+		const fecha = new Date(fechaString);
+		const year = fecha.getFullYear();
+		const month = String(fecha.getMonth() + 1).padStart(2, "0");
+		const day = String(fecha.getDate()).padStart(2, "0");
+
+		return `${year}-${month}-${day}`;
+	};
+
+	const getFechaHoy = () => {
+		const today = new Date();
+		const year = today.getFullYear();
+		const month = String(today.getMonth() + 1).padStart(2, "0");
+		const day = String(today.getDate()).padStart(2, "0");
+		return `${year}-${month}-${day}`;
+	};
+
+	const getFechaMaxima = () => {
+		if (proyectoSeleccionado && proyectoSeleccionado.fecha_entrega) {
+			return formatearFechaParaInput(proyectoSeleccionado.fecha_entrega);
+		}
+		return null;
+	};
 
 	const openSuccessNotification = (message) => {
 		api.success({
@@ -71,12 +104,23 @@ const ModalAgregarTarea = ({
 		});
 	};
 
-	const handleChange = (e) => {
+	const handleChange = async (e) => {
 		const { name, value } = e.target;
-		setFormData((prevData) => ({
-			...prevData,
-			[name]: value,
-		}));
+
+		if (name === "proyecto") {
+			setFormData((prevData) => ({
+				...prevData,
+				[name]: value,
+				colab: "",
+				fecha_entrega: "",
+			}));
+			await filtrarColaboradores(value);
+		} else {
+			setFormData((prevData) => ({
+				...prevData,
+				[name]: value,
+			}));
+		}
 	};
 
 	const resetForm = () => {
@@ -88,6 +132,7 @@ const ModalAgregarTarea = ({
 			prioridad: "",
 			fecha_entrega: "",
 		});
+		setProyectoSeleccionado(null);
 	};
 
 	const handleSubmit = async (event) => {
@@ -106,6 +151,31 @@ const ModalAgregarTarea = ({
 		) {
 			openErrorNotification("Todos los campos son obligatorios.");
 			return;
+		}
+
+		if (proyectoSeleccionado && proyectoSeleccionado.fecha_entrega) {
+			const fechaTarea = new Date(fecha_entrega + "T00:00:00");
+			const fechaProyecto = new Date(proyectoSeleccionado.fecha_entrega);
+
+			const fechaTareaSoloFecha = new Date(
+				fechaTarea.getFullYear(),
+				fechaTarea.getMonth(),
+				fechaTarea.getDate()
+			);
+			const fechaProyectoSoloFecha = new Date(
+				fechaProyecto.getFullYear(),
+				fechaProyecto.getMonth(),
+				fechaProyecto.getDate()
+			);
+
+			if (fechaTareaSoloFecha > fechaProyectoSoloFecha) {
+				const fechaMaximaFormatted =
+					fechaProyectoSoloFecha.toLocaleDateString("es-ES");
+				openErrorNotification(
+					`La fecha de entrega de la tarea no puede ser posterior a la fecha de entrega del proyecto (${fechaMaximaFormatted}).`
+				);
+				return;
+			}
 		}
 
 		const token = localStorage.getItem("token");
@@ -164,9 +234,120 @@ const ModalAgregarTarea = ({
 		}
 	};
 
-	const getFechaHoy = () => {
-		const today = new Date();
-		return today.toISOString().split("T")[0];
+	const filtrarColaboradores = async (proyectoSeleccionadoId) => {
+		if (!proyectoSeleccionadoId) {
+			setColaboradoresFiltrados([]);
+			setProyectoSeleccionado(null);
+			return;
+		}
+
+		let proyectoEncontrado = proyectos.find(
+			(proyecto) => proyecto._id === proyectoSeleccionadoId
+		);
+
+		if (!proyectoEncontrado) {
+			try {
+				const token = localStorage.getItem("token");
+				const response = await axios.get(
+					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
+				proyectoEncontrado = response.data.proyecto || response.data;
+			} catch (error) {
+				console.error("Error al obtener proyecto:", error);
+			}
+		}
+
+		setProyectoSeleccionado(proyectoEncontrado);
+
+		if (
+			proyectoEncontrado &&
+			proyectoEncontrado.colaboradores &&
+			proyectoEncontrado.colaboradores.length > 0
+		) {
+			const colaboradoresAsignados = proyectoEncontrado.colaboradores.map(
+				(colab) => {
+					const id =
+						typeof colab.colaborador_id === "object"
+							? colab.colaborador_id._id
+							: colab.colaborador_id;
+					return id;
+				}
+			);
+
+			const colaboradoresDelProyecto = empleados.filter((empleado) => {
+				const estaAsignado = colaboradoresAsignados.includes(empleado._id);
+				return estaAsignado;
+			});
+
+			setColaboradoresFiltrados(colaboradoresDelProyecto);
+
+			if (colaboradoresDelProyecto.length > 0) {
+				setFormData((prev) => ({
+					...prev,
+					colab: colaboradoresDelProyecto[0]._id,
+				}));
+			} else {
+				setFormData((prev) => ({
+					...prev,
+					colab: "",
+				}));
+			}
+		} else {
+			try {
+				const token = localStorage.getItem("token");
+
+				const response = await axios.get(
+					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
+
+				const proyectoData = response.data.proyecto || response.data;
+				setProyectoSeleccionado(proyectoData);
+
+				const colaboradoresAsignados = proyectoData.colaboradores
+					? proyectoData.colaboradores.map((colab) => {
+							const id =
+								typeof colab.colaborador_id === "object"
+									? colab.colaborador_id._id
+									: colab.colaborador_id;
+							return id;
+						})
+					: [];
+
+				const colaboradoresDelProyecto = empleados.filter((empleado) => {
+					const estaAsignado = colaboradoresAsignados.includes(empleado._id);
+					return estaAsignado;
+				});
+
+				setColaboradoresFiltrados(colaboradoresDelProyecto);
+
+				if (colaboradoresDelProyecto.length > 0) {
+					setFormData((prev) => ({
+						...prev,
+						colab: colaboradoresDelProyecto[0]._id,
+					}));
+				} else {
+					setFormData((prev) => ({
+						...prev,
+						colab: "",
+					}));
+				}
+			} catch (error) {
+				setColaboradoresFiltrados(empleados);
+
+				if (empleados.length > 0) {
+					setFormData((prev) => ({
+						...prev,
+						colab: empleados[0]._id,
+					}));
+				}
+			}
+		}
 	};
 
 	useEffect(() => {
@@ -176,6 +357,12 @@ const ModalAgregarTarea = ({
 			resetForm();
 		}
 	}, [show, proyectoId]);
+
+	useEffect(() => {
+		if (formData.proyecto && empleados.length > 0) {
+			filtrarColaboradores(formData.proyecto);
+		}
+	}, [empleados, formData.proyecto]);
 
 	async function fetchEmpleados() {
 		try {
@@ -189,13 +376,6 @@ const ModalAgregarTarea = ({
 			);
 
 			setEmpleados(response.data);
-
-			if (response.data.length > 0 && !formData.colab) {
-				setFormData((prev) => ({
-					...prev,
-					colab: response.data[0]._id,
-				}));
-			}
 		} catch (error) {
 			console.error(`Error al obtener los empleados: ${error.message}`);
 		}
@@ -203,25 +383,28 @@ const ModalAgregarTarea = ({
 
 	async function fetchProyectos() {
 		const token = localStorage.getItem("token");
+		const rol = localStorage.getItem("tipo_usuario");
+		const userId = localStorage.getItem("user_id");
 
 		try {
-			const response = await axios.get(
-				`${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
+			let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
-			setProyectos(response.data.proyectos);
+			if (rol === "Cliente") {
+				url += `/cliente/${userId}`;
+			} else if (rol === "Colaborador") {
+				url += `/colaborador/${userId}`;
+			}
 
-			if (
-				response.data.proyectos.length > 0 &&
-				!formData.proyecto &&
-				!proyectoId
-			) {
+			const response = await axios.get(url, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+
+			setProyectos(response.data);
+
+			if (response.data.length > 0 && !formData.proyecto && !proyectoId) {
 				setFormData((prev) => ({
 					...prev,
-					proyecto: response.data.proyectos[0]._id,
+					proyecto: response.data[0]._id,
 				}));
 			}
 		} catch (error) {
@@ -308,14 +491,24 @@ const ModalAgregarTarea = ({
 							value={formData.colab}
 							onChange={handleChange}
 							required
+							disabled={!formData.proyecto}
 						>
-							<option value="">Seleccione un colaborador</option>
-							{empleados.map((colab) => (
+							<option value="">
+								{formData.proyecto
+									? "Seleccione un colaborador"
+									: "Primero seleccione un proyecto"}
+							</option>
+							{colaboradoresFiltrados.map((colab) => (
 								<option key={colab._id} value={colab._id}>
 									{colab.nombre}
 								</option>
 							))}
 						</select>
+						{formData.proyecto && colaboradoresFiltrados.length === 0 && (
+							<small className="text-muted">
+								No hay colaboradores asignados a este proyecto.
+							</small>
+						)}
 					</div>
 					<div className="row">
 						<div className="col-md-6">
@@ -354,7 +547,22 @@ const ModalAgregarTarea = ({
 									onChange={handleChange}
 									required
 									min={getFechaHoy()}
+									max={getFechaMaxima()}
+									disabled={!formData.proyecto}
 								/>
+								{proyectoSeleccionado && proyectoSeleccionado.fecha_entrega && (
+									<small className="text-muted">
+										Fecha máxima:{" "}
+										{new Date(
+											proyectoSeleccionado.fecha_entrega
+										).toLocaleDateString("es-ES")}
+									</small>
+								)}
+								{!formData.proyecto && (
+									<small className="text-muted">
+										Primero seleccione un proyecto
+									</small>
+								)}
 							</div>
 						</div>
 					</div>

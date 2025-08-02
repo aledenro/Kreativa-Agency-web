@@ -20,12 +20,17 @@ function construirJsonRequest(
 	fechaEntrega,
 	colaboradores
 ) {
+	let fechaFormateada = fechaEntrega;
+	if (fechaEntrega) {
+		fechaFormateada = fechaEntrega + "T12:00:00.000Z";
+	}
+
 	return {
 		cliente_id: cliente,
 		nombre: nombre,
 		descripcion: descripcion,
 		urgente: urgente,
-		fecha_entrega: fechaEntrega,
+		fecha_entrega: fechaFormateada,
 		colaboradores: colaboradores,
 	};
 }
@@ -279,9 +284,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				}
 			);
 
+			const empleadosActivos = response.data.filter(
+				(empleado) => empleado.estado === "Activo"
+			);
+
 			setEmpleados(response.data);
 		} catch (error) {
 			console.error(`Error al obtener los empleados: ${error.message}`);
+			openErrorNotification("Error al cargar la lista de empleados.");
 		}
 	}
 

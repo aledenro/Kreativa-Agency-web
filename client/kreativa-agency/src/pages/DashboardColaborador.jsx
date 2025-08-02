@@ -87,6 +87,8 @@ const DashboardColaborador = () => {
 
 			if (rol === "Cliente") {
 				url += `/cliente/${userId}`;
+			} else if (rol === "Colaborador") {
+				url += `/colaborador/${userId}`;
 			}
 
 			const response = await axios.get(url, {
@@ -125,9 +127,18 @@ const DashboardColaborador = () => {
 				headers: { Authorization: `Bearer ${token}` },
 			});
 
-			setTareas(response.data.tareas || []);
+			let todasLasTareas = response.data.tareas || response.data || [];
+
+			if (rol === "Colaborador") {
+				todasLasTareas = todasLasTareas.filter(
+					(tarea) => tarea.colaborador_id && tarea.colaborador_id._id === userId
+				);
+			}
+
+			setTareas(todasLasTareas);
 		} catch (error) {
 			console.error(`Error al obtener las tareas: ${error.message}`);
+			setTareas([]);
 		}
 	};
 
@@ -399,7 +410,10 @@ const DashboardColaborador = () => {
 	if (rol === "Colaborador") {
 		proyectosFiltrados = proyectosFiltrados.filter((proyecto) => {
 			const projectTasks = getTareasForProyecto(proyecto._id);
-			return projectTasks.length > 0;
+			const myTasks = projectTasks.filter(
+				(tarea) => tarea.colaborador_id && tarea.colaborador_id._id === userId
+			);
+			return myTasks.length > 0;
 		});
 	}
 

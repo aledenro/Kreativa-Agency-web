@@ -164,6 +164,34 @@ class ProyectoController {
 			});
 		}
 	}
+
+	async getProyectosByColaborador(req, res) {
+		try {
+			const colaboradorId = req.params.colaboradorId;
+			console.log(`Buscando proyectos para colaborador: ${colaboradorId}`);
+
+			const proyectos =
+				await ProyectoService.getProyectosByColaborador(colaboradorId);
+			console.log(`Proyectos encontrados: ${proyectos ? proyectos.length : 0}`);
+
+			if (!proyectos || lodash.isEmpty(proyectos)) {
+				return res.status(404).json({
+					error: `No se encontraron proyectos para el colaborador con ID ${colaboradorId}`,
+				});
+			}
+
+			res.status(200).json(proyectos);
+		} catch (error) {
+			console.error(
+				`Error al obtener proyectos del colaborador: ${error.message}`
+			);
+			console.error("Stack trace:", error.stack);
+			res.status(500).json({
+				error: "Error interno del servidor",
+				message: error.message,
+			});
+		}
+	}
 }
 
 module.exports = new ProyectoController();
