@@ -527,10 +527,11 @@ h3 {
 .navbar .link {
 	color: var(--kreativa-white);
 	text-decoration: none;
-	font-size: 16px;
+	font-size: 20px;
 	letter-spacing: 1px;
 	font-weight: 500;
 	transition: var(--kreativa-transition);
+	font-family: var(--kreativa-title);
 }
 
 .navbar .link:hover,
@@ -586,7 +587,7 @@ h3 {
 	color: var(--kreativa-white);
 	border: none;
 	padding: 8px 16px;
-	font-size: 16px;
+	font-size: 15px;
 	font-weight: 800;
 	cursor: pointer;
 	transition: all 0.3s linear;
