@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useFormStatus } from "../../context/FormStatusContext";
+
 export default function Navbar() {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -34,15 +35,16 @@ export default function Navbar() {
 
 	const scrollToSection = (sectionId, event) => {
 		event.preventDefault();
+
+		if (location.pathname !== "/") {
+			window.location.href = "/#" + sectionId;
+			return;
+		}
+
 		const element = document.getElementById(sectionId);
 		if (element) {
-			if (location.pathname !== "/") {
-				window.location.href = "/#" + sectionId;
-				return;
-			}
-
-			const navbarHeight = document.querySelector(".navigation").offsetHeight;
-
+			const navbarHeight =
+				document.querySelector(".navigation")?.offsetHeight || 0;
 			const elementPosition = element.getBoundingClientRect().top;
 			const offsetPosition =
 				elementPosition + window.pageYOffset - navbarHeight;
@@ -156,7 +158,7 @@ export default function Navbar() {
 
 									<li className="nav-item">
 										<a
-											href="/"
+											href="/#servicios"
 											className="px-3 nav-link rounded-3 text-base leading-6 link"
 											onClick={(e) => scrollToSection("servicios", e)}
 										>
@@ -166,7 +168,7 @@ export default function Navbar() {
 
 									<li className="nav-item">
 										<a
-											href="/"
+											href="/#contacto"
 											className="px-3 nav-link rounded-3 text-base leading-6 link"
 											onClick={(e) => scrollToSection("contacto", e)}
 										>
@@ -177,11 +179,11 @@ export default function Navbar() {
 									{formActive && (
 										<li className="nav-item">
 											<a
-												href="/"
+												href="/#reclutaciones"
 												className="px-3 nav-link rounded-3 text-base leading-6 link"
 												onClick={(e) => scrollToSection("reclutaciones", e)}
 											>
-												Reclutación
+												Empleos
 											</a>
 										</li>
 									)}
