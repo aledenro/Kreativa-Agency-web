@@ -8,11 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Tab from "react-bootstrap/Tab";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faFileArrowDown,
-	faTrash,
-	faEllipsisH,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFileArrowDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 import fileUpload from "../../utils/fileUpload";
 import deleteFile from "../../utils/fileDelete";
@@ -264,9 +260,6 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 									<div className="p-4">
 										<div className="d-flex justify-content-between align-items-center mb-3">
 											<h5 className="mb-0">Información de la Cotización</h5>
-											<Button variant="light" className="btn-sm rounded-circle">
-												<FontAwesomeIcon icon={faEllipsisH} />
-											</Button>
 										</div>
 
 										<div className="proyecto-info mb-4">

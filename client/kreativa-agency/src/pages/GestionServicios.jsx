@@ -38,7 +38,7 @@ const GestionServicios = () => {
 
 			try {
 				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/servicios/`,
+					`${import.meta.env.VITE_API_URL}/servicios/listado`,
 					{
 						headers: { Authorization: `Bearer ${token}` },
 					}
@@ -209,7 +209,7 @@ const GestionServicios = () => {
 											</span>
 										</Td>
 										<Td className="col-paquetes">
-											{servicio.paquetes?.length || 0}
+											{servicio.cantidadPaquetes || 0}
 										</Td>
 										<Td className="text-center col-acciones">
 											<div className="botones-grupo">
