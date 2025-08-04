@@ -9,6 +9,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
+import Loading from "../components/ui/LoadingComponent";
 
 const VerPTOEmpleados = () => {
 	const navigate = useNavigate();
@@ -63,8 +64,12 @@ const VerPTOEmpleados = () => {
 				: valueB.localeCompare(valueA);
 		}
 		return sortOrder === "asc"
-			? valueA > valueB ? 1 : -1
-			: valueB > valueA ? 1 : -1;
+			? valueA > valueB
+				? 1
+				: -1
+			: valueB > valueA
+				? 1
+				: -1;
 	});
 
 	const empleadosPaginados = empleadosOrdenados.slice(
@@ -123,7 +128,11 @@ const VerPTOEmpleados = () => {
 		}
 	};
 
-	const verDetallesPTO = async (empleadoId, nombre, estadoInicial = "todos") => {
+	const verDetallesPTO = async (
+		empleadoId,
+		nombre,
+		estadoInicial = "todos"
+	) => {
 		try {
 			const token = localStorage.getItem("token");
 
@@ -139,8 +148,8 @@ const VerPTOEmpleados = () => {
 					filtro === "todos"
 						? ptoList
 						: ptoList.filter(
-							(pto) => pto.estado.toLowerCase() === filtro.toLowerCase()
-						);
+								(pto) => pto.estado.toLowerCase() === filtro.toLowerCase()
+							);
 
 				if (listaFiltrada.length === 0) {
 					return "<p class='sin-pto-msg'>No hay PTOs en este estado.</p>";
@@ -215,13 +224,24 @@ const VerPTOEmpleados = () => {
 		}
 	};
 
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
+
 	return (
 		<AdminLayout>
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
 				<h1 className="mb-2">Administrar PTO de Empleados</h1>
 				<p className="mb-3" style={{ color: "#888", fontSize: "0.9rem" }}>
-					Se muestran únicamente los empleados que han solicitado al menos un PTO.
+					Se muestran únicamente los empleados que han solicitado al menos un
+					PTO.
 				</p>
 
 				{/* FILTRO DE ESTADO ELIMINADO */}
@@ -231,11 +251,20 @@ const VerPTOEmpleados = () => {
 						<Thead>
 							<Tr>
 								<Th onClick={() => handleSort("nombre")} className="col-nombre">
-									Nombre <span className="sort-icon"><FontAwesomeIcon icon={faSort} /></span>
+									Nombre{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
 								</Th>
 								<Th className="col-email">Email</Th>
-								<Th onClick={() => handleSort("tipo_usuario")} className="col-rol">
-									Rol <span className="sort-icon"><FontAwesomeIcon icon={faSort} /></span>
+								<Th
+									onClick={() => handleSort("tipo_usuario")}
+									className="col-rol"
+								>
+									Rol{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
 								</Th>
 								<Th className="col-acciones">Acción</Th>
 							</Tr>

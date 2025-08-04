@@ -12,6 +12,7 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import ModalVerIngreso from "../components/Ingresos/ModalVerIngreso";
 import ModalVerEgreso from "../components/Egresos/ModalVerEgreso";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
+import Loading from "../components/ui/LoadingComponent";
 
 const Movimientos = () => {
 	// Estados para filtros
@@ -36,6 +37,8 @@ const Movimientos = () => {
 	const [pagActual, setPagActual] = useState(1);
 	const [itemsPag, setItemsPag] = useState(5);
 	const [sortOrder, setSortOrder] = useState("desc");
+
+	const [loading, setLoading] = useState(true);
 
 	// Helper: Calcula la fecha formateada
 	const formatLocalDate = (date) => {
@@ -62,37 +65,57 @@ const Movimientos = () => {
 		}
 
 		const token = localStorage.getItem("token");
+		setLoading(true);
+
 		axios
 			.get(url, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    })
+				headers: { Authorization: `Bearer ${token}` },
+			})
 			.then((response) => {
 				setMovimientos(response.data);
 				setPagActual(1); // Reinicia a la primera página al buscar
 			})
 			.catch((error) => {
 				console.error("Error al obtener movimientos:", error.message);
+			})
+			.finally(() => {
+				setLoading(false);
 			});
 	};
 
-	// Cargar movimientos al montar el componente
-	useEffect(() => {
-		fetchMovimientos();
-	}, []);
-
-	// Cargar las categorías (para mapear el ID en ingresos)
 	useEffect(() => {
 		const token = localStorage.getItem("token");
-		axios
-			.get(`${import.meta.env.VITE_API_URL}/servicios/categorias`,  {
-                        headers: { Authorization: `Bearer ${token}` },
-                    })
-			.then((res) => {
-				setCategories(res.data);
-			})
-			.catch((error) => {
-				console.error("Error al obtener categorías:", error.message);
-			});
+		const promises = [];
+
+		promises.push(
+			axios
+				.get(`${import.meta.env.VITE_API_URL}/movimientos`, {
+					headers: { Authorization: `Bearer ${token}` },
+				})
+				.then((response) => {
+					setMovimientos(response.data);
+				})
+				.catch((error) => {
+					console.error("Error al obtener movimientos:", error.message);
+				})
+		);
+
+		promises.push(
+			axios
+				.get(`${import.meta.env.VITE_API_URL}/servicios/categorias`, {
+					headers: { Authorization: `Bearer ${token}` },
+				})
+				.then((res) => {
+					setCategories(res.data);
+				})
+				.catch((error) => {
+					console.error("Error al obtener categorías:", error.message);
+				})
+		);
+
+		Promise.allSettled(promises).finally(() => {
+			setLoading(false);
+		});
 	}, []);
 
 	// Helper para mapear el ID de categoría al nombre
@@ -154,13 +177,13 @@ const Movimientos = () => {
 			console.error("El movimiento no tiene idRegistro");
 			return;
 		}
-const token = localStorage.getItem("token");
+		const token = localStorage.getItem("token");
 
 		if (mov.entidad === "ingreso") {
 			axios
-				.get(`${import.meta.env.VITE_API_URL}/ingresos/${mov.idRegistro}`,  {
-                        headers: { Authorization: `Bearer ${token}` },
-                    })
+				.get(`${import.meta.env.VITE_API_URL}/ingresos/${mov.idRegistro}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				})
 				.then((response) => {
 					setRegistroSeleccionado(response.data);
 					setShowModalVerIngreso(true);
@@ -170,11 +193,9 @@ const token = localStorage.getItem("token");
 				});
 		} else if (mov.entidad === "egreso") {
 			axios
-				.get(`${import.meta.env.VITE_API_URL}/egresos/${mov.idRegistro}`,
-					 {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-				)
+				.get(`${import.meta.env.VITE_API_URL}/egresos/${mov.idRegistro}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				})
 				.then((response) => {
 					setRegistroSeleccionado(response.data);
 					setShowModalVerEgreso(true);
@@ -208,6 +229,45 @@ const token = localStorage.getItem("token");
 			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
 		}
 	};
+
+	// Función para limpiar filtros
+	const handleLimpiar = () => {
+		setFilterType("fecha");
+		setFecha("");
+		setAnio(new Date().getFullYear());
+		setFechaInicio("");
+		setFechaFin("");
+
+		setTimeout(() => {
+			const token = localStorage.getItem("token");
+			setLoading(true);
+
+			axios
+				.get(`${import.meta.env.VITE_API_URL}/movimientos`, {
+					headers: { Authorization: `Bearer ${token}` },
+				})
+				.then((response) => {
+					setMovimientos(response.data);
+					setPagActual(1);
+				})
+				.catch((error) => {
+					console.error("Error al obtener movimientos:", error.message);
+				})
+				.finally(() => {
+					setLoading(false);
+				});
+		}, 0);
+	};
+
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
 
 	return (
 		<AdminLayout>
@@ -316,37 +376,7 @@ const token = localStorage.getItem("token");
 									<button className="thm-btn" onClick={fetchMovimientos}>
 										Buscar
 									</button>
-									<button
-										className="thm-btn btn-gris"
-										onClick={() => {
-											setFilterType("fecha");
-											setFecha("");
-											setAnio(new Date().getFullYear());
-											setFechaInicio("");
-											setFechaFin("");
-
-											setTimeout(() => {
-												const token = localStorage.getItem("token");
-												axios
-													.get(`${import.meta.env.VITE_API_URL}/movimientos`,
-														
-														{
-															headers: { Authorization: `Bearer ${token}` },
-														}
-													)
-													.then((response) => {
-														setMovimientos(response.data);
-														setPagActual(1);
-													})
-													.catch((error) => {
-														console.error(
-															"Error al obtener movimientos:",
-															error.message
-														);
-													});
-											}, 0);
-										}}
-									>
+									<button className="thm-btn btn-gris" onClick={handleLimpiar}>
 										Limpiar
 									</button>
 								</div>
@@ -413,62 +443,6 @@ const token = localStorage.getItem("token");
 					}}
 					onPaginaChange={(pagina) => setPagActual(pagina)}
 				/>
-
-				{/* Paginación inferior con select de ítems por página
-                {movimientosOrdenados.length > 0 && (
-                    <div className="d-flex justify-content-center mt-4">
-                        <select
-                            className="form-select form-select-sm w-auto me-2"
-                            onChange={(e) => {
-                                setItemsPag(Number(e.target.value));
-                                setPagActual(1);
-                            }}
-                            value={itemsPag}
-                        >
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={25}>25</option>
-                            <option value={movimientosOrdenados.length}>
-                                Todos
-                            </option>
-                        </select>
-                        <button
-                            className="thm-btn btn-volver thm-btn-small me-2"
-                            onClick={() => setPagActual(1)}
-                            disabled={pagActual === 1}
-                        >
-                            <FontAwesomeIcon icon={faBackward} />
-                        </button>
-                        <button
-                            className="thm-btn btn-volver thm-btn-small me-2"
-                            onClick={() => setPagActual(pagActual - 1)}
-                            disabled={pagActual === 1}
-                        >
-                            <FontAwesomeIcon icon={faCaretLeft} />
-                        </button>
-                        <span className="align-self-center mx-2">
-                            Página {pagActual} de {totalPaginas || 1}
-                        </span>
-                        <button
-                            className="thm-btn btn-volver thm-btn-small me-2"
-                            onClick={() => setPagActual(pagActual + 1)}
-                            disabled={
-                                pagActual === totalPaginas || totalPaginas === 0
-                            }
-                        >
-                            <FontAwesomeIcon icon={faCaretRight} />
-                        </button>
-                        <button
-                            className="thm-btn btn-volver thm-btn-small me-2"
-                            onClick={() => setPagActual(totalPaginas)}
-                            disabled={
-                                pagActual === totalPaginas || totalPaginas === 0
-                            }
-                        >
-                            <FontAwesomeIcon icon={faForward} />
-                        </button>
-                    </div>
-                )} */}
 
 				{/* Modal para ver Ingreso */}
 				{showModalVerIngreso && registroSeleccionado && (

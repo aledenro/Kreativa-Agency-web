@@ -10,6 +10,7 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
+import Loading from "../components/ui/LoadingComponent";
 
 const VerMiPTO = () => {
 	const [ptoList, setPtoList] = useState([]);
@@ -60,9 +61,10 @@ const VerMiPTO = () => {
 		setSortOrder(sortOrder === "asc" ? "desc" : "asc");
 	};
 
-	const ptoFiltrado = estadoFiltro === "todos"
-		? ptoList
-		: ptoList.filter((pto) => pto.estado.toLowerCase() === estadoFiltro);
+	const ptoFiltrado =
+		estadoFiltro === "todos"
+			? ptoList
+			: ptoList.filter((pto) => pto.estado.toLowerCase() === estadoFiltro);
 
 	const ptoOrdenado = [...ptoFiltrado].sort((a, b) => {
 		const dateA = new Date(a.fecha_inicio);
@@ -74,6 +76,16 @@ const VerMiPTO = () => {
 		(pagActual - 1) * itemsPag,
 		pagActual * itemsPag
 	);
+
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
 
 	return (
 		<AdminLayout>
@@ -115,8 +127,7 @@ const VerMiPTO = () => {
 								<Thead>
 									<Tr>
 										<Th onClick={handleSort} style={{ cursor: "pointer" }}>
-											Fecha de Inicio{" "}
-											<FontAwesomeIcon icon={faSort} />
+											Fecha de Inicio <FontAwesomeIcon icon={faSort} />
 										</Th>
 										<Th>Fecha de Fin</Th>
 										<Th>Comentario</Th>

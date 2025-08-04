@@ -22,6 +22,7 @@ import forceFileDownload from "../utils/forceFileDownload";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import Loading from "../components/ui/LoadingComponent";
 
 const DashboardColaborador = () => {
 	const [proyectos, setProyectos] = useState([]);
@@ -115,6 +116,8 @@ const DashboardColaborador = () => {
 			setTaskSortByProject(taskSort);
 		} catch (error) {
 			console.error(`Error al obtener los proyectos: ${error.message}`);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -479,9 +482,11 @@ const DashboardColaborador = () => {
 
 	if (loading) {
 		return (
-			<div className="container d-flex align-items-center justify-content-center">
-				<p>Cargando proyectos...</p>
-			</div>
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
 		);
 	}
 
