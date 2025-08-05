@@ -12,6 +12,7 @@ import lodash from "lodash";
 import { notification } from "antd";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
     const [tarea, setTarea] = useState(tareaModal);
@@ -25,6 +26,28 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+
         if (show && !lodash.isEmpty(tareaModal)) {
             setTarea(tareaModal);
         }

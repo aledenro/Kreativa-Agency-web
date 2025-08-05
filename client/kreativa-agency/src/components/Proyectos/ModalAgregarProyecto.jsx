@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 function construirJsonRequest(
     nombre,
@@ -132,6 +133,27 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
     };
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
         if (show) {
             fetchClientes();
             fetchEmpleados();

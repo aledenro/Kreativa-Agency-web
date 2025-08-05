@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const ModalEditarIngreso = ({
     show,
@@ -17,6 +18,28 @@ const ModalEditarIngreso = ({
     const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+
         if (ingreso && Object.keys(ingreso).length > 0) {
             setIngresoEditado({ ...ingreso });
         }

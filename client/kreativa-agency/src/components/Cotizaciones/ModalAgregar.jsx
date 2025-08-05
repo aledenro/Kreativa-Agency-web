@@ -1,6 +1,6 @@
 import axios from "axios";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
@@ -12,6 +12,7 @@ import fileUpload from "../../utils/fileUpload";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const { Dragger } = Upload;
 
@@ -51,6 +52,30 @@ const ModalAgregar = ({ show, handleClose }) => {
     const clearDragger = () => {
         setFiles([]);
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
 
     function construirJsonRequest(titulo, descripcion, urgente) {
         const user_id = localStorage.getItem("user_id");

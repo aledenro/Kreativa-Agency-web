@@ -1,14 +1,39 @@
 import { Modal, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
 
     const handleSubmit = async (event) => {
         const enviar = confirm("¿Desea enviar el pago?");

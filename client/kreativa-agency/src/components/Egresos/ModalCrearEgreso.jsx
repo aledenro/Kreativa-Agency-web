@@ -1,8 +1,10 @@
 import { Modal, Form, Button, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import validTokenActive from "../../utils/validateToken";
+
 const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
     const navigate = useNavigate();
     const [mensaje, setMensaje] = useState("");
@@ -14,6 +16,30 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
         descripcion: "",
         proveedor: "",
         estado: "Pendiente",
+    });
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
     });
 
     const handleChange = (e) => {

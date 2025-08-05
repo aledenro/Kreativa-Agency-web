@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import lodash from "lodash";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const estados = [
     "Por Hacer",
@@ -345,6 +346,28 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
     }, [proyectoId]);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+
         if (show) {
             fetchProyecto();
             fetchEmpleados();

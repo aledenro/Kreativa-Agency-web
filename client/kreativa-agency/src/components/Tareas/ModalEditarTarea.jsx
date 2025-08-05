@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import sendEmail from "../../utils/emailSender";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 function construirJsonRequest(
     proyecto,
@@ -342,6 +343,28 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
     }, [tareaId]);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+
         if (show && tareaId) {
             fetchTarea();
             fetchProyectos();

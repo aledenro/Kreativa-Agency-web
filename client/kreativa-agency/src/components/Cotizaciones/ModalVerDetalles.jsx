@@ -21,6 +21,7 @@ import sendEmail from "../../utils/emailSender";
 // Importaciones nuevas para el Dragger
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
+import validTokenActive from "../../utils/validateToken";
 
 const { Dragger } = Upload;
 const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
@@ -88,6 +89,27 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
     }, []);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
         fetchCotizacion(cotizacionId);
     }, [cotizacionId, fetchCotizacion]);
 

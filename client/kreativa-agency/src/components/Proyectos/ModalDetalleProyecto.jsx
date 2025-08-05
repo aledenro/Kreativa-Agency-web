@@ -15,6 +15,7 @@ import sendEmail from "../../utils/emailSender";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const { Dragger } = Upload;
 
@@ -82,10 +83,32 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
     }, [proyectoId]);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+
         if (show) {
             fetchProyecto();
         }
-    }, [show, fetchProyecto]);
+    }, [show, fetchProyecto, navigate]);
 
     const handleFileChange = (info) => {
         // Verificar archivos seleccionados

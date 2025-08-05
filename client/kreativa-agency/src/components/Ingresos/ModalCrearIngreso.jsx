@@ -1,8 +1,10 @@
 import { Modal, Alert, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
+
 const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
     const navigate = useNavigate();
     const [mensaje, setMensaje] = useState("");
@@ -16,6 +18,30 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
         descripcion: "",
         estado: "Pendiente de pago",
         fecha: "",
+    });
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
     });
 
     const validarCedula = (cedula) => /^[0-9]{8,9}$/.test(cedula);

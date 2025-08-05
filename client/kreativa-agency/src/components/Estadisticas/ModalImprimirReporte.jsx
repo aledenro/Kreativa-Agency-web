@@ -1,11 +1,12 @@
 import { Modal } from "react-bootstrap";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect } from "react";
 import { notification } from "antd";
 import lodash from "lodash";
 import forceFileDownload from "../../utils/forceFileDownload";
 import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const columnasIngresos = [
     "Fecha",
@@ -27,6 +28,30 @@ const columnasEgresos = [
 const ModalImprimirReportes = ({ show, handleClose }) => {
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
 
     const openSuccessNotification = (message) => {
         api.success({
