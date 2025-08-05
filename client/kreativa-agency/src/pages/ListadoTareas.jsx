@@ -12,7 +12,8 @@ import { notification } from "antd";
 import forceFileDownload from "../utils/forceFileDownload";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"; // Asegúrate de importar esto si quieres el diseño responsive base
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import Loading from "../components/ui/LoadingComponent";
 
 const getEstado = (status) => {
 	switch (status) {
@@ -64,6 +65,8 @@ const ListadoTareas = () => {
 	const [showModalAgregarTarea, setShowModalAgregarTarea] = useState(false);
 	const [selectedProyectoTarea, setSelectedProyectoTarea] = useState(null);
 
+	const [loading, setLoading] = useState(true);
+
 	const openSuccessNotification = (message) => {
 		api.success({
 			message: "Éxito",
@@ -99,6 +102,8 @@ const ListadoTareas = () => {
 			setTareas(response.data.tareas);
 		} catch (error) {
 			console.error(error.message);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -278,6 +283,16 @@ const ListadoTareas = () => {
 		const nombres = colab.nombre.trim().split(" ");
 		return nombres[0].charAt(0) + (nombres[1] ? nombres[1].charAt(0) : "");
 	};
+
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
 
 	return (
 		<AdminLayout>

@@ -527,10 +527,11 @@ h3 {
 .navbar .link {
 	color: var(--kreativa-white);
 	text-decoration: none;
-	font-size: 16px;
+	font-size: 20px;
 	letter-spacing: 1px;
 	font-weight: 500;
 	transition: var(--kreativa-transition);
+	font-family: var(--kreativa-title);
 }
 
 .navbar .link:hover,
@@ -586,7 +587,7 @@ h3 {
 	color: var(--kreativa-white);
 	border: none;
 	padding: 8px 16px;
-	font-size: 16px;
+	font-size: 15px;
 	font-weight: 800;
 	cursor: pointer;
 	transition: all 0.3s linear;
@@ -2561,7 +2562,6 @@ h3 {
 }
 
 /* modal proyecto */
-
 .proyecto-modal .modal-content {
 	border-radius: 8px;
 	border: none;
@@ -2601,11 +2601,16 @@ h3 {
 	border-bottom: 2px solid #ddd;
 }
 
-.proyecto-modal .descripcion-panel,
-.proyecto-modal .info-panel,
-.proyecto-modal .comentarios-panel {
-	height: calc(100vh - 200px);
-	max-height: 650px;
+.proyecto-modal .tab-content .tab-pane {
+	height: calc(100vh - 250px);
+	max-height: 600px;
+}
+
+.proyecto-modal .tab-pane[eventkey="actualizaciones"] {
+	overflow-y: auto;
+}
+
+.proyecto-modal .tab-pane[eventkey="detalles"] {
 	overflow-y: auto;
 }
 
@@ -2618,8 +2623,7 @@ h3 {
 }
 
 .proyecto-modal .comentarios-list {
-	border-top: 1px solid #eee;
-	padding-top: 1rem;
+	padding: 1rem;
 }
 
 .proyecto-modal .btn-outline-info {
@@ -2658,6 +2662,11 @@ h3 {
 	background: #a1a1a1;
 }
 
+.proyecto-modal .responder-form {
+	background: white;
+	padding: 1rem;
+	margin-top: auto;
+}
 @media (max-width: 767px) {
 	.kreativa-table {
 		border-collapse: collapse !important;

@@ -17,6 +17,7 @@ import {
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import Loading from "../components/ui/LoadingComponent";
 
 const Usuarios = () => {
 	const navigate = useNavigate();
@@ -27,6 +28,8 @@ const Usuarios = () => {
 	const [paginaActual, setPaginaActual] = useState(1);
 	//   const usuariosPorPagina = 5;
 	const [usuariosPorPagina, setUsuariosPorPagina] = useState(5);
+
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchUsuarios = async () => {
@@ -58,6 +61,8 @@ const Usuarios = () => {
 					error.response?.data || error
 				);
 				setError("Error al cargar los usuarios");
+			} finally {
+				setLoading(false);
 			}
 		};
 		fetchUsuarios();
@@ -90,56 +95,55 @@ const Usuarios = () => {
 		navigate(`/usuario/editar/${id}`);
 	};
 
+	const handleActivarDesactivar = async (id, estadoActual) => {
+		const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
 
-const handleActivarDesactivar = async (id, estadoActual) => {
-	const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
-
-	const result = await Swal.fire({
-		title: `¿Estás seguro?`,
-		text: `Este usuario será marcado como ${nuevoEstado.toLowerCase()}.`,
-		icon: "warning",
-		showCancelButton: true,
-		confirmButtonColor: "#3085d6",
-		cancelButtonColor: "#d33",
-		confirmButtonText: `Sí, ${nuevoEstado.toLowerCase()}`,
-		cancelButtonText: "Cancelar",
-	});
-
-	if (!result.isConfirmed) return;
-
-	try {
-		const token = localStorage.getItem("token");
-		await axios.put(
-			`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-			{ estado: nuevoEstado },
-			{
-				headers: { Authorization: `Bearer ${token}` },
-			}
-		);
-
-		setUsuarios(
-			usuarios.map((usuario) =>
-				usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
-			)
-		);
-
-		Swal.fire({
-			title: "¡Éxito!",
-			text: `El usuario ha sido marcado como ${nuevoEstado.toLowerCase()}.`,
-			icon: "success",
-			timer: 2000,
-			showConfirmButton: false,
+		const result = await Swal.fire({
+			title: `¿Estás seguro?`,
+			text: `Este usuario será marcado como ${nuevoEstado.toLowerCase()}.`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: `Sí, ${nuevoEstado.toLowerCase()}`,
+			cancelButtonText: "Cancelar",
 		});
-	} catch (error) {
-		setError("Error al cambiar el estado del usuario.");
 
-		Swal.fire({
-			title: "Error",
-			text: "No se pudo actualizar el estado del usuario.",
-			icon: "error",
-		});
-	}
-};
+		if (!result.isConfirmed) return;
+
+		try {
+			const token = localStorage.getItem("token");
+			await axios.put(
+				`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
+				{ estado: nuevoEstado },
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+
+			setUsuarios(
+				usuarios.map((usuario) =>
+					usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
+				)
+			);
+
+			Swal.fire({
+				title: "¡Éxito!",
+				text: `El usuario ha sido marcado como ${nuevoEstado.toLowerCase()}.`,
+				icon: "success",
+				timer: 2000,
+				showConfirmButton: false,
+			});
+		} catch (error) {
+			setError("Error al cambiar el estado del usuario.");
+
+			Swal.fire({
+				title: "Error",
+				text: "No se pudo actualizar el estado del usuario.",
+				icon: "error",
+			});
+		}
+	};
 
 	const handleEliminar = async (id) => {
 		if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?"))
@@ -180,6 +184,15 @@ const handleActivarDesactivar = async (id, estadoActual) => {
 			? 1
 			: Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
 
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
 	return (
 		<AdminLayout>
 			<div className="main-container mx-auto">
@@ -236,11 +249,21 @@ const handleActivarDesactivar = async (id, estadoActual) => {
 						<Tbody>
 							{usuariosPaginados.map((usuario) => (
 								<Tr key={usuario._id}>
-									<Td className="col-nombre" data-label="Nombre">{usuario.nombre}</Td>
-									<Td className="col-usuario" data-label="Usuario">{usuario.usuario}</Td>
-									<Td className="col-cedula" data-label="Cédula">{usuario.cedula}</Td>
-									<Td className="col-email" data-label="Email">{usuario.email}</Td>
-									<Td className="col-tipo" data-label="Tipo">{usuario.tipo_usuario}</Td>
+									<Td className="col-nombre" data-label="Nombre">
+										{usuario.nombre}
+									</Td>
+									<Td className="col-usuario" data-label="Usuario">
+										{usuario.usuario}
+									</Td>
+									<Td className="col-cedula" data-label="Cédula">
+										{usuario.cedula}
+									</Td>
+									<Td className="col-email" data-label="Email">
+										{usuario.email}
+									</Td>
+									<Td className="col-tipo" data-label="Tipo">
+										{usuario.tipo_usuario}
+									</Td>
 									<Td className="col-estado" data-label="Estado">
 										<span
 											className={`badge ${
@@ -252,7 +275,10 @@ const handleActivarDesactivar = async (id, estadoActual) => {
 											{usuario.estado}
 										</span>
 									</Td>
-									<Td className="text-center col-acciones" data-label="Acciones">
+									<Td
+										className="text-center col-acciones"
+										data-label="Acciones"
+									>
 										<div className="botones-grupo">
 											<button
 												className="thm-btn thm-btn-small btn-amarillo"
@@ -268,9 +294,7 @@ const handleActivarDesactivar = async (id, estadoActual) => {
 											</button>
 											<button
 												className={`thm-btn thm-btn-small ${
-													usuario.estado === "Activo"
-														? "btn-verde"
-														: "btn-rojo"
+													usuario.estado === "Activo" ? "btn-verde" : "btn-rojo"
 												}`}
 												onClick={() =>
 													handleActivarDesactivar(usuario._id, usuario.estado)

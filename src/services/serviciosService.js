@@ -348,6 +348,32 @@ class ServiciosService {
 			);
 		}
 	}
+
+	async getServiciosListado() {
+		try {
+			const servicios = await Servicios.find(
+				{},
+				{
+					nombre: 1,
+					descripcion: 1,
+					activo: 1,
+					paquetes: 1,
+					fecha_creacion: 1,
+					fecha_modificacion: 1,
+				}
+			).lean();
+
+			const serviciosOptimizados = servicios.map((servicio) => ({
+				...servicio,
+				cantidadPaquetes: servicio.paquetes ? servicio.paquetes.length : 0,
+				paquetes: undefined,
+			}));
+
+			return serviciosOptimizados;
+		} catch (error) {
+			throw new Error("No se pudieron obtener los servicios: " + error.message);
+		}
+	}
 }
 
 module.exports = new ServiciosService();

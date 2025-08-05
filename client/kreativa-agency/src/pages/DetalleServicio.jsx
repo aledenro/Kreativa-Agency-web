@@ -10,6 +10,8 @@ import {
 	faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/Navbar/Navbar";
+import Footer from "../components/Navbar/Footer";
+import Loading from "../components/ui/LoadingComponent.jsx";
 
 const DetalleServicio = () => {
 	const { id } = useParams();
@@ -96,7 +98,16 @@ const DetalleServicio = () => {
 		}
 	};
 
-	if (loading) return <p>Cargando...</p>;
+	if (loading) {
+		return (
+			<Navbar>
+				<div className="container main-container mt-4">
+					<Loading />
+				</div>
+			</Navbar>
+		);
+	}
+
 	if (error) return <p>Error: {error}</p>;
 	if (!servicio) return <p>No se encontró el servicio.</p>;
 
@@ -106,7 +117,7 @@ const DetalleServicio = () => {
 			<div className="container main-container mt-4">
 				<div className="espacio-top-responsive"></div>
 				<div className="row justify-content-center">
-					<div className="col-md-8">
+					<div className="col-md-8 mb-4">
 						<div className="row my-4">
 							<div className="col-auto align-self-center">
 								<h1>{servicio.nombre}</h1>
@@ -304,19 +315,10 @@ const DetalleServicio = () => {
 								Este servicio no tiene paquetes por mostrar.
 							</p>
 						)}
-
-						{paqueteSeleccionado && (
-							<ModificarPaqueteModal
-								show={showModal}
-								handleClose={() => setShowModal(false)}
-								paquete={paqueteSeleccionado}
-								servicioId={servicio._id}
-								actualizarServicio={setServicio}
-							/>
-						)}
 					</div>
 				</div>
 			</div>
+			<Footer />
 		</div>
 	);
 };

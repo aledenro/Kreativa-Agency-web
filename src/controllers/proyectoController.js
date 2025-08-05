@@ -168,11 +168,9 @@ class ProyectoController {
 	async getProyectosByColaborador(req, res) {
 		try {
 			const colaboradorId = req.params.colaboradorId;
-			console.log(`Buscando proyectos para colaborador: ${colaboradorId}`);
 
 			const proyectos =
 				await ProyectoService.getProyectosByColaborador(colaboradorId);
-			console.log(`Proyectos encontrados: ${proyectos ? proyectos.length : 0}`);
 
 			if (!proyectos || lodash.isEmpty(proyectos)) {
 				return res.status(404).json({
