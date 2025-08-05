@@ -190,12 +190,9 @@ const iniciarSesion = async (req, res) => {
         }
 
         if (user.estado && user.estado.toLowerCase() === "inactivo") {
-            return res
-                .status(403)
-                .json({
-                    mensaje:
-                        "Tu cuenta está inactiva. Contacta al administrador.",
-                });
+            return res.status(403).json({
+                mensaje: "Tu cuenta está inactiva. Contacta al administrador.",
+            });
         }
 
         const isMatch = await bcrypt.compare(contraseña, user.contraseña);
@@ -210,7 +207,7 @@ const iniciarSesion = async (req, res) => {
                 tipo_usuario: user.tipo_usuario,
             },
             process.env.JWT_SECRET,
-            { expiresIn: "1m" }
+            { expiresIn: "2h" }
         );
 
         res.json({
