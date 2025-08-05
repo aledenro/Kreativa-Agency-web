@@ -25,9 +25,10 @@ const AgregarPTO = () => {
                     navigate("/error", {
                         state: {
                             errorCode: 401,
-                            mensaje: "Debe iniciar sesión para continuar.",
+                            mensaje: "Acceso no autorizado.",
                         },
                     });
+                    return;
                 }
 
                 const decoded = jwtDecode(token);
@@ -105,9 +106,11 @@ const AgregarPTO = () => {
                 navigate("/error", {
                     state: {
                         errorCode: 401,
-                        mensaje: "Debe iniciar sesión para continuar.",
+                        mensaje: "Acceso no autorizado.",
                     },
                 });
+
+                return;
             }
 
             await axios.post(`${import.meta.env.VITE_API_URL}/pto`, formData, {

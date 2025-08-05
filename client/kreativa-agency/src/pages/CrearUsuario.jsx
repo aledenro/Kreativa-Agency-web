@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { UserPlus } from "lucide-react";
 import Swal from "sweetalert2";
+import validTokenActive from "../utils/validateToken";
 
 const CrearUsuario = () => {
     const navigate = useNavigate();
@@ -19,6 +20,30 @@ const CrearUsuario = () => {
 
     const [errors, setErrors] = useState({});
     const [errorServidor, setErrorServidor] = useState("");
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
 
     const handleChange = async (e) => {
         const { name, value } = e.target;
