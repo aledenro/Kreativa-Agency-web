@@ -18,10 +18,21 @@ const lodash = require("lodash");
 
 // Crear un usuario
 const crearUsuario = async (req, res) => {
-    const { nombre, usuario, cedula, email, contraseña, tipo_usuario, estado } = req.body;
+    const { nombre, usuario, cedula, email, contraseña, tipo_usuario, estado } =
+        req.body;
 
-    if (!nombre || !usuario || !cedula || !email || !contraseña || !tipo_usuario || !estado) {
-        return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
+    if (
+        !nombre ||
+        !usuario ||
+        !cedula ||
+        !email ||
+        !contraseña ||
+        !tipo_usuario ||
+        !estado
+    ) {
+        return res
+            .status(400)
+            .json({ mensaje: "Todos los campos son obligatorios" });
     }
 
     try {
@@ -29,11 +40,15 @@ const crearUsuario = async (req, res) => {
         const cedulaExistente = await Usuario.findOne({ cedula });
 
         if (usuarioExistente) {
-            return res.status(400).json({ mensaje: "El nombre de usuario ya está en uso" });
+            return res
+                .status(400)
+                .json({ mensaje: "El nombre de usuario ya está en uso" });
         }
 
         if (cedulaExistente) {
-            return res.status(400).json({ mensaje: "La cédula ya está en uso" });
+            return res
+                .status(400)
+                .json({ mensaje: "La cédula ya está en uso" });
         }
 
         const usuarioCreado = await crearNuevoUsuario({
@@ -51,7 +66,10 @@ const crearUsuario = async (req, res) => {
             usuario: usuarioCreado,
         });
     } catch (error) {
-        res.status(500).json({ mensaje: "Error al crear el usuario", error: error.message });
+        res.status(500).json({
+            mensaje: "Error al crear el usuario",
+            error: error.message,
+        });
     }
 };
 
@@ -84,7 +102,10 @@ const obtenerUsuario = async (req, res) => {
 // Actualizar un usuario
 const actualizarUsuarioPorId = async (req, res) => {
     try {
-        const usuarioActualizado = await actualizarUsuario(req.params.id, req.body);
+        const usuarioActualizado = await actualizarUsuario(
+            req.params.id,
+            req.body
+        );
         if (!usuarioActualizado) {
             return res.status(404).json({ mensaje: "Usuario no encontrado" });
         }
@@ -124,7 +145,9 @@ const getClientes = async (req, res) => {
         const usuarios = await getUsuariosClientes();
 
         if (!usuarios || lodash.isEmpty(usuarios)) {
-            return res.status(404).json({ error: "No se pudo encontrar los clientes." });
+            return res
+                .status(404)
+                .json({ error: "No se pudo encontrar los clientes." });
         }
 
         res.status(200).json(usuarios);
@@ -141,7 +164,9 @@ const getEmpleados = async (req, res) => {
         const usuarios = await getUsuariosColabAdmins();
 
         if (!usuarios || lodash.isEmpty(usuarios)) {
-            return res.status(404).json({ error: "No se pudo encontrar los empleados." });
+            return res
+                .status(404)
+                .json({ error: "No se pudo encontrar los empleados." });
         }
 
         res.status(200).json(usuarios);
@@ -165,7 +190,12 @@ const iniciarSesion = async (req, res) => {
         }
 
         if (user.estado && user.estado.toLowerCase() === "inactivo") {
-            return res.status(403).json({ mensaje: "Tu cuenta está inactiva. Contacta al administrador." });
+            return res
+                .status(403)
+                .json({
+                    mensaje:
+                        "Tu cuenta está inactiva. Contacta al administrador.",
+                });
         }
 
         const isMatch = await bcrypt.compare(contraseña, user.contraseña);
@@ -180,7 +210,7 @@ const iniciarSesion = async (req, res) => {
                 tipo_usuario: user.tipo_usuario,
             },
             process.env.JWT_SECRET,
-            { expiresIn: "2h" }
+            { expiresIn: "1m" }
         );
 
         res.json({
@@ -189,7 +219,10 @@ const iniciarSesion = async (req, res) => {
             usuario: user,
         });
     } catch (error) {
-        res.status(500).json({ mensaje: "Error en el inicio de sesión", error });
+        res.status(500).json({
+            mensaje: "Error en el inicio de sesión",
+            error,
+        });
     }
 };
 
@@ -201,10 +234,14 @@ const recuperarContraseña = async (req, res) => {
         const usuario = await Usuario.findOne({ email });
 
         if (!usuario) {
-            return res.status(404).json({ mensaje: "Usuario o correo no registrado" });
+            return res
+                .status(404)
+                .json({ mensaje: "Usuario o correo no registrado" });
         }
 
-        const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+        const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, {
+            expiresIn: "15m",
+        });
 
         await enviarCorreoRecuperacion(email, token);
 
@@ -245,16 +282,20 @@ const getJerarquiaUsuarios = async (req, res) => {
     try {
         console.log("Buscando usuarios en MongoDB...");
 
-        const usuarios = await Usuario.find({}, "nombre email tipo_usuario estado");
+        const usuarios = await Usuario.find(
+            {},
+            "nombre email tipo_usuario estado"
+        );
 
         if (!usuarios.length) {
             console.log("No hay usuarios en la BD.");
-            return res.status(404).json({ mensaje: "No hay empleados o clientes registrados." });
+            return res
+                .status(404)
+                .json({ mensaje: "No hay empleados o clientes registrados." });
         }
 
         console.log("Usuarios encontrados:", usuarios);
 
-       
         const jerarquia = {
             Administrador: [],
             Colaborador: [],
@@ -265,7 +306,9 @@ const getJerarquiaUsuarios = async (req, res) => {
             if (jerarquia[usuario.tipo_usuario]) {
                 jerarquia[usuario.tipo_usuario].push(usuario);
             } else {
-                console.warn(`⚠️ Tipo de usuario desconocido: ${usuario.tipo_usuario}`);
+                console.warn(
+                    `⚠️ Tipo de usuario desconocido: ${usuario.tipo_usuario}`
+                );
             }
         });
 
@@ -274,7 +317,9 @@ const getJerarquiaUsuarios = async (req, res) => {
         res.status(200).json(jerarquia);
     } catch (error) {
         console.error("❌ ERROR en getJerarquiaUsuarios:", error);
-        res.status(500).json({ mensaje: "Error al obtener la jerarquía de usuarios" });
+        res.status(500).json({
+            mensaje: "Error al obtener la jerarquía de usuarios",
+        });
     }
 };
 

@@ -22,6 +22,7 @@ import ModalCrearEgreso from "../components/Egresos/ModalCrearEgreso";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import { useNavigate } from "react-router-dom";
 
 const ListadoEgresos = () => {
     const [egresos, setEgresos] = useState([]);
@@ -65,6 +66,7 @@ const ListadoEgresos = () => {
     const [toggleEgreso, setToggleEgreso] = useState(null);
     const [showConfirmEditar, setShowConfirmEditar] = useState(false);
     const [showConfirmCrear, setShowConfirmCrear] = useState(false);
+    const navigate = useNavigate();
 
     const fetchEgresos = useCallback(async () => {
         const token = localStorage.getItem("token");
@@ -78,7 +80,18 @@ const ListadoEgresos = () => {
             );
             setEgresos(res.data);
         } catch (error) {
-            console.error("Error al obtener egresos:", error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al obtener egresos");
         }
     }, []);
 
@@ -167,10 +180,17 @@ const ListadoEgresos = () => {
                 setShowConfirmToggle(false);
                 setToggleEgreso(null);
             } catch (error) {
-                console.error(
-                    "Error al cambiar estado de egreso:",
-                    error.message
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al cambiar estado de egreso");
             }
         }
     };

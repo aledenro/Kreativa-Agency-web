@@ -146,12 +146,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             }
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             setAlertMessage(
@@ -211,12 +213,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             }
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             setAlertMessage(
@@ -241,12 +245,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             );
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
         }
@@ -284,12 +290,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             fetchClientes();
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             console.error(`Error al obtener el proyecto`);
@@ -317,12 +325,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             setEmpleados(response.data);
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             console.error(`Error al obtener los empleados`);
@@ -343,12 +353,14 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
             setClientes(response.data);
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             console.error(`Error al obtener los clientes`);

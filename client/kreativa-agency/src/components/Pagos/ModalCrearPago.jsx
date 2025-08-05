@@ -57,12 +57,14 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
             }
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             setAlertMessage("Error al crear el pago.");

@@ -13,6 +13,7 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const RespuestasReclutaciones = () => {
     const [formularios, setFormularios] = useState([]);
@@ -28,6 +29,7 @@ const RespuestasReclutaciones = () => {
 
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [modalAction, setModalAction] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFormularios = async () => {
@@ -42,8 +44,18 @@ const RespuestasReclutaciones = () => {
                 );
                 setFormularios(response.data);
             } catch (error) {
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
                 console.error(
-                    "Error al obtener los formularios de reclutamiento:",
+                    "Error al obtener los formularios de reclutamiento",
                     error
                 );
             }
@@ -61,7 +73,17 @@ const RespuestasReclutaciones = () => {
                 );
                 setIsFormActive(response.data.active);
             } catch (error) {
-                console.error("Error al obtener estado del formulario:", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener estado del formulario");
             } finally {
                 setLoading(false);
             }
@@ -89,7 +111,18 @@ const RespuestasReclutaciones = () => {
             );
             setIsFormActive(response.data.active);
         } catch (error) {
-            console.error("Error al cambiar estado del formulario:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al cambiar estado del formulario");
         } finally {
             setLoading(false);
             setShowConfirmModal(false);

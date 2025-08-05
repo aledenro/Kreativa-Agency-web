@@ -40,12 +40,14 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
             }
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             setMensaje("Error al crear el egreso.");

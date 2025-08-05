@@ -46,7 +46,17 @@ const AgregarPTO = () => {
                     });
                 }
             } catch (error) {
-                console.error("Error al obtener el usuario:", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener el usuario");
                 Swal.fire({
                     title: "Error",
                     text: "Hubo un problema al obtener los datos del usuario.",
@@ -115,7 +125,18 @@ const AgregarPTO = () => {
                 navigate("/ver-pto");
             });
         } catch (error) {
-            console.error("Error al enviar PTO:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al enviar PTO");
             Swal.fire({
                 title: "Error",
                 text: "Hubo un problema al enviar la solicitud. Inténtalo nuevamente.",
@@ -130,13 +151,19 @@ const AgregarPTO = () => {
             <div className="kreativa-pto-wrapper">
                 <div className="kreativa-pto-card">
                     <div className="text-center mb-3">
-                        <CalendarCheck size={60} color="#ff0072" strokeWidth={2.5} />
+                        <CalendarCheck
+                            size={60}
+                            color="#ff0072"
+                            strokeWidth={2.5}
+                        />
                     </div>
                     <h2 className="kreativa-title">Solicitar PTO</h2>
 
                     <form onSubmit={handleSubmit}>
                         <div className="form-group mb-3">
-                            <label className="form-label">Fecha de Inicio</label>
+                            <label className="form-label">
+                                Fecha de Inicio
+                            </label>
                             <input
                                 type="date"
                                 name="fecha_inicio"
@@ -147,7 +174,9 @@ const AgregarPTO = () => {
                                 required
                             />
                             {errors.fecha_inicio && (
-                                <small className="text-danger">{errors.fecha_inicio}</small>
+                                <small className="text-danger">
+                                    {errors.fecha_inicio}
+                                </small>
                             )}
                         </div>
 
@@ -163,12 +192,16 @@ const AgregarPTO = () => {
                                 required
                             />
                             {errors.fecha_fin && (
-                                <small className="text-danger">{errors.fecha_fin}</small>
+                                <small className="text-danger">
+                                    {errors.fecha_fin}
+                                </small>
                             )}
                         </div>
 
                         <div className="form-group mb-3">
-                            <label className="form-label">Comentario (Opcional)</label>
+                            <label className="form-label">
+                                Comentario (Opcional)
+                            </label>
                             <textarea
                                 name="comentario"
                                 value={formData.comentario}

@@ -5,7 +5,7 @@ const emailController = require("../controllers/emailController");
 
 const router = express.Router();
 
-router.post("/", verificarToken, emailController.send);
+router.post("/", emailController.send);
 router.post("/externo", emailController.sendExterno);
 
 module.exports = router;

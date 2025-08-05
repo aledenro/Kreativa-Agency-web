@@ -57,12 +57,14 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
             setProyecto(res.data.proyecto);
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             console.error("Error al obtener la proyecto");
@@ -144,12 +146,14 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
             fetchProyecto();
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             console.error(`Error al enviar la respuesta`);
@@ -186,12 +190,14 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
             }
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             console.error(`Error al enviar la notificacion`);

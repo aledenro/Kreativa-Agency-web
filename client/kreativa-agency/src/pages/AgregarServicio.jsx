@@ -6,6 +6,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import fileUpload from "../utils/fileUpload";
+import { useNavigate } from "react-router-dom";
 
 const AgregarServicio = () => {
     const [categorias, setCategorias] = useState([]);
@@ -17,6 +18,7 @@ const AgregarServicio = () => {
     const [previewImage, setPreviewImage] = useState("");
     const [fileList, setFileList] = useState([]);
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
     const [api, contextHolder] = notification.useNotification();
 
@@ -53,6 +55,17 @@ const AgregarServicio = () => {
             );
             setCategorias(res.data);
         } catch (error) {
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             console.error("Error cargando categorias:", error);
         }
     };
@@ -130,6 +143,16 @@ const AgregarServicio = () => {
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
                 } catch (error) {
+                    if (error.status === 401) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje:
+                                    "Debe volver a iniciar sesión para continuar.",
+                            },
+                        });
+                        return;
+                    }
                     console.error("Error al subir archivos:", error);
                     openErrorNotification("No se pudieron subir las imágenes.");
                     return;
@@ -141,6 +164,17 @@ const AgregarServicio = () => {
             setSelectedCategoria("");
             setFileList([]);
         } catch (error) {
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             console.error("Error al agregar el servicio:", error);
 
             const mensaje =
@@ -179,6 +213,16 @@ const AgregarServicio = () => {
         } catch (error) {
             console.error("Error al agregar la categoria:", error);
             if (error.response) {
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
                 console.error("Detalles del error:", error.response.data);
                 openErrorNotification(
                     `Error del servidor: ${

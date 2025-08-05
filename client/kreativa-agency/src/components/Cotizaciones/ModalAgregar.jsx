@@ -79,12 +79,14 @@ const ModalAgregar = ({ show, handleClose }) => {
             );
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             showNotification(

@@ -144,12 +144,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
             }
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             setAlertMessage(
@@ -221,12 +223,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
             }
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
 
@@ -253,12 +257,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
             );
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
         }
@@ -281,12 +287,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
             setColaboradorOriginal(response.data.colaborador_id._id);
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             console.error(`Error al obtener la tarea`);
@@ -315,12 +323,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
         } catch (error) {
             console.error(`Error al obtener los empleados`);
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
         }
@@ -341,12 +351,14 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
         } catch (error) {
             console.error(`Error al obtener los proyectos`);
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
         }

@@ -92,11 +92,18 @@ const ListadoTareas = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                console.log(response.data.tareas);
-
                 setTareas(response.data.tareas);
             } catch (error) {
-                console.error(error.message);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
             }
         };
 
@@ -113,9 +120,17 @@ const ListadoTareas = () => {
 
                 setEmpleados(response.data);
             } catch (error) {
-                console.error(
-                    `Error al obtener los empleados: ${error.message}`
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error(`Error al obtener los empleados`);
             }
         };
 
@@ -195,7 +210,6 @@ const ListadoTareas = () => {
                 return;
             }
         } catch (error) {
-            console.error(error.message);
             openErrorNotification(`Error al generar el  reporte de tareas.`);
         }
     };

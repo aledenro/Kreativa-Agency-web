@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import { useNavigate } from "react-router-dom";
 
 const JerarquiaUsuarios = () => {
     const [jerarquia, setJerarquia] = useState({
@@ -10,6 +11,7 @@ const JerarquiaUsuarios = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchJerarquia = async () => {
@@ -24,8 +26,17 @@ const JerarquiaUsuarios = () => {
                 );
                 setJerarquia(response.data);
             } catch (err) {
+                if (err.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
                 setError("Error al obtener los usuarios.");
-                console.error(err);
             } finally {
                 setLoading(false);
             }

@@ -48,7 +48,17 @@ const ModificarPaquete = () => {
                 setPaqueteEditado(paquete);
                 setLoading(false);
             } catch (error) {
-                console.error("Error al obtener el paquete:", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener el paquete");
                 openErrorNotification("Error al cargar los datos del paquete");
                 setLoading(false);
             }
@@ -151,7 +161,18 @@ const ModificarPaquete = () => {
                 navigate("/admin/paquetes");
             }, 2000);
         } catch (error) {
-            console.error("Error al editar el paquete:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al editar el paquete");
             openErrorNotification("Error al editar el paquete");
             setShowModal(false);
         }

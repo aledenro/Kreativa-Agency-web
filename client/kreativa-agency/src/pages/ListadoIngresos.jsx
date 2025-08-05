@@ -91,7 +91,18 @@ const ListadoIngresos = () => {
             );
             setIngresos(res.data);
         } catch (error) {
-            console.error("Error al obtener los ingresos:", error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al obtener los ingresos");
         }
     }, []);
 
@@ -108,10 +119,17 @@ const ListadoIngresos = () => {
                 );
                 setCategories(res.data);
             } catch (error) {
-                console.error(
-                    "Error al obetener las categorias:",
-                    error.message
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obetener las categorias");
             }
         };
 
@@ -126,9 +144,17 @@ const ListadoIngresos = () => {
                 );
                 setClientes(res.data);
             } catch (error) {
-                console.error(
-                    `Error al obtener los clientes: ${error.message}`
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error(`Error al obtener los clientes`);
             }
         };
 
@@ -219,10 +245,17 @@ const ListadoIngresos = () => {
                 setShowConfirmToggle(false);
                 setToggleIngreso(null);
             } catch (error) {
-                console.error(
-                    "Error alternar el estado de ingreso.",
-                    error.message
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error alternar el estado de ingreso");
             }
         }
     };
@@ -247,7 +280,18 @@ const ListadoIngresos = () => {
             setEditedIngresoData(null);
             fetchIngresos();
         } catch (error) {
-            console.error("Error al actualizar ingreso:", error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al actualizar ingreso");
         }
     };
 
@@ -311,7 +355,18 @@ const ListadoIngresos = () => {
 
             setShowModalExitoNotificacion(true);
         } catch (error) {
-            console.error("Error al enviar notificación: ", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al enviar notificación");
             alert(`Error al enviar la notificación: ${error.message}`);
         }
     };

@@ -38,6 +38,16 @@ const DetalleServicio = () => {
                 console.log("Servicio recibido:", servicioData.imagen);
                 setServicio(servicioData);
             } catch (err) {
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
                 setError(err.message);
             } finally {
                 setLoading(false);
@@ -72,10 +82,16 @@ const DetalleServicio = () => {
             });
             setServicio(response.data.servicio);
         } catch (err) {
-            console.error(
-                "Error al cambiar el estado del servicio:",
-                err.message
-            );
+            if (err.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error("Error al cambiar el estado del servicio");
         }
     };
 
@@ -95,10 +111,16 @@ const DetalleServicio = () => {
 
             setServicio(response.data);
         } catch (err) {
-            console.error(
-                "Error al cambiar el estado del paquete:",
-                err.message
-            );
+            if (err.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error("Error al cambiar el estado del paquete");
         }
     };
 

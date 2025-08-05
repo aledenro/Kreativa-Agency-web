@@ -60,7 +60,18 @@ const ModificarServicio = () => {
             );
             setCategorias(res.data);
         } catch (error) {
-            console.error("Error cargando categorias:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error cargando categorias");
             openErrorNotification("Error al cargar las categorías");
         }
     };
@@ -92,7 +103,17 @@ const ModificarServicio = () => {
                 }
                 setIsLoading(false);
             } catch (error) {
-                console.error("Error al obtener el servicio: ", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener el servicio");
                 openErrorNotification(
                     "No se pudo cargar la información del servicio"
                 );
@@ -199,7 +220,18 @@ const ModificarServicio = () => {
             setConfirmModal(false);
             setTimeout(() => navigate("/servicios"), 2000);
         } catch (error) {
-            console.error("Error al modificar el servicio: ", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al modificar el servicio");
 
             const mensaje =
                 error.response?.data?.error ||
@@ -245,7 +277,18 @@ const ModificarServicio = () => {
             setShowModal(false);
             setNuevaCategoria("");
         } catch (error) {
-            console.error("Error al agregar la categoria:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al agregar la categoria");
             if (error.response) {
                 openErrorNotification(
                     `Error del servidor: ${

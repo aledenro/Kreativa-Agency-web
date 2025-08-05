@@ -10,6 +10,7 @@ import AdminLayout from "../components/AdminLayout/AdminLayout";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import { useNavigate } from "react-router-dom";
 
 const RespuestasContacto = () => {
     const [formularios, setFormularios] = useState([]);
@@ -20,6 +21,7 @@ const RespuestasContacto = () => {
     const [pagActual, setPagActual] = useState(1);
     const [sortField, setSortField] = useState("fecha_envio");
     const [sortOrder, setSortOrder] = useState("desc");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFormularios = async () => {
@@ -34,10 +36,17 @@ const RespuestasContacto = () => {
                 );
                 setFormularios(response.data.forms);
             } catch (error) {
-                console.error(
-                    "Error al obtener los formularios de contacto:",
-                    error
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener los formularios de contacto");
             }
         };
 

@@ -46,7 +46,17 @@ const GestionServicios = () => {
                     setServicios([]);
                 }
             } catch (error) {
-                console.error("Error al obtener los servicios:", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener los servicios");
             }
         };
 
@@ -97,7 +107,18 @@ const GestionServicios = () => {
 
             setShowModal(false);
         } catch (error) {
-            console.error("Error al cambiar el estado del servicio:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al cambiar el estado del servicio");
             setShowModal(false);
         }
     };

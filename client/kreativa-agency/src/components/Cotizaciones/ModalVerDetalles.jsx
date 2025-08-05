@@ -61,12 +61,14 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
             setCotizacion(res.data.cotizacion);
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
         } finally {
@@ -155,12 +157,14 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
             fetchCotizacion(cotizacionId);
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
             showNotification(
@@ -227,12 +231,14 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
             showNotification("success", "Estado cambiado  correctamente.");
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
 

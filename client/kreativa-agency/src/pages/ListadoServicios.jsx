@@ -141,7 +141,17 @@ const ListadoServicios = () => {
                     setServicios([]);
                 }
             } catch (error) {
-                console.error("Error obteniendo servicios:", error.message);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error obteniendo servicios");
                 setServicios([]);
             }
         }

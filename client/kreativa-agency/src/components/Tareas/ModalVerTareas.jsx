@@ -11,6 +11,7 @@ import { faEllipsisH, faPencil } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 import { notification } from "antd";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
     const [tarea, setTarea] = useState(tareaModal);
@@ -21,6 +22,7 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
     const [api, contextHolder] = notification.useNotification();
     const user_id = localStorage.getItem("user_id");
     const [contenido, setContenido] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (show && !lodash.isEmpty(tareaModal)) {
@@ -87,7 +89,17 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
                 setContenido("");
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             showNotification("error", "Error al enviar su comentario.");
         }
     };

@@ -31,18 +31,33 @@ const VerPerfil = () => {
                 }
 
                 const decoded = jwtDecode(token);
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios/${decoded.id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/usuarios/${decoded.id}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
 
                 setUsuario(response.data);
                 setFormData({
                     usuario: response.data.usuario,
-                    email: response.data.email
+                    email: response.data.email,
                 });
             } catch (error) {
-                console.error("Error al obtener el perfil:", error);
-                setError("Hubo un problema al obtener la información del perfil.");
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener el perfil");
+                setError(
+                    "Hubo un problema al obtener la información del perfil."
+                );
             } finally {
                 setLoading(false);
             }
@@ -61,9 +76,13 @@ const VerPerfil = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem("token");
-            await axios.put(`${import.meta.env.VITE_API_URL}/usuarios/${usuario._id}`, formData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await axios.put(
+                `${import.meta.env.VITE_API_URL}/usuarios/${usuario._id}`,
+                formData,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
 
             Swal.fire({
                 title: "¡Perfil actualizado!",
@@ -75,7 +94,18 @@ const VerPerfil = () => {
             setUsuario({ ...usuario, ...formData });
             setEditMode(false);
         } catch (error) {
-            console.error("Error al actualizar perfil:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al actualizar perfil");
             Swal.fire({
                 title: "Error",
                 text: "No se pudo actualizar el perfil. Inténtalo de nuevo.",
@@ -90,7 +120,11 @@ const VerPerfil = () => {
             <div className="perfil-view-container">
                 <div className="perfil-view-card">
                     <div className="perfil-view-header">
-                        <UserRound size={60} color="#ff0072" strokeWidth={2.5} />
+                        <UserRound
+                            size={60}
+                            color="#ff0072"
+                            strokeWidth={2.5}
+                        />
                         <h1 className="perfil-view-title">Mi Perfil</h1>
                     </div>
 
@@ -100,7 +134,9 @@ const VerPerfil = () => {
                         <p className="perfil-view-error">{error}</p>
                     ) : (
                         <>
-                            <h2 className="perfil-view-nombre">{usuario.nombre}</h2>
+                            <h2 className="perfil-view-nombre">
+                                {usuario.nombre}
+                            </h2>
                             <div className="perfil-view-info">
                                 {editMode ? (
                                     <>
@@ -127,12 +163,32 @@ const VerPerfil = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <p><strong>Rol:</strong> {usuario.tipo_usuario}</p>
-                                        <p><strong>Usuario:</strong> {usuario.usuario}</p>
-                                        <p><strong>Email:</strong> {usuario.email}</p>
-                                        <p><strong>Cédula:</strong> {usuario.cedula}</p>
-                                        <p><strong>Estado:</strong> {usuario.estado}</p>
-                                        <p><strong>Fecha de Registro:</strong> {new Date(usuario.fecha_creacion).toLocaleDateString()}</p>
+                                        <p>
+                                            <strong>Rol:</strong>{" "}
+                                            {usuario.tipo_usuario}
+                                        </p>
+                                        <p>
+                                            <strong>Usuario:</strong>{" "}
+                                            {usuario.usuario}
+                                        </p>
+                                        <p>
+                                            <strong>Email:</strong>{" "}
+                                            {usuario.email}
+                                        </p>
+                                        <p>
+                                            <strong>Cédula:</strong>{" "}
+                                            {usuario.cedula}
+                                        </p>
+                                        <p>
+                                            <strong>Estado:</strong>{" "}
+                                            {usuario.estado}
+                                        </p>
+                                        <p>
+                                            <strong>Fecha de Registro:</strong>{" "}
+                                            {new Date(
+                                                usuario.fecha_creacion
+                                            ).toLocaleDateString()}
+                                        </p>
                                     </>
                                 )}
                             </div>
@@ -142,13 +198,33 @@ const VerPerfil = () => {
                     <div className="perfil-view-buttons">
                         {editMode ? (
                             <>
-                                <button className="perfil-view-btn" onClick={() => setEditMode(false)}>Volver</button>
-                                <button className="perfil-view-btn" onClick={handleSave}>Guardar</button>
+                                <button
+                                    className="perfil-view-btn"
+                                    onClick={() => setEditMode(false)}
+                                >
+                                    Volver
+                                </button>
+                                <button
+                                    className="perfil-view-btn"
+                                    onClick={handleSave}
+                                >
+                                    Guardar
+                                </button>
                             </>
                         ) : (
                             <>
-                                <button className="perfil-view-btn" onClick={() => navigate("/usuarios")}>Volver</button>
-                                <button className="perfil-view-btn" onClick={() => setEditMode(true)}>Editar Perfil</button>
+                                <button
+                                    className="perfil-view-btn"
+                                    onClick={() => navigate("/usuarios")}
+                                >
+                                    Volver
+                                </button>
+                                <button
+                                    className="perfil-view-btn"
+                                    onClick={() => setEditMode(true)}
+                                >
+                                    Editar Perfil
+                                </button>
                             </>
                         )}
                     </div>

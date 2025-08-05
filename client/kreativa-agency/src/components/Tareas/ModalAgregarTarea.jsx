@@ -152,12 +152,14 @@ const ModalAgregarTarea = ({
             }
         } catch (error) {
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
 
@@ -204,12 +206,14 @@ const ModalAgregarTarea = ({
         } catch (error) {
             console.error(`Error al obtener los empleados`);
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
         }
@@ -241,12 +245,14 @@ const ModalAgregarTarea = ({
         } catch (error) {
             console.error(`Error al obtener los proyectos`);
             if (error.status === 401) {
+                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
                         mensaje: "Debe volver a iniciar sesión para continuar.",
                     },
                 });
+
                 return;
             }
         }

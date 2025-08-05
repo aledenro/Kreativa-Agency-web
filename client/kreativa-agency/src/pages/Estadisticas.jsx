@@ -18,6 +18,7 @@ import AdminLayout from "../components/AdminLayout/AdminLayout";
 
 import "../AdminPanel.css";
 import ModalImprimirReportes from "../components/Estadisticas/ModalImprimirReporte";
+import { useNavigate } from "react-router-dom";
 
 // Colores de los gráficos
 const COLORS = ["#ff0072", "#8d25fc", "#007bff", "#ffc02c"];
@@ -84,6 +85,7 @@ const Estadisticas = () => {
         selectedMonth === 0 ||
         selectedYear > currentYear ||
         (selectedYear === currentYear && selectedMonth > currentMonth);
+    const navigate = useNavigate();
 
     // Carga de categorías
     useEffect(() => {
@@ -99,6 +101,16 @@ const Estadisticas = () => {
                 );
                 setCategories(res.data);
             } catch (error) {
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
                 console.error(
                     "Error al obtener las categorías:",
                     error.message
@@ -126,10 +138,17 @@ const Estadisticas = () => {
                     setDetalleIngresosAnuales(data.detalle);
                 })
                 .catch((error) => {
-                    console.error(
-                        "Error al obtener los ingresos anuales:",
-                        error
-                    );
+                    if (error.status === 401) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje:
+                                    "Debe volver a iniciar sesión para continuar.",
+                            },
+                        });
+                        return;
+                    }
+                    console.error("Error al obtener los ingresos anuales");
                     setTotalIngresosAnuales(0);
                     setDetalleIngresosAnuales([]);
                 });
@@ -146,10 +165,17 @@ const Estadisticas = () => {
                     setDetalleEgresosAnuales(data.detalle);
                 })
                 .catch((error) => {
-                    console.error(
-                        "Error al obtener los egresos anuales:",
-                        error
-                    );
+                    if (error.status === 401) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje:
+                                    "Debe volver a iniciar sesión para continuar.",
+                            },
+                        });
+                        return;
+                    }
+                    console.error("Error al obtener los egresos anuales");
                     setTotalEgresosAnuales(0);
                     setDetalleEgresosAnuales([]);
                 });
@@ -194,10 +220,17 @@ const Estadisticas = () => {
                     });
                 })
                 .catch((error) => {
-                    console.error(
-                        "Error al obtener ingresos mensuales:",
-                        error
-                    );
+                    if (error.status === 401) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje:
+                                    "Debe volver a iniciar sesión para continuar.",
+                            },
+                        });
+                        return;
+                    }
+                    console.error("Error al obtener ingresos mensuales");
                     setTotalIngresos(0);
                     setCantidadIngresos(0);
                     setResumenIngresos({
@@ -238,44 +271,68 @@ const Estadisticas = () => {
                     setResumenEgresos(resumen);
                 })
                 .catch((error) => {
-                    console.error(
-                        "Error al obtener los egresos mensuales:",
-                        error
-                    );
+                    if (error.status === 401) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje:
+                                    "Debe volver a iniciar sesión para continuar.",
+                            },
+                        });
+                        return;
+                    }
+                    console.error("Error al obtener los egresos mensuales");
                 });
         }
-		const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
         axios
             .get(
                 `${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`,
                 {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             )
             .then((response) => {
                 const data = response.data;
                 setTotalIngresosAnuales(data.totalIngresos);
             })
             .catch((error) => {
-                console.error(
-                    "Error al obtener total ingresos anuales:",
-                    error
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener total ingresos anuales");
             });
         axios
             .get(
                 `${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`,
                 {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             )
             .then((response) => {
                 const data = response.data;
                 setTotalEgresosAnuales(data.totalEgresos);
             })
             .catch((error) => {
-                console.error("Error al obtener total egresos anuales:", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener total egresos anuales");
             });
     }, [selectedYear, selectedMonth, isAnnualView]);
 
