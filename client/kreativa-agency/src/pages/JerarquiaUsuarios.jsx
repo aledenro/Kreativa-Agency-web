@@ -17,6 +17,15 @@ const JerarquiaUsuarios = () => {
         const fetchJerarquia = async () => {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/jerarquia`,

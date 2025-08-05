@@ -88,6 +88,16 @@ const DashboardColaborador = () => {
         const fetchProyectos = async () => {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
+
                 let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
                 if (rol === "Cliente") {
@@ -134,6 +144,15 @@ const DashboardColaborador = () => {
         const fetchTareas = async () => {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
                 let url = `${import.meta.env.VITE_API_URL}/tareas`;
 
                 const response = await axios.get(url, {
@@ -159,6 +178,16 @@ const DashboardColaborador = () => {
         const fetchEmpleados = async () => {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
+
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
@@ -225,6 +254,16 @@ const DashboardColaborador = () => {
         const fetchProyectos = async () => {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
+
                 let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
                 if (rol === "Cliente") {
@@ -259,6 +298,15 @@ const DashboardColaborador = () => {
         const fetchTareas = async () => {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
                 let url = `${import.meta.env.VITE_API_URL}/tareas`;
 
                 const response = await axios.get(url, {

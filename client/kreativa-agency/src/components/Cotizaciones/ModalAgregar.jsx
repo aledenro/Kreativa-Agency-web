@@ -120,9 +120,10 @@ const ModalAgregar = ({ show, handleClose }) => {
             navigate("/error", {
                 state: {
                     errorCode: 401,
-                    mensaje: "Debe iniciar sesión para continuar.",
+                    mensaje: "Acceso no autorizado.",
                 },
             });
+            return;
         }
 
         try {

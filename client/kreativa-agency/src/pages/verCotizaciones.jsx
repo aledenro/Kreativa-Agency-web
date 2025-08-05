@@ -56,6 +56,7 @@ const VerCotizaciones = () => {
                         mensaje: "Acceso no autorizado.",
                     },
                 });
+                return;
             }
 
             const response = await axios.get(url, {

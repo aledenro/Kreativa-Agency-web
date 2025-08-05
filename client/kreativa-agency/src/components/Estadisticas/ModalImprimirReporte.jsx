@@ -5,6 +5,7 @@ import { useState } from "react";
 import { notification } from "antd";
 import lodash from "lodash";
 import forceFileDownload from "../../utils/forceFileDownload";
+import { useNavigate } from "react-router-dom";
 
 const columnasIngresos = [
     "Fecha",
@@ -25,6 +26,7 @@ const columnasEgresos = [
 
 const ModalImprimirReportes = ({ show, handleClose }) => {
     const [api, contextHolder] = notification.useNotification();
+    const navigate = useNavigate();
 
     const openSuccessNotification = (message) => {
         api.success({
@@ -47,6 +49,16 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
     const getDataSinglePageData = async (url) => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         const res = await axios.get(url, {
             headers: { Authorization: `Bearer ${token}` },
         });
@@ -58,6 +70,16 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
         const data = [];
 
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         const resEgresos = await axios.get(
             `${import.meta.env.VITE_API_URL}/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,

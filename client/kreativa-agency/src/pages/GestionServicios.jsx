@@ -33,6 +33,15 @@ const GestionServicios = () => {
         const fetchServicios = async () => {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/`,
@@ -92,6 +101,15 @@ const GestionServicios = () => {
                 : `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
 
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
 
             const response = await axios.put(endpoint, {
                 headers: { Authorization: `Bearer ${token}` },

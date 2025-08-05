@@ -16,9 +16,12 @@ const VerUsuario = () => {
             try {
                 const token = localStorage.getItem("token");
                 if (!token) {
-                    setError("No hay token disponible");
-                    setLoading(false);
-                    return;
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
                 }
 
                 const { data } = await axios.get(

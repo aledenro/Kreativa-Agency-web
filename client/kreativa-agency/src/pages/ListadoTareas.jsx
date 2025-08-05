@@ -88,6 +88,15 @@ const ListadoTareas = () => {
                 url += rol === "Colaborador" ? `/getByColab/${idUsuario}` : "";
                 const token = localStorage.getItem("token");
 
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
+
                 const response = await axios.get(url, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -110,6 +119,15 @@ const ListadoTareas = () => {
         const fetchColabs = async () => {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
 
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,

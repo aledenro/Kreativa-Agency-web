@@ -118,6 +118,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
         const estadoEdit = event.target.value;
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
@@ -191,6 +201,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
@@ -245,6 +265,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
     const addActionLog = async (accion) => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const user_id = localStorage.getItem("user_id");
             await axios.put(
@@ -273,6 +303,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
     const fetchTarea = useCallback(async () => {
         if (!tareaId) return;
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const response = await axios.get(
@@ -312,6 +352,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
     async function fetchEmpleados() {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
@@ -338,6 +388,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
     async function fetchProyectos() {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const response = await axios.get(

@@ -32,8 +32,12 @@ const Usuarios = () => {
             try {
                 const token = localStorage.getItem("token");
                 if (!token) {
-                    setError("No hay token disponible");
-                    return;
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
                 }
 
                 const decodedToken = jwtDecode(token);
@@ -78,8 +82,12 @@ const Usuarios = () => {
         try {
             const token = localStorage.getItem("token");
             if (!token) {
-                setError("No hay token disponible");
-                return;
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
             }
 
             const { data } = await axios.get(
@@ -121,6 +129,15 @@ const Usuarios = () => {
             return;
         try {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
                 { estado: nuevoEstado },

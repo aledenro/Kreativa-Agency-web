@@ -49,6 +49,17 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
     const fetchCotizacion = useCallback(async (cotizacionId) => {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             setLoading(true);
             const res = await axios.get(
@@ -137,6 +148,16 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${cotizacionId}`,
@@ -219,6 +240,16 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
     function handleChangeEstado(event) {
         const estado = event.target.value;
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             axios.put(

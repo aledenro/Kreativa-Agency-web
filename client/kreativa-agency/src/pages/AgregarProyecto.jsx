@@ -75,6 +75,16 @@ const AgregarProyecto = () => {
 
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/proyectos/crear`,
@@ -114,6 +124,15 @@ const AgregarProyecto = () => {
             try {
                 const token = localStorage.getItem("token");
 
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
+
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                     {
@@ -140,6 +159,15 @@ const AgregarProyecto = () => {
         async function fetchEmpleados() {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
 
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,

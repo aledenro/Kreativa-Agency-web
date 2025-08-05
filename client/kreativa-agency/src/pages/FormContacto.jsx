@@ -46,14 +46,9 @@ const FormContacto = () => {
 
     useEffect(() => {
         const fetchServicios = async () => {
-            const token = localStorage.getItem("token");
-
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/nombres`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
+                    `${import.meta.env.VITE_API_URL}/servicios/nombres`
                 );
 
                 if (Array.isArray(response.data)) {

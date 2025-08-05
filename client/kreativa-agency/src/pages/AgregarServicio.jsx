@@ -46,6 +46,16 @@ const AgregarServicio = () => {
     const fetchCategorias = async () => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/servicios/categorias`,
@@ -107,6 +117,16 @@ const AgregarServicio = () => {
 
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/servicios/agregar`,
@@ -136,6 +156,15 @@ const AgregarServicio = () => {
                     }
 
                     const token = localStorage.getItem("token");
+
+                    if (!token) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje: "Debe iniciar sesión para continuar.",
+                            },
+                        });
+                    }
 
                     await axios.put(
                         `${import.meta.env.VITE_API_URL}/servicios/modificar/${servicioId}`,
@@ -195,6 +224,16 @@ const AgregarServicio = () => {
             return;
         }
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const response = await axios.post(

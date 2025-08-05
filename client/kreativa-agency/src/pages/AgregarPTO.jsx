@@ -22,13 +22,12 @@ const AgregarPTO = () => {
             try {
                 const token = localStorage.getItem("token");
                 if (!token) {
-                    Swal.fire({
-                        title: "Error",
-                        text: "No hay token disponible. Inicia sesión nuevamente.",
-                        icon: "error",
-                        confirmButtonColor: "#ff0072",
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
                     });
-                    return;
                 }
 
                 const decoded = jwtDecode(token);
@@ -103,13 +102,12 @@ const AgregarPTO = () => {
         try {
             const token = localStorage.getItem("token");
             if (!token) {
-                Swal.fire({
-                    title: "Error",
-                    text: "No hay token disponible.",
-                    icon: "error",
-                    confirmButtonColor: "#ff0072",
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
                 });
-                return;
             }
 
             await axios.post(`${import.meta.env.VITE_API_URL}/pto`, formData, {

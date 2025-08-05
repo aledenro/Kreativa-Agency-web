@@ -82,6 +82,16 @@ const ListadoIngresos = () => {
     const fetchIngresos = useCallback(async () => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/ingresos`,
@@ -110,6 +120,15 @@ const ListadoIngresos = () => {
         const fetchCategories = async () => {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/categorias`,
@@ -136,6 +155,15 @@ const ListadoIngresos = () => {
         const fetchClientes = async () => {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios`,
                     {
@@ -228,6 +256,15 @@ const ListadoIngresos = () => {
         if (toggleIngreso) {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const url = toggleIngreso.activo
                     ? `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/desactivar`
@@ -269,6 +306,16 @@ const ListadoIngresos = () => {
 
     const handleConfirmEdit = async () => {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             await axios.put(

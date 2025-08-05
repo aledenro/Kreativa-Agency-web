@@ -65,6 +65,17 @@ const Movimientos = () => {
         }
 
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         axios
             .get(url, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -96,6 +107,17 @@ const Movimientos = () => {
     // Cargar las categorías (para mapear el ID en ingresos)
     useEffect(() => {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         axios
             .get(`${import.meta.env.VITE_API_URL}/servicios/categorias`, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -190,6 +212,16 @@ const Movimientos = () => {
             return;
         }
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         if (mov.entidad === "ingreso") {
             axios
@@ -406,6 +438,17 @@ const Movimientos = () => {
                                                     localStorage.getItem(
                                                         "token"
                                                     );
+
+                                                if (!token) {
+                                                    navigate("/error", {
+                                                        state: {
+                                                            errorCode: 401,
+                                                            mensaje:
+                                                                "Debe iniciar sesión para continuar.",
+                                                        },
+                                                    });
+                                                }
+
                                                 axios
                                                     .get(
                                                         `${import.meta.env.VITE_API_URL}/movimientos`,

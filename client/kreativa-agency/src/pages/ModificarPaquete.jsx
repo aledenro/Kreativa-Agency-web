@@ -27,6 +27,15 @@ const ModificarPaquete = () => {
         const fetchPaquete = async () => {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/${servicioId}`,
@@ -146,6 +155,16 @@ const ModificarPaquete = () => {
 
     const handleSubmit = async () => {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const res = await axios.put(

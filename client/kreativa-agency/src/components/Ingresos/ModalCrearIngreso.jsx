@@ -31,6 +31,15 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
         try {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/ingresos/buscarPorCedula/${formData.cedula}`,
                 {
@@ -83,6 +92,16 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const res = await axios.post(

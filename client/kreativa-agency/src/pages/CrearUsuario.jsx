@@ -47,7 +47,14 @@ const CrearUsuario = () => {
             if (["usuario", "email", "cedula"].includes(name)) {
                 try {
                     const token = localStorage.getItem("token");
-                    if (!token) return;
+                    if (!token) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje: "Debe iniciar sesión para continuar.",
+                            },
+                        });
+                    }
 
                     const response = await axios.get(
                         `${import.meta.env.VITE_API_URL}/usuarios`,
@@ -92,7 +99,12 @@ const CrearUsuario = () => {
 
         const token = localStorage.getItem("token");
         if (!token) {
-            setErrorServidor("No hay token disponible");
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
             return;
         }
 

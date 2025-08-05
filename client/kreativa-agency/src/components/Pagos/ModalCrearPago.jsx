@@ -39,6 +39,15 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
 
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/pagos/`,
                 data,

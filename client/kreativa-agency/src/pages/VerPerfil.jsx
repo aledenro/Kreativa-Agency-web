@@ -20,14 +20,12 @@ const VerPerfil = () => {
             try {
                 const token = localStorage.getItem("token");
                 if (!token) {
-                    Swal.fire({
-                        title: "Error",
-                        text: "No hay token disponible. Inicia sesión nuevamente.",
-                        icon: "error",
-                        confirmButtonColor: "#ff0072",
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
                     });
-                    navigate("/login");
-                    return;
                 }
 
                 const decoded = jwtDecode(token);
@@ -76,6 +74,15 @@ const VerPerfil = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem("token");
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/usuarios/${usuario._id}`,
                 formData,

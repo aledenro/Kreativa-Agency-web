@@ -46,6 +46,16 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
@@ -118,6 +128,16 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
         };
 
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const response = await axios.put(

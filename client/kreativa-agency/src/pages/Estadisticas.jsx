@@ -92,6 +92,15 @@ const Estadisticas = () => {
         const fetchCategories = async () => {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/categorias`,
@@ -125,6 +134,16 @@ const Estadisticas = () => {
         if (isAnnualView) {
             // Vista Anual
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             axios
                 .get(
                     `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`,
@@ -185,6 +204,15 @@ const Estadisticas = () => {
                 selectedMonth < 10 ? `0${selectedMonth}` : selectedMonth;
             const fecha = `${selectedYear}-${formattedMonth}`;
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
 
             axios
                 .get(
@@ -285,6 +313,16 @@ const Estadisticas = () => {
                 });
         }
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         axios
             .get(

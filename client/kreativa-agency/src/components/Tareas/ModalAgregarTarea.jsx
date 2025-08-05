@@ -119,6 +119,16 @@ const ModalAgregarTarea = ({
 
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/tareas/crear`,
@@ -188,6 +198,15 @@ const ModalAgregarTarea = ({
         try {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                 {
@@ -221,6 +240,16 @@ const ModalAgregarTarea = ({
 
     async function fetchProyectos() {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const response = await axios.get(

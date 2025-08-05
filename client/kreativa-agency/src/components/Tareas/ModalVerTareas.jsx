@@ -71,6 +71,16 @@ const ModalVerTareas = ({ tareaModal, show, handleClose }) => {
               };
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const response = await axios.put(`${url}${tarea._id}`, data, {
                 headers: { Authorization: `Bearer ${token}` },

@@ -71,6 +71,16 @@ const ListadoEgresos = () => {
     const fetchEgresos = useCallback(async () => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/egresos`,
@@ -162,6 +172,15 @@ const ListadoEgresos = () => {
     const handleConfirmToggle = async () => {
         if (toggleEgreso) {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
 
             try {
                 const url = toggleEgreso.activo

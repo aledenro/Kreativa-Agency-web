@@ -51,6 +51,16 @@ const ModificarServicio = () => {
     const fetchCategorias = async () => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/servicios/categorias`,
@@ -79,6 +89,15 @@ const ModificarServicio = () => {
     useEffect(() => {
         const fetchServicio = async () => {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
 
             try {
                 setIsLoading(true);
@@ -180,6 +199,16 @@ const ModificarServicio = () => {
 
                         const token = localStorage.getItem("token");
 
+                        if (!token) {
+                            navigate("/error", {
+                                state: {
+                                    errorCode: 401,
+                                    mensaje:
+                                        "Debe iniciar sesión para continuar.",
+                                },
+                            });
+                        }
+
                         const imageUpdateResponse = await axios.put(
                             `${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
                             imagenes,
@@ -207,6 +236,15 @@ const ModificarServicio = () => {
             };
 
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
 
             const updateResponse = await axios.put(
                 `${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
@@ -257,6 +295,16 @@ const ModificarServicio = () => {
             return;
         }
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             setIsLoading(true);

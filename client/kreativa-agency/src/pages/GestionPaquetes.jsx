@@ -48,6 +48,15 @@ const GestionPaquetes = () => {
         const fetchServicios = async () => {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios`,
@@ -111,6 +120,15 @@ const GestionPaquetes = () => {
         const { servicioId, paqueteId, estadoActual } = selectedPaquete;
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
         try {
             const endpoint = estadoActual
                 ? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
