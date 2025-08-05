@@ -2,8 +2,9 @@ import { Modal, Alert, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
+    const navigate = useNavigate();
     const [mensaje, setMensaje] = useState("");
     const [errorCedula, setErrorCedula] = useState("");
     const [nombreCliente, setNombreCliente] = useState("");
@@ -53,7 +54,15 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
                 setErrorCedula("Cliente no encontrado");
             }
         } catch (error) {
-            console.error("Error buscando cliente:", error);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setNombreCliente("");
             setEmailCliente("");
             setEstadoCliente("Inactivo");
@@ -88,7 +97,15 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error creando ingreso:", error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setMensaje("Error al crear el ingreso.");
         }
     };

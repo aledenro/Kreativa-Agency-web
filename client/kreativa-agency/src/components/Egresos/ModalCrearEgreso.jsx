@@ -1,9 +1,10 @@
 import { Modal, Form, Button, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
 const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
+    const navigate = useNavigate();
     const [mensaje, setMensaje] = useState("");
     const [showConfirm, setShowConfirm] = useState(false);
     const [formData, setFormData] = useState({
@@ -26,9 +27,9 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/egresos`,
+                formData,
                 {
                     headers: { Authorization: `Bearer ${token}` },
-                    body: formData,
                 }
             );
             if (res.status === 201) {
@@ -38,7 +39,15 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error creando egreso:", error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setMensaje("Error al crear el egreso.");
         }
     };

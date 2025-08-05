@@ -2,10 +2,11 @@ import { Modal, Alert, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
     const [egresoEditado, setEgresoEditado] = useState({});
     const [mensaje, setMensaje] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (egreso && Object.keys(egreso).length > 0) {
@@ -36,7 +37,15 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error al actualizar egreso:", error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setMensaje("Error al actualizar el egreso.");
         }
     };

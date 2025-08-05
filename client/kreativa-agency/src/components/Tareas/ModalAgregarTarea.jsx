@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import sendEmail from "../../utils/emailSender";
+import { useNavigate } from "react-router-dom";
 
 function construirJsonRequest(
     proyecto,
@@ -45,6 +46,7 @@ const ModalAgregarTarea = ({
     const [alertVariant, setAlertVariant] = useState("danger");
     const prioridades = ["Baja", "Media", "Alta"];
     const formRef = useRef(null);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         proyecto: proyectoId || "",
@@ -149,7 +151,15 @@ const ModalAgregarTarea = ({
                 }, 2000);
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
 
             setAlertMessage(
                 "Error al crear la tarea, por favor trate nuevamente o comuníquese con el soporte técnico."
@@ -192,7 +202,16 @@ const ModalAgregarTarea = ({
                 }));
             }
         } catch (error) {
-            console.error(`Error al obtener los empleados: ${error.message}`);
+            console.error(`Error al obtener los empleados`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
         }
     }
 
@@ -220,7 +239,16 @@ const ModalAgregarTarea = ({
                 }));
             }
         } catch (error) {
-            console.error(`Error al obtener los proyectos: ${error.message}`);
+            console.error(`Error al obtener los proyectos`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
         }
     }
 

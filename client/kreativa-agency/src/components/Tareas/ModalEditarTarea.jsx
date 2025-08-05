@@ -3,6 +3,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import sendEmail from "../../utils/emailSender";
+import { useNavigate } from "react-router-dom";
 
 function construirJsonRequest(
     proyecto,
@@ -96,6 +97,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
     const [estado, setEstado] = useState("");
     const [colaboradorOriginal, setColaboradorOriginal] = useState("");
     const [formRef, setFormRef] = useState(null);
+    const navigate = useNavigate();
 
     const prioridades = ["Baja", "Media", "Alta"];
     const estados = [
@@ -141,7 +143,15 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
                 }, 3000);
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setAlertMessage(
                 "Error al editar el estado de su tarea, por favor trate nuevamente o comuniquese con el soporte técnico."
             );
@@ -210,7 +220,15 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
                 }, 3000);
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
 
             setAlertMessage(
                 "Error al editar la tarea, por favor trate nuevamente o comuniquese con el soporte técnico."
@@ -234,7 +252,15 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
         }
     };
 
@@ -254,7 +280,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
             setEstado(response.data.estado);
             setColaboradorOriginal(response.data.colaborador_id._id);
         } catch (error) {
-            console.error(`Error al obtener la tarea: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error(`Error al obtener la tarea`);
         }
     }, [tareaId]);
 
@@ -278,7 +313,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
             );
             setEmpleados(response.data);
         } catch (error) {
-            console.error(`Error al obtener los empleados: ${error.message}`);
+            console.error(`Error al obtener los empleados`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
         }
     }
 
@@ -295,7 +339,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
             setProyectos(response.data.proyectos);
         } catch (error) {
-            console.error(`Error al obtener los proyectos: ${error.message}`);
+            console.error(`Error al obtener los proyectos`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
         }
     }
 

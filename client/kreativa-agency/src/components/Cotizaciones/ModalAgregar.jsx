@@ -11,6 +11,7 @@ import lodash from "lodash";
 import fileUpload from "../../utils/fileUpload";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const { Dragger } = Upload;
 
@@ -26,6 +27,7 @@ const ModalAgregar = ({ show, handleClose }) => {
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => setIsHovered(false);
+    const navigate = useNavigate();
 
     const handleFileChange = (info) => {
         // Verificar archivos seleccionados
@@ -76,7 +78,15 @@ const ModalAgregar = ({ show, handleClose }) => {
                 respuestaDbId
             );
         } catch (error) {
-            console.error(`Error al subir los archivos: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             showNotification(
                 "error",
                 "Error al subir los archivos, por favor intente de nuevo o contacte al soporte técnico."
@@ -104,6 +114,15 @@ const ModalAgregar = ({ show, handleClose }) => {
 
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe iniciar sesión para continuar.",
+                },
+            });
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
@@ -125,7 +144,14 @@ const ModalAgregar = ({ show, handleClose }) => {
                 handleClose();
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+            }
 
             showNotification(
                 "error",

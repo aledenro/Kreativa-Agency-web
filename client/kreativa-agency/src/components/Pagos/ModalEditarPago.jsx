@@ -3,6 +3,7 @@ import lodash from "lodash";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ModalEditarPago = ({
     pago,
@@ -16,6 +17,7 @@ const ModalEditarPago = ({
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (pago) {
@@ -44,7 +46,15 @@ const ModalEditarPago = ({
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error al editar el pago:", error);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setAlertMessage("Error al editar el pago.");
             setAlertVariant("danger");
             setShowAlert(true);

@@ -2,11 +2,13 @@ import { Modal, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         const enviar = confirm("¿Desea enviar el pago?");
@@ -54,7 +56,15 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error al crear el pago:", error);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setAlertMessage("Error al crear el pago.");
             setAlertVariant("danger");
             setShowAlert(true);

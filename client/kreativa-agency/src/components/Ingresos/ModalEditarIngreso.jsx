@@ -2,6 +2,7 @@ import { Modal, Alert, Form, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ModalEditarIngreso = ({
     show,
@@ -13,6 +14,7 @@ const ModalEditarIngreso = ({
     const [ingresoEditado, setIngresoEditado] = useState({});
     const [mensaje, setMensaje] = useState("");
     const [showConfirm, setShowConfirm] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (ingreso && Object.keys(ingreso).length > 0) {
@@ -53,7 +55,15 @@ const ModalEditarIngreso = ({
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error al actualizar ingreso:", error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setMensaje("Error al actualizar el ingreso.");
         }
     };

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
+import { useNavigate } from "react-router-dom";
 
 function construirJsonRequest(
     nombre,
@@ -38,6 +39,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
     const [alertVariant, setAlertVariant] = useState("danger");
     const [empleados, setEmpleados] = useState([]);
     const formRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -99,7 +101,15 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
                 }, 2000);
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
 
             setAlertMessage(
                 "Error al crear el proyecto, por favor trate nuevamente o comuníquese con el soporte técnico."
@@ -129,7 +139,16 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 
             setClientes(response.data);
         } catch (error) {
-            console.error(`Error al obtener los clientes: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error(`Error al obtener los clientes`);
         }
     }
 
@@ -146,7 +165,16 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 
             setEmpleados(response.data);
         } catch (error) {
-            console.error(`Error al obtener los empleados: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error(`Error al obtener los empleados`);
         }
     }
 

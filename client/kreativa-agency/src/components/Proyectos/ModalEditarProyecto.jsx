@@ -6,6 +6,7 @@ import sendEmail from "../../utils/emailSender";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import lodash from "lodash";
+import { useNavigate } from "react-router-dom";
 
 const estados = [
     "Por Hacer",
@@ -74,6 +75,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
     const [alertVariant, setAlertVariant] = useState("danger");
     const [empleados, setEmpleados] = useState([]);
     const [formRef, setFormRef] = useState(null);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -143,7 +145,15 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
                 }, 3000);
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setAlertMessage(
                 "Error al editar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
             );
@@ -200,7 +210,15 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
                 }, 3000);
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             setAlertMessage(
                 "Error al editar el estado de su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
             );
@@ -222,7 +240,15 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
         }
     };
 
@@ -257,7 +283,16 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
             fetchClientes();
         } catch (error) {
-            console.error(`Error al obtener el proyecto: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error(`Error al obtener el proyecto`);
         }
     }, [proyectoId]);
 
@@ -281,7 +316,16 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
             setEmpleados(response.data);
         } catch (error) {
-            console.error(`Error al obtener los empleados: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error(`Error al obtener los empleados`);
         }
     }
 
@@ -298,7 +342,16 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
             setClientes(response.data);
         } catch (error) {
-            console.error(`Error al obtener los clientes: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error(`Error al obtener los clientes`);
         }
     }
 

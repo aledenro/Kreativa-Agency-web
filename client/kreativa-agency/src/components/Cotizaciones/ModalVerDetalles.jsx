@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -22,7 +23,6 @@ import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 
 const { Dragger } = Upload;
-
 const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
     const [cotizacion, setCotizacion] = useState(null);
     const opciones = ["Nuevo", "Aceptado", "Cancelado"];
@@ -30,6 +30,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [loading, setLoading] = useState(false);
     const user_id = localStorage.getItem("user_id");
+    const navigate = useNavigate();
 
     // Para notificaciones
     const [api, contextHolder] = notification.useNotification();
@@ -59,7 +60,15 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
             setCotizacion(res.data.cotizacion);
         } catch (error) {
-            console.error("Error al obtener la cotizacion: " + error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
         } finally {
             setLoading(false);
         }
@@ -96,7 +105,6 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
                 respuestaDbId
             );
         } catch (error) {
-            console.error(`Error al subir los archivos: ${error.message}`);
             showNotification(
                 "error",
                 "Error al subir los archivos, por favor intente de nuevo o contacte al soporte técnico."
@@ -146,7 +154,15 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
             clearDragger();
             fetchCotizacion(cotizacionId);
         } catch (error) {
-            console.error(`Error al enviar la respuesta: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
             showNotification(
                 "error",
                 "Error al enviar su respuesta, por favor intente de nuevo o contacte al soporte tecnico."
@@ -162,7 +178,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
                 "test"
             );
         } catch (error) {
-            console.error(`Error al enviar la notificacion: ${error.message}`);
+            console.error(`Error al enviar la notificacion`);
             showNotification(
                 "error",
                 "Error al enviar la notificación, por favor intente de nuevo o contacte al soporte técnico."
@@ -210,9 +226,15 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
             showNotification("success", "Estado cambiado  correctamente.");
         } catch (error) {
-            console.error(
-                `Error al cambiar el estado de la cotizacion: ${error.message}`
-            );
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
 
             showNotification(
                 "error",

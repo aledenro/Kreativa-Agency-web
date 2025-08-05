@@ -1,19 +1,12 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
-import Alert from "react-bootstrap/Alert";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import Nav from "react-bootstrap/Nav";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Tab from "react-bootstrap/Tab";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faFileArrowDown,
-    faTrash,
-    faEllipsisH,
-    faPaperclip,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFileArrowDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 import fileUpload from "../../utils/fileUpload";
 import deleteFile from "../../utils/fileDelete";
@@ -21,6 +14,7 @@ import sendEmail from "../../utils/emailSender";
 // Importaciones nuevas para el Dragger
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const { Dragger } = Upload;
 
@@ -30,6 +24,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
     const [files, setFiles] = useState([]);
     const [isHovered, setIsHovered] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     // Para notificaciones
     const [api, contextHolder] = notification.useNotification();
@@ -61,7 +56,16 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
             setProyecto(res.data.proyecto);
         } catch (error) {
-            console.error("Error al obtener la proyecto: " + error.message);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error("Error al obtener la proyecto");
         }
     }, [proyectoId]);
 
@@ -139,7 +143,16 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
             showNotification("success", "Respuesta enviada correctamente.");
             fetchProyecto();
         } catch (error) {
-            console.error(`Error al enviar la respuesta: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error(`Error al enviar la respuesta`);
             showNotification(
                 "error",
                 "Error al enviar la respuesta, por favor intente de nuevo o contacte al soporte técnico."
@@ -172,7 +185,16 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
                 );
             }
         } catch (error) {
-            console.error(`Error al enviar la notificacion: ${error.message}`);
+            if (error.status === 401) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+                return;
+            }
+            console.error(`Error al enviar la notificacion`);
             showNotification(
                 "error",
                 "Error al enviar la notificación, por favor intente de nuevo o contacte al soporte técnico."
