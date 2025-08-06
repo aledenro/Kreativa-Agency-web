@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import Alert from "react-bootstrap/Alert";
 import sendEmail from "../../utils/emailSender";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 function construirJsonRequest(
     proyecto,
@@ -45,6 +47,7 @@ const ModalAgregarTarea = ({
     const [alertVariant, setAlertVariant] = useState("danger");
     const prioridades = ["Baja", "Media", "Alta"];
     const formRef = useRef(null);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         proyecto: proyectoId || "",
@@ -115,10 +118,23 @@ const ModalAgregarTarea = ({
             fecha_entrega
         );
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/tareas/crear`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status === 201) {
@@ -146,7 +162,17 @@ const ModalAgregarTarea = ({
                 }, 2000);
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
 
             setAlertMessage(
                 "Error al crear la tarea, por favor trate nuevamente o comuníquese con el soporte técnico."
@@ -162,6 +188,28 @@ const ModalAgregarTarea = ({
     };
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+
         if (show) {
             fetchEmpleados();
             fetchProyectos();
@@ -172,6 +220,15 @@ const ModalAgregarTarea = ({
     async function fetchEmpleados() {
         try {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
 
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
@@ -189,14 +246,40 @@ const ModalAgregarTarea = ({
                 }));
             }
         } catch (error) {
-            console.error(`Error al obtener los empleados: ${error.message}`);
+            console.error(`Error al obtener los empleados`);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
         }
     }
 
     async function fetchProyectos() {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`
+                `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
 
             setProyectos(response.data.proyectos);
@@ -212,7 +295,18 @@ const ModalAgregarTarea = ({
                 }));
             }
         } catch (error) {
-            console.error(`Error al obtener los proyectos: ${error.message}`);
+            console.error(`Error al obtener los proyectos`);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
         }
     }
 

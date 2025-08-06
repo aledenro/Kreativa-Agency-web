@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
@@ -6,6 +6,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { notification } from "antd";
+import validTokenActive from "../utils/validateToken";
 
 const AgregarPaquete = () => {
     const { id } = useParams();
@@ -15,9 +16,12 @@ const AgregarPaquete = () => {
         descripcion: "",
         nivel: "",
         duracion: "",
+        duracionNumero: "",
+        duracionUnidad: "días",
         beneficios: [""],
         precio: "",
     });
+
     const [showModal, setShowModal] = useState(false);
 
     const [api, contextHolder] = notification.useNotification();
@@ -39,6 +43,30 @@ const AgregarPaquete = () => {
             duration: 4,
         });
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -80,27 +108,61 @@ const AgregarPaquete = () => {
     };
 
     const handleSubmit = async () => {
+        const duracionNumero = Number(paquete.duracionNumero);
+
+        if (
+            isNaN(duracionNumero) ||
+            duracionNumero < 1 ||
+            !paquete.duracionUnidad
+        ) {
+            openErrorNotification(
+                "Por favor ingrese una duración válida (mayor o igual a 1)"
+            );
+            return;
+        }
+
+        const duracion = `${duracionNumero} ${paquete.duracionUnidad}`;
+
         const paqueteData = {
             ...paquete,
+            duracion,
             precio: parseFloat(paquete.precio),
         };
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/servicios/${id}/nuevoPaquete`,
-                paqueteData
+                paqueteData,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
             console.log(res.data);
             openSuccessNotification("Paquete agregado exitosamente");
             setShowModal(false);
-
-            setTimeout(() => {
-                navigate(`/admin/paquetes`);
-            }, 2000);
         } catch (error) {
-            console.error("Error al agregar el paquete: ", error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             openErrorNotification("Hubo un error al agregar el paquete");
-            setShowModal(false);
         }
     };
 
@@ -154,14 +216,67 @@ const AgregarPaquete = () => {
                                         <label className="form-label">
                                             Duración
                                         </label>
-                                        <input
-                                            type="text"
-                                            name="duracion"
-                                            className="form_input"
-                                            value={paquete.duracion}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <div className="d-flex flex-wrap align-items-center gap-2">
+                                            <input
+                                                type="number"
+                                                name="duracionNumero"
+                                                className="form_input"
+                                                value={
+                                                    paquete.duracionNumero || ""
+                                                }
+                                                onChange={(e) => {
+                                                    const valor = parseFloat(
+                                                        e.target.value
+                                                    );
+                                                    if (
+                                                        valor >= 1 ||
+                                                        e.target.value === ""
+                                                    ) {
+                                                        setPaquete((prev) => ({
+                                                            ...prev,
+                                                            duracionNumero:
+                                                                valor,
+                                                        }));
+                                                    }
+                                                }}
+                                                required
+                                                min="1"
+                                                placeholder="Duración"
+                                                style={{
+                                                    minWidth: "120px",
+                                                    flex: "1 1 120px",
+                                                }}
+                                            />
+                                            <select
+                                                className="form_input"
+                                                name="duracionUnidad"
+                                                value={
+                                                    paquete.duracionUnidad ||
+                                                    "días"
+                                                }
+                                                onChange={(e) =>
+                                                    setPaquete((prev) => ({
+                                                        ...prev,
+                                                        duracionUnidad:
+                                                            e.target.value,
+                                                    }))
+                                                }
+                                                style={{
+                                                    minWidth: "120px",
+                                                    flex: "1 1 120px",
+                                                }}
+                                            >
+                                                <option value="días">
+                                                    Días
+                                                </option>
+                                                <option value="semanas">
+                                                    Semanas
+                                                </option>
+                                                <option value="meses">
+                                                    Meses
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div className="col">
                                         <label className="form-label">

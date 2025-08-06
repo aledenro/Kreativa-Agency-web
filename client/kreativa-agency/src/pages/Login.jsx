@@ -41,7 +41,6 @@ const Login = () => {
 
             localStorage.setItem("token", token);
             const decodedToken = jwtDecode(token);
-            console.log("Token decodificado:", decodedToken);
             // Contexto usuario
             login({
                 nombre: decodedToken.usuario,
@@ -86,6 +85,7 @@ const Login = () => {
                 text:
                     error.response?.data?.mensaje ||
                     "Usuario o contraseña incorrectos",
+                confirmButtonColor: " #ff0072",
             });
         }
     };

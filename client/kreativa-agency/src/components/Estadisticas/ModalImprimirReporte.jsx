@@ -1,10 +1,12 @@
 import { Modal } from "react-bootstrap";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect } from "react";
 import { notification } from "antd";
 import lodash from "lodash";
 import forceFileDownload from "../../utils/forceFileDownload";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const columnasIngresos = [
     "Fecha",
@@ -25,6 +27,31 @@ const columnasEgresos = [
 
 const ModalImprimirReportes = ({ show, handleClose }) => {
     const [api, contextHolder] = notification.useNotification();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
 
     const openSuccessNotification = (message) => {
         api.success({
@@ -45,7 +72,21 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
     };
 
     const getDataSinglePageData = async (url) => {
-        const res = await axios.get(url);
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        const res = await axios.get(url, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
         return res.data;
     };
@@ -53,14 +94,32 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
     const getDataMultiPageData = async (fechaInicio, fechaFin) => {
         const data = [];
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         const resEgresos = await axios.get(
-            `${import.meta.env.VITE_API_URL}/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+            `${import.meta.env.VITE_API_URL}/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
         );
 
         data.push(resEgresos.data);
 
         const resIngresos = await axios.get(
-            `${import.meta.env.VITE_API_URL}/ingresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`
+            `${import.meta.env.VITE_API_URL}/ingresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
         );
 
         data.push(resIngresos.data);

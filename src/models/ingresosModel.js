@@ -10,7 +10,7 @@ const IngresosModel = new mongoose.Schema(
         monto: {
             type: Number,
             required: true,
-            min: 0, // Para evitar valores negativos
+            min: 0,
         },
         descripcion: {
             type: String,
@@ -24,18 +24,18 @@ const IngresosModel = new mongoose.Schema(
                     console.log('Buscando cliente con cédula:', cedula);
                     const usuario = await Usuario.findOne({ cedula });
                     console.log('Cliente encontrado:', usuario);
-                    return !!usuario; // Devuelve true si existe, false si no
+                    return !!usuario;
                 },
                 message: "La cédula ingresada no pertenece a un usuario registrado.",
             },
         },
-        nombre_cliente: { 
-            type: String, 
-            required: true 
+        nombre_cliente: {
+            type: String,
+            required: true
         },
-        email: { 
-            type: String, 
-            required: true 
+        email: {
+            type: String,
+            required: true
         },
         categoria: {
             type: mongoose.Schema.Types.ObjectId,

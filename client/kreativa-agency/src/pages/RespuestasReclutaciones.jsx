@@ -5,14 +5,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faDownload,
     faEnvelope,
-    faBackward,
-    faCaretLeft,
-    faCaretRight,
-    faForward,
     faSort,
 } from "@fortawesome/free-solid-svg-icons";
 import ModalResponder from "../components/Reclutaciones/ModalResponder";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import { Modal } from "react-bootstrap";
+import Loading from "../components/ui/LoadingComponent";
+import { useFormStatus } from "../context/FormStatusContext";
+import { useNavigate } from "react-router-dom";
 
 const RespuestasReclutaciones = () => {
     const [formularios, setFormularios] = useState([]);
@@ -23,52 +26,140 @@ const RespuestasReclutaciones = () => {
     const [sortField, setSortField] = useState("fecha_envio");
     const [sortOrder, setSortOrder] = useState("desc");
 
-    const [isFormActive, setIsFormActive] = useState(true);
+    const { formActive: isFormActive, setFormActive } = useFormStatus();
     const [loading, setLoading] = useState(true);
+    const [toggleLoading, setToggleLoading] = useState(false);
+
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [modalAction, setModalAction] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFormularios = async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/reclutaciones`
+                    `${import.meta.env.VITE_API_URL}/reclutaciones`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
                 setFormularios(response.data);
             } catch (error) {
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
                 console.error(
-                    "Error al obtener los formularios de reclutamiento:",
+                    "Error al obtener los formularios de reclutamiento",
                     error
                 );
+            } finally {
+                setLoading(false);
             }
         };
 
         const fetchFormStatus = async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/form-status`
+                    `${import.meta.env.VITE_API_URL}/form-status`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
-                setIsFormActive(response.data.active);
+                setFormActive(response.data.active);
             } catch (error) {
-                console.error("Error al obtener estado del formulario:", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener estado del formulario");
             } finally {
                 setLoading(false);
             }
         };
 
         fetchFormularios();
-        fetchFormStatus();
     }, []);
 
+    const confirmToggleFormStatus = () => {
+        setModalAction(isFormActive ? "desactivar" : "activar");
+        setShowConfirmModal(true);
+    };
+
     const toggleFormStatus = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
-            setLoading(true);
+            setToggleLoading(true);
+         
             const response = await axios.put(
-                `${import.meta.env.VITE_API_URL}/form-status`
+                `${import.meta.env.VITE_API_URL}/form-status`,
+                {},
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
             );
-            setIsFormActive(response.data.active);
+            setFormActive(response.data.active);
         } catch (error) {
-            console.error("Error al cambiar estado del formulario:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al cambiar estado del formulario");
         } finally {
-            setLoading(false);
+            setToggleLoading(false);
+            setShowConfirmModal(false);
         }
     };
 
@@ -116,21 +207,43 @@ const RespuestasReclutaciones = () => {
         }
     };
 
+    if (loading) {
+        return (
+            <AdminLayout>
+                <div className="main-container mx-auto">
+                    <Loading />
+                </div>
+            </AdminLayout>
+        );
+    }
+
     return (
         <AdminLayout>
-            <div className="container mt-4">
-                <div style={{ height: "90px" }}></div>
+            <div className="main-container mx-auto">
+                <div className="espacio-top-responsive"></div>
                 <h1 className="mb-4">Formularios de Reclutamiento</h1>
                 <div className="admin-panel">
                     <h2>Panel de Control</h2>
-                    <div className="control-item">
-                        <span>Formulario de Landing Page:</span>
+                    <div className="control-item d-flex align-items-center gap-3 flex-wrap mb-4">
+                        <span>
+                            ¡El formulario actualmente se encuentra{" "}
+                            <strong
+                                className={
+                                    isFormActive
+                                        ? "text-success"
+                                        : "text-danger"
+                                }
+                            >
+                                {isFormActive ? "activo" : "inactivo"}
+                            </strong>
+                            !
+                        </span>
                         <button
-                            onClick={toggleFormStatus}
-                            disabled={loading}
-                            className={`my-3 thm-btn thm-btn-small ${isFormActive ? "btn-rojo" : "btn-verde"}`}
+                            onClick={confirmToggleFormStatus}
+                            disabled={toggleLoading}
+                            className={`thm-btn thm-btn-small ${isFormActive ? "btn-rojo" : "btn-verde"}`}
                         >
-                            {loading
+                            {toggleLoading
                                 ? "Cargando..."
                                 : isFormActive
                                   ? "Desactivar"
@@ -138,37 +251,46 @@ const RespuestasReclutaciones = () => {
                         </button>
                     </div>
                 </div>
-                <div className="table-responsive-xxl">
-                    <table className="table kreativa-proyecto-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Correo</th>
-                                <th>Teléfono</th>
-                                <th
+
+                <div className="div-table">
+                    <Table className="main-table tabla-trabajo">
+                        <Thead>
+                            <Tr>
+                                <Th className="col-nombre">Nombre</Th>
+                                <Th className="col-correo">Correo</Th>
+                                <Th className="col-telefono">Teléfono</Th>
+                                <Th
+                                    className="col-fecha"
                                     onClick={() => handleSort("fecha_envio")}
                                     style={{ cursor: "pointer" }}
                                 >
-                                    Fecha <FontAwesomeIcon icon={faSort} />
-                                </th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                                    Fecha{" "}
+                                    <span className="sort-icon">
+                                        <FontAwesomeIcon icon={faSort} />
+                                    </span>
+                                </Th>
+                                <Th className="col-acciones">Acciones</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
                             {formulariosPaginados.length > 0 ? (
                                 formulariosPaginados.map((form) => (
-                                    <tr key={form._id}>
-                                        <td>
+                                    <Tr key={form._id}>
+                                        <Td className="col-nombre">
                                             {form.nombre} {form.apellido}
-                                        </td>
-                                        <td>{form.correo}</td>
-                                        <td>{form.telefono}</td>
-                                        <td>
+                                        </Td>
+                                        <Td className="col-correo">
+                                            {form.correo}
+                                        </Td>
+                                        <Td className="col-telfono">
+                                            {form.telefono}
+                                        </Td>
+                                        <Td className="col-fecha">
                                             {new Date(
                                                 form.fecha_envio
                                             ).toLocaleDateString()}
-                                        </td>
-                                        <td className="acciones">
+                                        </Td>
+                                        <Td className="text-center col-acciones">
                                             <div className="botones-grupo">
                                                 <button
                                                     className="thm-btn thm-btn-small btn-amarillo"
@@ -180,7 +302,7 @@ const RespuestasReclutaciones = () => {
                                                         form.file.length === 0
                                                     }
                                                     title={
-                                                        !form.files ||
+                                                        !form.file ||
                                                         form.file.length === 0
                                                             ? "No hay CV disponible"
                                                             : "Descargar CV"
@@ -197,71 +319,37 @@ const RespuestasReclutaciones = () => {
                                                             form
                                                         )
                                                     }
+                                                    title="Responder solicitud"
                                                 >
                                                     <FontAwesomeIcon
                                                         icon={faEnvelope}
                                                     />
                                                 </button>
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </Td>
+                                    </Tr>
                                 ))
                             ) : (
-                                <tr>
-                                    <td colSpan="6" className="text-center">
+                                <Tr>
+                                    <Td colSpan="5" className="text-center">
                                         No hay formularios disponibles
-                                    </td>
-                                </tr>
+                                    </Td>
+                                </Tr>
                             )}
-                        </tbody>
-                    </table>
+                        </Tbody>
+                    </Table>
                 </div>
 
-                <div className="d-flex justify-content-center mt-4">
-                    <select
-                        className="form-select form-select-sm w-auto me-2"
-                        onChange={(e) => {
-                            setItemsPag(Number(e.target.value));
-                            setPagActual(1);
-                        }}
-                    >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={formularios.length}>Todos</option>
-                    </select>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faBackward} />
-                    </button>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(pagActual - 1)}
-                        disabled={pagActual === 1}
-                    >
-                        <FontAwesomeIcon icon={faCaretLeft} />
-                    </button>
-                    <span className="align-self-center mx-2">
-                        Página {pagActual} de {totalPags || 1}
-                    </span>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(pagActual + 1)}
-                        disabled={pagActual === totalPags || totalPags === 0}
-                    >
-                        <FontAwesomeIcon icon={faCaretRight} />
-                    </button>
-                    <button
-                        className={`thm-btn btn-volver thm-btn-small me-2`}
-                        onClick={() => setPagActual(totalPags)}
-                        disabled={pagActual === totalPags || totalPags === 0}
-                    >
-                        <FontAwesomeIcon icon={faForward} />
-                    </button>
-                </div>
+                <TablaPaginacion
+                    totalItems={formularios.length}
+                    itemsPorPagina={itemsPag}
+                    paginaActual={pagActual}
+                    onItemsPorPaginaChange={(cant) => {
+                        setItemsPag(cant);
+                        setPagActual(1);
+                    }}
+                    onPaginaChange={(pagina) => setPagActual(pagina)}
+                />
 
                 {mostrarResponderModal && (
                     <ModalResponder
@@ -270,6 +358,33 @@ const RespuestasReclutaciones = () => {
                     />
                 )}
             </div>
+
+            <Modal
+                show={showConfirmModal}
+                onHide={() => setShowConfirmModal(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar Acción</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    ¿Seguro que desea {modalAction} el formulario de
+                    reclutamiento?
+                </Modal.Body>
+                <Modal.Footer>
+                    <button
+                        className="thm-btn thm-btn-small btn-gris mx-1"
+                        onClick={() => setShowConfirmModal(false)}
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        className="thm-btn thm-btn-small"
+                        onClick={toggleFormStatus}
+                    >
+                        Sí
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </AdminLayout>
     );
 };

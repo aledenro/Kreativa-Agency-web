@@ -1,8 +1,37 @@
 import { Modal } from "react-bootstrap";
 import lodash from "lodash";
 import PropTypes from "prop-types";
+import validTokenActive from "../../utils/validateToken";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const ModalVerPago = ({ pago, show, handleClose, rol }) => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
+
     return (
         <Modal show={show && !lodash.isEmpty(pago)} onHide={handleClose}>
             <Modal.Header closeButton>

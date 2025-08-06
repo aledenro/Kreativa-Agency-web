@@ -49,23 +49,63 @@ const ModificarServicio = () => {
     };
 
     const fetchCategorias = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.get(
-                `${import.meta.env.VITE_API_URL}/servicios/categorias`
+                `${import.meta.env.VITE_API_URL}/servicios/categorias`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
             setCategorias(res.data);
         } catch (error) {
-            console.error("Error cargando categorias:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error cargando categorias");
             openErrorNotification("Error al cargar las categorías");
         }
     };
 
     useEffect(() => {
         const fetchServicio = async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 setIsLoading(true);
                 const res = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/${id}`
+                    `${import.meta.env.VITE_API_URL}/servicios/${id}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
                 setServicio(res.data);
 
@@ -82,7 +122,17 @@ const ModificarServicio = () => {
                 }
                 setIsLoading(false);
             } catch (error) {
-                console.error("Error al obtener el servicio: ", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener el servicio");
                 openErrorNotification(
                     "No se pudo cargar la información del servicio"
                 );
@@ -147,9 +197,22 @@ const ModificarServicio = () => {
                             id
                         );
 
+                        const token = localStorage.getItem("token");
+
+                        if (!token) {
+                            navigate("/error", {
+                                state: {
+                                    errorCode: 401,
+                                    mensaje:
+                                        "Debe iniciar sesión para continuar.",
+                                },
+                            });
+                        }
+
                         const imageUpdateResponse = await axios.put(
                             `${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
-                            { imagenes }
+                            imagenes,
+                            { headers: { Authorization: `Bearer ${token}` } }
                         );
 
                         console.log(
@@ -172,9 +235,21 @@ const ModificarServicio = () => {
                 categoria_id: servicio.categoria_id,
             };
 
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             const updateResponse = await axios.put(
                 `${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
-                serviceData
+                serviceData,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             openSuccessNotification(
@@ -183,8 +258,31 @@ const ModificarServicio = () => {
             setConfirmModal(false);
             setTimeout(() => navigate("/servicios"), 2000);
         } catch (error) {
-            console.error("Error al modificar el servicio: ", error);
-            openErrorNotification("Hubo un error al modificar el servicio");
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al modificar el servicio");
+
+            const mensaje =
+                error.response?.data?.error ||
+                "Hubo un error al modificar el servicio";
+
+            if (mensaje.includes("Ya existe otro servicio con ese nombre")) {
+                openErrorNotification(
+                    "Ya existe otro servicio con ese nombre."
+                );
+            } else {
+                openErrorNotification(mensaje);
+            }
+
             setConfirmModal(false);
         } finally {
             setIsLoading(false);
@@ -196,6 +294,17 @@ const ModificarServicio = () => {
             openErrorNotification("Debes agregar un nombre a la categoría");
             return;
         }
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             setIsLoading(true);
@@ -203,7 +312,8 @@ const ModificarServicio = () => {
                 `${import.meta.env.VITE_API_URL}/servicios/categorias`,
                 {
                     nombre: nuevaCategoria,
-                }
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             await fetchCategorias();
@@ -215,7 +325,18 @@ const ModificarServicio = () => {
             setShowModal(false);
             setNuevaCategoria("");
         } catch (error) {
-            console.error("Error al agregar la categoria:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al agregar la categoria");
             if (error.response) {
                 openErrorNotification(
                     `Error del servidor: ${

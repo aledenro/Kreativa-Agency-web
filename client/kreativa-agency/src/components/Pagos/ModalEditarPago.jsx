@@ -3,6 +3,8 @@ import lodash from "lodash";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const ModalEditarPago = ({
     pago,
@@ -16,18 +18,54 @@ const ModalEditarPago = ({
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+
         if (pago) {
             setPagoEditado(pago);
         }
     }, [pago]);
 
     const handleEditar = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/pagos/update/${pagoEditado._id}`,
-                pagoEditado
+                pagoEditado,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status === 200) {
@@ -41,7 +79,17 @@ const ModalEditarPago = ({
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error al editar el pago:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             setAlertMessage("Error al editar el pago.");
             setAlertVariant("danger");
             setShowAlert(true);

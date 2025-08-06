@@ -6,6 +6,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import fileUpload from "../utils/fileUpload";
+import { useNavigate } from "react-router-dom";
 
 const AgregarServicio = () => {
     const [categorias, setCategorias] = useState([]);
@@ -17,6 +18,7 @@ const AgregarServicio = () => {
     const [previewImage, setPreviewImage] = useState("");
     const [fileList, setFileList] = useState([]);
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
     const [api, contextHolder] = notification.useNotification();
 
@@ -42,12 +44,38 @@ const AgregarServicio = () => {
     };
 
     const fetchCategorias = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.get(
-                `${import.meta.env.VITE_API_URL}/servicios/categorias`
+                `${import.meta.env.VITE_API_URL}/servicios/categorias`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
             setCategorias(res.data);
         } catch (error) {
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             console.error("Error cargando categorias:", error);
         }
     };
@@ -87,6 +115,18 @@ const AgregarServicio = () => {
             return;
         }
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/servicios/agregar`,
@@ -95,7 +135,8 @@ const AgregarServicio = () => {
                     descripcion,
                     categoria_id: selectedCategoria,
                     imagenes: [],
-                }
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             const servicioId = res.data._id;
@@ -114,11 +155,33 @@ const AgregarServicio = () => {
                         );
                     }
 
+                    const token = localStorage.getItem("token");
+
+                    if (!token) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje: "Debe iniciar sesión para continuar.",
+                            },
+                        });
+                    }
+
                     await axios.put(
                         `${import.meta.env.VITE_API_URL}/servicios/modificar/${servicioId}`,
-                        { imagenes }
+                        imagenes,
+                        { headers: { Authorization: `Bearer ${token}` } }
                     );
                 } catch (error) {
+                    if (error.status === 401) {
+                        navigate("/error", {
+                            state: {
+                                errorCode: 401,
+                                mensaje:
+                                    "Debe volver a iniciar sesión para continuar.",
+                            },
+                        });
+                        return;
+                    }
                     console.error("Error al subir archivos:", error);
                     openErrorNotification("No se pudieron subir las imágenes.");
                     return;
@@ -130,8 +193,28 @@ const AgregarServicio = () => {
             setSelectedCategoria("");
             setFileList([]);
         } catch (error) {
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             console.error("Error al agregar el servicio:", error);
-            openErrorNotification("Hubo un error al agregar el servicio.");
+
+            const mensaje =
+                error.response?.data?.error ||
+                "Hubo un error al agregar el servicio";
+
+            if (mensaje.includes("Ya existe un servicio con ese nombre")) {
+                openErrorNotification("Ya existe un servicio con este nombre.");
+            } else {
+                openErrorNotification(mensaje);
+            }
         }
     };
 
@@ -140,13 +223,25 @@ const AgregarServicio = () => {
             openErrorNotification("Debes agregar un nombre a la categoría");
             return;
         }
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/servicios/categorias`,
                 {
                     nombre: nuevaCategoria,
-                }
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             await fetchCategorias();
@@ -157,6 +252,16 @@ const AgregarServicio = () => {
         } catch (error) {
             console.error("Error al agregar la categoria:", error);
             if (error.response) {
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
                 console.error("Detalles del error:", error.response.data);
                 openErrorNotification(
                     `Error del servidor: ${

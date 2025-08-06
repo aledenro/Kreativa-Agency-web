@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import sendEmail from "../utils/emailSender";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import { useNavigate } from "react-router-dom";
 
 function construirJsonRequest(
     proyecto,
@@ -39,6 +40,7 @@ const AgregarTarea = () => {
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
     const prioridades = ["Baja", "Media", "Alta"];
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -67,10 +69,23 @@ const AgregarTarea = () => {
             fechaEntrega
         );
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/tareas/crear`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 201) {
@@ -88,7 +103,17 @@ const AgregarTarea = () => {
                 );
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
 
             setAlertMessage(
                 "Error al enviar la tarea, por favor trate nuevamente o comuniquese con el soporte técnico."
@@ -108,6 +133,15 @@ const AgregarTarea = () => {
             try {
                 const token = localStorage.getItem("token");
 
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
+
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
@@ -117,23 +151,53 @@ const AgregarTarea = () => {
 
                 setEmpleados(response.data);
             } catch (error) {
-                console.error(
-                    `Error al obtener los empleados: ${error.message}`
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error(`Error al obtener los empleados`);
             }
         }
 
         async function fetchProyectos() {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`
+                    `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 setProyectos(response.data.proyectos);
             } catch (error) {
-                console.error(
-                    `Error al obtener los proyectos: ${error.message}`
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error(`Error al obtener los proyectos`);
             }
         }
 

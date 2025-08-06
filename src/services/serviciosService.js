@@ -3,337 +3,377 @@ const mongoose = require("mongoose");
 const awsS3Connect = require("../utils/awsS3Connect");
 
 class ServiciosService {
-    async agregarServicio(data, files) {
-        try {
-            let imagenes = [];
+	async agregarServicio(data, files) {
+		try {
+			const nombreLimpio = data.nombre.trim();
 
-            if (files && files.length > 0) {
-                imagenes = await Promise.all(
-                    files.map(async (file) => {
-                        return await awsS3Connect.uploadFile(file, {
-                            folder: "landingpage",
-                            parent: "servicios",
-                            parent_id: "",
-                        });
-                    })
-                );
-            }
+			const existente = await Servicios.findOne({
+				nombre: new RegExp(`^${nombreLimpio}$`, "i"),
+			});
 
-            const servicio = new Servicios({ ...data, imagenes });
-            const nuevoServicio = await servicio.save();
+			if (existente) {
+				throw new Error("Ya existe un servicio con ese nombre");
+			}
 
-            return nuevoServicio.toObject();
-        } catch (error) {
-            throw new Error("No se pudo agregar el servicio: " + error.message);
-        }
-    }
+			let imagenes = [];
+			if (files && files.length > 0) {
+				imagenes = await Promise.all(
+					files.map((file) =>
+						awsS3Connect.uploadFile(file, {
+							folder: "landingpage",
+							parent: "servicios",
+							parent_id: "",
+						})
+					)
+				);
+			}
 
-    async getServicios() {
-        try {
-            let servicios = await Servicios.find().lean();
+			const servicio = new Servicios({
+				...data,
+				nombre: nombreLimpio,
+				imagenes,
+			});
+			const nuevoServicio = await servicio.save();
 
-            if (servicios.length > 0) {
-                for (let servicio of servicios) {
-                    const files = await awsS3Connect.generateUrls({
-                        folder: "landingpage",
-                        parent: "servicios",
-                        parent_id: servicio._id,
-                    });
+			return nuevoServicio.toObject();
+		} catch (error) {
+			throw new Error("No se pudo agregar el servicio: " + error.message);
+		}
+	}
 
-                    const sortedFiles = files.sort((a, b) => {
-                        const timestampA = a.key.split("/")[3].split("-")[0];
-                        const timestampB = b.key.split("/")[3].split("-")[0];
+	async getServicios() {
+		try {
+			let servicios = await Servicios.find().lean();
 
-                        return parseInt(timestampB) - parseInt(timestampA);
-                    });
+			if (servicios.length > 0) {
+				for (let servicio of servicios) {
+					const files = await awsS3Connect.generateUrls({
+						folder: "landingpage",
+						parent: "servicios",
+						parent_id: servicio._id,
+					});
 
-                    servicio.imagen =
-                        sortedFiles.length > 0 ? sortedFiles[0].url : null;
-                }
-            }
+					const sortedFiles = files.sort((a, b) => {
+						const timestampA = a.key.split("/")[3].split("-")[0];
+						const timestampB = b.key.split("/")[3].split("-")[0];
 
-            return servicios;
-        } catch (error) {
-            throw new Error(
-                "No se pudieron obtener los servicios: " + error.message
-            );
-        }
-    }
+						return parseInt(timestampB) - parseInt(timestampA);
+					});
 
-    async getServicioById(id) {
-        try {
-            const servicio = await Servicios.findById(id).lean();
+					servicio.imagen = sortedFiles.length > 0 ? sortedFiles[0].url : null;
+				}
+			}
 
-            if (!servicio) {
-                throw new Error(`Servicio con ID ${id} no encontrado`);
-            }
+			return servicios;
+		} catch (error) {
+			throw new Error("No se pudieron obtener los servicios: " + error.message);
+		}
+	}
 
-            const files = await awsS3Connect.generateUrls({
-                folder: "landingpage",
-                parent: "servicios",
-                parent_id: servicio._id,
-            });
+	async getServicioById(id) {
+		try {
+			const servicio = await Servicios.findById(id).lean();
 
-            const sortedFiles = files.sort((a, b) => {
-                const timestampA = a.key.split("/")[3].split("-")[0];
-                const timestampB = b.key.split("/")[3].split("-")[0];
+			if (!servicio) {
+				throw new Error(`Servicio con ID ${id} no encontrado`);
+			}
 
-                return parseInt(timestampB) - parseInt(timestampA);
-            });
+			const files = await awsS3Connect.generateUrls({
+				folder: "landingpage",
+				parent: "servicios",
+				parent_id: servicio._id,
+			});
 
-            servicio.imagen =
-                sortedFiles.length > 0 ? sortedFiles[0].url : null;
+			const sortedFiles = files.sort((a, b) => {
+				const timestampA = a.key.split("/")[3].split("-")[0];
+				const timestampB = b.key.split("/")[3].split("-")[0];
 
-            servicio.imagenesUrls = sortedFiles.map((file) => file.url);
+				return parseInt(timestampB) - parseInt(timestampA);
+			});
 
-            return servicio;
-        } catch (error) {
-            throw new Error(
-                `No se pudo obtener el servicio con ID ${id}: ${error.message}`
-            );
-        }
-    }
+			servicio.imagen = sortedFiles.length > 0 ? sortedFiles[0].url : null;
 
-    async getServiciosNombres() {
-        try {
-            let servicios = await Servicios.find({}, "_id nombre").lean();
+			servicio.imagenesUrls = sortedFiles.map((file) => file.url);
 
-            return servicios;
-        } catch (error) {
-            throw new Error(
-                "No se pudieron obtener los nombres de los servicios: " +
-                    error.message
-            );
-        }
-    }
+			return servicio;
+		} catch (error) {
+			throw new Error(
+				`No se pudo obtener el servicio con ID ${id}: ${error.message}`
+			);
+		}
+	}
 
-    async modificarServicioById(id, datosActualizados, files) {
-        try {
-            const servicioExistente = await Servicios.findById(id);
-            if (!servicioExistente) {
-                throw new Error(`No se encontró el servicio ${id}`);
-            }
+	async getServiciosNombres() {
+		try {
+			let servicios = await Servicios.find({}, "_id nombre activo").lean();
 
-            if (files && files.length > 0) {
-                const nuevasImagenes = await Promise.all(
-                    files.map(async (file) => {
-                        return await awsS3Connect.uploadFile(file, {
-                            folder: "landingpage",
-                            parent: "servicios",
-                            parent_id: id,
-                        });
-                    })
-                );
+			return servicios;
+		} catch (error) {
+			throw new Error(
+				"No se pudieron obtener los nombres de los servicios: " + error.message
+			);
+		}
+	}
 
-                datosActualizados.imagenes = nuevasImagenes;
-            }
+	async modificarServicioById(id, datosActualizados, files) {
+		try {
+			const servicioExistente = await Servicios.findById(id);
+			if (!servicioExistente) {
+				throw new Error(`No se encontró el servicio ${id}`);
+			}
 
-            if (
-                datosActualizados.imagenes &&
-                Object.keys(datosActualizados).length === 1
-            ) {
-                await Servicios.updateOne(
-                    { _id: id },
-                    { $set: { imagenes: datosActualizados.imagenes } }
-                );
-            }
+			if (datosActualizados.nombre) {
+				const nuevoNombre = datosActualizados.nombre.trim();
 
-            const servicioActualizado = await Servicios.findByIdAndUpdate(
-                id,
-                datosActualizados,
-                {
-                    new: true,
-                    runValidators: true,
-                }
-            ).lean();
+				const servicioConNombre = await Servicios.findOne({
+					_id: { $ne: id },
+					nombre: new RegExp(`^${nuevoNombre}$`, "i"),
+				});
 
-            const imagenesConUrls = await awsS3Connect.generateUrls({
-                folder: "landingpage",
-                parent: "servicios",
-                parent_id: servicioActualizado._id,
-            });
+				if (servicioConNombre) {
+					throw new Error("Ya existe otro servicio con ese nombre");
+				}
 
-            servicioActualizado.imagen =
-                imagenesConUrls.length > 0 ? imagenesConUrls[0].url : null;
+				datosActualizados.nombre = nuevoNombre;
+			}
 
-            servicioActualizado.imagenesUrls = imagenesConUrls.map(
-                (file) => file.url
-            );
+			if (files && files.length > 0) {
+				const nuevasImagenes = await Promise.all(
+					files.map(async (file) => {
+						return await awsS3Connect.uploadFile(file, {
+							folder: "landingpage",
+							parent: "servicios",
+							parent_id: id,
+						});
+					})
+				);
 
-            return servicioActualizado;
-        } catch (error) {
-            throw new Error(
-                `No se pudo modificar el servicio ${id}: ${error.message}`
-            );
-        }
-    }
-    async desactivarServicioById(id) {
-        try {
-            const servicioDesactivado = await Servicios.findByIdAndUpdate(
-                id,
-                { activo: false, ultima_modificacion: Date.now() },
-                { new: true }
-            );
-            if (!servicioDesactivado) {
-                throw new Error(`Servicio ${id} no encontrado`);
-            }
-            return servicioDesactivado;
-        } catch (error) {
-            throw new Error(
-                `No se pudo desactivar el servicio ${id}: ` + error.message
-            );
-        }
-    }
+				datosActualizados.imagenes = nuevasImagenes;
+			}
 
-    async activarServicioById(id) {
-        try {
-            const servicioActivado = await Servicios.findByIdAndUpdate(
-                id,
-                { activo: true, ultima_modificacion: Date.now() },
-                { new: true }
-            );
-            if (!servicioActivado) {
-                throw new Error(`Servicio ${id} no encontrado`);
-            }
-            return servicioActivado;
-        } catch (error) {
-            throw new Error(
-                `No se pudo activar el servicio ${id}: ` + error.message
-            );
-        }
-    }
+			if (
+				datosActualizados.imagenes &&
+				Object.keys(datosActualizados).length === 1
+			) {
+				await Servicios.updateOne(
+					{ _id: id },
+					{ $set: { imagenes: datosActualizados.imagenes } }
+				);
+			}
 
-    async getCategorias() {
-        try {
-            const categorias = await mongoose.connection.db
-                .collection("categorias_servicio")
-                .find()
-                .toArray();
-            return categorias;
-        } catch (error) {
-            throw new Error("Error al obtener categorías: " + error.message);
-        }
-    }
+			const servicioActualizado = await Servicios.findByIdAndUpdate(
+				id,
+				datosActualizados,
+				{
+					new: true,
+					runValidators: true,
+				}
+			).lean();
 
-    async agregarCategoria(nombre) {
-        try {
-            const existe = await mongoose.connection.db
-                .collection("categorias_servicio")
-                .findOne({ nombre });
-            if (existe) {
-                throw new Error("La categoría ya existe");
-            }
+			const imagenesConUrls = await awsS3Connect.generateUrls({
+				folder: "landingpage",
+				parent: "servicios",
+				parent_id: servicioActualizado._id,
+			});
 
-            const resultado = await mongoose.connection.db
-                .collection("categorias_servicio")
-                .insertOne({ nombre });
+			servicioActualizado.imagen =
+				imagenesConUrls.length > 0 ? imagenesConUrls[0].url : null;
 
-            // devolver id de una
-            return {
-                _id: resultado.insertedId,
-                nombre: nombre,
-                mensaje: "Categoría agregada correctamente",
-            };
-        } catch (error) {
-            throw new Error("Error al agregar la categoría: " + error.message);
-        }
-    }
+			servicioActualizado.imagenesUrls = imagenesConUrls.map(
+				(file) => file.url
+			);
 
-    async agregarPaquete(id, paquete) {
-        try {
-            const servicioActualizado = await Servicios.findByIdAndUpdate(
-                id,
-                { $push: { paquetes: paquete } },
-                { new: true }
-            );
+			return servicioActualizado;
+		} catch (error) {
+			throw new Error(
+				`No se pudo modificar el servicio ${id}: ${error.message}`
+			);
+		}
+	}
+	async desactivarServicioById(id) {
+		try {
+			const servicioDesactivado = await Servicios.findByIdAndUpdate(
+				id,
+				{ activo: false, ultima_modificacion: Date.now() },
+				{ new: true }
+			);
+			if (!servicioDesactivado) {
+				throw new Error(`Servicio ${id} no encontrado`);
+			}
+			return servicioDesactivado;
+		} catch (error) {
+			throw new Error(
+				`No se pudo desactivar el servicio ${id}: ` + error.message
+			);
+		}
+	}
 
-            if (!servicioActualizado) {
-                throw new Error(`Servicio ${id} no encontrado`);
-            }
+	async activarServicioById(id) {
+		try {
+			const servicioActivado = await Servicios.findByIdAndUpdate(
+				id,
+				{ activo: true, ultima_modificacion: Date.now() },
+				{ new: true }
+			);
+			if (!servicioActivado) {
+				throw new Error(`Servicio ${id} no encontrado`);
+			}
+			return servicioActivado;
+		} catch (error) {
+			throw new Error(`No se pudo activar el servicio ${id}: ` + error.message);
+		}
+	}
 
-            return servicioActualizado;
-        } catch (error) {
-            throw new Error("Error al agregar el paquete: " + error.message);
-        }
-    }
+	async getCategorias() {
+		try {
+			const categorias = await mongoose.connection.db
+				.collection("categorias_servicio")
+				.find()
+				.toArray();
+			return categorias;
+		} catch (error) {
+			throw new Error("Error al obtener categorías: " + error.message);
+		}
+	}
 
-    async modificarPaquete(id, paqueteId, paqueteActualizado) {
-        try {
-            const servicio = await Servicios.findOneAndUpdate(
-                { _id: id, "paquetes._id": paqueteId },
-                {
-                    $set: {
-                        "paquetes.$": paqueteActualizado,
-                        ultima_modificacion: Date.now(),
-                    },
-                },
-                { new: true }
-            );
+	async agregarCategoria(nombre) {
+		try {
+			const existe = await mongoose.connection.db
+				.collection("categorias_servicio")
+				.findOne({ nombre });
+			if (existe) {
+				throw new Error("La categoría ya existe");
+			}
 
-            if (!servicio) {
-                throw new Error(
-                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
-                );
-            }
+			const resultado = await mongoose.connection.db
+				.collection("categorias_servicio")
+				.insertOne({ nombre });
 
-            return servicio;
-        } catch (error) {
-            throw new Error("Error al modificar el paquete: " + error.message);
-        }
-    }
+			// devolver id de una
+			return {
+				_id: resultado.insertedId,
+				nombre: nombre,
+				mensaje: "Categoría agregada correctamente",
+			};
+		} catch (error) {
+			throw new Error("Error al agregar la categoría: " + error.message);
+		}
+	}
 
-    async desactivarPaquete(id, paqueteId) {
-        try {
-            const servicioActualizado = await Servicios.findOneAndUpdate(
-                { _id: id, "paquetes._id": paqueteId },
-                {
-                    $set: {
-                        "paquetes.$.activo": false,
-                    },
-                },
-                { new: true }
-            );
+	async agregarPaquete(id, paquete) {
+		try {
+			const servicioActualizado = await Servicios.findByIdAndUpdate(
+				id,
+				{ $push: { paquetes: paquete } },
+				{ new: true }
+			);
 
-            if (!servicioActualizado) {
-                throw new Error(
-                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
-                );
-            }
+			if (!servicioActualizado) {
+				throw new Error(`Servicio ${id} no encontrado`);
+			}
 
-            return servicioActualizado;
-        } catch (error) {
-            throw new Error(
-                `No se pudo desactivar el paquete ${paqueteId}: ` +
-                    error.message
-            );
-        }
-    }
+			return servicioActualizado;
+		} catch (error) {
+			throw new Error("Error al agregar el paquete: " + error.message);
+		}
+	}
 
-    async activarPaquete(id, paqueteId) {
-        try {
-            const servicioActualizado = await Servicios.findOneAndUpdate(
-                { _id: id, "paquetes._id": paqueteId },
-                {
-                    $set: {
-                        "paquetes.$.activo": true,
-                    },
-                },
-                { new: true }
-            );
+	async modificarPaquete(id, paqueteId, paqueteActualizado) {
+		try {
+			const servicio = await Servicios.findOneAndUpdate(
+				{ _id: id, "paquetes._id": paqueteId },
+				{
+					$set: {
+						"paquetes.$": paqueteActualizado,
+						ultima_modificacion: Date.now(),
+					},
+				},
+				{ new: true }
+			);
 
-            if (!servicioActualizado) {
-                throw new Error(
-                    `Servicio ${id} o paquete ${paqueteId} no encontrado`
-                );
-            }
+			if (!servicio) {
+				throw new Error(`Servicio ${id} o paquete ${paqueteId} no encontrado`);
+			}
 
-            return servicioActualizado;
-        } catch (error) {
-            throw new Error(
-                `No se pudo activar el paquete ${paqueteId}: ` + error.message
-            );
-        }
-    }
+			return servicio;
+		} catch (error) {
+			throw new Error("Error al modificar el paquete: " + error.message);
+		}
+	}
+
+	async desactivarPaquete(id, paqueteId) {
+		try {
+			const servicioActualizado = await Servicios.findOneAndUpdate(
+				{ _id: id, "paquetes._id": paqueteId },
+				{
+					$set: {
+						"paquetes.$.activo": false,
+					},
+				},
+				{ new: true }
+			);
+
+			if (!servicioActualizado) {
+				throw new Error(`Servicio ${id} o paquete ${paqueteId} no encontrado`);
+			}
+
+			return servicioActualizado;
+		} catch (error) {
+			throw new Error(
+				`No se pudo desactivar el paquete ${paqueteId}: ` + error.message
+			);
+		}
+	}
+
+	async activarPaquete(id, paqueteId) {
+		try {
+			const servicioActualizado = await Servicios.findOneAndUpdate(
+				{ _id: id, "paquetes._id": paqueteId },
+				{
+					$set: {
+						"paquetes.$.activo": true,
+					},
+				},
+				{ new: true }
+			);
+
+			if (!servicioActualizado) {
+				throw new Error(`Servicio ${id} o paquete ${paqueteId} no encontrado`);
+			}
+
+			return servicioActualizado;
+		} catch (error) {
+			throw new Error(
+				`No se pudo activar el paquete ${paqueteId}: ` + error.message
+			);
+		}
+	}
+
+	async getServiciosListado() {
+		try {
+			const servicios = await Servicios.find(
+				{},
+				{
+					nombre: 1,
+					descripcion: 1,
+					activo: 1,
+					paquetes: 1,
+					fecha_creacion: 1,
+					fecha_modificacion: 1,
+				}
+			).lean();
+
+			const serviciosOptimizados = servicios.map((servicio) => ({
+				...servicio,
+				cantidadPaquetes: servicio.paquetes ? servicio.paquetes.length : 0,
+				paquetes: undefined,
+			}));
+
+			return serviciosOptimizados;
+		} catch (error) {
+			throw new Error("No se pudieron obtener los servicios: " + error.message);
+		}
+	}
 }
 
 module.exports = new ServiciosService();

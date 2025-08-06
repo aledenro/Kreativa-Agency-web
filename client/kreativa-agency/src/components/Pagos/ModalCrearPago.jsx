@@ -1,12 +1,39 @@
 import { Modal, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
 
     const handleSubmit = async (event) => {
         const enviar = confirm("¿Desea enviar el pago?");
@@ -35,9 +62,21 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
                 fecha_vencimiento: fecha_vencimiento,
             };
 
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/pagos/`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status === 201) {
@@ -51,7 +90,17 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error al crear el pago:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             setAlertMessage("Error al crear el pago.");
             setAlertVariant("danger");
             setShowAlert(true);

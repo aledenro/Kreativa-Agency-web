@@ -35,7 +35,7 @@ const handleLogout = () => {
             localStorage.removeItem("token");
             localStorage.removeItem("tipo_usuario");
             localStorage.removeItem("user_id");
-            window.location.href = import.meta.env.FRONT_IP;
+            window.location.href = "/";
         }
     });
 };
@@ -100,6 +100,11 @@ const fullMenuStructure = [
             {
                 label: "Solicitar PTO",
                 path: "/agregar-pto",
+                roles: ["Administrador", "Colaborador"],
+            },
+            {
+                label: "Ver mi PTO",
+                path: "/mis-pto",
                 roles: ["Administrador", "Colaborador"],
             },
         ],

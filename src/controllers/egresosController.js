@@ -13,8 +13,6 @@ class EgresosController {
                     error: "Para registrar el egreso debe completar todos los campos",
                 });
             }
-
-            // Lógica en el servicio
             const egreso = await EgresosService.agregarEgreso(req.body);
             // Registrar el movimiento de creación
             await await movimientosService.registrarMovimiento({
@@ -60,8 +58,8 @@ class EgresosController {
     // Obtener un egreso por ID
     async obtenerEgresoPorId(req, res) {
         try {
-            const { id } = req.params; // Obtener el ID de la URL
-            const egreso = await EgresosService.obtenerEgresoPorId(id); // Usar el servicio para obtener el egreso
+            const { id } = req.params;
+            const egreso = await EgresosService.obtenerEgresoPorId(id);
 
             if (!egreso) {
                 return res.status(404).json({ error: "Egreso no encontrado" });
@@ -81,10 +79,8 @@ class EgresosController {
     // Editar egreso
     async editarEgreso(req, res) {
         try {
-            const { id } = req.params; // Obtener el ID del egreso a editar
-            let nuevosDatos = req.body; // Obtener los nuevos datos
-
-            // Campos permitidos para editar
+            const { id } = req.params;
+            let nuevosDatos = req.body;
             const camposPermitidos = [
                 "fecha",
                 "monto",
@@ -97,15 +93,13 @@ class EgresosController {
 
             // Filtrar solo los campos permitidos
             nuevosDatos = Object.keys(nuevosDatos)
-                .filter((key) => camposPermitidos.includes(key)) // Solo dejar los campos permitidos
+                .filter((key) => camposPermitidos.includes(key))
                 .reduce((obj, key) => {
-                    obj[key] = nuevosDatos[key]; // Mantener solo los datos válidos
+                    obj[key] = nuevosDatos[key];
                     return obj;
                 }, {});
 
             const egresoAnterior = await EgresosService.obtenerEgresoPorId(id);
-
-            // Lógica en el servicio para editar el egreso
             const egresoActualizado = await EgresosService.editarEgreso(
                 id,
                 nuevosDatos
@@ -134,7 +128,7 @@ class EgresosController {
                 "Error al intentar editar el egreso: " + error.message
             );
 
-            // Si el error es por datos inválidos o faltantes)
+            // Error es por datos inválidos o faltantes
             if (error.name === "ValidationError") {
                 return res.status(400).json({
                     error: "Datos inválidos, por favor ingrese los datos correctamente",
@@ -154,7 +148,7 @@ class EgresosController {
         try {
             const { id } = req.params;
             const egresoAnterior = await EgresosService.obtenerEgresoPorId(id);
-            const egreso = await EgresosService.desactivarEgresoById(id); // Usamos el servicio para desactivar el egreso
+            const egreso = await EgresosService.desactivarEgresoById(id);
 
             await movimientosService.registrarMovimiento({
                 entidad: "egreso",
@@ -181,7 +175,7 @@ class EgresosController {
         try {
             const { id } = req.params;
             const egresoAnterior = await EgresosService.obtenerEgresoPorId(id);
-            const egreso = await EgresosService.activarEgresoById(id); // Usamos el servicio para activar el egreso
+            const egreso = await EgresosService.activarEgresoById(id);
             await movimientosService.registrarMovimiento({
                 entidad: "egreso",
                 idRegistro: egreso._id,
@@ -207,33 +201,30 @@ class EgresosController {
             let fechaInicio, fechaFin;
 
             if (fecha) {
-                // Si el usuario selecciona un mes, usamos la fecha proporcionada.
-                const [anio, mes] = fecha.split("-"); // Suponiendo que el formato es 'YYYY-MM'
-                fechaInicio = new Date(anio, mes - 1, 1); // Primer día del mes
-                fechaFin = new Date(anio, mes, 0); // Último día del mes
+                const [anio, mes] = fecha.split("-");
+                fechaInicio = new Date(anio, mes - 1, 1);
+                fechaFin = new Date(anio, mes, 0);
             } else {
-                // Si no se proporciona fecha, obtenemos el mes actual.
+                // Si no se proporciona fecha, obtener el mes actual
                 const today = new Date();
                 fechaInicio = new Date(
                     today.getFullYear(),
                     today.getMonth(),
                     1
-                ); // Primer día del mes actual
+                );
                 fechaFin = new Date(
                     today.getFullYear(),
                     today.getMonth() + 1,
                     0
-                ); // Último día del mes actual
+                );
             }
-
-            // Realizamos la consulta para obtener los egresos dentro del rango de fechas.
             const egresos = await Egreso.find({
                 fecha: { $gte: fechaInicio, $lte: fechaFin },
                 activo: true,
                 estado: "Aprobado",
             });
 
-            return res.json(egresos); // Retornamos los egresos filtrados
+            return res.json(egresos);
         } catch (error) {
             console.error("Error al obtener los egresos:", error);
             return res
@@ -251,7 +242,7 @@ class EgresosController {
                     .json({ error: "Se requiere el parámetro 'year'" });
             }
 
-            const total = await EgresoService.obtenerTotalEgresosAnuales(year);
+            const total = await EgresosService.obtenerTotalEgresosAnuales(year);
             res.json({ total });
         } catch (error) {
             res.status(500).json({
@@ -263,20 +254,13 @@ class EgresosController {
     async obtenerEgresosPorAnio(req, res) {
         try {
             const { anio } = req.query;
-
-            // Validar que el año sea proporcionado
             if (!anio) {
                 return res
                     .status(400)
                     .json({ error: "Se requiere el parámetro 'anio'" });
             }
-
-            // Llamar al servicio para obtener el total de egresos
-
             const totalEgresos =
                 await EgresosService.obtenerEgresosPorAnio(anio);
-
-            // Retornar el total de egresos
             return res.json({ totalEgresos });
         } catch (error) {
             return res.status(500).json({ error: error.message });
@@ -304,7 +288,7 @@ class EgresosController {
             const fechaInicio = req.query.fechaInicio;
             const fechaFin = req.query.fechaFin;
 
-            const egresos = await egresosService.getEgresosDateRange(
+            const egresos = await EgresosService.getEgresosDateRange(
                 fechaInicio,
                 fechaFin
             );

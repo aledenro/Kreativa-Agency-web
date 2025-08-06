@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const fileSystemController = require("../controllers/fileSystemController");
+const verificarToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 

@@ -115,11 +115,13 @@ const EditarTarea = () => {
     const handleChangeEstado = async (event) => {
         event.preventDefault();
         const estadoEdit = event.target.value;
+        const token = localStorage.getItem("token");
 
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/tareas/editar/${id}`,
-                { estado: estadoEdit }
+                { estado: estadoEdit },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (response.status === 200) {
@@ -167,11 +169,13 @@ const EditarTarea = () => {
             prioridad,
             fechaEntrega
         );
+        const token = localStorage.getItem("token");
 
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/tareas/editar/${id}`,
-                data
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (res.status == 200) {
@@ -202,6 +206,8 @@ const EditarTarea = () => {
     };
 
     const addActionLog = async (accion) => {
+        const token = localStorage.getItem("token");
+
         try {
             const user_id = localStorage.getItem("user_id");
             await axios.put(
@@ -209,7 +215,8 @@ const EditarTarea = () => {
                 {
                     usuario_id: user_id,
                     accion: accion,
-                }
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
         } catch (error) {
             console.error(error.message);
@@ -236,9 +243,14 @@ const EditarTarea = () => {
         }
 
         async function fetchProyectos() {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`
+                    `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 setProyectos(response.data.proyectos);
@@ -250,9 +262,14 @@ const EditarTarea = () => {
         }
 
         async function fetchTarea() {
+            const token = localStorage.getItem("token");
+
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/tareas/id/${id}`
+                    `${import.meta.env.VITE_API_URL}/tareas/id/${id}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
 
                 setTarea(response.data);

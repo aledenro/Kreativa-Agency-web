@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import {
     PieChart,
@@ -15,20 +15,21 @@ import {
 } from "recharts";
 import { Form } from "react-bootstrap";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
-
 import "../AdminPanel.css";
 import ModalImprimirReportes from "../components/Estadisticas/ModalImprimirReporte";
+import Loading from "../components/ui/LoadingComponent";
+import { useNavigate } from "react-router-dom";
 
-// Colores para gráficos
+// Colores de los gráficos
 const COLORS = ["#ff0072", "#8d25fc", "#007bff", "#ffc02c"];
-// Lista fija para egresos (si se agrupa por categorías fijas)
+
 const CATEGORIAS = [
     "Salarios",
     "Software",
     "Servicios de contabilidad",
     "Servicios",
 ];
-// Nombres de meses para el selector
+
 const monthNames = [
     "Enero",
     "Febrero",
@@ -66,16 +67,17 @@ const Estadisticas = () => {
     const [totalEgresosAnuales, setTotalEgresosAnuales] = useState(0);
     const [detalleEgresosAnuales, setDetalleEgresosAnuales] = useState([]);
 
-    // Categorías (para mapear ID en ingresos)
+    // Categorias
+
     const [categories, setCategories] = useState([]);
 
-    // Selección de fechas
+    // Seleccionar busqueda
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(
         new Date().getMonth() + 1
     );
 
-    // Determinar vista anual:
+    // Vista anual
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
@@ -83,16 +85,43 @@ const Estadisticas = () => {
         selectedMonth === 0 ||
         selectedYear > currentYear ||
         (selectedYear === currentYear && selectedMonth > currentMonth);
+    const navigate = useNavigate();
 
-    // Cargar categorías (para mapear el ID de categoría en ingresos)
+    const [loading, setLoading] = useState(true);
+
+    // Carga de categorías
     useEffect(() => {
         const fetchCategories = async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const res = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/servicios/categorias`
+                    `${import.meta.env.VITE_API_URL}/servicios/categorias`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 );
                 setCategories(res.data);
             } catch (error) {
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
                 console.error(
                     "Error al obtener las categorías:",
                     error.message
@@ -102,77 +131,156 @@ const Estadisticas = () => {
         fetchCategories();
     }, []);
 
-    // Cargar datos según la vista
+    // Carga de datos según la vista
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        const promises = [];
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe iniciar sesión para continuar.",
+                },
+            });
+        }
+
         if (isAnnualView) {
-            // Vista Anual: se obtienen el total y el detalle a través de los endpoints nuevos.
-            axios
-                .get(
-                    `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`
-                )
-                .then((response) => {
-                    const data = response.data; // { resumen: { totalIngresos, cantidadIngresos }, detalle: [...] }
-                    setTotalIngresosAnuales(data.resumen.totalIngresos);
-                    setDetalleIngresosAnuales(data.detalle);
-                })
-                .catch((error) => {
-                    console.error(
-                        "Error al obtener los ingresos anuales:",
-                        error
-                    );
-                    setTotalIngresosAnuales(0);
-                    setDetalleIngresosAnuales([]);
-                });
-            axios
-                .get(
-                    `${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`
-                )
-                .then((response) => {
-                    const data = response.data; // { resumen: { totalEgresos, cantidadEgresos }, detalle: [...] }
-                    setTotalEgresosAnuales(data.resumen.totalEgresos);
-                    setDetalleEgresosAnuales(data.detalle);
-                })
-                .catch((error) => {
-                    console.error(
-                        "Error al obtener los egresos anuales:",
-                        error
-                    );
-                    setTotalEgresosAnuales(0);
-                    setDetalleEgresosAnuales([]);
-                });
+            // Vista Anual - agregar promesas
+            promises.push(
+                axios
+                    .get(
+                        `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                    .then((response) => {
+                        const data = response.data;
+                        setTotalIngresosAnuales(data.resumen.totalIngresos);
+                        setDetalleIngresosAnuales(
+                            data.detalle.map((item) => ({
+                                fecha: item.fecha,
+                                monto: item.monto,
+                                categoria: item.categoria,
+                            }))
+                        );
+                    })
+                    .catch((error) => {
+                        if (error.status === 401) {
+                            navigate("/error", {
+                                state: {
+                                    errorCode: 401,
+                                    mensaje:
+                                        "Debe volver a iniciar sesión para continuar.",
+                                },
+                            });
+                            return;
+                        }
+                        console.error("Error al obtener los ingresos anuales");
+                        setTotalIngresosAnuales(0);
+                        setDetalleIngresosAnuales([]);
+                    })
+            );
+
+            promises.push(
+                axios
+                    .get(
+                        `${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                    .then((response) => {
+                        const data = response.data;
+                        setTotalEgresosAnuales(data.resumen.totalEgresos);
+                        setDetalleEgresosAnuales(data.detalle);
+                    })
+                    .catch((error) => {
+                        if (error.status === 401) {
+                            navigate("/error", {
+                                state: {
+                                    errorCode: 401,
+                                    mensaje:
+                                        "Debe volver a iniciar sesión para continuar.",
+                                },
+                            });
+                            return;
+                        }
+                        console.error("Error al obtener los egresos anuales");
+                        setTotalEgresosAnuales(0);
+                        setDetalleEgresosAnuales([]);
+                    })
+            );
         } else {
-            // Vista Mensual:
+            // Vista Mensual - agregar promesas
             const formattedMonth =
                 selectedMonth < 10 ? `0${selectedMonth}` : selectedMonth;
             const fecha = `${selectedYear}-${formattedMonth}`;
+            const token = localStorage.getItem("token");
 
-            // Ingresos mensuales (ya filtrados en el backend: activos, pagados y de clientes)
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
+            promises.push(
+                axios
+                    .get(
+                        `${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                    .then((response) => {
+                        if (!response.data.success) {
+                            console.error(
+                                "Error en la respuesta de ingresos mensuales"
+                            );
+                            throw new Error(response.data.message);
+                        }
+
+                        const { resumen, detalle, datosGrafico } =
+                            response.data;
+
+                        setTotalIngresos(resumen.totalIngresos);
+                        setCantidadIngresos(resumen.cantidadIngresos);
+
+                        setResumenIngresos({
+                            total: resumen.totalIngresos,
+                            cantidad: resumen.cantidadIngresos,
+                            detalle: detalle,
+                            datosGrafico: datosGrafico,
+                        });
+                    })
+                    .catch((error) => {
+                        if (error.status === 401) {
+                            navigate("/error", {
+                                state: {
+                                    errorCode: 401,
+                                    mensaje:
+                                        "Debe volver a iniciar sesión para continuar.",
+                                },
+                            });
+                            return;
+                        }
+                        console.error("Error al obtener ingresos mensuales");
+                        setTotalIngresos(0);
+                        setCantidadIngresos(0);
+                        setResumenIngresos({
+                            total: 0,
+                            cantidad: 0,
+                            detalle: [],
+                            datosGrafico: [],
+                        });
+                    })
+            );
+            // Egresos mensuales activos y con estado aprobado
             axios
                 .get(
-                    `${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`
+                    `${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
                 )
-                .then((response) => {
-                    const { resumen, detalle } = response.data;
-                    setTotalIngresos(resumen.totalIngresos);
-                    setCantidadIngresos(resumen.cantidadIngresos);
-                    setResumenIngresos({
-                        total: resumen.totalIngresos,
-                        cantidad: resumen.cantidadIngresos,
-                        detalle,
-                    });
-                })
-                .catch((error) => {
-                    console.error(
-                        "Error al obtener los ingresos mensuales:",
-                        error
-                    );
-                    setTotalIngresos(0);
-                    setCantidadIngresos(0);
-                    setResumenIngresos({ total: 0, cantidad: 0, detalle: [] });
-                });
-            // Egresos mensuales (filtrando activos y estado "Aprobado")
-            axios
-                .get(`${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`)
                 .then((response) => {
                     const data = response.data.filter(
                         (e) => e.activo && e.estado === "Aprobado"
@@ -202,31 +310,49 @@ const Estadisticas = () => {
                     );
                 });
         }
-        // Independientemente de la vista, se obtienen totales anuales (para el gráfico de comparación)
-        axios
-            .get(`${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`)
-            .then((response) => {
-                const data = response.data;
-                setTotalIngresosAnuales(data.totalIngresos);
-            })
-            .catch((error) => {
-                console.error(
-                    "Error al obtener total ingresos anuales:",
-                    error
-                );
-            });
-        axios
-            .get(`${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`)
-            .then((response) => {
-                const data = response.data;
-                setTotalEgresosAnuales(data.totalEgresos);
-            })
-            .catch((error) => {
-                console.error("Error al obtener total egresos anuales:", error);
-            });
+
+        promises.push(
+            axios
+                .get(
+                    `${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                )
+                .then((response) => {
+                    const data = response.data;
+                    setTotalIngresosAnuales(data.totalIngresos);
+                })
+                .catch((error) => {
+                    console.error(
+                        "Error al obtener total ingresos anuales:",
+                        error
+                    );
+                })
+        );
+
+        promises.push(
+            axios
+                .get(
+                    `${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                )
+                .then((response) => {
+                    const data = response.data;
+                    setTotalEgresosAnuales(data.totalEgresos);
+                })
+                .catch((error) => {
+                    console.error(
+                        "Error al obtener total egresos anuales:",
+                        error
+                    );
+                })
+        );
+
+        // Ejecutar todas las promesas y manejar el loading
+        Promise.allSettled(promises).finally(() => {
+            setLoading(false);
+        });
     }, [selectedYear, selectedMonth, isAnnualView]);
 
-    // Helper para mapear el ID de categoría al nombre
     const getCategoryName = (catId) => {
         const cat = categories.find(
             (c) => c._id && c._id.toString() === catId.toString()
@@ -245,13 +371,23 @@ const Estadisticas = () => {
     }
 
     // Verificar si los datos están vacíos para los gráficos
-    const noDatosEgresos = totalEgresos === 0 || egresos.length === 0;
+    const noDatosEgresosMensuales = totalEgresos === 0 || egresos.length === 0;
     const noDatosIngresos =
         totalIngresos === 0 || resumenIngresos.detalle.length === 0;
 
+    if (loading) {
+        return (
+            <AdminLayout>
+                <div className="main-container mx-auto">
+                    <Loading />
+                </div>
+            </AdminLayout>
+        );
+    }
+
     return (
         <AdminLayout>
-            <div className="main-container mx-5">
+            <div className="main-container mx-auto">
                 {/* Selector de Año y Mes */}
                 <div
                     style={{
@@ -302,7 +438,7 @@ const Estadisticas = () => {
                 {isAnnualView ? (
                     // Vista Anual
                     <>
-                        {/* Fila 1: Gráfico de barras anual centrado y de menor tamaño */}
+                        {/* Gráfico de barras anual*/}
                         <div
                             className="chart-box"
                             style={{ marginBottom: "30px" }}
@@ -312,12 +448,14 @@ const Estadisticas = () => {
                             </h3>
                             {totalIngresosAnuales || totalEgresosAnuales ? (
                                 <div
-                                    style={{ width: "500px", margin: "0 auto" }}
+                                    style={{
+                                        width: "100%",
+                                        height: "400px",
+                                        maxWidth: "400px",
+                                        margin: "0 auto",
+                                    }}
                                 >
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={300}
-                                    >
+                                    <ResponsiveContainer>
                                         <BarChart
                                             data={[
                                                 {
@@ -358,7 +496,7 @@ const Estadisticas = () => {
                             )}
                         </div>
 
-                        {/* Fila 2: Dos columnas para gráficos pastel y listados anuales */}
+                        {/* Gráficos pastel y listados anuales */}
                         <div
                             className="row"
                             style={{
@@ -367,7 +505,7 @@ const Estadisticas = () => {
                                 justifyContent: "center",
                             }}
                         >
-                            {/* Columna izquierda: Ingresos Anuales */}
+                            {/* Ingresos Anuales */}
                             <div
                                 className="chart-box"
                                 style={{
@@ -380,14 +518,13 @@ const Estadisticas = () => {
                                 {totalIngresosAnuales > 0 ? (
                                     <div
                                         style={{
-                                            width: "400px",
+                                            width: "100%",
+                                            height: "400px",
+                                            maxWidth: "400px",
                                             margin: "0 auto",
                                         }}
                                     >
-                                        <ResponsiveContainer
-                                            width="100%"
-                                            height={400}
-                                        >
+                                        <ResponsiveContainer>
                                             <PieChart>
                                                 <Pie
                                                     data={detalleIngresosAnuales.reduce(
@@ -588,7 +725,7 @@ const Estadisticas = () => {
                                 )}
                             </div>
 
-                            {/* Columna derecha: Egresos Anuales */}
+                            {/* Egresos Anuales */}
                             <div
                                 className="chart-box"
                                 style={{ flex: 1, minWidth: "350px" }}
@@ -597,91 +734,102 @@ const Estadisticas = () => {
                                     Egresos Anuales
                                 </h3>
                                 {totalEgresosAnuales > 0 ? (
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={400}
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            height: "400px",
+                                            maxWidth: "400px",
+                                            margin: "0 auto",
+                                        }}
                                     >
-                                        <PieChart>
-                                            <Pie
-                                                data={detalleEgresosAnuales.reduce(
-                                                    (acc, egreso) => {
-                                                        const categoria =
-                                                            egreso.categoria;
-                                                        const existente =
-                                                            acc.find(
-                                                                (item) =>
-                                                                    item.name ===
-                                                                    categoria
-                                                            );
-                                                        if (existente) {
-                                                            existente.value +=
-                                                                egreso.monto;
-                                                        } else {
-                                                            acc.push({
-                                                                name: categoria,
-                                                                value: egreso.monto,
-                                                            });
-                                                        }
-                                                        return acc;
-                                                    },
-                                                    []
-                                                )}
-                                                cx="50%"
-                                                cy="50%"
-                                                innerRadius={80}
-                                                outerRadius={150}
-                                                dataKey="value"
-                                                label={({ percent }) =>
-                                                    `${(percent * 100).toFixed(1)}%`
-                                                }
-                                            >
-                                                {detalleEgresosAnuales
-                                                    .reduce((acc, egreso) => {
-                                                        if (
-                                                            !acc.find(
-                                                                (item) =>
-                                                                    item.name ===
-                                                                    egreso.categoria
-                                                            )
-                                                        ) {
-                                                            acc.push({
-                                                                name: egreso.categoria,
-                                                                value: egreso.monto,
-                                                            });
-                                                        }
-                                                        return acc;
-                                                    }, [])
-                                                    .map((entry, index) => (
-                                                        <Cell
-                                                            key={`cell-${index}`}
-                                                            fill={
-                                                                COLORS[
-                                                                    index %
-                                                                        COLORS.length
-                                                                ]
+                                        <ResponsiveContainer>
+                                            <PieChart>
+                                                <Pie
+                                                    data={detalleEgresosAnuales.reduce(
+                                                        (acc, egreso) => {
+                                                            const categoria =
+                                                                egreso.categoria;
+                                                            const existente =
+                                                                acc.find(
+                                                                    (item) =>
+                                                                        item.name ===
+                                                                        categoria
+                                                                );
+                                                            if (existente) {
+                                                                existente.value +=
+                                                                    egreso.monto;
+                                                            } else {
+                                                                acc.push({
+                                                                    name: categoria,
+                                                                    value: egreso.monto,
+                                                                });
                                                             }
-                                                        />
-                                                    ))}
-                                            </Pie>
-                                            <text
-                                                x="50%"
-                                                y="50%"
-                                                textAnchor="middle"
-                                                dominantBaseline="middle"
-                                                fontSize={20}
-                                                fontWeight="bold"
-                                            >
-                                                ₡
-                                                {totalEgresosAnuales.toLocaleString()}
-                                            </text>
-                                            <Tooltip
-                                                formatter={(value) =>
-                                                    `₡${value.toLocaleString()}`
-                                                }
-                                            />
-                                            <Legend />
-                                        </PieChart>
-                                    </ResponsiveContainer>
+                                                            return acc;
+                                                        },
+                                                        []
+                                                    )}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    innerRadius={80}
+                                                    outerRadius={150}
+                                                    dataKey="value"
+                                                    label={({ percent }) =>
+                                                        `${(percent * 100).toFixed(1)}%`
+                                                    }
+                                                >
+                                                    {detalleEgresosAnuales
+                                                        .reduce(
+                                                            (acc, egreso) => {
+                                                                if (
+                                                                    !acc.find(
+                                                                        (
+                                                                            item
+                                                                        ) =>
+                                                                            item.name ===
+                                                                            egreso.categoria
+                                                                    )
+                                                                ) {
+                                                                    acc.push({
+                                                                        name: egreso.categoria,
+                                                                        value: egreso.monto,
+                                                                    });
+                                                                }
+                                                                return acc;
+                                                            },
+                                                            []
+                                                        )
+                                                        .map((entry, index) => (
+                                                            <Cell
+                                                                key={`cell-${index}`}
+                                                                fill={
+                                                                    COLORS[
+                                                                        index %
+                                                                            COLORS.length
+                                                                    ]
+                                                                }
+                                                            />
+                                                        ))}
+                                                </Pie>
+                                                <text
+                                                    x="50%"
+                                                    y="50%"
+                                                    textAnchor="middle"
+                                                    dominantBaseline="middle"
+                                                    fontSize={20}
+                                                    fontWeight="bold"
+                                                >
+                                                    ₡
+                                                    {totalEgresosAnuales.toLocaleString()}
+                                                </text>
+                                                <Tooltip
+                                                    formatter={(value) =>
+                                                        `₡${value.toLocaleString()}`
+                                                    }
+                                                />
+                                                <Legend />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </div>
                                 ) : (
                                     <p style={{ textAlign: "center" }}>
                                         No hay datos para Egresos Anuales.
@@ -798,72 +946,83 @@ const Estadisticas = () => {
                             className="row"
                             style={{ display: "flex", gap: "20px" }}
                         >
-                            {/* Primera fila: Dos columnas */}
                             <div className="chart-box" style={{ flex: 1 }}>
                                 <h3 style={{ textAlign: "center" }}>
                                     Ingresos y Egresos Mensuales
                                 </h3>
-                                {!noDatosEgresos ? (
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={300}
-                                    >
-                                        <BarChart
-                                            data={[
-                                                {
-                                                    name: "Ingresos",
-                                                    ingresos: totalIngresos,
-                                                },
-                                                {
-                                                    name: "Egresos",
-                                                    egresos: totalEgresos,
-                                                },
-                                            ]}
-                                        >
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
-                                            <Tooltip
-                                                formatter={(value) =>
-                                                    `₡${value.toLocaleString()}`
-                                                }
-                                            />
-                                            <Bar
-                                                dataKey="ingresos"
-                                                fill="#ff0072"
-                                            />
-                                            <Bar
-                                                dataKey="egresos"
-                                                fill="#8d25fc"
-                                            />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                ) : (
+                                {totalIngresos === 0 && totalEgresos === 0 ? (
                                     <p style={{ textAlign: "center" }}>
                                         No hay datos disponibles para este mes.
                                     </p>
+                                ) : (
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            height: "300px",
+                                            margin: "0 auto",
+                                        }}
+                                    >
+                                        <ResponsiveContainer>
+                                            <BarChart
+                                                data={[
+                                                    {
+                                                        name: "Ingresos",
+                                                        ingresos: totalIngresos,
+                                                    },
+                                                    {
+                                                        name: "Egresos",
+                                                        egresos: totalEgresos,
+                                                    },
+                                                ]}
+                                            >
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="name" />
+                                                <YAxis />
+                                                <Tooltip
+                                                    formatter={(value) =>
+                                                        `₡${value.toLocaleString()}`
+                                                    }
+                                                />
+                                                <Bar
+                                                    dataKey="ingresos"
+                                                    fill="#ff0072"
+                                                />
+                                                <Bar
+                                                    dataKey="egresos"
+                                                    fill="#8d25fc"
+                                                />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
                                 )}
                             </div>
+
+                            {/* Gráfico Anual siempre visible */}
                             <div className="chart-box" style={{ flex: 1 }}>
                                 <h3 style={{ textAlign: "center" }}>
                                     Ingresos y Egresos Anuales
                                 </h3>
-                                {!noDatosEgresos ? (
-                                    <ResponsiveContainer
-                                        width="100%"
-                                        height={300}
-                                    >
+                                <div
+                                    style={{
+                                        width: "100%",
+                                        height: "300px",
+                                        margin: "0 auto",
+                                    }}
+                                >
+                                    <ResponsiveContainer>
                                         <BarChart
                                             data={[
                                                 {
                                                     name: "Ingresos",
                                                     ingresos:
-                                                        totalIngresosAnuales,
+                                                        totalIngresosAnuales ||
+                                                        0,
                                                 },
                                                 {
                                                     name: "Egresos",
                                                     egresos:
-                                                        totalEgresosAnuales,
+                                                        totalEgresosAnuales ||
+                                                        0,
                                                 },
                                             ]}
                                         >
@@ -885,11 +1044,7 @@ const Estadisticas = () => {
                                             />
                                         </BarChart>
                                     </ResponsiveContainer>
-                                ) : (
-                                    <p style={{ textAlign: "center" }}>
-                                        No hay datos disponibles para este año.
-                                    </p>
-                                )}
+                                </div>
                             </div>
                         </div>
 
@@ -901,7 +1056,6 @@ const Estadisticas = () => {
                                 marginTop: "30px",
                             }}
                         >
-                            {/* Segunda fila: Dos columnas */}
                             <div className="chart-box" style={{ flex: 1 }}>
                                 <h3 style={{ textAlign: "center" }}>
                                     Ingresos del Mes
@@ -914,99 +1068,40 @@ const Estadisticas = () => {
                                     <>
                                         <div
                                             style={{
-                                                width: "400px",
+                                                width: "100%",
+                                                height: "400px",
+                                                maxWidth: "400px",
                                                 margin: "0 auto",
                                             }}
                                         >
-                                            <ResponsiveContainer
-                                                width={400}
-                                                height={400}
-                                            >
+                                            <ResponsiveContainer>
                                                 <PieChart>
                                                     <Pie
-                                                        className="pie-chart"
-                                                        data={resumenIngresos.detalle.reduce(
-                                                            (acc, ingreso) => {
-                                                                const nombreCategoria =
-                                                                    getCategoryName(
-                                                                        ingreso.categoria
-                                                                    );
-                                                                const existente =
-                                                                    acc.find(
-                                                                        (
-                                                                            item
-                                                                        ) =>
-                                                                            item.name ===
-                                                                            nombreCategoria
-                                                                    );
-                                                                if (existente) {
-                                                                    existente.value +=
-                                                                        ingreso.monto;
-                                                                } else {
-                                                                    acc.push({
-                                                                        name: nombreCategoria,
-                                                                        value: ingreso.monto,
-                                                                    });
-                                                                }
-                                                                return acc;
-                                                            },
-                                                            []
-                                                        )}
+                                                        data={
+                                                            resumenIngresos.datosGrafico
+                                                        }
                                                         cx="50%"
                                                         cy="50%"
                                                         innerRadius={80}
                                                         outerRadius={150}
                                                         dataKey="value"
                                                         label={({ percent }) =>
-                                                            ` ${(percent * 100).toFixed(1)}%`
+                                                            `${(percent * 100).toFixed(1)}%`
                                                         }
                                                     >
-                                                        {resumenIngresos.detalle
-                                                            .reduce(
-                                                                (
-                                                                    acc,
-                                                                    ingreso
-                                                                ) => {
-                                                                    const nombreCategoria =
-                                                                        getCategoryName(
-                                                                            ingreso.categoria
-                                                                        );
-                                                                    if (
-                                                                        !acc.find(
-                                                                            (
-                                                                                item
-                                                                            ) =>
-                                                                                item.name ===
-                                                                                nombreCategoria
-                                                                        )
-                                                                    ) {
-                                                                        acc.push(
-                                                                            {
-                                                                                name: nombreCategoria,
-                                                                                value: ingreso.monto,
-                                                                            }
-                                                                        );
+                                                        {resumenIngresos.datosGrafico.map(
+                                                            (entry, index) => (
+                                                                <Cell
+                                                                    key={`cell-${index}`}
+                                                                    fill={
+                                                                        COLORS[
+                                                                            index %
+                                                                                COLORS.length
+                                                                        ]
                                                                     }
-                                                                    return acc;
-                                                                },
-                                                                []
+                                                                />
                                                             )
-                                                            .map(
-                                                                (
-                                                                    entry,
-                                                                    index
-                                                                ) => (
-                                                                    <Cell
-                                                                        key={`cell-${index}`}
-                                                                        fill={
-                                                                            COLORS[
-                                                                                index %
-                                                                                    COLORS.length
-                                                                            ]
-                                                                        }
-                                                                    />
-                                                                )
-                                                            )}
+                                                        )}
                                                     </Pie>
                                                     <text
                                                         x="50%"
@@ -1138,17 +1233,16 @@ const Estadisticas = () => {
                                 <h3 style={{ textAlign: "center" }}>
                                     Egresos por Mes
                                 </h3>
-                                {!noDatosEgresos ? (
+                                {!noDatosEgresosMensuales ? (
                                     <div
                                         style={{
-                                            width: "400px",
+                                            width: "100%",
+                                            height: "400px",
+                                            maxWidth: "400px",
                                             margin: "0 auto",
                                         }}
                                     >
-                                        <ResponsiveContainer
-                                            width={400}
-                                            height={400}
-                                        >
+                                        <ResponsiveContainer>
                                             <PieChart>
                                                 <Pie
                                                     data={egresos}
@@ -1208,7 +1302,7 @@ const Estadisticas = () => {
                                 >
                                     Resumen de Egresos del Mes
                                 </h3>
-                                {!noDatosEgresos ? (
+                                {!noDatosEgresosMensuales ? (
                                     <div>
                                         <div
                                             style={{

@@ -1,4 +1,5 @@
 const express = require("express");
+const verificarToken = require("../middleware/authMiddleware");
 
 const emailController = require("../controllers/emailController");
 

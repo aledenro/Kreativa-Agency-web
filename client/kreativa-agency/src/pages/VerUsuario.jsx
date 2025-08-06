@@ -16,19 +16,35 @@ const VerUsuario = () => {
             try {
                 const token = localStorage.getItem("token");
                 if (!token) {
-                    setError("No hay token disponible");
-                    setLoading(false);
-                    return;
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
                 }
 
-                const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/usuarios/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const { data } = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
 
                 setUsuario(data);
                 setLoading(false);
             } catch (error) {
-                console.error("Error al obtener usuario:", error.response?.data || error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener usuario");
                 setError("Error al cargar el usuario");
                 setLoading(false);
             }
@@ -44,10 +60,14 @@ const VerUsuario = () => {
                     <div className="text-center mb-3">
                         <User size={80} color="#ff0072" strokeWidth={2.5} />
                     </div>
-                    <h2 className="kreativa-form-title">Detalles del Usuario</h2>
+                    <h2 className="kreativa-form-title">
+                        Detalles del Usuario
+                    </h2>
 
                     {error && (
-                        <div className="alert alert-danger kreativa-alert text-center">{error}</div>
+                        <div className="alert alert-danger kreativa-alert text-center">
+                            {error}
+                        </div>
                     )}
 
                     {loading ? (
@@ -55,22 +75,35 @@ const VerUsuario = () => {
                     ) : usuario ? (
                         <>
                             <div className="kreativa-user-details">
-                                <p><strong>Nombre:</strong> {usuario.nombre}</p>
+                                <p>
+                                    <strong>Nombre:</strong> {usuario.nombre}
+                                </p>
                                 <hr className="kreativa-divider" />
 
-                                <p><strong>Usuario:</strong> {usuario.usuario}</p>
+                                <p>
+                                    <strong>Usuario:</strong> {usuario.usuario}
+                                </p>
                                 <hr className="kreativa-divider" />
 
-                                <p><strong>Cédula:</strong> {usuario.cedula}</p>
+                                <p>
+                                    <strong>Cédula:</strong> {usuario.cedula}
+                                </p>
                                 <hr className="kreativa-divider" />
 
-                                <p><strong>Email:</strong> {usuario.email}</p>
+                                <p>
+                                    <strong>Email:</strong> {usuario.email}
+                                </p>
                                 <hr className="kreativa-divider" />
 
-                                <p><strong>Tipo de Usuario:</strong> {usuario.tipo_usuario}</p>
+                                <p>
+                                    <strong>Tipo de Usuario:</strong>{" "}
+                                    {usuario.tipo_usuario}
+                                </p>
                                 <hr className="kreativa-divider" />
 
-                                <p><strong>Estado:</strong> {usuario.estado}</p>
+                                <p>
+                                    <strong>Estado:</strong> {usuario.estado}
+                                </p>
                             </div>
 
                             <div className="text-center mt-4">
@@ -84,7 +117,9 @@ const VerUsuario = () => {
                             </div>
                         </>
                     ) : (
-                        <p className="text-center">No se encontró información del usuario.</p>
+                        <p className="text-center">
+                            No se encontró información del usuario.
+                        </p>
                     )}
                 </div>
             </div>

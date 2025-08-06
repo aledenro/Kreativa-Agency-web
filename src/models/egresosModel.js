@@ -10,11 +10,11 @@ const EgresosModel = new mongoose.Schema(
         monto: {
             type: Number,
             required: true,
-            min: 0, // para el monto no pueda ser negativo
+            min: 0,
         },
         categoria: {
             type: String,
-            enum: ['Salarios', 'Software', 'Servicios de contabilidad', 'Servicios'], 
+            enum: ["Salarios", "Software", "Servicios de contabilidad", "Servicios"],
             required: true
         },
         descripcion: {
@@ -43,18 +43,18 @@ const EgresosModel = new mongoose.Schema(
             required: true,
             default: Date.now,
         },
-        activo: { 
+        activo: {
             type: Boolean,
             default: true,
             required: true
         },
     },
-    {collection: "egresos"}
+    { collection: "egresos" }
 );
 
-EgresosModel.pre('save', function(next) {
+EgresosModel.pre('save', function (next) {
     this.ultima_modificacion = Date.now();
     next();
-    }); // para que la última modificación se actualice automáticamente
-  
+});
+
 module.exports = mongoose.model("egresos", EgresosModel);
