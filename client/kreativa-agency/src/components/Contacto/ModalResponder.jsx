@@ -1,11 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import sendEmailExterno from "../../utils/sendEmailExterno";
+import validTokenActive from "../../utils/validateToken";
 
 const ResponderFormularioModal = ({ form, onClose }) => {
     const [subject, setSubject] = useState("");
     const [message, setMessage] = useState("");
     const [sending, setSending] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+    });
 
     const handleSendEmail = async () => {
         if (!form?.correo) {

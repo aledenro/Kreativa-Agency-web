@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
 import Alert from "react-bootstrap/Alert";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
@@ -12,9 +12,20 @@ const VerDetalleCotizacion = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const navigate = useNavigate();
 
     const fetchCotizacion = useCallback(async () => {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
 
         try {
             const res = await axios.get(
@@ -26,7 +37,18 @@ const VerDetalleCotizacion = () => {
 
             setCotizacion(res.data.cotizacion);
         } catch (error) {
-            console.error("Error al obtener la cotizacion: " + error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al obtener la cotizacion");
         }
     }, [id]);
 
@@ -53,6 +75,16 @@ const VerDetalleCotizacion = () => {
         };
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${id}`,
@@ -66,7 +98,18 @@ const VerDetalleCotizacion = () => {
             event.target.reset();
             fetchCotizacion(id);
         } catch (error) {
-            console.error(`Error al enviar la respuesta: ${error.message}`);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error(`Error al enviar la respuesta`);
             setAlertMessage(
                 "Error al enviar su respuesta, por favor intente de nuevo o contacte al soporte tecnico."
             );
@@ -91,6 +134,16 @@ const VerDetalleCotizacion = () => {
         const estado = event.target.value;
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${id}`,
@@ -102,9 +155,18 @@ const VerDetalleCotizacion = () => {
             setAlertVariant("success");
             setShowAlert(true);
         } catch (error) {
-            console.error(
-                `Error al cambiar el estado de la cotizacion: ${error.message}`
-            );
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error(`Error al cambiar el estado de la cotizacion`);
             setAlertMessage(
                 "Error al cambiar el estado de la cotizacion, por favor intente de nuevo o contacte al soporte tecnico."
             );

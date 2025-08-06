@@ -11,6 +11,8 @@ import { faEllipsisH, faPencil } from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 import { notification } from "antd";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 	const [tarea, setTarea] = useState(tareaModal);
@@ -22,8 +24,31 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 	const user_id = localStorage.getItem("user_id");
 	const [contenido, setContenido] = useState("");
 	const [estadoTarea, setEstadoTarea] = useState(tarea?.estado || "");
+	const navigate = useNavigate();
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
+		if (!validTokenActive()) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe volver a iniciar sesión para continuar.",
+				},
+			});
+			return;
+		}
+
 		if (show && !lodash.isEmpty(tareaModal)) {
 			setTarea(tareaModal);
 			setEstadoTarea(tareaModal.estado);
@@ -71,6 +96,16 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 				};
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const response = await axios.put(`${url}${tarea._id}`, data, {
 				headers: { Authorization: `Bearer ${token}` },
@@ -87,7 +122,17 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 				setContenido("");
 			}
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 			showNotification("error", "Error al enviar su comentario.");
 		}
 	};

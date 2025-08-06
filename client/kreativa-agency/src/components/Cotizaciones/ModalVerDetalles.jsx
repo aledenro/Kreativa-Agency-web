@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -15,10 +16,10 @@ import deleteFile from "../../utils/fileDelete";
 import sendEmail from "../../utils/emailSender";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
+import validTokenActive from "../../utils/validateToken";
 import Loading from "../../components/ui/LoadingComponent";
 
 const { Dragger } = Upload;
-
 const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 	const [cotizacion, setCotizacion] = useState(null);
 	const opciones = ["Nuevo", "Aceptado", "Cancelado"];
@@ -26,6 +27,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 	const [isHovered, setIsHovered] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const user_id = localStorage.getItem("user_id");
+	const navigate = useNavigate();
 
 	const [api, contextHolder] = notification.useNotification();
 
@@ -43,6 +45,17 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
 	const fetchCotizacion = useCallback(async (cotizacionId) => {
 		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			setLoading(true);
 			const res = await axios.get(
@@ -54,16 +67,45 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
 			setCotizacion(res.data.cotizacion);
 		} catch (error) {
-			console.error("Error al obtener la cotizacion: " + error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 		} finally {
 			setLoading(false);
 		}
 	}, []);
 
 	useEffect(() => {
-		if (cotizacionId) {
-			fetchCotizacion(cotizacionId);
+		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
 		}
+
+		if (!validTokenActive()) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe volver a iniciar sesión para continuar.",
+				},
+			});
+			return;
+		}
+		fetchCotizacion(cotizacionId);
 	}, [cotizacionId, fetchCotizacion]);
 
 	const handleFileChange = (info) => {
@@ -87,7 +129,6 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
 			await fileUpload(files, "cotizaciones", cotizacionId, respuestaDbId);
 		} catch (error) {
-			console.error(`Error al subir los archivos: ${error.message}`);
 			showNotification(
 				"error",
 				"Error al subir los archivos, por favor intente de nuevo o contacte al soporte técnico."
@@ -118,6 +159,16 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${cotizacionId}`,
@@ -137,10 +188,20 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			clearDragger();
 			fetchCotizacion(cotizacionId);
 		} catch (error) {
-			console.error(`Error al enviar la respuesta: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 			showNotification(
 				"error",
-				"Error al enviar su respuesta, por favor intente de nuevo o contacte al soporte técnico."
+				"Error al enviar su respuesta, por favor intente de nuevo o contacte al soporte tecnico."
 			);
 		}
 
@@ -153,7 +214,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 				"test"
 			);
 		} catch (error) {
-			console.error(`Error al enviar la notificacion: ${error.message}`);
+			console.error(`Error al enviar la notificacion`);
 			showNotification(
 				"error",
 				"Error al enviar la notificación, por favor intente de nuevo o contacte al soporte técnico."
@@ -191,6 +252,16 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 		const estado = event.target.value;
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			axios.put(
 				`${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${cotizacionId}`,
@@ -199,11 +270,19 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
-			showNotification("success", "Estado cambiado correctamente.");
+			showNotification("success", "Estado cambiado  correctamente.");
 		} catch (error) {
-			console.error(
-				`Error al cambiar el estado de la cotizacion: ${error.message}`
-			);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 
 			showNotification(
 				"error",

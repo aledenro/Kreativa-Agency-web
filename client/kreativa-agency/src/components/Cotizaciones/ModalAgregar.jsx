@@ -1,6 +1,6 @@
 import axios from "axios";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
@@ -10,6 +10,8 @@ import lodash from "lodash";
 import fileUpload from "../../utils/fileUpload";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const { Dragger } = Upload;
 
@@ -26,6 +28,7 @@ const ModalAgregar = ({ show, handleClose }) => {
 
 	const handleMouseEnter = () => setIsHovered(true);
 	const handleMouseLeave = () => setIsHovered(false);
+	const navigate = useNavigate();
 
 	const handleFileChange = (info) => {
 		if (info.fileList && info.fileList.length > 0) {
@@ -53,6 +56,30 @@ const ModalAgregar = ({ show, handleClose }) => {
 	const clearDragger = () => {
 		setFiles([]);
 	};
+
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
+		if (!validTokenActive()) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe volver a iniciar sesión para continuar.",
+				},
+			});
+			return;
+		}
+	});
 
 	const validateForm = (titulo, descripcion) => {
 		const newErrors = {};
@@ -100,7 +127,17 @@ const ModalAgregar = ({ show, handleClose }) => {
 
 			await fileUpload(files, "cotizaciones", "cotizacion", respuestaDbId);
 		} catch (error) {
-			console.error(`Error al subir los archivos: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 			showNotification(
 				"error",
 				"Error al subir los archivos, por favor intente de nuevo o contacte al soporte técnico."
@@ -136,6 +173,16 @@ const ModalAgregar = ({ show, handleClose }) => {
 		const data = construirJsonRequest(titulo, descripcion, urgente);
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
@@ -162,7 +209,14 @@ const ModalAgregar = ({ show, handleClose }) => {
 				}, 1000);
 			}
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+			}
 			showNotification(
 				"error",
 				"Error al enviar su cotización, por favor trate nuevamente o comuníquese con el soporte técnico."

@@ -3,6 +3,8 @@ import { useEffect, useState, useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
 import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const estados = [
 	"Por Hacer",
@@ -74,6 +76,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	const [empleados, setEmpleados] = useState([]);
 	const [formRef, setFormRef] = useState(null);
 	const [api, contextHolder] = notification.useNotification();
+	const navigate = useNavigate();
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -146,6 +149,16 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
@@ -162,7 +175,17 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				}
 			}
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 			openErrorNotification(
 				"Error al editar el proyecto. Intente nuevamente o contacte al soporte."
 			);
@@ -173,6 +196,16 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		event.preventDefault();
 		const estadoEdit = event.target.value;
 		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
 
 		try {
 			const response = await axios.put(
@@ -209,7 +242,17 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				}
 			}
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 			openErrorNotification("Error al cambiar el estado del proyecto.");
 		}
 	};
@@ -218,6 +261,16 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		try {
 			const token = localStorage.getItem("token");
 			const user_id = localStorage.getItem("user_id");
+
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/actualizarLog/${proyectoId}`,
 				{
@@ -227,7 +280,17 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 		}
 	};
 
@@ -247,6 +310,16 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		if (!proyectoId) return;
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
@@ -262,11 +335,44 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
 			fetchClientes();
 		} catch (error) {
-			console.error(`Error al obtener el proyecto: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error(`Error al obtener el proyecto`);
 		}
 	}, [proyectoId]);
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
+		if (!validTokenActive()) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe volver a iniciar sesión para continuar.",
+				},
+			});
+			return;
+		}
+
 		if (show) {
 			fetchProyecto();
 			fetchEmpleados();
@@ -276,6 +382,15 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	async function fetchEmpleados() {
 		try {
 			const token = localStorage.getItem("token");
+
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
 
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
@@ -290,7 +405,18 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
 			setEmpleados(response.data);
 		} catch (error) {
-			console.error(`Error al obtener los empleados: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error(`Error al obtener los empleados`);
 			openErrorNotification("Error al cargar la lista de empleados.");
 		}
 	}
@@ -298,6 +424,15 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	async function fetchClientes() {
 		try {
 			const token = localStorage.getItem("token");
+
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
 
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/clientes`,
@@ -308,7 +443,18 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 
 			setClientes(response.data);
 		} catch (error) {
-			console.error(`Error al obtener los clientes: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error(`Error al obtener los clientes`);
 		}
 	}
 

@@ -3,6 +3,8 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 function construirJsonRequest(
 	proyecto,
@@ -36,6 +38,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 	const [proyectoSeleccionado, setProyectoSeleccionado] = useState(null);
 	const [formRef, setFormRef] = useState(null);
 	const [api, contextHolder] = notification.useNotification();
+	const navigate = useNavigate();
 
 	const prioridades = ["Baja", "Media", "Alta"];
 	const estados = [
@@ -241,6 +244,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		const estadoEdit = event.target.value;
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
@@ -260,7 +273,17 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				openErrorNotification("Error al cambiar el estado.");
 			}
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 			openErrorNotification(
 				"Error al editar el estado de su tarea, por favor trate nuevamente o comuníquese con el soporte técnico."
 			);
@@ -330,6 +353,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
@@ -362,7 +395,17 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				openErrorNotification("Error al editar la tarea.");
 			}
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 
 			openErrorNotification(
 				"Error al editar la tarea, por favor trate nuevamente o comuníquese con el soporte técnico."
@@ -372,6 +415,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
 	const addActionLog = async (accion) => {
 		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
 
 		try {
 			const user_id = localStorage.getItem("user_id");
@@ -384,13 +437,33 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 		}
 	};
 
 	const fetchTarea = useCallback(async () => {
 		if (!tareaId) return;
 		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
 
 		try {
 			const response = await axios.get(
@@ -408,11 +481,44 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 					: response.data.colaborador_id
 			);
 		} catch (error) {
-			console.error(`Error al obtener la tarea: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error(`Error al obtener la tarea`);
 		}
 	}, [tareaId]);
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
+		if (!validTokenActive()) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe volver a iniciar sesión para continuar.",
+				},
+			});
+			return;
+		}
+
 		if (show && tareaId) {
 			fetchTarea();
 			fetchProyectos();
@@ -429,6 +535,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 	async function fetchEmpleados() {
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
@@ -438,12 +554,33 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			);
 			setEmpleados(response.data);
 		} catch (error) {
-			console.error(`Error al obtener los empleados: ${error.message}`);
+			console.error(`Error al obtener los empleados`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 		}
 	}
 
 	async function fetchProyectos() {
 		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
 		const rol = localStorage.getItem("tipo_usuario");
 		const userId = localStorage.getItem("user_id");
 
@@ -454,15 +591,28 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				url += `/cliente/${userId}`;
 			} else if (rol === "Colaborador") {
 				url += `/colaborador/${userId}`;
+			} else {
+				url += `/getAllProyectosLimitedData`;
 			}
 
 			const response = await axios.get(url, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
 
-			setProyectos(response.data);
+			setProyectos(response.data.proyectos);
 		} catch (error) {
-			console.error(`Error al obtener los proyectos: ${error.message}`);
+			console.error(`Error al obtener los proyectos`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 		}
 	}
 

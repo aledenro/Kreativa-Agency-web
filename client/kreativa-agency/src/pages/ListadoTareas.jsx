@@ -95,13 +95,30 @@ const ListadoTareas = () => {
 			url += rol === "Colaborador" ? `/getByColab/${idUsuario}` : "";
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			const response = await axios.get(url, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
 
 			setTareas(response.data.tareas);
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
 		} finally {
 			setLoading(false);
 		}
@@ -110,6 +127,14 @@ const ListadoTareas = () => {
 	const fetchColabs = async () => {
 		try {
 			const token = localStorage.getItem("token");
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
@@ -119,7 +144,16 @@ const ListadoTareas = () => {
 
 			setEmpleados(response.data);
 		} catch (error) {
-			console.error(`Error al obtener los empleados: ${error.message}`);
+			if (error.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+			console.error(`Error al obtener los empleados`);
 		}
 	};
 

@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import { notification } from "antd";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 function construirJsonRequest(
 	nombre,
@@ -42,6 +44,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 	const [empleados, setEmpleados] = useState([]);
 	const [api, contextHolder] = notification.useNotification();
 	const formRef = useRef(null);
+	const navigate = useNavigate();
 
 	const openSuccessNotification = (message) => {
 		api.success({
@@ -108,6 +111,16 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 		);
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/proyectos/crear`,
@@ -127,7 +140,17 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 				}
 			}
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 
 			openErrorNotification(
 				"Error al crear el proyecto, por favor trate nuevamente o comuníquese con el soporte técnico."
@@ -136,6 +159,27 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 	};
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
+		if (!validTokenActive()) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe volver a iniciar sesión para continuar.",
+				},
+			});
+			return;
+		}
 		if (show) {
 			fetchClientes();
 			fetchEmpleados();
@@ -146,6 +190,15 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 		try {
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/clientes`,
 				{
@@ -155,7 +208,18 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 
 			setClientes(response.data);
 		} catch (error) {
-			console.error(`Error al obtener los clientes: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error(`Error al obtener los clientes`);
 			openErrorNotification("Error al cargar la lista de clientes.");
 		}
 	}
@@ -163,6 +227,15 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 	async function fetchEmpleados() {
 		try {
 			const token = localStorage.getItem("token");
+
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
 
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
@@ -177,7 +250,18 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 
 			setEmpleados(empleadosActivos);
 		} catch (error) {
-			console.error(`Error al obtener los empleados: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error(`Error al obtener los empleados`);
 			openErrorNotification("Error al cargar la lista de empleados.");
 		}
 	}

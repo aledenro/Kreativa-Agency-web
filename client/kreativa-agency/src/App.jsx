@@ -45,148 +45,105 @@ import GestionServicios from "./pages/GestionServicios";
 import GestionPaquetes from "./pages/GestionPaquetes";
 import DashboardColaborador from "./pages/DashboardColaborador";
 import VerMiPTO from "./pages/VerMiPTO";
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/usuarios" element={<Usuarios />}></Route>
+	return (
+		<Router>
+			<Routes>
+				<Route path="/usuarios" element={<Usuarios />}></Route>
 
-                <Route path="/usuario/crear" element={<CrearUsuario />}></Route>
+				<Route path="/usuario/crear" element={<CrearUsuario />}></Route>
 
-                <Route path="/usuario/:id" element={<VerUsuario />}></Route>
+				<Route path="/usuario/:id" element={<VerUsuario />}></Route>
 
-                <Route
-                    path="/usuario/editar/:id"
-                    element={<EditarUsuario />}
-                ></Route>
+				<Route path="/usuario/editar/:id" element={<EditarUsuario />}></Route>
 
-                <Route
-                    path="/servicio/agregar"
-                    element={<AgregarServicio />}
-                ></Route>
-                <Route
-                    path="/servicio/modificar/:id"
-                    element={<ModificarServicio />}
-                ></Route>
-                <Route
-                    path="/servicio/agregarPaquete/:id"
-                    element={<AgregarPaquete />}
-                ></Route>
-                <Route
-                    path="/paquete/modificar/:servicioId/:paqueteId"
-                    element={<ModificarPaquete />}
-                ></Route>
+				<Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
+				<Route
+					path="/servicio/modificar/:id"
+					element={<ModificarServicio />}
+				></Route>
+				<Route
+					path="/servicio/agregarPaquete/:id"
+					element={<AgregarPaquete />}
+				></Route>
+				<Route
+					path="/paquete/modificar/:servicioId/:paqueteId"
+					element={<ModificarPaquete />}
+				></Route>
 
-                <Route
-                    path="/cotizacion/agregar"
-                    element={<AgregarCotizacion />}
-                ></Route>
-                <Route
-                    path="/cotizacion/"
-                    element={<VerCotizaciones />}
-                ></Route>
-                <Route
-                    path="/cotizacion/:id"
-                    element={<VerDetalleCotizacion />}
-                ></Route>
+				<Route
+					path="/cotizacion/agregar"
+					element={<AgregarCotizacion />}
+				></Route>
+				<Route path="/cotizacion/" element={<VerCotizaciones />}></Route>
+				<Route
+					path="/cotizacion/:id"
+					element={<VerDetalleCotizacion />}
+				></Route>
 
-                <Route path="/egresos" element={<ListadoEgresos />} />
+				<Route path="/egresos" element={<ListadoEgresos />} />
 
-                <Route path="/ingresos" element={<ListadoIngresos />} />
+				<Route path="/ingresos" element={<ListadoIngresos />} />
 
-                <Route path="/movimientos" element={<Movimientos />} />
+				<Route path="/movimientos" element={<Movimientos />} />
 
-                {/* <Route path="/egresos" element={<VerEgresos />}></Route> */}
-                {/* <Route
+				{/* <Route path="/egresos" element={<VerEgresos />}></Route> */}
+				{/* <Route
                     path="/egreso/editar/:id"
                     element={<EditarEgreso />}
                 ></Route> */}
 
-                {/* <Route path="/ingresos" element={<ListadoIngresos />} /> */}
+				{/* <Route path="/ingresos" element={<ListadoIngresos />} /> */}
 
-                <Route path="/servicios" element={<ListadoServicios />}></Route>
+				<Route path="/servicios" element={<ListadoServicios />}></Route>
 
-                <Route
-                    path="/servicio/agregar"
-                    element={<AgregarServicio />}
-                ></Route>
-                <Route
-                    path="/servicio/modificar/:id"
-                    element={<ModificarServicio />}
-                ></Route>
-                <Route
-                    path="/servicio/:id"
-                    element={<DetalleServicio />}
-                ></Route>
-                <Route
-                    path="/proyecto/agregar"
-                    element={<AgregarProyecto />}
-                ></Route>
-                <Route
-                    path="/proyecto/editar/:id"
-                    element={<EditarProyecto />}
-                ></Route>
-                <Route path="/tarea/agregar" element={<AgregarTarea />}></Route>
-                <Route
-                    path="/tarea/editar/:id"
-                    element={<EditarTarea />}
-                ></Route>
-                <Route path="/login" element={<Login />}></Route>
-                <Route
-                    path="/vista-clientes"
-                    element={<VistaClientes />}
-                ></Route>
-                <Route
-                    path="/vista-colaborador"
-                    element={<VistaColaborador />}
-                ></Route>
-                <Route path="/recuperar" element={<Recuperar />}></Route>
-                <Route
-                    path="/restablecer/:token"
-                    element={<Restablecer />}
-                ></Route>
-                <Route path="/tareas" element={<ListadoTareas />}></Route>
-                <Route
-                    path="/jerarquia"
-                    element={<JerarquiaUsuarios />}
-                ></Route>
-                <Route path="/agregar-pto" element={<AgregarPTO />}></Route>
-                <Route
-                    path="/ver-pto-empleados"
-                    element={<VerPTOEmpleados />}
-                ></Route>
-                <Route path="/perfil" element={<VerPerfil />}></Route>
-                <Route
-                    path="/proyecto/:id"
-                    element={<VerDetalleProyecto />}
-                ></Route>
+				<Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
+				<Route
+					path="/servicio/modificar/:id"
+					element={<ModificarServicio />}
+				></Route>
+				<Route path="/servicio/:id" element={<DetalleServicio />}></Route>
+				<Route path="/proyecto/agregar" element={<AgregarProyecto />}></Route>
+				<Route path="/proyecto/editar/:id" element={<EditarProyecto />}></Route>
+				<Route path="/tarea/agregar" element={<AgregarTarea />}></Route>
+				<Route path="/tarea/editar/:id" element={<EditarTarea />}></Route>
+				<Route path="/login" element={<Login />}></Route>
+				<Route path="/vista-clientes" element={<VistaClientes />}></Route>
+				<Route path="/vista-colaborador" element={<VistaColaborador />}></Route>
+				<Route path="/recuperar" element={<Recuperar />}></Route>
+				<Route path="/restablecer/:token" element={<Restablecer />}></Route>
+				<Route path="/tareas" element={<ListadoTareas />}></Route>
+				<Route path="/jerarquia" element={<JerarquiaUsuarios />}></Route>
+				<Route path="/agregar-pto" element={<AgregarPTO />}></Route>
+				<Route path="/ver-pto-empleados" element={<VerPTOEmpleados />}></Route>
+				<Route path="/perfil" element={<VerPerfil />}></Route>
+				<Route path="/proyecto/:id" element={<VerDetalleProyecto />}></Route>
 
-                <Route path="/admin" element={<AdminPanel />}></Route>
-                <Route path="/estadisticas" element={<Estadisticas />} />
+				<Route path="/admin" element={<AdminPanel />}></Route>
+				<Route path="/estadisticas" element={<Estadisticas />} />
 
-                <Route path="/admin" element={<AdminPanel />}></Route>
-                <Route path="/" element={<Landing />} />
-                <Route path="/pagos" element={<ListadoPagos />} />
-                <Route
-                    path="/admin/contacto"
-                    element={<RespuestasContacto />}
-                />
-                <Route
-                    path="/admin/reclutaciones"
-                    element={<RespuestasReclutaciones />}
-                />
-                <Route
-                    path="/admin/reclutaciones"
-                    element={<RespuestasReclutaciones />}
-                />
-                <Route path="/admin/servicios" element={<GestionServicios />} />
-                <Route path="/admin/paquetes" element={<GestionPaquetes />} />
-                <Route path="/dashboard" element={<DashboardColaborador />} />
-                <Route path="/mis-pto" element={<VerMiPTO />} />
-            </Routes>
-        </Router>
-    );
+				<Route path="/admin" element={<AdminPanel />}></Route>
+				<Route path="/" element={<Landing />} />
+				<Route path="/pagos" element={<ListadoPagos />} />
+				<Route path="/admin/contacto" element={<RespuestasContacto />} />
+				<Route
+					path="/admin/reclutaciones"
+					element={<RespuestasReclutaciones />}
+				/>
+				<Route
+					path="/admin/reclutaciones"
+					element={<RespuestasReclutaciones />}
+				/>
+				<Route path="/admin/servicios" element={<GestionServicios />} />
+				<Route path="/admin/paquetes" element={<GestionPaquetes />} />
+				<Route path="/dashboard" element={<DashboardColaborador />} />
+				<Route path="/mis-pto" element={<VerMiPTO />} />
+				<Route path="/error" element={<ErrorPage />} />
+			</Routes>
+		</Router>
+	);
 }
 
 export default App;

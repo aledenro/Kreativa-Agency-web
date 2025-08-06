@@ -64,9 +64,10 @@ const crearUsuario = async (req, res) => {
 			usuario: usuarioCreado,
 		});
 	} catch (error) {
-		res
-			.status(500)
-			.json({ mensaje: "Error al crear el usuario", error: error.message });
+		res.status(500).json({
+			mensaje: "Error al crear el usuario",
+			error: error.message,
+		});
 	}
 };
 
@@ -184,11 +185,9 @@ const iniciarSesion = async (req, res) => {
 		}
 
 		if (user.estado && user.estado.toLowerCase() === "inactivo") {
-			return res
-				.status(403)
-				.json({
-					mensaje: "Tu cuenta está inactiva. Contacta al administrador.",
-				});
+			return res.status(403).json({
+				mensaje: "Tu cuenta está inactiva. Contacta al administrador.",
+			});
 		}
 
 		const isMatch = await bcrypt.compare(contraseña, user.contraseña);
@@ -212,7 +211,10 @@ const iniciarSesion = async (req, res) => {
 			usuario: user,
 		});
 	} catch (error) {
-		res.status(500).json({ mensaje: "Error en el inicio de sesión", error });
+		res.status(500).json({
+			mensaje: "Error en el inicio de sesión",
+			error,
+		});
 	}
 };
 
@@ -230,7 +232,7 @@ const recuperarContraseña = async (req, res) => {
 		}
 
 		const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET, {
-			expiresIn: "15m",
+			expiresIn: "2h",
 		});
 
 		await enviarCorreoRecuperacion(email, token);
@@ -287,17 +289,15 @@ const getJerarquiaUsuarios = async (req, res) => {
 		usuarios.forEach((usuario) => {
 			if (jerarquia[usuario.tipo_usuario]) {
 				jerarquia[usuario.tipo_usuario].push(usuario);
-			} else {
-				console.warn(`⚠️ Tipo de usuario desconocido: ${usuario.tipo_usuario}`);
 			}
 		});
 
 		res.status(200).json(jerarquia);
 	} catch (error) {
 		console.error("❌ ERROR en getJerarquiaUsuarios:", error);
-		res
-			.status(500)
-			.json({ mensaje: "Error al obtener la jerarquía de usuarios" });
+		res.status(500).json({
+			mensaje: "Error al obtener la jerarquía de usuarios",
+		});
 	}
 };
 

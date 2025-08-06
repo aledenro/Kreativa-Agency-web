@@ -2,6 +2,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function construirJsonRequest(titulo, descripcion, urgente) {
     const user_id = localStorage.getItem("user_id");
@@ -19,6 +20,7 @@ const AgregarCotizacion = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -38,6 +40,16 @@ const AgregarCotizacion = () => {
         const data = construirJsonRequest(titulo, descripcion, urgente);
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
@@ -52,7 +64,17 @@ const AgregarCotizacion = () => {
                 event.target.reset();
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
 
             setAlertMessage(
                 "Error al enviar su cotización, por favor trate nuevamente o comuniquese con el soporte técnico."

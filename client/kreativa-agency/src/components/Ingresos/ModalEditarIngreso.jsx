@@ -2,6 +2,8 @@ import { Modal, Alert, Form, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const ModalEditarIngreso = ({
     show,
@@ -13,8 +15,31 @@ const ModalEditarIngreso = ({
     const [ingresoEditado, setIngresoEditado] = useState({});
     const [mensaje, setMensaje] = useState("");
     const [showConfirm, setShowConfirm] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
+
         if (ingreso && Object.keys(ingreso).length > 0) {
             setIngresoEditado({ ...ingreso });
         }
@@ -37,6 +62,16 @@ const ModalEditarIngreso = ({
     const handleConfirmEdit = async () => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/ingresos/${ingresoEditado._id}`,
@@ -53,7 +88,17 @@ const ModalEditarIngreso = ({
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error al actualizar ingreso:", error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             setMensaje("Error al actualizar el ingreso.");
         }
     };

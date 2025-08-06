@@ -49,6 +49,15 @@ const GestionPaquetes = () => {
 		const fetchServicios = async () => {
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			try {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios`,
@@ -56,10 +65,18 @@ const GestionPaquetes = () => {
 						headers: { Authorization: `Bearer ${token}` },
 					}
 				);
-
 				setServicios(response.data);
 			} catch (err) {
-				setError("Error al cargar los servicios: " + err.message);
+				if (err.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+				setError("Error al cargar los servicios");
 				openErrorNotification("No se pudieron cargar los servicios.");
 			} finally {
 				setLoading(false);
@@ -99,6 +116,15 @@ const GestionPaquetes = () => {
 		const { servicioId, paqueteId, estadoActual } = selectedPaquete;
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
 		try {
 			const endpoint = estadoActual
 				? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
@@ -115,7 +141,16 @@ const GestionPaquetes = () => {
 			);
 			setShowModal(false);
 		} catch (err) {
-			console.error("Error al cambiar el estado del paquete:", err.message);
+			if (err.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+			console.error("Error al cambiar el estado del paquete");
 			openErrorNotification("Error al cambiar el estado del paquete.");
 			setShowModal(false);
 		}

@@ -13,6 +13,7 @@ import ModalVerIngreso from "../components/Ingresos/ModalVerIngreso";
 import ModalVerEgreso from "../components/Egresos/ModalVerEgreso";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import Loading from "../components/ui/LoadingComponent";
+import { useNavigate } from "react-router-dom";
 
 const Movimientos = () => {
 	// Estados para filtros
@@ -37,6 +38,8 @@ const Movimientos = () => {
 	const [pagActual, setPagActual] = useState(1);
 	const [itemsPag, setItemsPag] = useState(5);
 	const [sortOrder, setSortOrder] = useState("desc");
+
+	const navigate = useNavigate();
 
 	const [loading, setLoading] = useState(true);
 
@@ -67,6 +70,16 @@ const Movimientos = () => {
 		const token = localStorage.getItem("token");
 		setLoading(true);
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		axios
 			.get(url, {
 				headers: { Authorization: `Bearer ${token}` },
@@ -76,7 +89,16 @@ const Movimientos = () => {
 				setPagActual(1); // Reinicia a la primera página al buscar
 			})
 			.catch((error) => {
-				console.error("Error al obtener movimientos:", error.message);
+				if (error.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+				console.error("Error al obtener movimientos:");
 			})
 			.finally(() => {
 				setLoading(false);
@@ -85,6 +107,15 @@ const Movimientos = () => {
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
 		const promises = [];
 
 		promises.push(
@@ -109,7 +140,15 @@ const Movimientos = () => {
 					setCategories(res.data);
 				})
 				.catch((error) => {
-					console.error("Error al obtener categorías:", error.message);
+					if (error.status === 401) {
+						navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe volver a iniciar sesión para continuar.",
+							},
+						});
+						return;
+					}
 				})
 		);
 
@@ -179,6 +218,16 @@ const Movimientos = () => {
 		}
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		if (mov.entidad === "ingreso") {
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/ingresos/${mov.idRegistro}`, {
@@ -189,7 +238,16 @@ const Movimientos = () => {
 					setShowModalVerIngreso(true);
 				})
 				.catch((error) => {
-					console.error("Error al obtener el ingreso:", error.message);
+					if (error.status === 401) {
+						navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe volver a iniciar sesión para continuar.",
+							},
+						});
+						return;
+					}
+					console.error("Error al obtener el ingreso");
 				});
 		} else if (mov.entidad === "egreso") {
 			axios
@@ -201,7 +259,16 @@ const Movimientos = () => {
 					setShowModalVerEgreso(true);
 				})
 				.catch((error) => {
-					console.error("Error al obtener el egreso:", error.message);
+					if (error.status === 401) {
+						navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe volver a iniciar sesión para continuar.",
+							},
+						});
+						return;
+					}
+					console.error("Error al obtener el egreso");
 				});
 		}
 	};

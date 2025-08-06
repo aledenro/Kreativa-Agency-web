@@ -1,9 +1,12 @@
 import { Modal, Alert, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
+    const navigate = useNavigate();
     const [mensaje, setMensaje] = useState("");
     const [errorCedula, setErrorCedula] = useState("");
     const [nombreCliente, setNombreCliente] = useState("");
@@ -15,6 +18,30 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
         descripcion: "",
         estado: "Pendiente de pago",
         fecha: "",
+    });
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
+        if (!validTokenActive()) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Debe volver a iniciar sesión para continuar.",
+                },
+            });
+            return;
+        }
     });
 
     const validarCedula = (cedula) => /^[0-9]{8,9}$/.test(cedula);
@@ -29,6 +56,15 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 
         try {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
 
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/ingresos/buscarPorCedula/${formData.cedula}`,
@@ -53,7 +89,17 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
                 setErrorCedula("Cliente no encontrado");
             }
         } catch (error) {
-            console.error("Error buscando cliente:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             setNombreCliente("");
             setEmailCliente("");
             setEstadoCliente("Inactivo");
@@ -73,6 +119,16 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/ingresos`,
@@ -88,7 +144,17 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
                 }, 1500);
             }
         } catch (error) {
-            console.error("Error creando ingreso:", error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
             setMensaje("Error al crear el ingreso.");
         }
     };

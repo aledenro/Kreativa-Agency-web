@@ -22,6 +22,7 @@ import ModalCrearEgreso from "../components/Egresos/ModalCrearEgreso";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import { useNavigate } from "react-router-dom";
 import Loading from "../components/ui/LoadingComponent";
 
 const ListadoEgresos = () => {
@@ -68,9 +69,20 @@ const ListadoEgresos = () => {
 	const [showConfirmCrear, setShowConfirmCrear] = useState(false);
 
 	const [loading, setLoading] = useState(true);
+	const navigate = useNavigate();
 
 	const fetchEgresos = useCallback(async () => {
 		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
 
 		try {
 			const res = await axios.get(`${import.meta.env.VITE_API_URL}/egresos`, {
@@ -78,7 +90,18 @@ const ListadoEgresos = () => {
 			});
 			setEgresos(res.data);
 		} catch (error) {
-			console.error("Error al obtener egresos:", error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error("Error al obtener egresos");
 		} finally {
 			setLoading(false);
 		}
@@ -152,15 +175,22 @@ const ListadoEgresos = () => {
 		if (toggleEgreso) {
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			try {
 				const url = toggleEgreso.activo
 					? `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/desactivar`
 					: `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/activar`;
-				await axios.put(
-					url,
-					{},
-					{ headers: { Authorization: `Bearer ${token}` } }
-				);
+				await axios.put(url, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
 				setEgresos((prev) =>
 					prev.map((e) =>
 						e._id === toggleEgreso._id ? { ...e, activo: !e.activo } : e
@@ -169,7 +199,16 @@ const ListadoEgresos = () => {
 				setShowConfirmToggle(false);
 				setToggleEgreso(null);
 			} catch (error) {
-				console.error("Error al cambiar estado de egreso:", error.message);
+				if (error.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+				console.error("Error al cambiar estado de egreso");
 			}
 		}
 	};

@@ -27,6 +27,15 @@ const ModificarPaquete = () => {
         const fetchPaquete = async () => {
             const token = localStorage.getItem("token");
 
+            if (!token) {
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe iniciar sesión para continuar.",
+                    },
+                });
+            }
+
             try {
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/${servicioId}`,
@@ -48,7 +57,17 @@ const ModificarPaquete = () => {
                 setPaqueteEditado(paquete);
                 setLoading(false);
             } catch (error) {
-                console.error("Error al obtener el paquete:", error);
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error("Error al obtener el paquete");
                 openErrorNotification("Error al cargar los datos del paquete");
                 setLoading(false);
             }
@@ -137,6 +156,16 @@ const ModificarPaquete = () => {
     const handleSubmit = async () => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}`,
@@ -151,7 +180,18 @@ const ModificarPaquete = () => {
                 navigate("/admin/paquetes");
             }, 2000);
         } catch (error) {
-            console.error("Error al editar el paquete:", error);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
+            console.error("Error al editar el paquete");
             openErrorNotification("Error al editar el paquete");
             setShowModal(false);
         }

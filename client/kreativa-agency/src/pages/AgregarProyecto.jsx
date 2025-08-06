@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import { useNavigate } from "react-router-dom";
 
 function construirJsonRequest(
     nombre,
@@ -37,6 +38,7 @@ const AgregarProyecto = () => {
     const [alertMessage, setAlertMessage] = useState("");
     const [alertVariant, setAlertVariant] = useState("danger");
     const [empleados, setEmpleados] = useState([]);
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -73,6 +75,16 @@ const AgregarProyecto = () => {
 
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/error", {
+                state: {
+                    errorCode: 401,
+                    mensaje: "Acceso no autorizado.",
+                },
+            });
+            return;
+        }
+
         try {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/proyectos/crear`,
@@ -87,7 +99,17 @@ const AgregarProyecto = () => {
                 event.target.reset();
             }
         } catch (error) {
-            console.error(error.message);
+            if (error.status === 401) {
+                localStorage.clear();
+                navigate("/error", {
+                    state: {
+                        errorCode: 401,
+                        mensaje: "Debe volver a iniciar sesión para continuar.",
+                    },
+                });
+
+                return;
+            }
 
             setAlertMessage(
                 "Error al enviar su proyecto, por favor trate nuevamente o comuniquese con el soporte técnico."
@@ -102,6 +124,15 @@ const AgregarProyecto = () => {
             try {
                 const token = localStorage.getItem("token");
 
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
+
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                     {
@@ -111,15 +142,32 @@ const AgregarProyecto = () => {
 
                 setClientes(response.data);
             } catch (error) {
-                console.error(
-                    `Error al obtener los clientes: ${error.message}`
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error(`Error al obtener los clientes`);
             }
         }
 
         async function fetchEmpleados() {
             try {
                 const token = localStorage.getItem("token");
+
+                if (!token) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje: "Debe iniciar sesión para continuar.",
+                        },
+                    });
+                }
 
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
@@ -130,9 +178,17 @@ const AgregarProyecto = () => {
 
                 setEmpleados(response.data);
             } catch (error) {
-                console.error(
-                    `Error al obtener los empleados: ${error.message}`
-                );
+                if (error.status === 401) {
+                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error(`Error al obtener los empleados`);
             }
         }
 

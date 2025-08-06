@@ -14,6 +14,7 @@ router.post(
 router.get("/", ServiciosController.getServicios);
 router.get("/nombres", ServiciosController.getServiciosNombres);
 router.post("/agregar", verificarToken, ServiciosController.agregarServicio);
+router.get("/listado", ServiciosController.getServiciosListado);
 router.get("/:id", ServiciosController.getServicioById);
 router.put(
 	"/modificar/:id",

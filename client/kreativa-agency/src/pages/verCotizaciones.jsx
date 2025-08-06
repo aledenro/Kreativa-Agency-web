@@ -10,6 +10,7 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
+import { useNavigate } from "react-router-dom";
 
 const getEstado = (status) => {
 	switch (status) {
@@ -41,6 +42,7 @@ const VerCotizaciones = () => {
 	const user_id = localStorage.getItem("user_id");
 
 	const [loading, setLoading] = useState(true);
+	const navigate = useNavigate();
 
 	const getCotizaciones = useCallback(async () => {
 		try {
@@ -50,14 +52,32 @@ const VerCotizaciones = () => {
 
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Acceso no autorizado.",
+					},
+				});
+				return;
+			}
+
 			const response = await axios.get(url, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
+
 			setCotizaciones(response.data.cotizaciones);
 			setsortField("fecha_solicitud");
 			setsortOrder("desc");
 		} catch (error) {
-			console.error(error.message);
+			if (error.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+			}
 		} finally {
 			setLoading(false);
 		}

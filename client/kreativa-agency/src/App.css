@@ -4164,3 +4164,24 @@ h3 {
 	pointer-events: none;
 	color: #999;
 }
+
+.error-container {
+	background-color: var(--kreativa-azul);
+}
+
+.error-logo {
+	max-width: 400px;
+	width: 100%;
+}
+
+.error-logo img {
+	object-fit: contain;
+}
+
+.error-content h1 {
+	color: var(--kreativa-light-bg);
+}
+
+.error-content p {
+	color: var(--kreativa-light-bg);
+}

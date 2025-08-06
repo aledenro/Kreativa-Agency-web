@@ -29,6 +29,15 @@ const DetalleServicio = () => {
 		const fetchServicio = async () => {
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			try {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/${id}`,
@@ -40,6 +49,15 @@ const DetalleServicio = () => {
 				console.log("Servicio recibido:", servicioData.imagen);
 				setServicio(servicioData);
 			} catch (err) {
+				if (error.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
 				setError(err.message);
 			} finally {
 				setLoading(false);
@@ -69,12 +87,30 @@ const DetalleServicio = () => {
 				: `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			const response = await axios.put(endpoint, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
 			setServicio(response.data.servicio);
 		} catch (err) {
-			console.error("Error al cambiar el estado del servicio:", err.message);
+			if (err.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+			console.error("Error al cambiar el estado del servicio");
 		}
 	};
 
@@ -88,13 +124,31 @@ const DetalleServicio = () => {
 
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			const response = await axios.put(endpoint, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
 
 			setServicio(response.data);
 		} catch (err) {
-			console.error("Error al cambiar el estado del paquete:", err.message);
+			if (err.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+			console.error("Error al cambiar el estado del paquete");
 		}
 	};
 
@@ -108,6 +162,7 @@ const DetalleServicio = () => {
 		);
 	}
 
+	if (loading) return <p>Cargando...</p>;
 	if (error) return <p>Error: {error}</p>;
 	if (!servicio) return <p>No se encontró el servicio.</p>;
 

@@ -16,6 +16,7 @@ const VerPTOEmpleados = () => {
 	const [empleados, setEmpleados] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
+
 	const [itemsPag, setItemsPag] = useState(5);
 	const [pagActual, setPagActual] = useState(1);
 	const [sortField, setSortField] = useState("nombre");
@@ -26,13 +27,12 @@ const VerPTOEmpleados = () => {
 			try {
 				const token = localStorage.getItem("token");
 				if (!token) {
-					Swal.fire({
-						title: "Error",
-						text: "No hay token disponible. Inicia sesión nuevamente.",
-						icon: "error",
-						confirmButtonColor: "#ff0072",
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe iniciar sesión para continuar.",
+						},
 					});
-					return;
 				}
 
 				const response = await axios.get(
@@ -44,7 +44,16 @@ const VerPTOEmpleados = () => {
 
 				setEmpleados(response.data);
 			} catch (error) {
-				console.error("Error al obtener empleados:", error);
+				if (error.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+				console.error("Error al obtener empleados");
 				setError("Hubo un problema al cargar la lista de empleados.");
 			} finally {
 				setLoading(false);
@@ -86,8 +95,20 @@ const VerPTOEmpleados = () => {
 		}
 	};
 
+	// Función global de cambio de estado PTO
 	window.toggleEstadoPTO = async (ptoId, estadoActual, empleadoId, nombre) => {
 		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		const nuevoEstado = estadoActual === "aprobado" ? "pendiente" : "aprobado";
 
 		const confirm = await Swal.fire({
@@ -106,7 +127,9 @@ const VerPTOEmpleados = () => {
 			await axios.patch(
 				`${import.meta.env.VITE_API_URL}/pto/${ptoId}`,
 				{ estado: nuevoEstado },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
 			);
 
 			Swal.fire({
@@ -116,9 +139,20 @@ const VerPTOEmpleados = () => {
 				confirmButtonColor: "#ff0072",
 			});
 
-			verDetallesPTO(empleadoId, nombre);
+			verDetallesPTO(empleadoId, nombre); // Recargar tabla modal
 		} catch (error) {
-			console.error("Error al cambiar estado:", error);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error("Error al cambiar estado");
 			Swal.fire({
 				title: "Error",
 				text: "No se pudo cambiar el estado.",
@@ -136,9 +170,20 @@ const VerPTOEmpleados = () => {
 		try {
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/pto/${empleadoId}`,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
 			);
 
 			const ptoList = response.data;

@@ -36,8 +36,12 @@ const Usuarios = () => {
 			try {
 				const token = localStorage.getItem("token");
 				if (!token) {
-					setError("No hay token disponible");
-					return;
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe iniciar sesión para continuar.",
+						},
+					});
 				}
 
 				const decodedToken = jwtDecode(token);
@@ -56,6 +60,15 @@ const Usuarios = () => {
 					)
 				);
 			} catch (error) {
+				if (error.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
 				console.error(
 					"Error al cargar los usuarios:",
 					error.response?.data || error
@@ -72,8 +85,12 @@ const Usuarios = () => {
 		try {
 			const token = localStorage.getItem("token");
 			if (!token) {
-				setError("No hay token disponible");
-				return;
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
 			}
 
 			const { data } = await axios.get(
@@ -86,8 +103,18 @@ const Usuarios = () => {
 			console.log("Detalles del usuario:", data);
 			navigate(`/usuario/${id}`);
 		} catch (error) {
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 			setError("Error al obtener los detalles del usuario.");
-			console.error("Error al obtener usuario:", error.response?.data || error);
 		}
 	};
 
@@ -97,7 +124,6 @@ const Usuarios = () => {
 
 	const handleActivarDesactivar = async (id, estadoActual) => {
 		const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
-
 		const result = await Swal.fire({
 			title: `¿Estás seguro?`,
 			text: `Este usuario será marcado como ${nuevoEstado.toLowerCase()}.`,
@@ -110,9 +136,18 @@ const Usuarios = () => {
 		});
 
 		if (!result.isConfirmed) return;
-
+		return;
 		try {
 			const token = localStorage.getItem("token");
+
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
 			await axios.put(
 				`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
 				{ estado: nuevoEstado },
@@ -135,6 +170,17 @@ const Usuarios = () => {
 				showConfirmButton: false,
 			});
 		} catch (error) {
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
 			setError("Error al cambiar el estado del usuario.");
 
 			Swal.fire({
@@ -145,21 +191,29 @@ const Usuarios = () => {
 		}
 	};
 
-	const handleEliminar = async (id) => {
-		if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?"))
-			return;
+	// const handleEliminar = async (id) => {
+	//     if (
+	//         !window.confirm(
+	//             "¿Estás seguro de que deseas eliminar este usuario?"
+	//         )
+	//     )
+	//         return;
 
-		try {
-			const token = localStorage.getItem("token");
-			await axios.delete(`${import.meta.env.VITE_API_URL}/usuarios/${id}`, {
-				headers: { Authorization: `Bearer ${token}` },
-			});
+	//     try {
+	//         const token = localStorage.getItem("token");
+	//         await axios.delete(
+	//             `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
+	//             {
+	//                 headers: { Authorization: `Bearer ${token}` },
+	//             }
+	//         );
 
-			setUsuarios(usuarios.filter((usuario) => usuario._id !== id));
-		} catch (error) {
-			setError("Error al eliminar el usuario permanentemente");
-		}
-	};
+	//         setUsuarios(usuarios.filter((usuario) => usuario._id !== id));
+	// 	} catch (error) {
+
+	//         setError("Error al eliminar el usuario permanentemente");
+	//     }
+	// };
 
 	const usuariosFiltrados = usuarios
 		.filter((usuario) => usuario.cedula.includes(search))

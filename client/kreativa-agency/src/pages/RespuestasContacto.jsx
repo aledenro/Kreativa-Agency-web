@@ -11,6 +11,7 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
+import { useNavigate } from "react-router-dom";
 
 const RespuestasContacto = () => {
 	const [formularios, setFormularios] = useState([]);
@@ -23,10 +24,20 @@ const RespuestasContacto = () => {
 	const [sortOrder, setSortOrder] = useState("desc");
 
 	const [loading, setLoading] = useState(true);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchFormularios = async () => {
 			const token = localStorage.getItem("token");
+
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
 
 			try {
 				const response = await axios.get(
@@ -37,7 +48,16 @@ const RespuestasContacto = () => {
 				);
 				setFormularios(response.data.forms);
 			} catch (error) {
-				console.error("Error al obtener los formularios de contacto:", error);
+				if (error.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+				console.error("Error al obtener los formularios de contacto");
 			} finally {
 				setLoading(false);
 			}

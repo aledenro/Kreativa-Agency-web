@@ -36,6 +36,15 @@ const GestionServicios = () => {
 		const fetchServicios = async () => {
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			try {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/listado`,
@@ -49,7 +58,16 @@ const GestionServicios = () => {
 					setServicios([]);
 				}
 			} catch (error) {
-				console.error("Error al obtener los servicios:", error);
+				if (error.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+				console.error("Error al obtener los servicios");
 				setServicios([]);
 			} finally {
 				setLoading(false);
@@ -89,6 +107,15 @@ const GestionServicios = () => {
 
 			const token = localStorage.getItem("token");
 
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+
 			const response = await axios.put(endpoint, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
@@ -103,7 +130,18 @@ const GestionServicios = () => {
 
 			setShowModal(false);
 		} catch (error) {
-			console.error("Error al cambiar el estado del servicio:", error);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error("Error al cambiar el estado del servicio");
 			setShowModal(false);
 		}
 	};

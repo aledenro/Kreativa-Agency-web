@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
-import Alert from "react-bootstrap/Alert";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import Nav from "react-bootstrap/Nav";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -15,6 +13,8 @@ import deleteFile from "../../utils/fileDelete";
 import sendEmail from "../../utils/emailSender";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
+import { useNavigate } from "react-router-dom";
+import validTokenActive from "../../utils/validateToken";
 
 const { Dragger } = Upload;
 
@@ -24,6 +24,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 	const [files, setFiles] = useState([]);
 	const [isHovered, setIsHovered] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
 	const [api, contextHolder] = notification.useNotification();
 
@@ -44,6 +45,16 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
@@ -54,15 +65,48 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
 			setProyecto(res.data.proyecto);
 		} catch (error) {
-			console.error("Error al obtener la proyecto: " + error.message);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error("Error al obtener la proyecto");
 		}
 	}, [proyectoId]);
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
+		if (!validTokenActive()) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe volver a iniciar sesión para continuar.",
+				},
+			});
+			return;
+		}
+
 		if (show) {
 			fetchProyecto();
 		}
-	}, [show, fetchProyecto]);
+	}, [show, fetchProyecto, navigate]);
 
 	const handleFileChange = (info) => {
 		// Verificar archivos seleccionados
@@ -106,6 +150,16 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
 		const token = localStorage.getItem("token");
 
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+
 		try {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${proyectoId}`,
@@ -132,7 +186,18 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			showNotification("success", "Respuesta enviada correctamente.");
 			fetchProyecto();
 		} catch (error) {
-			console.error(`Error al enviar la respuesta: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error(`Error al enviar la respuesta`);
 			showNotification(
 				"error",
 				"Error al enviar la respuesta, por favor intente de nuevo o contacte al soporte técnico."
@@ -165,7 +230,18 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				);
 			}
 		} catch (error) {
-			console.error(`Error al enviar la notificacion: ${error.message}`);
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+
+				return;
+			}
+			console.error(`Error al enviar la notificacion`);
 			showNotification(
 				"error",
 				"Error al enviar la notificación, por favor intente de nuevo o contacte al soporte técnico."
