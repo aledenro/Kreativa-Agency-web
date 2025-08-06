@@ -264,7 +264,7 @@ const ListadoIngresos = () => {
 				const url = toggleIngreso.activo
 					? `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/desactivar`
 					: `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/activar`;
-				await axios.put(url, {
+				await axios.put(url, {},{
 					headers: { Authorization: `Bearer ${token}` },
 				});
 				setIngresos((prev) =>

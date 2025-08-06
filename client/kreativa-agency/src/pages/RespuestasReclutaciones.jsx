@@ -135,13 +135,15 @@ const RespuestasReclutaciones = () => {
 
         try {
             setToggleLoading(true);
+         
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/form-status`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
+                {},
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
             );
-            setIsFormActive(response.data.active);
+            setFormActive(response.data.active);
         } catch (error) {
             if (error.status === 401) {
                 localStorage.clear();

@@ -96,7 +96,7 @@ const DetalleServicio = () => {
 				});
 			}
 
-			const response = await axios.put(endpoint, {
+			const response = await axios.put(endpoint, {},{
 				headers: { Authorization: `Bearer ${token}` },
 			});
 			setServicio(response.data.servicio);
@@ -133,7 +133,7 @@ const DetalleServicio = () => {
 				});
 			}
 
-			const response = await axios.put(endpoint, {
+			const response = await axios.put(endpoint, {},{
 				headers: { Authorization: `Bearer ${token}` },
 			});
 

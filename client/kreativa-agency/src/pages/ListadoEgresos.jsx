@@ -188,7 +188,7 @@ const ListadoEgresos = () => {
 				const url = toggleEgreso.activo
 					? `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/desactivar`
 					: `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/activar`;
-				await axios.put(url, {
+				await axios.put(url, {},{
 					headers: { Authorization: `Bearer ${token}` },
 				});
 				setEgresos((prev) =>

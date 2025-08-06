@@ -116,7 +116,7 @@ const GestionServicios = () => {
 				});
 			}
 
-			const response = await axios.put(endpoint, {
+			const response = await axios.put(endpoint, {},{
 				headers: { Authorization: `Bearer ${token}` },
 			});
 
