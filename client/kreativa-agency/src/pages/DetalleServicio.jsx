@@ -27,37 +27,15 @@ const DetalleServicio = () => {
 
 	useEffect(() => {
 		const fetchServicio = async () => {
-			const token = localStorage.getItem("token");
-
-			if (!token) {
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe iniciar sesión para continuar.",
-					},
-				});
-			}
-
+			
 			try {
 				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/servicios/${id}`,
-					{
-						headers: { Authorization: `Bearer ${token}` },
-					}
+					`${import.meta.env.VITE_API_URL}/servicios/${id}`
 				);
 				const servicioData = response.data;
 				console.log("Servicio recibido:", servicioData.imagen);
 				setServicio(servicioData);
 			} catch (err) {
-				if (error.status === 401) {
-					navigate("/error", {
-						state: {
-							errorCode: 401,
-							mensaje: "Debe volver a iniciar sesión para continuar.",
-						},
-					});
-					return;
-				}
 				setError(err.message);
 			} finally {
 				setLoading(false);
