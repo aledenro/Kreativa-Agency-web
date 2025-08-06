@@ -242,7 +242,7 @@ class EgresosController {
                     .json({ error: "Se requiere el parámetro 'year'" });
             }
 
-            const total = await EgresoService.obtenerTotalEgresosAnuales(year);
+            const total = await EgresosService.obtenerTotalEgresosAnuales(year);
             res.json({ total });
         } catch (error) {
             res.status(500).json({

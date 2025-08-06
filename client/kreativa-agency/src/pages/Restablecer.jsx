@@ -22,6 +22,7 @@ const Restablecer = () => {
                 customClass: {
                     confirmButton: "swal-button-kreativa",
                 },
+                confirmButtonColor: " #ff0072",
             });
             return;
         }
@@ -43,6 +44,7 @@ const Restablecer = () => {
                 customClass: {
                     confirmButton: "swal-button-kreativa",
                 },
+                confirmButtonColor: " #ff0072",
             }).then(() => {
                 navigate("/login");
             });
@@ -55,6 +57,7 @@ const Restablecer = () => {
                 customClass: {
                     confirmButton: "swal-button-kreativa",
                 },
+                confirmButtonColor: " #ff0072",
             });
         }
     };

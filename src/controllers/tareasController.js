@@ -3,151 +3,166 @@ const TareasService = require("../services/tareasService");
 const lodash = require("lodash");
 
 class TareasController {
-    async createTarea(req, res) {
-        try {
-            const data = req.body;
+	async createTarea(req, res) {
+		try {
+			const data = req.body;
 
-            const tarea = await TareasService.createTarea(data);
+			const tarea = await TareasService.createTarea(data);
 
-            return res.status(201).json(tarea);
-        } catch (error) {
-            console.error(`Error al crear la tarea: ${error.message}`);
-            return res.status(500).json({ error: error.message });
-        }
-    }
+			return res.status(201).json(tarea);
+		} catch (error) {
+			console.error(`Error al crear la tarea: ${error.message}`);
+			return res.status(500).json({ error: error.message });
+		}
+	}
 
-    async getTareaById(req, res) {
-        try {
-            const id = req.params.id;
+	async getTareaById(req, res) {
+		try {
+			const id = req.params.id;
 
-            const tarea = await TareasService.getTareaById(id);
+			const tarea = await TareasService.getTareaById(id);
 
-            if (!tarea || lodash.isEmpty(tarea)) {
-                return res.status(404).json({
-                    error: `Error al obtener la tarea con el id ${id}`,
-                });
-            }
+			if (!tarea || lodash.isEmpty(tarea)) {
+				return res.status(404).json({
+					error: `Error al obtener la tarea con el id ${id}`,
+				});
+			}
 
-            return res.json(tarea);
-        } catch (error) {
-            console.error(`Error al obtener la tarea: ${error.message}`);
-            return res.status(500).json({ error: error.message });
-        }
-    }
+			return res.json(tarea);
+		} catch (error) {
+			console.error(`Error al obtener la tarea: ${error.message}`);
+			return res.status(500).json({ error: error.message });
+		}
+	}
 
-    async editTarea(req, res) {
-        try {
-            const id = req.params.id;
-            const data = req.body;
+	async editTarea(req, res) {
+		try {
+			const id = req.params.id;
+			const data = req.body;
 
-            const tarea = await TareasService.editTarea(id, data);
+			const tarea = await TareasService.editTarea(id, data);
 
-            return res.json(tarea);
-        } catch (error) {
-            console.error(`Error al editar la tarea: ${error.message}`);
-            return res.status(500).json({ error: error.message });
-        }
-    }
+			return res.json(tarea);
+		} catch (error) {
+			console.error(`Error al editar la tarea: ${error.message}`);
+			return res.status(500).json({ error: error.message });
+		}
+	}
 
-    async actualizarLog(req, res) {
-        try {
-            const id = req.params.id;
-            const data = req.body;
-            const tarea = await TareasService.actualizarLog(id, data);
+	async actualizarLog(req, res) {
+		try {
+			const id = req.params.id;
+			const data = req.body;
+			const tarea = await TareasService.actualizarLog(id, data);
 
-            if (!tarea || lodash.isEmpty(tarea)) {
-                return res.status(404).json({
-                    error: `No se encontro la tarea.`,
-                });
-            }
+			if (!tarea || lodash.isEmpty(tarea)) {
+				return res.status(404).json({
+					error: `No se encontro la tarea.`,
+				});
+			}
 
-            return res.json(tarea);
-        } catch (error) {
-            return res.status(500).json({
-                error: `Error al actualizar el log de la tarea: ${error.message}`,
-            });
-        }
-    }
+			return res.json(tarea);
+		} catch (error) {
+			return res.status(500).json({
+				error: `Error al actualizar el log de la tarea: ${error.message}`,
+			});
+		}
+	}
 
-    async getAllTareas(req, res) {
-        try {
-            const tareas = await tareasService.getAllTareas();
+	async getAllTareas(req, res) {
+		try {
+			const tareas = await tareasService.getAllTareas();
 
-            if (!tareas || lodash.isEmpty(tareas)) {
-                return res.status(404).json({
-                    error: `No se encontraron tareas.`,
-                });
-            }
+			if (!tareas || lodash.isEmpty(tareas)) {
+				return res.status(404).json({
+					error: `No se encontraron tareas.`,
+				});
+			}
 
-            return res.json({ tareas: tareas });
-        } catch (error) {
-            return res.status(500).json({
-                error: `Error al obtener las tareas: ${error.message}`,
-            });
-        }
-    }
+			return res.json({ tareas: tareas });
+		} catch (error) {
+			return res.status(500).json({
+				error: `Error al obtener las tareas: ${error.message}`,
+			});
+		}
+	}
 
-    async getAllTareasByColab(req, res) {
-        try {
-            const id = req.params.id;
+	async getAllTareasByColab(req, res) {
+		try {
+			const id = req.params.id;
 
-            const tareas = await tareasService.getAllTareasByColab(id);
+			const tareas = await tareasService.getAllTareasByColab(id);
 
-            if (!tareas || lodash.isEmpty(tareas)) {
-                return res.status(404).json({
-                    error: `No se encontraron tareas.`,
-                });
-            }
+			if (!tareas || lodash.isEmpty(tareas)) {
+				return res.status(404).json({
+					error: `No se encontraron tareas.`,
+				});
+			}
 
-            return res.json({ tareas: tareas });
-        } catch (error) {
-            return res.status(500).json({
-                error: `Error al obtener las tareas: ${error.message}`,
-            });
-        }
-    }
+			return res.json({ tareas: tareas });
+		} catch (error) {
+			return res.status(500).json({
+				error: `Error al obtener las tareas: ${error.message}`,
+			});
+		}
+	}
 
-    async commentTarea(req, res) {
-        try {
-            const id = req.params.id;
-            const data = req.body;
+	async commentTarea(req, res) {
+		try {
+			const id = req.params.id;
+			const data = req.body;
 
-            const tarea = await TareasService.commentTarea(id, data);
+			const tarea = await TareasService.commentTarea(id, data);
 
-            if (!tarea || lodash.isEmpty(tarea)) {
-                return res.status(404).json({
-                    error: `No se encontro la tarea.`,
-                });
-            }
+			if (!tarea || lodash.isEmpty(tarea)) {
+				return res.status(404).json({
+					error: `No se encontro la tarea.`,
+				});
+			}
 
-            return res.json(tarea);
-        } catch (error) {
-            return res.status(500).json({
-                error: `Error al agregar el comentario.`,
-            });
-        }
-    }
+			return res.json(tarea);
+		} catch (error) {
+			return res.status(500).json({
+				error: `Error al agregar el comentario.`,
+			});
+		}
+	}
 
-    async editComment(req, res) {
-        try {
-            const id = req.params.id;
-            const data = req.body;
+	async editComment(req, res) {
+		try {
+			const id = req.params.id;
+			const data = req.body;
 
-            const tarea = await TareasService.editComment(id, data);
+			const tarea = await TareasService.editComment(id, data);
 
-            if (!tarea || lodash.isEmpty(tarea)) {
-                return res.status(404).json({
-                    error: `No se encontro la tarea.`,
-                });
-            }
+			if (!tarea || lodash.isEmpty(tarea)) {
+				return res.status(404).json({
+					error: `No se encontro la tarea.`,
+				});
+			}
 
-            return res.json(tarea);
-        } catch (error) {
-            return res.status(500).json({
-                error: `Error al editar el comentario.`,
-            });
-        }
-    }
+			return res.json(tarea);
+		} catch (error) {
+			return res.status(500).json({
+				error: `Error al editar el comentario.`,
+			});
+		}
+	}
+
+	async actualizarEstado(req, res) {
+		try {
+			const id = req.params.id;
+			const { estado } = req.body;
+			const userId = req.usuario.id;
+
+			const tarea = await TareasService.actualizarEstado(id, estado, userId);
+
+			return res.json(tarea);
+		} catch (error) {
+			console.error(`Error al actualizar estado: ${error.message}`);
+			return res.status(403).json({ error: error.message });
+		}
+	}
 }
 
 module.exports = new TareasController();

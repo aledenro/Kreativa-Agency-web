@@ -90,12 +90,8 @@ class ProyectoService {
 		try {
 			const proyecto = await ProyectoModel.findById(id);
 			if (proyecto && !lodash.isEmpty(proyecto)) {
-				console.log("a");
 				proyecto.log.push(data);
-				console.log("b");
-				console.log(data);
 				await proyecto.save();
-				console.log("c");
 			}
 
 			return proyecto;
@@ -109,14 +105,19 @@ class ProyectoService {
 
 	async addRespuesta(id, respuesta) {
 		try {
-			const proyecto = await ProyectoModel.findById(id);
+			const resultado = await ProyectoModel.findByIdAndUpdate(
+				id,
+				{ $push: { historial_respuestas: respuesta } },
+				{ new: true, runValidators: false }
+			);
 
-			proyecto["historial_respuestas"].push(respuesta);
-			await proyecto.save();
+			if (!resultado) {
+				throw new Error("Proyecto no encontrado");
+			}
 
-			return proyecto["historial_respuestas"].at(-1);
+			return resultado.historial_respuestas.at(-1);
 		} catch (error) {
-			throw new Error("Error al agregar la respuesta " + error.message);
+			throw new Error("Error al agregar la respuesta: " + error.message);
 		}
 	}
 
@@ -133,6 +134,26 @@ class ProyectoService {
 		} catch (error) {
 			throw new Error(
 				`Error al obtener los proyectos del cliente: ${error.message}`
+			);
+		}
+	}
+
+	async getProyectosByColaborador(colaboradorId) {
+		try {
+			const mongoose = require("mongoose");
+			const objectId = new mongoose.Types.ObjectId(colaboradorId);
+
+			const proyectos = await ProyectoModel.find({
+				"colaboradores.colaborador_id": objectId,
+			})
+				.populate("cliente_id", "nombre")
+				.populate("colaboradores.colaborador_id", "nombre")
+				.sort({ fecha_creacion: -1 });
+
+			return proyectos;
+		} catch (error) {
+			throw new Error(
+				`Error al obtener los proyectos del colaborador: ${error.message}`
 			);
 		}
 	}

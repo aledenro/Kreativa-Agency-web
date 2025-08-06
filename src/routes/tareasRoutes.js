@@ -8,17 +8,18 @@ router.post("/crear", verificarToken, TareasController.createTarea);
 router.get("/id/:id", verificarToken, TareasController.getTareaById);
 router.put("/editar/:id", verificarToken, TareasController.editTarea);
 router.put(
-    "/actualizarLog/:id",
-    verificarToken,
-    TareasController.actualizarLog
+	"/actualizarLog/:id",
+	verificarToken,
+	TareasController.actualizarLog
 );
 router.get("/", verificarToken, TareasController.getAllTareas);
 router.get(
-    "/getByColab/:id",
-    verificarToken,
-    TareasController.getAllTareasByColab
+	"/getByColab/:id",
+	verificarToken,
+	TareasController.getAllTareasByColab
 );
 router.put("/comment/:id", verificarToken, TareasController.commentTarea);
 router.put("/comment/edit/:id", verificarToken, TareasController.editComment);
+router.put("/estado/:id", verificarToken, TareasController.actualizarEstado);
 
 module.exports = router;

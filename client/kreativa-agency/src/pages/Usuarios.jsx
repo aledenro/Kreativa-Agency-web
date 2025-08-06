@@ -4,386 +4,380 @@ import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from "sweetalert2";
 import {
-    faSearch,
-    faChevronDown,
-    faEye,
-    faPencil,
-    faToggleOff,
-    faToggleOn,
-    faTrash,
+	faSearch,
+	faChevronDown,
+	faEye,
+	faPencil,
+	faToggleOff,
+	faToggleOn,
+	faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import Loading from "../components/ui/LoadingComponent";
 
 const Usuarios = () => {
-    const navigate = useNavigate();
-    const [usuarios, setUsuarios] = useState([]);
-    const [error, setError] = useState("");
-    const [search, setSearch] = useState("");
-    const [estadoFiltro, setEstadoFiltro] = useState("");
-    const [paginaActual, setPaginaActual] = useState(1);
-    //   const usuariosPorPagina = 5;
-    const [usuariosPorPagina, setUsuariosPorPagina] = useState(5);
+	const navigate = useNavigate();
+	const [usuarios, setUsuarios] = useState([]);
+	const [error, setError] = useState("");
+	const [search, setSearch] = useState("");
+	const [estadoFiltro, setEstadoFiltro] = useState("");
+	const [paginaActual, setPaginaActual] = useState(1);
+	//   const usuariosPorPagina = 5;
+	const [usuariosPorPagina, setUsuariosPorPagina] = useState(5);
 
-    useEffect(() => {
-        const fetchUsuarios = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    navigate("/error", {
-                        state: {
-                            errorCode: 401,
-                            mensaje: "Debe iniciar sesión para continuar.",
-                        },
-                    });
-                }
+	const [loading, setLoading] = useState(true);
 
-                const decodedToken = jwtDecode(token);
-                // console.log("Token decodificado:", decodedToken);
+	useEffect(() => {
+		const fetchUsuarios = async () => {
+			try {
+				const token = localStorage.getItem("token");
+				if (!token) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe iniciar sesión para continuar.",
+						},
+					});
+				}
 
-                const { data } = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/usuarios`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
+				const decodedToken = jwtDecode(token);
+				// console.log("Token decodificado:", decodedToken);
 
-                setUsuarios(
-                    data.sort(
-                        (a, b) =>
-                            new Date(b.fecha_creacion) -
-                            new Date(a.fecha_creacion)
-                    )
-                );
-            } catch (error) {
-                if (error.status === 401) {
-                    navigate("/error", {
-                        state: {
-                            errorCode: 401,
-                            mensaje:
-                                "Debe volver a iniciar sesión para continuar.",
-                        },
-                    });
-                    return;
-                }
-                console.error(
-                    "Error al cargar los usuarios:",
-                    error.response?.data || error
-                );
-                setError("Error al cargar los usuarios");
-            }
-        };
-        fetchUsuarios();
-    }, []);
+				const { data } = await axios.get(
+					`${import.meta.env.VITE_API_URL}/usuarios`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
 
-    const handleVerUsuario = async (id) => {
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                navigate("/error", {
-                    state: {
-                        errorCode: 401,
-                        mensaje: "Debe iniciar sesión para continuar.",
-                    },
-                });
-            }
+				setUsuarios(
+					data.sort(
+						(a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
+					)
+				);
+			} catch (error) {
+				if (error.status === 401) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+				console.error(
+					"Error al cargar los usuarios:",
+					error.response?.data || error
+				);
+				setError("Error al cargar los usuarios");
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchUsuarios();
+	}, []);
 
-            const { data } = await axios.get(
-                `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
+	const handleVerUsuario = async (id) => {
+		try {
+			const token = localStorage.getItem("token");
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
 
-            console.log("Detalles del usuario:", data);
-            navigate(`/usuario/${id}`);
-        } catch (error) {
-            if (error.status === 401) {
-                localStorage.clear();
-                navigate("/error", {
-                    state: {
-                        errorCode: 401,
-                        mensaje: "Debe volver a iniciar sesión para continuar.",
-                    },
-                });
+			const { data } = await axios.get(
+				`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 
-                return;
-            }
-            setError("Error al obtener los detalles del usuario.");
-        }
-    };
+			console.log("Detalles del usuario:", data);
+			navigate(`/usuario/${id}`);
+		} catch (error) {
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
 
-    const handleEditarUsuario = (id) => {
-        navigate(`/usuario/editar/${id}`);
-    };
+				return;
+			}
+			setError("Error al obtener los detalles del usuario.");
+		}
+	};
 
-    const handleActivarDesactivar = async (id, estadoActual) => {
-        const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
-        if (
-            !window.confirm(
-                `¿Seguro que deseas ${nuevoEstado.toLowerCase()} este usuario?`
-            )
-        )
-            return;
-        try {
-            const token = localStorage.getItem("token");
+	const handleEditarUsuario = (id) => {
+		navigate(`/usuario/editar/${id}`);
+	};
 
-            if (!token) {
-                navigate("/error", {
-                    state: {
-                        errorCode: 401,
-                        mensaje: "Debe iniciar sesión para continuar.",
-                    },
-                });
-            }
-            await axios.put(
-                `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-                { estado: nuevoEstado },
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
+	const handleActivarDesactivar = async (id, estadoActual) => {
+		const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
+		const result = await Swal.fire({
+			title: `¿Estás seguro?`,
+			text: `Este usuario será marcado como ${nuevoEstado.toLowerCase()}.`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: `Sí, ${nuevoEstado.toLowerCase()}`,
+			cancelButtonText: "Cancelar",
+		});
 
-            setUsuarios(
-                usuarios.map((usuario) =>
-                    usuario._id === id
-                        ? { ...usuario, estado: nuevoEstado }
-                        : usuario
-                )
-            );
-        } catch (error) {
-            if (error.status === 401) {
-                localStorage.clear();
-                navigate("/error", {
-                    state: {
-                        errorCode: 401,
-                        mensaje: "Debe volver a iniciar sesión para continuar.",
-                    },
-                });
+		if (!result.isConfirmed) return;
+		return;
+		try {
+			const token = localStorage.getItem("token");
 
-                return;
-            }
-            setError("Error al cambiar el estado del usuario.");
-        }
-    };
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+			}
+			await axios.put(
+				`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
+				{ estado: nuevoEstado },
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 
-    // const handleEliminar = async (id) => {
-    //     if (
-    //         !window.confirm(
-    //             "¿Estás seguro de que deseas eliminar este usuario?"
-    //         )
-    //     )
-    //         return;
+			setUsuarios(
+				usuarios.map((usuario) =>
+					usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
+				)
+			);
 
-    //     try {
-    //         const token = localStorage.getItem("token");
-    //         await axios.delete(
-    //             `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-    //             {
-    //                 headers: { Authorization: `Bearer ${token}` },
-    //             }
-    //         );
+			Swal.fire({
+				title: "¡Éxito!",
+				text: `El usuario ha sido marcado como ${nuevoEstado.toLowerCase()}.`,
+				icon: "success",
+				timer: 2000,
+				showConfirmButton: false,
+			});
+		} catch (error) {
+			if (error.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
 
-    //         setUsuarios(usuarios.filter((usuario) => usuario._id !== id));
-    // 	} catch (error) {
+				return;
+			}
+			setError("Error al cambiar el estado del usuario.");
 
-    //         setError("Error al eliminar el usuario permanentemente");
-    //     }
-    // };
+			Swal.fire({
+				title: "Error",
+				text: "No se pudo actualizar el estado del usuario.",
+				icon: "error",
+			});
+		}
+	};
 
-    const usuariosFiltrados = usuarios
-        .filter((usuario) => usuario.cedula.includes(search))
-        .filter((usuario) =>
-            estadoFiltro ? usuario.estado === estadoFiltro : true
-        );
+	// const handleEliminar = async (id) => {
+	//     if (
+	//         !window.confirm(
+	//             "¿Estás seguro de que deseas eliminar este usuario?"
+	//         )
+	//     )
+	//         return;
 
-    const indexOfLastUser = paginaActual * usuariosPorPagina;
-    const indexOfFirstUser = indexOfLastUser - usuariosPorPagina;
-    //   const usuariosPaginados = usuariosFiltrados.slice(
-    //     indexOfFirstUser,
-    //     indexOfLastUser
-    //   );
-    const usuariosPaginados = usuariosFiltrados.slice(
-        indexOfFirstUser,
-        indexOfLastUser
-    );
+	//     try {
+	//         const token = localStorage.getItem("token");
+	//         await axios.delete(
+	//             `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
+	//             {
+	//                 headers: { Authorization: `Bearer ${token}` },
+	//             }
+	//         );
 
-    //   const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
-    const totalPaginas =
-        usuariosPorPagina >= usuariosFiltrados.length
-            ? 1
-            : Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
+	//         setUsuarios(usuarios.filter((usuario) => usuario._id !== id));
+	// 	} catch (error) {
 
-    return (
-        <AdminLayout>
-            <div className="main-container mx-auto">
-                <div className="espacio-top-responsive"></div>
-                <h1 className="mb-4">Gestión de Usuarios</h1>
-                {error && <div className="alert alert-danger">{error}</div>}
-                <div style={{ marginBottom: "30px" }}></div>
+	//         setError("Error al eliminar el usuario permanentemente");
+	//     }
+	// };
 
-                {/* Filtros responsivos */}
-                <div className="d-flex justify-content-between flex-wrap gap-3 mb-4">
-                    <button
-                        className="thm-btn btn-verde"
-                        onClick={() => navigate("/usuario/crear")}
-                    >
-                        Crear Usuario
-                    </button>
+	const usuariosFiltrados = usuarios
+		.filter((usuario) => usuario.cedula.includes(search))
+		.filter((usuario) =>
+			estadoFiltro ? usuario.estado === estadoFiltro : true
+		);
 
-                    <div className="search-container">
-                        <FontAwesomeIcon
-                            icon={faSearch}
-                            className="icon-search"
-                        />
-                        <input
-                            type="text"
-                            className="form-control search-input"
-                            placeholder="Buscar por cédula..."
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
+	const indexOfLastUser = paginaActual * usuariosPorPagina;
+	const indexOfFirstUser = indexOfLastUser - usuariosPorPagina;
+	//   const usuariosPaginados = usuariosFiltrados.slice(
+	//     indexOfFirstUser,
+	//     indexOfLastUser
+	//   );
+	const usuariosPaginados = usuariosFiltrados.slice(
+		indexOfFirstUser,
+		indexOfLastUser
+	);
 
-                    <div className="select-container">
-                        <select
-                            className="form-control select-input"
-                            onChange={(e) => setEstadoFiltro(e.target.value)}
-                        >
-                            <option value="">Todos</option>
-                            <option value="Activo">Activos</option>
-                            <option value="Inactivo">Inactivos</option>
-                        </select>
-                        <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className="icon-arrow"
-                        />
-                    </div>
-                </div>
+	//   const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
+	const totalPaginas =
+		usuariosPorPagina >= usuariosFiltrados.length
+			? 1
+			: Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
 
-                <div className="div-table">
-                    <Table className="main-table tabla-usuarios">
-                        <Thead>
-                            <Tr>
-                                <Th className="col-nombre">Nombre</Th>
-                                <Th className="col-usuario">Usuario</Th>
-                                <Th className="col-cedula">Cédula</Th>
-                                <Th className="col-email">Email</Th>
-                                <Th className="col-tipo">Tipo</Th>
-                                <Th className="col-estado">Estado</Th>
-                                <Th className="col-acciones">Acciones</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {usuariosPaginados.map((usuario) => (
-                                <Tr key={usuario._id}>
-                                    <Td
-                                        className="col-nombre"
-                                        data-label="Nombre"
-                                    >
-                                        {usuario.nombre}
-                                    </Td>
-                                    <Td
-                                        className="col-usuario"
-                                        data-label="Usuario"
-                                    >
-                                        {usuario.usuario}
-                                    </Td>
-                                    <Td
-                                        className="col-cedula"
-                                        data-label="Cédula"
-                                    >
-                                        {usuario.cedula}
-                                    </Td>
-                                    <Td
-                                        className="col-email"
-                                        data-label="Email"
-                                    >
-                                        {usuario.email}
-                                    </Td>
-                                    <Td className="col-tipo" data-label="Tipo">
-                                        {usuario.tipo_usuario}
-                                    </Td>
-                                    <Td
-                                        className="col-estado"
-                                        data-label="Estado"
-                                    >
-                                        <span
-                                            className={`badge ${
-                                                usuario.estado === "Activo"
-                                                    ? "badge-verde"
-                                                    : "badge-rojo"
-                                            }`}
-                                        >
-                                            {usuario.estado}
-                                        </span>
-                                    </Td>
-                                    <Td
-                                        className="text-center col-acciones"
-                                        data-label="Acciones"
-                                    >
-                                        <div className="botones-grupo">
-                                            <button
-                                                className="thm-btn thm-btn-small btn-amarillo"
-                                                onClick={() =>
-                                                    handleVerUsuario(
-                                                        usuario._id
-                                                    )
-                                                }
-                                            >
-                                                <FontAwesomeIcon icon={faEye} />
-                                            </button>
-                                            <button
-                                                className="thm-btn thm-btn-small btn-azul"
-                                                onClick={() =>
-                                                    handleEditarUsuario(
-                                                        usuario._id
-                                                    )
-                                                }
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faPencil}
-                                                />
-                                            </button>
-                                            <button
-                                                className={`thm-btn thm-btn-small ${
-                                                    usuario.estado === "Activo"
-                                                        ? "btn-verde"
-                                                        : "btn-rojo"
-                                                }`}
-                                                onClick={() =>
-                                                    handleActivarDesactivar(
-                                                        usuario._id,
-                                                        usuario.estado
-                                                    )
-                                                }
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={
-                                                        usuario.estado ===
-                                                        "Activo"
-                                                            ? faToggleOff
-                                                            : faToggleOn
-                                                    }
-                                                />
-                                            </button>
-                                            {/* <button
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
+	return (
+		<AdminLayout>
+			<div className="main-container mx-auto">
+				<div className="espacio-top-responsive"></div>
+				<h1 className="mb-4">Gestión de Usuarios</h1>
+				{error && <div className="alert alert-danger">{error}</div>}
+				<div style={{ marginBottom: "30px" }}></div>
+
+				{/* Filtros responsivos */}
+				<div className="d-flex justify-content-between flex-wrap gap-3 mb-4">
+					<button
+						className="thm-btn btn-verde"
+						onClick={() => navigate("/usuario/crear")}
+					>
+						Crear Usuario
+					</button>
+
+					<div className="search-container">
+						<FontAwesomeIcon icon={faSearch} className="icon-search" />
+						<input
+							type="text"
+							className="form-control search-input"
+							placeholder="Buscar por cédula..."
+							onChange={(e) => setSearch(e.target.value)}
+						/>
+					</div>
+
+					<div className="select-container">
+						<select
+							className="form-control select-input"
+							onChange={(e) => setEstadoFiltro(e.target.value)}
+						>
+							<option value="">Todos</option>
+							<option value="Activo">Activos</option>
+							<option value="Inactivo">Inactivos</option>
+						</select>
+						<FontAwesomeIcon icon={faChevronDown} className="icon-arrow" />
+					</div>
+				</div>
+
+				<div className="div-table">
+					<Table className="main-table tabla-usuarios">
+						<Thead>
+							<Tr>
+								<Th className="col-nombre">Nombre</Th>
+								<Th className="col-usuario">Usuario</Th>
+								<Th className="col-cedula">Cédula</Th>
+								<Th className="col-email">Email</Th>
+								<Th className="col-tipo">Tipo</Th>
+								<Th className="col-estado">Estado</Th>
+								<Th className="col-acciones">Acciones</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{usuariosPaginados.map((usuario) => (
+								<Tr key={usuario._id}>
+									<Td className="col-nombre" data-label="Nombre">
+										{usuario.nombre}
+									</Td>
+									<Td className="col-usuario" data-label="Usuario">
+										{usuario.usuario}
+									</Td>
+									<Td className="col-cedula" data-label="Cédula">
+										{usuario.cedula}
+									</Td>
+									<Td className="col-email" data-label="Email">
+										{usuario.email}
+									</Td>
+									<Td className="col-tipo" data-label="Tipo">
+										{usuario.tipo_usuario}
+									</Td>
+									<Td className="col-estado" data-label="Estado">
+										<span
+											className={`badge ${
+												usuario.estado === "Activo"
+													? "badge-verde"
+													: "badge-rojo"
+											}`}
+										>
+											{usuario.estado}
+										</span>
+									</Td>
+									<Td
+										className="text-center col-acciones"
+										data-label="Acciones"
+									>
+										<div className="botones-grupo">
+											<button
+												className="thm-btn thm-btn-small btn-amarillo"
+												onClick={() => handleVerUsuario(usuario._id)}
+											>
+												<FontAwesomeIcon icon={faEye} />
+											</button>
+											<button
+												className="thm-btn thm-btn-small btn-azul"
+												onClick={() => handleEditarUsuario(usuario._id)}
+											>
+												<FontAwesomeIcon icon={faPencil} />
+											</button>
+											<button
+												className={`thm-btn thm-btn-small ${
+													usuario.estado === "Activo" ? "btn-verde" : "btn-rojo"
+												}`}
+												onClick={() =>
+													handleActivarDesactivar(usuario._id, usuario.estado)
+												}
+											>
+												<FontAwesomeIcon
+													icon={
+														usuario.estado === "Activo"
+															? faToggleOff
+															: faToggleOn
+													}
+												/>
+											</button>
+											{/* <button
 												className="thm-btn thm-btn-small btn-rojo"
 												onClick={() => handleEliminar(usuario._id)}
 											>
 												<FontAwesomeIcon icon={faTrash} />
 											</button> */}
-                                        </div>
-                                    </Td>
-                                </Tr>
-                            ))}
-                        </Tbody>
-                    </Table>
-                </div>
+										</div>
+									</Td>
+								</Tr>
+							))}
+						</Tbody>
+					</Table>
+				</div>
 
-                {/* ---------------TABLA ANTERIOR---------------- */}
-                {/* <table className="table kreativa-table">
+				{/* ---------------TABLA ANTERIOR---------------- */}
+				{/* <table className="table kreativa-table">
 					<thead>
 						<tr>
 							<th>Nombre</th>
@@ -443,7 +437,7 @@ const Usuarios = () => {
 					</tbody>
 				</table> */}
 
-                {/* <div className="kreativa-paginacion">
+				{/* <div className="kreativa-paginacion">
                     {Array.from({ length: totalPaginas }, (_, i) => (
                         <button
                             key={i}
@@ -455,21 +449,21 @@ const Usuarios = () => {
                     ))}
                 </div> */}
 
-                {usuariosPaginados.length > 0 && (
-                    <TablaPaginacion
-                        totalItems={usuariosFiltrados.length}
-                        itemsPorPagina={usuariosPorPagina}
-                        paginaActual={paginaActual}
-                        onItemsPorPaginaChange={(cant) => {
-                            setUsuariosPorPagina(cant);
-                            setPaginaActual(1);
-                        }}
-                        onPaginaChange={(pagina) => setPaginaActual(pagina)}
-                    />
-                )}
-            </div>
-        </AdminLayout>
-    );
+				{usuariosPaginados.length > 0 && (
+					<TablaPaginacion
+						totalItems={usuariosFiltrados.length}
+						itemsPorPagina={usuariosPorPagina}
+						paginaActual={paginaActual}
+						onItemsPorPaginaChange={(cant) => {
+							setUsuariosPorPagina(cant);
+							setPaginaActual(1);
+						}}
+						onPaginaChange={(pagina) => setPaginaActual(pagina)}
+					/>
+				)}
+			</div>
+		</AdminLayout>
+	);
 };
 
 export default Usuarios;

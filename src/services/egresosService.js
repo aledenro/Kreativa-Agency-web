@@ -86,7 +86,7 @@ class EgresosService {
 
     async obtenerEgresosPorFecha(inicioDelMes, finDelMes) {
         try {
-            return await Egreso.find({
+            return await EgresosModel.find({
                 fecha: {
                     $gte: inicioDelMes,
                     $lte: finDelMes,

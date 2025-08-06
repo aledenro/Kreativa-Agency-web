@@ -22,14 +22,15 @@ import forceFileDownload from "../utils/forceFileDownload";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import Loading from "../components/ui/LoadingComponent";
 import { useNavigate } from "react-router-dom";
 
 const DashboardColaborador = () => {
-    const [proyectos, setProyectos] = useState([]);
-    const [tareas, setTareas] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [expandedProjects, setExpandedProjects] = useState({});
-    const [empleados, setEmpleados] = useState([]);
+	const [proyectos, setProyectos] = useState([]);
+	const [tareas, setTareas] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [expandedProjects, setExpandedProjects] = useState({});
+	const [empleados, setEmpleados] = useState([]);
 
     const [sortField, setSortField] = useState("fecha_creacion");
     const [sortOrder, setSortOrder] = useState("desc");
@@ -41,29 +42,27 @@ const DashboardColaborador = () => {
     const [pagActual, setPagActual] = useState(1);
     const [itemsPag, setItemsPag] = useState(5);
 
-    const [showModal, setShowModal] = useState(false);
-    const [tareaModal, setTareaModal] = useState({});
+	const [showModalVerTarea, setShowModalVerTarea] = useState(false);
+	const [tareaModal, setTareaModal] = useState({});
 
-    const [showProyectoModal, setShowProyectoModal] = useState(false);
-    const [selectedProyectoId, setSelectedProyectoId] = useState(null);
+	const [showModalVerProyecto, setShowModalVerProyecto] = useState(false);
+	const [proyectoModal, setProyectoModal] = useState(null);
 
-    const [showEditProyectoModal, setShowEditProyectoModal] = useState(false);
-    const [editingProyectoId, setEditingProyectoId] = useState(null);
+	const [showModalEditarProyecto, setShowModalEditarProyecto] = useState(false);
+	const [editingProyectoId, setEditingProyectoId] = useState(null);
 
-    const [showEditTareaModal, setShowEditTareaModal] = useState(false);
-    const [editingTareaId, setEditingTareaId] = useState(null);
+	const [showModalEditarTarea, setShowModalEditarTarea] = useState(false);
+	const [editingTareaId, setEditingTareaId] = useState(null);
 
-    const [showModalAgregarProyecto, setShowModalProyecto] = useState(false);
+	const [showModalAgregarProyecto, setShowModalAgregarProyecto] =
+		useState(false);
 
     const [showModalAgregarTarea, setShowModalAgregarTarea] = useState(false);
     const [selectedProyectoTarea, setSelectedProyectoTarea] = useState(null);
 
-    const rol = localStorage.getItem("tipo_usuario");
-    const userId = localStorage.getItem("user_id");
-
-    const [estadosProyecto, setEstadosProyecto] = useState([]);
-
-    const [api, contextHolder] = notification.useNotification();
+	const rol = localStorage.getItem("tipo_usuario");
+	const userId = localStorage.getItem("user_id");
+	const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
 
     const openSuccessNotification = (message) => {
@@ -84,12 +83,10 @@ const DashboardColaborador = () => {
         });
     };
 
-    useEffect(() => {
-        const fetchProyectos = async () => {
-            try {
-                const token = localStorage.getItem("token");
-
-                if (!token) {
+	const fetchProyectos = async () => {
+		try {
+			const token = localStorage.getItem("token");
+            if (!token) {
                     navigate("/error", {
                         state: {
                             errorCode: 401,
@@ -97,37 +94,38 @@ const DashboardColaborador = () => {
                         },
                     });
                 }
+			let url = `${import.meta.env.VITE_API_URL}/proyectos`;
 
-                let url = `${import.meta.env.VITE_API_URL}/proyectos`;
+			if (rol === "Cliente") {
+				url += `/cliente/${userId}`;
+			} else if (rol === "Colaborador") {
+				url += `/colaborador/${userId}`;
+			}
 
-                if (rol === "Cliente") {
-                    url += `/cliente/${userId}`;
-                }
+			const response = await axios.get(url, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
 
-                const response = await axios.get(url, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+			setProyectos(response.data);
 
-                setProyectos(response.data);
+			const estados = [...new Set(response.data.map((p) => p.estado))].filter(
+				Boolean
+			);
+			setEstadosProyecto(estados);
 
-                const estados = [
-                    ...new Set(response.data.map((p) => p.estado)),
-                ].filter(Boolean);
-                setEstadosProyecto(estados);
-
-                const expanded = {};
-                const taskSort = {};
-                response.data.forEach((proyecto) => {
-                    expanded[proyecto._id] = false;
-                    taskSort[proyecto._id] = {
-                        field: "nombre",
-                        order: "asc",
-                    };
-                });
-                setExpandedProjects(expanded);
-                setTaskSortByProject(taskSort);
-            } catch (error) {
-                if (error.status === 401) {
+			const expanded = {};
+			const taskSort = {};
+			response.data.forEach((proyecto) => {
+				expanded[proyecto._id] = false;
+				taskSort[proyecto._id] = {
+					field: "nombre",
+					order: "asc",
+				};
+			});
+			setExpandedProjects(expanded);
+			setTaskSortByProject(taskSort);
+		} catch (error) {
+			if (error.status === 401) {
                     navigate("/error", {
                         state: {
                             errorCode: 401,
@@ -138,14 +136,15 @@ const DashboardColaborador = () => {
                     return;
                 }
                 console.error(`Error al obtener los proyectos`);
-            }
-        };
+		} finally {
+			setLoading(false);
+		}
+	};
 
-        const fetchTareas = async () => {
-            try {
-                const token = localStorage.getItem("token");
-
-                if (!token) {
+	const fetchTareas = async () => {
+		try {
+			const token = localStorage.getItem("token");
+            if (!token) {
                     navigate("/error", {
                         state: {
                             errorCode: 401,
@@ -153,15 +152,23 @@ const DashboardColaborador = () => {
                         },
                     });
                 }
-                let url = `${import.meta.env.VITE_API_URL}/tareas`;
+			let url = `${import.meta.env.VITE_API_URL}/tareas`;
 
-                const response = await axios.get(url, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+			const response = await axios.get(url, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
 
-                setTareas(response.data.tareas || []);
-            } catch (error) {
-                if (error.status === 401) {
+			let todasLasTareas = response.data.tareas || response.data || [];
+
+			if (rol === "Colaborador") {
+				todasLasTareas = todasLasTareas.filter(
+					(tarea) => tarea.colaborador_id && tarea.colaborador_id._id === userId
+				);
+			}
+
+			setTareas(todasLasTareas);
+		} catch (error) {
+			if (error.status === 401) {
                     navigate("/error", {
                         state: {
                             errorCode: 401,
@@ -172,14 +179,14 @@ const DashboardColaborador = () => {
                     return;
                 }
                 console.error(`Error al obtener las tareas`);
-            }
-        };
+			setTareas([]);
+		}
+	};
 
-        const fetchEmpleados = async () => {
-            try {
-                const token = localStorage.getItem("token");
-
-                if (!token) {
+	const fetchEmpleados = async () => {
+		try {
+			const token = localStorage.getItem("token");
+            if (!token) {
                     navigate("/error", {
                         state: {
                             errorCode: 401,
@@ -187,17 +194,16 @@ const DashboardColaborador = () => {
                         },
                     });
                 }
+			const response = await axios.get(
+				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 
-                const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-
-                setEmpleados(response.data);
-            } catch (error) {
-                if (error.status === 401) {
+			setEmpleados(response.data);
+		} catch (error) {
+			if (error.status === 401) {
                     navigate("/error", {
                         state: {
                             errorCode: 401,
@@ -208,12 +214,15 @@ const DashboardColaborador = () => {
                     return;
                 }
                 console.error(`Error al obtener los empleados`);
-            }
-        };
+		}
+	};
 
-        if (rol === "Administrador") {
-            Promise.all([fetchProyectos(), fetchTareas(), fetchEmpleados()])
-                .then(() => setLoading(false))
+    
+
+	const reloadData = useCallback(async () => {
+		try {
+			if (rol === "Administrador") {
+				await Promise.all([fetchProyectos(), fetchTareas(), fetchEmpleados()]).then(() => setLoading(false))
                 .catch((error) => {
                     if (error.status === 401) {
                         navigate("/error", {
@@ -228,9 +237,8 @@ const DashboardColaborador = () => {
                     console.error("Error fetching data");
                     setLoading(false);
                 });
-        } else {
-            Promise.all([fetchProyectos(), fetchTareas()])
-                .then(() => setLoading(false))
+			} else {
+				await Promise.all([fetchProyectos(), fetchTareas()]).then(() => setLoading(false))
                 .catch((error) => {
                     if (error.status === 401) {
                         navigate("/error", {
@@ -245,8 +253,21 @@ const DashboardColaborador = () => {
                     console.error("Error fetching data");
                     setLoading(false);
                 });
-        }
-    }, [rol, userId]);
+			}
+		} catch (error) {
+			console.error("Error al recargar datos");
+		}
+	}, [rol, userId]);
+
+    useEffect(() => {
+		const loadInitialData = async () => {
+			setLoading(true);
+			await reloadData();
+			setLoading(false);
+		};
+
+		loadInitialData();
+	}, [reloadData]);
 
     const reloadData = useCallback(() => {
         setLoading(true);
@@ -450,58 +471,72 @@ const DashboardColaborador = () => {
         return urgente ? "badge badge-rojo" : "badge badge-gris";
     };
 
-    const handleEditarTarea = (tareaId) => {
-        setEditingTareaId(tareaId);
-        setShowEditTareaModal(true);
-    };
+	const getIniciales = (colab) => {
+		if (!colab || !colab.nombre) return "?";
+		const nombres = colab.nombre.trim().split(" ");
+		return nombres[0].charAt(0) + (nombres[1] ? nombres[1].charAt(0) : "");
+	};
 
     const handleVerTarea = (tarea) => {
-        setTareaModal(tarea);
-        setShowModal(true);
-    };
+		setTareaModal(tarea);
+		setShowModalVerTarea(true);
+	};
 
-    const handleEditarProyecto = (proyectoId) => {
-        setEditingProyectoId(proyectoId);
-        setShowEditProyectoModal(true);
-    };
+	const handleCloseVerTareaModal = () => {
+		setShowModalVerTarea(false);
+		setTareaModal({});
+	};
 
-    const handleVerProyecto = (proyectoId) => {
-        setSelectedProyectoId(proyectoId);
-        setShowProyectoModal(true);
-    };
+	const handleVerProyecto = (proyectoId) => {
+		setProyectoModal(proyectoId);
+		setShowModalVerProyecto(true);
+	};
 
-    const handleAgregarTarea = (proyectoId) => {
-        setSelectedProyectoTarea(proyectoId);
-        setShowModalAgregarTarea(true);
-    };
+	const handleCloseVerProyectoModal = () => {
+		setShowModalVerProyecto(false);
+		setProyectoModal(null);
+	};
 
-    const handleAgregarProyecto = () => {
-        setShowModalProyecto(true);
-    };
+	const handleEditarProyecto = (proyectoId) => {
+		setEditingProyectoId(proyectoId);
+		setShowModalEditarProyecto(true);
+	};
 
-    const handleChangeCantItems = (event) => {
-        setItemsPag(parseInt(event.target.value));
-        setPagActual(1);
-    };
+	const handleCloseEditarProyectoModal = () => {
+		setShowModalEditarProyecto(false);
+		setEditingProyectoId(null);
+		reloadData();
+	};
 
-    const handleCloseEditModal = () => {
-        setShowEditProyectoModal(false);
-        reloadData();
-    };
+	const handleEditarTarea = (tareaId) => {
+		setEditingTareaId(tareaId);
+		setShowModalEditarTarea(true);
+	};
 
-    const handleCloseEditTareaModal = () => {
-        setShowEditTareaModal(false);
-        reloadData();
-    };
+	const handleCloseEditarTareaModal = () => {
+		setShowModalEditarTarea(false);
+		setEditingTareaId(null);
+		reloadData();
+	};
 
-    const handleCloseAgregarProyectoModal = () => {
-        setShowModalProyecto(false);
-    };
+	const handleAgregarProyecto = () => {
+		setShowModalAgregarProyecto(true);
+	};
 
-    const handleCloseAgregarTareaModal = () => {
-        setShowModalAgregarTarea(false);
-        setSelectedProyectoTarea(null);
-    };
+	const handleCloseAgregarProyectoModal = () => {
+		setShowModalAgregarProyecto(false);
+		reloadData();
+	};
+
+	const handleAgregarTarea = (proyectoId) => {
+		setSelectedProyectoTarea(proyectoId);
+		setShowModalAgregarTarea(true);
+	};
+
+	const handleCloseAgregarTareaModal = () => {
+		setShowModalAgregarTarea(false);
+		setSelectedProyectoTarea(null);
+		reloadData();
 
     const handleImprimirReporte = async () => {
         const proyectosFormateados = proyectosFiltrados.map((proyecto) => {
@@ -552,28 +587,27 @@ const DashboardColaborador = () => {
                     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 });
 
-                forceFileDownload(blob, "reporte_proyectos");
-
-                openSuccessNotification(
-                    `Reporte de proyectos generado correctamente.`
-                );
-
-                return;
-            }
-        } catch (error) {
-            console.error(error.message);
-            openErrorNotification(`Error al generar el  reporte de proyectos.`);
-        }
-    };
+				forceFileDownload(blob, "reporte_proyectos");
+				openSuccessNotification(`Reporte de proyectos generado correctamente.`);
+				return;
+			}
+		} catch (error) {
+			console.error(error.message);
+			openErrorNotification(`Error al generar el reporte de proyectos.`);
+		}
+	};
 
     let proyectosFiltrados = [...proyectos];
 
-    if (rol === "Colaborador") {
-        proyectosFiltrados = proyectosFiltrados.filter((proyecto) => {
-            const projectTasks = getTareasForProyecto(proyecto._id);
-            return projectTasks.length > 0;
-        });
-    }
+	if (rol === "Colaborador") {
+		proyectosFiltrados = proyectosFiltrados.filter((proyecto) => {
+			const projectTasks = getTareasForProyecto(proyecto._id);
+			const myTasks = projectTasks.filter(
+				(tarea) => tarea.colaborador_id && tarea.colaborador_id._id === userId
+			);
+			return myTasks.length > 0;
+		});
+	}
 
     if (filterColab || filterStatus) {
         if (filterStatus) {
@@ -601,160 +635,187 @@ const DashboardColaborador = () => {
     proyectosFiltrados.sort((a, b) => {
         let valA, valB;
 
-        if (sortField === "fecha_entrega") {
-            valA = new Date(a.fecha_entrega || 0);
-            valB = new Date(b.fecha_entrega || 0);
-            return sortOrder === "asc" ? valA - valB : valB - valA;
-        } else {
-            valA = a[sortField] || "";
-            valB = b[sortField] || "";
-            return sortOrder === "asc"
-                ? valA.toString().localeCompare(valB.toString())
-                : valB.toString().localeCompare(valA.toString());
-        }
-    });
+		if (sortField === "fecha_entrega") {
+			// fecha
+			valA = new Date(a.fecha_entrega || 0);
+			valB = new Date(b.fecha_entrega || 0);
+			return sortOrder === "asc" ? valA - valB : valB - valA;
+		} else if (sortField === "urgente") {
+			// urgencia
+			valA = a.urgente ? 1 : 0;
+			valB = b.urgente ? 1 : 0;
+			return sortOrder === "asc" ? valA - valB : valB - valA;
+		} else if (sortField === "estado") {
+			// estado
+			valA = a.estado || "";
+			valB = b.estado || "";
+			return sortOrder === "asc"
+				? valA.toString().localeCompare(valB.toString())
+				: valB.toString().localeCompare(valA.toString());
+		} else {
+			valA = a[sortField] || "";
+			valB = b[sortField] || "";
+			return sortOrder === "asc"
+				? valA.toString().localeCompare(valB.toString())
+				: valB.toString().localeCompare(valA.toString());
+		}
+	});
 
-    const totalPags = Math.ceil(proyectosFiltrados.length / itemsPag);
-    const proyectosPaginados = proyectosFiltrados.slice(
-        (pagActual - 1) * itemsPag,
-        pagActual * itemsPag
-    );
+	const proyectosPaginados = proyectosFiltrados.slice(
+		(pagActual - 1) * itemsPag,
+		pagActual * itemsPag
+	);
 
     const canEdit = rol === "Administrador";
     const canView = true;
 
-    if (loading) {
-        return (
-            <div className="container d-flex align-items-center justify-content-center">
-                <p>Cargando..</p>
-            </div>
-        );
-    }
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
 
-    return (
-        <AdminLayout>
-            {contextHolder}
-            <div className="main-container mx-auto">
-                <div className="espacio-top-responsive"></div>
-                <h1 className="mb-4">Backlog Proyectos</h1>
-                <div className="row mb-3">
-                    {rol === "Administrador" && (
-                        <div className="col">
-                            <label htmlFor="filterColab">
-                                Filtrar por Colaborador:
-                            </label>
-                            <select
-                                id="filterColab"
-                                className="form-select form_input"
-                                onChange={(e) => {
-                                    setFilterColab(e.target.value);
-                                    setPagActual(1);
-                                }}
-                                value={filterColab}
-                            >
-                                <option value="">Todos</option>
-                                {empleados.map((empleado) => (
-                                    <option
-                                        key={empleado._id}
-                                        value={empleado._id}
-                                    >
-                                        {empleado.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-                    <div className="col">
-                        <label htmlFor="filterStatus">
-                            Filtrar por Estado:
-                        </label>
-                        <select
-                            id="filterStatus"
-                            className="form-select form_input"
-                            onChange={(e) => {
-                                setFilterStatus(e.target.value);
-                                setPagActual(1);
-                            }}
-                            value={filterStatus}
-                        >
-                            <option value="">Todos</option>
-                            {estadosProyecto.map((estado) => (
-                                <option key={estado} value={estado}>
-                                    {estado}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="col text-end">
-                        {canEdit && (
-                            <button
-                                className="thm-btn  m-1"
-                                onClick={handleAgregarProyecto}
-                            >
-                                Crear Proyecto
-                            </button>
-                        )}
+	return (
+		<AdminLayout>
+			{contextHolder}
+			<div className="main-container mx-auto">
+				<div className="espacio-top-responsive"></div>
+				<h1 className="mb-4">Backlog Proyectos</h1>
 
-                        <button
-                            className="thm-btn  m-1"
-                            onClick={() => {
-                                handleImprimirReporte();
-                            }}
-                        >
-                            Imprimir Reporte
-                        </button>
-                    </div>
-                </div>
-                <div className="div-table">
-                    <Table className="main-table tabla-backlog">
-                        <Thead>
-                            <Tr>
-                                <Th
-                                    className="col-nombre"
-                                    onClick={() => {
-                                        setSortOrder(
-                                            sortField === "nombre" &&
-                                                sortOrder === "asc"
-                                                ? "desc"
-                                                : "asc"
-                                        );
-                                        setSortField("nombre");
-                                    }}
-                                >
-                                    Proyecto{" "}
-                                    <span className="sort-icon">
-                                        <FontAwesomeIcon icon={faSort} />
-                                    </span>
-                                </Th>
-                                <Th className="col-cliente">Cliente</Th>
-                                <Th className="col-estado">Estado</Th>
-                                <Th className="col-prioridad">Urgente</Th>
-                                <Th
-                                    className="col-fecha"
-                                    onClick={() => {
-                                        setSortOrder(
-                                            sortField === "fecha_entrega" &&
-                                                sortOrder === "asc"
-                                                ? "desc"
-                                                : "asc"
-                                        );
-                                        setSortField("fecha_entrega");
-                                    }}
-                                >
-                                    Entrega{" "}
-                                    <span className="sort-icon">
-                                        <FontAwesomeIcon icon={faSort} />
-                                    </span>
-                                </Th>
-                                <Th className="col-acciones">Acciones</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {proyectosPaginados.length > 0 ? (
-                                proyectosPaginados.map((proyecto) => {
-                                    const projectTasks = getTareasForProyecto(
-                                        proyecto._id
-                                    );
+				<div className="row mb-3">
+					{rol === "Administrador" && (
+						<div className="col">
+							<label htmlFor="filterColab">Filtrar por Colaborador:</label>
+							<select
+								id="filterColab"
+								className="form-select form_input"
+								onChange={(e) => {
+									setFilterColab(e.target.value);
+									setPagActual(1);
+								}}
+								value={filterColab}
+							>
+								<option value="">Todos</option>
+								{empleados.map((empleado) => (
+									<option key={empleado._id} value={empleado._id}>
+										{empleado.nombre}
+									</option>
+								))}
+							</select>
+						</div>
+					)}
+					<div className="col">
+						<label htmlFor="filterStatus">Filtrar por Estado:</label>
+						<select
+							id="filterStatus"
+							className="form-select form_input"
+							onChange={(e) => {
+								setFilterStatus(e.target.value);
+								setPagActual(1);
+							}}
+							value={filterStatus}
+						>
+							<option value="">Todos</option>
+							{estadosProyecto.map((estado) => (
+								<option key={estado} value={estado}>
+									{estado}
+								</option>
+							))}
+						</select>
+					</div>
+					<div className="col text-end">
+						{canEdit && (
+							<button className="thm-btn m-1" onClick={handleAgregarProyecto}>
+								+ Crear Proyecto
+							</button>
+						)}
+
+						<button className="thm-btn m-1" onClick={handleImprimirReporte}>
+							Imprimir Reporte
+						</button>
+					</div>
+				</div>
+
+				<div className="div-table">
+					<Table className="main-table tabla-backlog">
+						<Thead>
+							<Tr>
+								<Th
+									className="col-nombre"
+									onClick={() => {
+										setSortOrder(
+											sortField === "nombre" && sortOrder === "asc"
+												? "desc"
+												: "asc"
+										);
+										setSortField("nombre");
+									}}
+								>
+									Proyecto{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th className="col-cliente">Cliente</Th>
+								<Th
+									className="col-estado"
+									onClick={() => {
+										setSortOrder(
+											sortField === "estado" && sortOrder === "asc"
+												? "desc"
+												: "asc"
+										);
+										setSortField("estado");
+									}}
+								>
+									Estado{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th
+									className="col-prioridad"
+									onClick={() => {
+										setSortOrder(
+											sortField === "urgente" && sortOrder === "asc"
+												? "desc"
+												: "asc"
+										);
+										setSortField("urgente");
+									}}
+								>
+									Urgente{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th
+									className="col-fecha"
+									onClick={() => {
+										setSortOrder(
+											sortField === "fecha_entrega" && sortOrder === "asc"
+												? "desc"
+												: "asc"
+										);
+										setSortField("fecha_entrega");
+									}}
+								>
+									Entrega{" "}
+									<span className="sort-icon">
+										<FontAwesomeIcon icon={faSort} />
+									</span>
+								</Th>
+								<Th className="col-acciones">Acciones</Th>
+							</Tr>
+						</Thead>
+						<Tbody>
+							{proyectosPaginados.length > 0 ? (
+								proyectosPaginados.map((proyecto) => {
+									const projectTasks = getTareasForProyecto(proyecto._id);
 
                                     const filteredTasks = projectTasks.filter(
                                         (tarea) => {
@@ -882,246 +943,168 @@ const DashboardColaborador = () => {
                                                 </Td>
                                             </Tr>
 
-                                            {expandedProjects[proyecto._id] && (
-                                                <Tr>
-                                                    <Td
-                                                        colSpan="6"
-                                                        className="p-0"
-                                                    >
-                                                        <div className="ms-5">
-                                                            {/* Tabla para escritorio */}
-                                                            <div className="table-desktop">
-                                                                <Table className="main-table subtabla-backlog">
-                                                                    <Thead>
-                                                                        <Tr>
-                                                                            <Th
-                                                                                onClick={() =>
-                                                                                    handleTaskSort(
-                                                                                        proyecto._id,
-                                                                                        "nombre"
-                                                                                    )
-                                                                                }
-                                                                                className="col-nombre"
-                                                                            >
-                                                                                Tarea{" "}
-                                                                                <span className="sort-icon">
-                                                                                    <FontAwesomeIcon
-                                                                                        icon={
-                                                                                            faSort
-                                                                                        }
-                                                                                    />
-                                                                                </span>
-                                                                            </Th>
-                                                                            <Th className="col-colaborador">
-                                                                                Resp.
-                                                                            </Th>
-                                                                            <Th
-                                                                                className="col-estado"
-                                                                                onClick={() =>
-                                                                                    handleTaskSort(
-                                                                                        proyecto._id,
-                                                                                        "estado"
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                Estado{" "}
-                                                                                <span className="sort-icon">
-                                                                                    <FontAwesomeIcon
-                                                                                        icon={
-                                                                                            faSort
-                                                                                        }
-                                                                                    />
-                                                                                </span>
-                                                                            </Th>
-                                                                            <Th
-                                                                                className="col-prioridad"
-                                                                                onClick={() =>
-                                                                                    handleTaskSort(
-                                                                                        proyecto._id,
-                                                                                        "prioridad"
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                Prioridad{" "}
-                                                                                <span className="sort-icon">
-                                                                                    <FontAwesomeIcon
-                                                                                        icon={
-                                                                                            faSort
-                                                                                        }
-                                                                                    />
-                                                                                </span>
-                                                                            </Th>
-                                                                            <Th
-                                                                                className="col-vencimiento"
-                                                                                onClick={() =>
-                                                                                    handleTaskSort(
-                                                                                        proyecto._id,
-                                                                                        "fecha_vencimiento"
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                Fecha{" "}
-                                                                                <span className="sort-icon">
-                                                                                    <FontAwesomeIcon
-                                                                                        icon={
-                                                                                            faSort
-                                                                                        }
-                                                                                    />
-                                                                                </span>
-                                                                            </Th>
-                                                                            <Th className="col-acciones">
-                                                                                Acciones
-                                                                            </Th>
-                                                                        </Tr>
-                                                                    </Thead>
-                                                                    <Tbody>
-                                                                        {filteredTasks.length >
-                                                                        0 ? (
-                                                                            filteredTasks.map(
-                                                                                (
-                                                                                    tarea
-                                                                                ) => (
-                                                                                    <Tr
-                                                                                        key={
-                                                                                            tarea._id
-                                                                                        }
-                                                                                    >
-                                                                                        <Td className="col-nombre">
-                                                                                            {
-                                                                                                tarea.nombre
-                                                                                            }
-                                                                                        </Td>
-                                                                                        <Td className="col-colaborador">
-                                                                                            <span
-                                                                                                className="badge badge-gris"
-                                                                                                title={
-                                                                                                    tarea
-                                                                                                        .colaborador_id
-                                                                                                        ?.nombre ||
-                                                                                                    "Sin asignar"
-                                                                                                }
-                                                                                            >
-                                                                                                {tarea
-                                                                                                    .colaborador_id
-                                                                                                    ?.nombre
-                                                                                                    ? tarea.colaborador_id.nombre.charAt(
-                                                                                                          0
-                                                                                                      ) +
-                                                                                                      (tarea.colaborador_id.nombre.includes(
-                                                                                                          " "
-                                                                                                      )
-                                                                                                          ? tarea.colaborador_id.nombre
-                                                                                                                .split(
-                                                                                                                    " "
-                                                                                                                )[1]
-                                                                                                                .charAt(
-                                                                                                                    0
-                                                                                                                )
-                                                                                                          : "")
-                                                                                                    : "?"}
-                                                                                            </span>
-                                                                                        </Td>
-                                                                                        <Td className="col-estado">
-                                                                                            <div
-                                                                                                className={getEstado(
-                                                                                                    tarea.estado
-                                                                                                )}
-                                                                                            >
-                                                                                                {
-                                                                                                    tarea.estado
-                                                                                                }
-                                                                                            </div>
-                                                                                        </Td>
-                                                                                        <Td className="col-prioridad">
-                                                                                            <div
-                                                                                                className={getPrioridad(
-                                                                                                    tarea.prioridad
-                                                                                                )}
-                                                                                            >
-                                                                                                {
-                                                                                                    tarea.prioridad
-                                                                                                }
-                                                                                            </div>
-                                                                                        </Td>
-                                                                                        <Td className="col-vencimiento">
-                                                                                            {tarea.fecha_vencimiento
-                                                                                                ? new Date(
-                                                                                                      tarea.fecha_vencimiento
-                                                                                                  ).toLocaleDateString()
-                                                                                                : "-"}
-                                                                                        </Td>
-                                                                                        <Td className="col-acciones">
-                                                                                            <div className="botones-grupo">
-                                                                                                {canView && (
-                                                                                                    <button
-                                                                                                        className="thm-btn thm-btn-small btn-amarillo"
-                                                                                                        onClick={() =>
-                                                                                                            handleVerTarea(
-                                                                                                                tarea
-                                                                                                            )
-                                                                                                        }
-                                                                                                    >
-                                                                                                        <FontAwesomeIcon
-                                                                                                            icon={
-                                                                                                                faEye
-                                                                                                            }
-                                                                                                        />
-                                                                                                    </button>
-                                                                                                )}
-                                                                                                {canEdit && (
-                                                                                                    <button
-                                                                                                        className="thm-btn thm-btn-small btn-azul"
-                                                                                                        onClick={() =>
-                                                                                                            handleEditarTarea(
-                                                                                                                tarea._id
-                                                                                                            )
-                                                                                                        }
-                                                                                                    >
-                                                                                                        <FontAwesomeIcon
-                                                                                                            icon={
-                                                                                                                faPencil
-                                                                                                            }
-                                                                                                        />
-                                                                                                    </button>
-                                                                                                )}
-                                                                                            </div>
-                                                                                        </Td>
-                                                                                    </Tr>
-                                                                                )
-                                                                            )
-                                                                        ) : (
-                                                                            <Tr>
-                                                                                <Td>
-                                                                                    No
-                                                                                    hay
-                                                                                    tareas
-                                                                                    para
-                                                                                    este
-                                                                                    proyecto.
-                                                                                </Td>
-                                                                            </Tr>
-                                                                        )}
-                                                                        {canEdit && (
-                                                                            <Tr>
-                                                                                <Td>
-                                                                                    <button
-                                                                                        className="thm-btn btn-gris"
-                                                                                        onClick={() =>
-                                                                                            handleAgregarTarea(
-                                                                                                proyecto._id
-                                                                                            )
-                                                                                        }
-                                                                                    >
-                                                                                        +
-                                                                                        Agregar
-                                                                                        tarea
-                                                                                    </button>
-                                                                                </Td>
-                                                                            </Tr>
-                                                                        )}
-                                                                    </Tbody>
-                                                                </Table>
-                                                            </div>
+											{expandedProjects[proyecto._id] && (
+												<Tr>
+													<Td colSpan="6" className="p-0">
+														<div className="ms-5">
+															{/* Tabla para escritorio */}
+															<div className="table-desktop">
+																<Table className="main-table subtabla-backlog">
+																	<Thead>
+																		<Tr>
+																			<Th
+																				onClick={() =>
+																					handleTaskSort(proyecto._id, "nombre")
+																				}
+																				className="col-nombre"
+																			>
+																				Tarea{" "}
+																				<span className="sort-icon">
+																					<FontAwesomeIcon icon={faSort} />
+																				</span>
+																			</Th>
+																			<Th className="col-colaborador">Resp.</Th>
+																			<Th
+																				className="col-estado"
+																				onClick={() =>
+																					handleTaskSort(proyecto._id, "estado")
+																				}
+																			>
+																				Estado{" "}
+																				<span className="sort-icon">
+																					<FontAwesomeIcon icon={faSort} />
+																				</span>
+																			</Th>
+																			<Th
+																				className="col-prioridad"
+																				onClick={() =>
+																					handleTaskSort(
+																						proyecto._id,
+																						"prioridad"
+																					)
+																				}
+																			>
+																				Prioridad{" "}
+																				<span className="sort-icon">
+																					<FontAwesomeIcon icon={faSort} />
+																				</span>
+																			</Th>
+																			<Th
+																				className="col-vencimiento"
+																				onClick={() =>
+																					handleTaskSort(
+																						proyecto._id,
+																						"fecha_vencimiento"
+																					)
+																				}
+																			>
+																				Fecha{" "}
+																				<span className="sort-icon">
+																					<FontAwesomeIcon icon={faSort} />
+																				</span>
+																			</Th>
+																			<Th className="col-acciones">Acciones</Th>
+																		</Tr>
+																	</Thead>
+																	<Tbody>
+																		{filteredTasks.length > 0 ? (
+																			filteredTasks.map((tarea) => (
+																				<Tr key={tarea._id}>
+																					<Td className="col-nombre">
+																						{tarea.nombre}
+																					</Td>
+																					<Td className="col-colaborador">
+																						<span
+																							className="badge badge-gris d-desktop"
+																							title={
+																								tarea.colaborador_id?.nombre ||
+																								"Sin asignar"
+																							}
+																						>
+																							{getIniciales(
+																								tarea.colaborador_id
+																							)}
+																						</span>
+																					</Td>
+																					<Td className="col-estado">
+																						<div
+																							className={getEstado(
+																								tarea.estado
+																							)}
+																						>
+																							{tarea.estado}
+																						</div>
+																					</Td>
+																					<Td className="col-prioridad">
+																						<div
+																							className={getPrioridad(
+																								tarea.prioridad
+																							)}
+																						>
+																							{tarea.prioridad}
+																						</div>
+																					</Td>
+																					<Td className="col-vencimiento">
+																						{tarea.fecha_vencimiento
+																							? new Date(
+																									tarea.fecha_vencimiento
+																								).toLocaleDateString()
+																							: "-"}
+																					</Td>
+																					<Td className="col-acciones">
+																						<div className="botones-grupo">
+																							{canView && (
+																								<button
+																									className="thm-btn thm-btn-small btn-amarillo"
+																									onClick={() =>
+																										handleVerTarea(tarea)
+																									}
+																								>
+																									<FontAwesomeIcon
+																										icon={faEye}
+																									/>
+																								</button>
+																							)}
+																							{canEdit && (
+																								<button
+																									className="thm-btn thm-btn-small btn-azul"
+																									onClick={() =>
+																										handleEditarTarea(tarea._id)
+																									}
+																								>
+																									<FontAwesomeIcon
+																										icon={faPencil}
+																									/>
+																								</button>
+																							)}
+																						</div>
+																					</Td>
+																				</Tr>
+																			))
+																		) : (
+																			<Tr>
+																				<Td colSpan="6">
+																					No hay tareas para este proyecto.
+																				</Td>
+																			</Tr>
+																		)}
+																		{canEdit && (
+																			<Tr>
+																				<Td colSpan="6">
+																					<button
+																						className="thm-btn btn-gris"
+																						onClick={() =>
+																							handleAgregarTarea(proyecto._id)
+																						}
+																					>
+																						+ Agregar tarea
+																					</button>
+																				</Td>
+																			</Tr>
+																		)}
+																	</Tbody>
+																</Table>
+															</div>
 
                                                             {/* Acordeón móvil */}
                                                             <div
@@ -1326,48 +1309,59 @@ const DashboardColaborador = () => {
                 />
             </div>
 
-            {showModal && (
-                <ModalVerTareas
-                    show={showModal}
-                    handleClose={() => setShowModal(false)}
-                    tareaModal={tareaModal}
-                />
-            )}
+			{showModalVerTarea && (
+				<ModalVerTareas
+					show={showModalVerTarea}
+					handleClose={handleCloseVerTareaModal}
+					tareaModal={tareaModal}
+					onUpdated={reloadData}
+				/>
+			)}
 
-            <ModalVerProyecto
-                show={showProyectoModal}
-                handleClose={() => setShowProyectoModal(false)}
-                proyectoId={selectedProyectoId}
-            />
+			{showModalVerProyecto && (
+				<ModalVerProyecto
+					show={showModalVerProyecto}
+					handleClose={handleCloseVerProyectoModal}
+					proyectoId={proyectoModal}
+				/>
+			)}
 
-            <ModalEditarProyecto
-                show={showEditProyectoModal}
-                handleClose={handleCloseEditModal}
-                proyectoId={editingProyectoId}
-                onUpdate={reloadData}
-            />
+			{showModalEditarProyecto && (
+				<ModalEditarProyecto
+					show={showModalEditarProyecto}
+					handleClose={handleCloseEditarProyectoModal}
+					proyectoId={editingProyectoId}
+					onUpdate={reloadData}
+				/>
+			)}
 
-            <ModalEditarTarea
-                show={showEditTareaModal}
-                handleClose={handleCloseEditTareaModal}
-                tareaId={editingTareaId}
-                onUpdate={reloadData}
-            />
+			{showModalEditarTarea && (
+				<ModalEditarTarea
+					show={showModalEditarTarea}
+					handleClose={handleCloseEditarTareaModal}
+					tareaId={editingTareaId}
+					onUpdate={reloadData}
+				/>
+			)}
 
-            <ModalAgregarProyecto
-                show={showModalAgregarProyecto}
-                handleClose={handleCloseAgregarProyectoModal}
-                onUpdate={reloadData}
-            />
+			{showModalAgregarProyecto && (
+				<ModalAgregarProyecto
+					show={showModalAgregarProyecto}
+					handleClose={handleCloseAgregarProyectoModal}
+					onUpdate={reloadData}
+				/>
+			)}
 
-            <ModalAgregarTarea
-                show={showModalAgregarTarea}
-                handleClose={handleCloseAgregarTareaModal}
-                proyectoId={selectedProyectoTarea}
-                onUpdate={reloadData}
-            />
-        </AdminLayout>
-    );
+			{showModalAgregarTarea && (
+				<ModalAgregarTarea
+					show={showModalAgregarTarea}
+					handleClose={handleCloseAgregarTareaModal}
+					proyectoId={selectedProyectoTarea}
+					onUpdate={reloadData}
+				/>
+			)}
+		</AdminLayout>
+	);
 };
 
 export default DashboardColaborador;
