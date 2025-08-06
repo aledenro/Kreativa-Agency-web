@@ -70,6 +70,8 @@ const RespuestasReclutaciones = () => {
                     "Error al obtener los formularios de reclutamiento",
                     error
                 );
+            } finally {
+                setLoading(false);
             }
         };
 
