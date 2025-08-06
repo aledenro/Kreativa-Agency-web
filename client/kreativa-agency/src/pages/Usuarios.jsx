@@ -44,9 +44,6 @@ const Usuarios = () => {
 					});
 				}
 
-				const decodedToken = jwtDecode(token);
-				// console.log("Token decodificado:", decodedToken);
-
 				const { data } = await axios.get(
 					`${import.meta.env.VITE_API_URL}/usuarios`,
 					{
@@ -136,7 +133,7 @@ const Usuarios = () => {
 		});
 
 		if (!result.isConfirmed) return;
-		return;
+
 		try {
 			const token = localStorage.getItem("token");
 
