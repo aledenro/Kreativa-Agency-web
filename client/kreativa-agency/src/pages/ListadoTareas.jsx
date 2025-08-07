@@ -71,7 +71,7 @@ const ListadoTareas = () => {
 		api.success({
 			message: "Éxito",
 			description: message,
-			placement: "bottomRight",
+			placement: "top",
 			duration: 4,
 		});
 	};
@@ -80,7 +80,7 @@ const ListadoTareas = () => {
 		api.error({
 			message: "Error",
 			description: message,
-			placement: "bottomRight",
+			placement: "top",
 			duration: 4,
 		});
 	};

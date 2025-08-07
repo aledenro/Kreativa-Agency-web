@@ -1,394 +1,493 @@
 import React, { useState, useEffect } from "react";
-import { Form, Modal } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
+import { Dropdown, Modal } from "react-bootstrap";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-import AdminLayout from "../components/AdminLayout/AdminLayout";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faPencil,
+	faToggleOn,
+	faToggleOff,
+	faBackward,
+	faCaretLeft,
+	faCaretRight,
+	faForward,
+	faSort,
+	faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { notification } from "antd";
-import validTokenActive from "../utils/validateToken";
+import AdminLayout from "../components/AdminLayout/AdminLayout";
+import { useNavigate } from "react-router-dom";
+import TablaPaginacion from "../components/ui/TablaPaginacion";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import Loading from "../components/ui/LoadingComponent";
+import ModalAgregarPaquete from "../components/Paquetes/ModalAgregarPaquete";
+import ModalEditarPaquete from "../components/Paquetes/ModalEditarPaquete";
 
-const AgregarPaquete = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [paquete, setPaquete] = useState({
-        nombre: "",
-        descripcion: "",
-        nivel: "",
-        duracion: "",
-        duracionNumero: "",
-        duracionUnidad: "días",
-        beneficios: [""],
-        precio: "",
-    });
+const GestionPaquetes = () => {
+	const [servicios, setServicios] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+	const [api, contextHolder] = notification.useNotification();
+	const [itemsPag, setItemsPag] = useState(5);
+	const [pagActual, setPagActual] = useState(1);
+	const [sortField, setSortField] = useState("nombre");
+	const [sortOrder, setSortOrder] = useState("asc");
+	const navigate = useNavigate();
 
-    const [showModal, setShowModal] = useState(false);
+	// Estados para modales
+	const [showModalAgregar, setShowModalAgregar] = useState(false);
+	const [showModalEditar, setShowModalEditar] = useState(false);
+	const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
+	const [paqueteSeleccionado, setPaqueteSeleccionado] = useState(null);
 
-    const [api, contextHolder] = notification.useNotification();
+	// Estados para modal de confirmación de estado
+	const [showModal, setShowModal] = useState(false);
+	const [selectedPaquete, setSelectedPaquete] = useState(null);
+	const [modalAction, setModalAction] = useState("");
 
-    const openSuccessNotification = (message) => {
-        api.success({
-            message: "Éxito",
-            description: message,
-            placement: "bottomRight",
-            duration: 4,
-        });
-    };
+	const openErrorNotification = (message) => {
+		api.error({
+			message: "Error",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
 
-    const openErrorNotification = (message) => {
-        api.error({
-            message: "Error",
-            description: message,
-            placement: "bottomRight",
-            duration: 4,
-        });
-    };
+	const openSuccessNotification = (message) => {
+		api.success({
+			message: "Éxito",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
+	useEffect(() => {
+		fetchServicios();
+	}, []);
 
-        if (!token) {
-            navigate("/error", {
-                state: {
-                    errorCode: 401,
-                    mensaje: "Acceso no autorizado.",
-                },
-            });
-            return;
-        }
+	const fetchServicios = async () => {
+		const token = localStorage.getItem("token");
 
-        if (!validTokenActive()) {
-            navigate("/error", {
-                state: {
-                    errorCode: 401,
-                    mensaje: "Debe volver a iniciar sesión para continuar.",
-                },
-            });
-            return;
-        }
-    });
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe iniciar sesión para continuar.",
+				},
+			});
+		}
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setPaquete((prevPaquete) => ({ ...prevPaquete, [name]: value }));
-    };
+		try {
+			const response = await axios.get(
+				`${import.meta.env.VITE_API_URL}/servicios/con-paquetes`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 
-    const handleBeneficioChange = (index, value) => {
-        const nuevosBeneficios = [...paquete.beneficios];
-        nuevosBeneficios[index] = value;
-        setPaquete((prevPaquete) => ({
-            ...prevPaquete,
-            beneficios: nuevosBeneficios,
-        }));
-    };
+			if (Array.isArray(response.data)) {
+				setServicios(response.data);
+			} else {
+				setServicios([]);
+			}
+		} catch (err) {
+			if (err.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+			setError("Error al cargar los servicios");
+			openErrorNotification("No se pudieron cargar los servicios.");
+			setServicios([]);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-    const agregarBeneficio = () => {
-        setPaquete((prevPaquete) => ({
-            ...prevPaquete,
-            beneficios: [...prevPaquete.beneficios, ""],
-        }));
-    };
+	const obtenerTodosLosPaquetes = () => {
+		const todosPaquetes = [];
 
-    const eliminarBeneficio = (index) => {
-        if (paquete.beneficios.length > 1) {
-            const nuevosBeneficios = paquete.beneficios.filter(
-                (_, i) => i !== index
-            );
-            setPaquete((prevPaquete) => ({
-                ...prevPaquete,
-                beneficios: nuevosBeneficios,
-            }));
-        }
-    };
+		servicios.forEach((servicio) => {
+			if (servicio.paquetes && servicio.paquetes.length > 0) {
+				servicio.paquetes.forEach((paquete) => {
+					todosPaquetes.push({
+						...paquete,
+						servicioId: servicio._id,
+						servicioNombre: servicio.nombre,
+					});
+				});
+			}
+		});
 
-    const handleFocus = (index) => {
-        if (index === paquete.beneficios.length - 1) {
-            agregarBeneficio();
-        }
-    };
+		return todosPaquetes;
+	};
 
-    const handleSubmit = async () => {
-        const duracionNumero = Number(paquete.duracionNumero);
+	const confirmToggleEstadoPaquete = (servicioId, paqueteId, estadoActual) => {
+		setSelectedPaquete({ servicioId, paqueteId, estadoActual });
+		setModalAction(estadoActual ? "desactivar" : "activar");
+		setShowModal(true);
+	};
 
-        if (
-            isNaN(duracionNumero) ||
-            duracionNumero < 1 ||
-            !paquete.duracionUnidad
-        ) {
-            openErrorNotification(
-                "Por favor ingrese una duración válida (mayor o igual a 1)"
-            );
-            return;
-        }
+	const toggleEstadoPaquete = async () => {
+		if (!selectedPaquete) return;
 
-        const duracion = `${duracionNumero} ${paquete.duracionUnidad}`;
+		const { servicioId, paqueteId, estadoActual } = selectedPaquete;
+		const token = localStorage.getItem("token");
 
-        const paqueteData = {
-            ...paquete,
-            duracion,
-            precio: parseFloat(paquete.precio),
-        };
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Acceso no autorizado.",
+				},
+			});
+			return;
+		}
+		try {
+			const endpoint = estadoActual
+				? `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/desactivar`
+				: `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
 
-        const token = localStorage.getItem("token");
+			const response = await axios.put(endpoint, null, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
 
-        if (!token) {
-            navigate("/error", {
-                state: {
-                    errorCode: 401,
-                    mensaje: "Acceso no autorizado.",
-                },
-            });
-            return;
-        }
+			setServicios((prevServicios) =>
+				prevServicios.map((servicio) =>
+					servicio._id === servicioId ? response.data : servicio
+				)
+			);
 
-        try {
-            const res = await axios.put(
-                `${import.meta.env.VITE_API_URL}/servicios/${id}/nuevoPaquete`,
-                paqueteData,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            console.log(res.data);
-            openSuccessNotification("Paquete agregado exitosamente");
-            setShowModal(false);
-        } catch (error) {
-            if (error.status === 401) {
-                localStorage.clear();
-                navigate("/error", {
-                    state: {
-                        errorCode: 401,
-                        mensaje: "Debe volver a iniciar sesión para continuar.",
-                    },
-                });
+			openSuccessNotification(`Paquete ${modalAction}do exitosamente`);
+			setShowModal(false);
+		} catch (err) {
+			if (err.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+			console.error("Error al cambiar el estado del paquete");
+			openErrorNotification("Error al cambiar el estado del paquete.");
+			setShowModal(false);
+		}
+	};
 
-                return;
-            }
-            openErrorNotification("Hubo un error al agregar el paquete");
-        }
-    };
+	// Funciones para manejar los modales
+	const handleAgregarPaquete = (servicioId) => {
+		setServicioSeleccionado(servicioId);
+		setShowModalAgregar(true);
+	};
 
-    return (
-        <div>
-            <AdminLayout>
-                <div className="container main-container">
-                    <div className="section-title text-center">
-                        <h2>Agregar Paquete</h2>
-                    </div>
-                    <div className="mx-auto align-items-center justify-content-center d-flex">
-                        <div className="col-xl-8">
-                            {contextHolder}
-                            <Form
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    setShowModal(true);
-                                }}
-                                className="paquete_form"
-                            >
-                                <div className="row">
-                                    <div className="col">
-                                        <label className="form-label">
-                                            Nombre del paquete
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="nombre"
-                                            className="form_input"
-                                            value={paquete.nombre}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col">
-                                        <label className="form-label">
-                                            Nivel
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="nivel"
-                                            className="form_input"
-                                            value={paquete.nivel}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col">
-                                        <label className="form-label">
-                                            Duración
-                                        </label>
-                                        <div className="d-flex flex-wrap align-items-center gap-2">
-                                            <input
-                                                type="number"
-                                                name="duracionNumero"
-                                                className="form_input"
-                                                value={
-                                                    paquete.duracionNumero || ""
-                                                }
-                                                onChange={(e) => {
-                                                    const valor = parseFloat(
-                                                        e.target.value
-                                                    );
-                                                    if (
-                                                        valor >= 1 ||
-                                                        e.target.value === ""
-                                                    ) {
-                                                        setPaquete((prev) => ({
-                                                            ...prev,
-                                                            duracionNumero:
-                                                                valor,
-                                                        }));
-                                                    }
-                                                }}
-                                                required
-                                                min="1"
-                                                placeholder="Duración"
-                                                style={{
-                                                    minWidth: "120px",
-                                                    flex: "1 1 120px",
-                                                }}
-                                            />
-                                            <select
-                                                className="form_input"
-                                                name="duracionUnidad"
-                                                value={
-                                                    paquete.duracionUnidad ||
-                                                    "días"
-                                                }
-                                                onChange={(e) =>
-                                                    setPaquete((prev) => ({
-                                                        ...prev,
-                                                        duracionUnidad:
-                                                            e.target.value,
-                                                    }))
-                                                }
-                                                style={{
-                                                    minWidth: "120px",
-                                                    flex: "1 1 120px",
-                                                }}
-                                            >
-                                                <option value="días">
-                                                    Días
-                                                </option>
-                                                <option value="semanas">
-                                                    Semanas
-                                                </option>
-                                                <option value="meses">
-                                                    Meses
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col">
-                                        <label className="form-label">
-                                            Precio
-                                        </label>
-                                        <input
-                                            type="number"
-                                            name="precio"
-                                            className="form_input"
-                                            value={paquete.precio}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col">
-                                        <label className="form-label">
-                                            Descripción
-                                        </label>
-                                        <textarea
-                                            name="descripcion"
-                                            className="form_input form_textarea"
-                                            rows="3"
-                                            value={paquete.descripcion}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col">
-                                        <label className="form-label">
-                                            Beneficios
-                                        </label>
-                                        {paquete.beneficios.map(
-                                            (beneficio, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="d-flex align-items-center mb-2"
-                                                >
-                                                    <input
-                                                        type="text"
-                                                        className="form_input"
-                                                        value={beneficio}
-                                                        onChange={(e) =>
-                                                            handleBeneficioChange(
-                                                                index,
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        onFocus={() =>
-                                                            handleFocus(index)
-                                                        }
-                                                        required
-                                                    />
-                                                    {index > 0 && (
-                                                        <button
-                                                            type="button"
-                                                            className="icon-btn"
-                                                            onClick={() =>
-                                                                eliminarBeneficio(
-                                                                    index
-                                                                )
-                                                            }
-                                                        >
-                                                            <FontAwesomeIcon
-                                                                icon={faX}
-                                                            />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            )
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="d-flex justify-content-center mt-3">
-                                    <button
-                                        type="submit"
-                                        className="thm-btn form-btn"
-                                    >
-                                        Agregar
-                                    </button>
-                                </div>
-                            </Form>
-                        </div>
-                    </div>
-                </div>
-            </AdminLayout>
+	const handleEditarPaquete = (paquete) => {
+		setPaqueteSeleccionado(paquete);
+		setShowModalEditar(true);
+	};
 
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirmar Agregado</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>¿Seguro que desea agregar este paquete?</Modal.Body>
-                <Modal.Footer>
-                    <button
-                        className="thm-btn thm-btn-small btn-rojo"
-                        onClick={() => setShowModal(false)}
-                    >
-                        No
-                    </button>
-                    <button
-                        className="thm-btn thm-btn-small"
-                        onClick={handleSubmit}
-                    >
-                        Sí
-                    </button>
-                </Modal.Footer>
-            </Modal>
-        </div>
-    );
+	const handlePaqueteAgregado = (nuevoPaquete) => {
+		// Refrescar la lista de servicios
+		fetchServicios();
+		openSuccessNotification("Paquete agregado exitosamente");
+	};
+
+	const handlePaqueteEditado = (paqueteEditado) => {
+		// Refrescar la lista de servicios
+		fetchServicios();
+		openSuccessNotification("Paquete editado exitosamente");
+	};
+
+	const handlePaquete = (servicioId) => {
+		navigate(`/servicio/${servicioId}`);
+	};
+
+	const paquetes = obtenerTodosLosPaquetes();
+
+	const paquetesOrdenados = [...paquetes].sort((a, b) => {
+		let valueA = a[sortField];
+		let valueB = b[sortField];
+
+		if (typeof valueA === "string" && typeof valueB === "string") {
+			return sortOrder === "asc"
+				? valueA.localeCompare(valueB)
+				: valueB.localeCompare(valueA);
+		}
+
+		return sortOrder === "asc"
+			? valueA > valueB
+				? 1
+				: -1
+			: valueB > valueA
+				? 1
+				: -1;
+	});
+
+	const paquetesPaginados = paquetesOrdenados.slice(
+		(pagActual - 1) * itemsPag,
+		pagActual * itemsPag
+	);
+
+	const totalPags = Math.ceil(paquetes.length / itemsPag);
+
+	const handleSort = (field) => {
+		if (sortField === field) {
+			setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+		} else {
+			setSortField(field);
+			setSortOrder("asc");
+		}
+	};
+
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
+
+	return (
+		<div>
+			<AdminLayout>
+				<div className="container mt-4">
+					{contextHolder}
+					<div style={{ height: "90px" }}></div>
+					<div className="d-flex justify-content-between align-items-center mb-4">
+						<h1>Gestión de Paquetes</h1>
+						<Dropdown>
+							<style>
+								{`
+                                .thm-btn:hover {
+                                    border-color: #ff0072 !important;
+                                }
+                                    .thm-btn:active {
+                                    background-color: transparent !important;
+                            `}
+							</style>
+							<Dropdown.Toggle className="thm-btn" id="dropdown-servicios">
+								<FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo Paquete
+							</Dropdown.Toggle>
+
+							<Dropdown.Menu
+								style={{
+									backgroundColor: "white",
+								}}
+							>
+								<style>
+									{`
+                                    .dropdown-item:active {
+                                        background-color: #ff0072 !important;
+                                    }
+                                    .dropdown-item:hover {
+                                        background-color: #ffebf4 !important;
+                                        color: #ff0072
+                                    }
+                                `}
+								</style>
+								{servicios.length > 0 ? (
+									servicios.map((servicio) => (
+										<Dropdown.Item
+											key={servicio._id}
+											onClick={() => handleAgregarPaquete(servicio._id)}
+											style={{
+												color: "#110d27",
+												backgroundColor: "white",
+											}}
+										>
+											{servicio.nombre}
+										</Dropdown.Item>
+									))
+								) : (
+									<Dropdown.Item disabled style={{ backgroundColor: "white" }}>
+										No hay servicios disponibles
+									</Dropdown.Item>
+								)}
+							</Dropdown.Menu>
+						</Dropdown>
+					</div>
+					<div className="div-table">
+						<Table className="main-table">
+							<Thead>
+								<Tr>
+									<Th
+										onClick={() => handleSort("servicioNombre")}
+										className="col-nombre"
+									>
+										Servicio{" "}
+										<span className="sort-icon">
+											<FontAwesomeIcon icon={faSort} />
+										</span>
+									</Th>
+									<Th
+										onClick={() => handleSort("nombre")}
+										className="col-proyecto"
+									>
+										Nombre{" "}
+										<span className="sort-icon">
+											<FontAwesomeIcon icon={faSort} />
+										</span>
+									</Th>
+									<Th onClick={() => handleSort("nivel")} className="col-nivel">
+										Nivel{" "}
+										<span className="sort-icon">
+											<FontAwesomeIcon icon={faSort} />
+										</span>
+									</Th>
+									<Th
+										onClick={() => handleSort("precio")}
+										className="col-precio"
+									>
+										Precio{" "}
+										<span className="sort-icon">
+											<FontAwesomeIcon icon={faSort} />
+										</span>
+									</Th>
+									<Th
+										onClick={() => handleSort("duracion")}
+										className="col-fecha"
+									>
+										Duración{" "}
+										<span className="sort-icon">
+											<FontAwesomeIcon icon={faSort} />
+										</span>
+									</Th>
+									<Th
+										onClick={() => handleSort("activo")}
+										className="col-estado"
+									>
+										Estado{" "}
+										<span className="sort-icon">
+											<FontAwesomeIcon icon={faSort} />
+										</span>
+									</Th>
+									<Th className="col-acciones">Acciones</Th>
+								</Tr>
+							</Thead>
+							<Tbody>
+								{paquetesPaginados.length > 0 ? (
+									paquetesPaginados.map((paquete) => (
+										<Tr key={paquete._id}>
+											<Td
+												className="col-nombre"
+												onClick={() => handlePaquete(paquete.servicioId)}
+												style={{ cursor: "pointer" }}
+											>
+												{paquete.servicioNombre || "Sin servicio asignado"}
+											</Td>
+											<Td className="col-proyecto">{paquete.nombre}</Td>
+											<Td className="col-nivel">{paquete.nivel}</Td>
+											<Td className="col-precio">${paquete.precio}</Td>
+											<Td className="col-fecha">{paquete.duracion}</Td>
+											<Td className="col-estado">
+												<span
+													className={`badge ${paquete.activo ? "badge-verde" : "badge-rojo"}`}
+												>
+													{paquete.activo ? "Activo" : "Inactivo"}
+												</span>
+											</Td>
+											<Td className="text-center col-acciones">
+												<div className="botones-grupo">
+													<button
+														className="thm-btn thm-btn-small btn-azul"
+														onClick={() => handleEditarPaquete(paquete)}
+														title="Modificar"
+													>
+														<FontAwesomeIcon icon={faPencil} />
+													</button>
+													<button
+														className={`thm-btn thm-btn-small ${paquete.activo ? "btn-verde" : "btn-rojo"}`}
+														onClick={() =>
+															confirmToggleEstadoPaquete(
+																paquete.servicioId,
+																paquete._id,
+																paquete.activo
+															)
+														}
+														title={paquete.activo ? "Desactivar" : "Activar"}
+													>
+														<FontAwesomeIcon
+															icon={paquete.activo ? faToggleOn : faToggleOff}
+														/>
+													</button>
+												</div>
+											</Td>
+										</Tr>
+									))
+								) : (
+									<Tr>
+										<Td colSpan="7" className="text-center">
+											No hay paquetes disponibles
+										</Td>
+									</Tr>
+								)}
+							</Tbody>
+						</Table>
+					</div>
+
+					<TablaPaginacion
+						totalItems={paquetes.length}
+						itemsPorPagina={itemsPag}
+						paginaActual={pagActual}
+						onItemsPorPaginaChange={(cant) => {
+							setItemsPag(cant);
+							setPagActual(1);
+						}}
+						onPaginaChange={(pagina) => setPagActual(pagina)}
+					/>
+
+					{/* Modal de confirmación para cambio de estado */}
+					<Modal show={showModal} onHide={() => setShowModal(false)}>
+						<Modal.Header closeButton>
+							<Modal.Title>Confirmar Acción</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							¿Seguro que desea {modalAction} este paquete?
+						</Modal.Body>
+						<Modal.Footer>
+							<button
+								className="thm-btn thm-btn-small btn-rojo"
+								onClick={() => setShowModal(false)}
+							>
+								No
+							</button>
+							<button
+								className="thm-btn thm-btn-small"
+								onClick={toggleEstadoPaquete}
+							>
+								Sí
+							</button>
+						</Modal.Footer>
+					</Modal>
+
+					{/* Modal para agregar paquete */}
+					<ModalAgregarPaquete
+						show={showModalAgregar}
+						onHide={() => setShowModalAgregar(false)}
+						servicioId={servicioSeleccionado}
+						onPaqueteAgregado={handlePaqueteAgregado}
+					/>
+
+					{/* Modal para editar paquete */}
+					<ModalEditarPaquete
+						show={showModalEditar}
+						onHide={() => setShowModalEditar(false)}
+						paquete={paqueteSeleccionado}
+						onPaqueteEditado={handlePaqueteEditado}
+					/>
+				</div>
+			</AdminLayout>
+		</div>
+	);
 };
 
-export default AgregarPaquete;
+export default GestionPaquetes;
