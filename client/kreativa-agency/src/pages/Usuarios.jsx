@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
@@ -19,20 +19,199 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
 
-const Usuarios = () => {
+const useUsuarios = () => {
 	const navigate = useNavigate();
 	const [usuarios, setUsuarios] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
+
+	const fetchUsuarios = useCallback(async () => {
+		try {
+			const token = localStorage.getItem("token");
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+
+			const { data } = await axios.get(
+				`${import.meta.env.VITE_API_URL}/usuarios`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+
+			setUsuarios(
+				data.sort(
+					(a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
+				)
+			);
+		} catch (error) {
+			if (error.status === 401) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+			console.error(
+				"Error al cargar los usuarios:",
+				error.response?.data || error
+			);
+			setError("Error al cargar los usuarios");
+		} finally {
+			setLoading(false);
+		}
+	}, [navigate]);
+
+	const actualizarEstadoUsuario = useCallback((id, nuevoEstado) => {
+		setUsuarios((prevUsuarios) =>
+			prevUsuarios.map((usuario) =>
+				usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
+			)
+		);
+	}, []);
+
+	return {
+		usuarios,
+		loading,
+		error,
+		setError,
+		fetchUsuarios,
+		actualizarEstadoUsuario,
+	};
+};
+
+const validateUsuario = (usuario) => {
+	return (
+		usuario &&
+		usuario._id &&
+		usuario.cedula &&
+		usuario.nombre &&
+		usuario.email &&
+		usuario.estado
+	);
+};
+
+const FiltrosUsuarios = memo(
+	({ onSearchChange, onEstadoChange, onCrearUsuario }) => {
+		return (
+			<div className="row mb-3">
+				<div className="col-lg-4 col-md-12 mb-2 mb-lg-0">
+					<button className="thm-btn btn-verde" onClick={onCrearUsuario}>
+						Crear Usuario
+					</button>
+				</div>
+				<div className="col-lg-4 col-md-12 mb-2 mb-lg-0">
+					<input
+						type="text"
+						className="form_input"
+						placeholder="Buscar por cédula..."
+						onChange={(e) => onSearchChange(e.target.value)}
+					/>
+				</div>
+				<div className="col-lg-4 col-md-12">
+					<select
+						className="form-select form_input"
+						onChange={(e) => onEstadoChange(e.target.value)}
+					>
+						<option value="">Todos</option>
+						<option value="Activo">Activos</option>
+						<option value="Inactivo">Inactivos</option>
+					</select>
+				</div>
+			</div>
+		);
+	}
+);
+
+const AccionesUsuario = memo(
+	({ usuario, onVer, onEditar, onActivarDesactivar }) => {
+		if (!validateUsuario(usuario)) {
+			return <div className="text-center">Datos inválidos</div>;
+		}
+
+		return (
+			<div className="botones-grupo">
+				<button
+					className="thm-btn thm-btn-small btn-amarillo"
+					onClick={() => onVer(usuario._id)}
+				>
+					<FontAwesomeIcon icon={faEye} />
+				</button>
+				<button
+					className="thm-btn thm-btn-small btn-azul"
+					onClick={() => onEditar(usuario._id)}
+				>
+					<FontAwesomeIcon icon={faPencil} />
+				</button>
+				<button
+					className={`thm-btn thm-btn-small ${
+						usuario.estado === "Activo" ? "btn-verde" : "btn-rojo"
+					}`}
+					onClick={() => onActivarDesactivar(usuario._id, usuario.estado)}
+				>
+					<FontAwesomeIcon
+						icon={usuario.estado === "Activo" ? faToggleOff : faToggleOn}
+					/>
+				</button>
+			</div>
+		);
+	}
+);
+
+const Usuarios = () => {
+	const navigate = useNavigate();
+	const {
+		usuarios,
+		loading,
+		error,
+		setError,
+		fetchUsuarios,
+		actualizarEstadoUsuario,
+	} = useUsuarios();
+
 	const [search, setSearch] = useState("");
 	const [estadoFiltro, setEstadoFiltro] = useState("");
 	const [paginaActual, setPaginaActual] = useState(1);
-	//   const usuariosPorPagina = 5;
 	const [usuariosPorPagina, setUsuariosPorPagina] = useState(5);
 
-	const [loading, setLoading] = useState(true);
-
 	useEffect(() => {
-		const fetchUsuarios = async () => {
+		fetchUsuarios();
+	}, [fetchUsuarios]);
+
+	const usuariosFiltrados = useMemo(() => {
+		return usuarios
+			.filter((usuario) => {
+				// 9. Validación de datos antes de filtrar
+				if (!validateUsuario(usuario)) return false;
+				return usuario.cedula.includes(search);
+			})
+			.filter((usuario) =>
+				estadoFiltro ? usuario.estado === estadoFiltro : true
+			);
+	}, [usuarios, search, estadoFiltro]);
+
+	const usuariosPaginados = useMemo(() => {
+		const indexOfLastUser = paginaActual * usuariosPorPagina;
+		const indexOfFirstUser = indexOfLastUser - usuariosPorPagina;
+		return usuariosFiltrados.slice(indexOfFirstUser, indexOfLastUser);
+	}, [usuariosFiltrados, paginaActual, usuariosPorPagina]);
+
+	const totalPaginas = useMemo(() => {
+		return usuariosPorPagina >= usuariosFiltrados.length
+			? 1
+			: Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
+	}, [usuariosFiltrados.length, usuariosPorPagina]);
+
+	const handleVerUsuario = useCallback(
+		async (id) => {
 			try {
 				const token = localStorage.getItem("token");
 				if (!token) {
@@ -42,22 +221,21 @@ const Usuarios = () => {
 							mensaje: "Debe iniciar sesión para continuar.",
 						},
 					});
+					return;
 				}
 
 				const { data } = await axios.get(
-					`${import.meta.env.VITE_API_URL}/usuarios`,
+					`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
 					{
 						headers: { Authorization: `Bearer ${token}` },
 					}
 				);
 
-				setUsuarios(
-					data.sort(
-						(a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
-					)
-				);
+				console.log("Detalles del usuario:", data);
+				navigate(`/usuario/${id}`);
 			} catch (error) {
 				if (error.status === 401) {
+					localStorage.clear();
 					navigate("/error", {
 						state: {
 							errorCode: 401,
@@ -66,174 +244,100 @@ const Usuarios = () => {
 					});
 					return;
 				}
-				console.error(
-					"Error al cargar los usuarios:",
-					error.response?.data || error
-				);
-				setError("Error al cargar los usuarios");
-			} finally {
-				setLoading(false);
+				setError("Error al obtener los detalles del usuario.");
 			}
-		};
-		fetchUsuarios();
-	}, []);
-
-	const handleVerUsuario = async (id) => {
-		try {
-			const token = localStorage.getItem("token");
-			if (!token) {
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe iniciar sesión para continuar.",
-					},
-				});
-			}
-
-			const { data } = await axios.get(
-				`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-
-			console.log("Detalles del usuario:", data);
-			navigate(`/usuario/${id}`);
-		} catch (error) {
-			if (error.status === 401) {
-				localStorage.clear();
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe volver a iniciar sesión para continuar.",
-					},
-				});
-
-				return;
-			}
-			setError("Error al obtener los detalles del usuario.");
-		}
-	};
-
-	const handleEditarUsuario = (id) => {
-		navigate(`/usuario/editar/${id}`);
-	};
-
-	const handleActivarDesactivar = async (id, estadoActual) => {
-		const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
-		const result = await Swal.fire({
-			title: `¿Estás seguro?`,
-			text: `Este usuario será marcado como ${nuevoEstado.toLowerCase()}.`,
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: `Sí, ${nuevoEstado.toLowerCase()}`,
-			cancelButtonText: "Cancelar",
-		});
-
-		if (!result.isConfirmed) return;
-
-		try {
-			const token = localStorage.getItem("token");
-
-			if (!token) {
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe iniciar sesión para continuar.",
-					},
-				});
-			}
-			await axios.put(
-				`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-				{ estado: nuevoEstado },
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-
-			setUsuarios(
-				usuarios.map((usuario) =>
-					usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
-				)
-			);
-
-			Swal.fire({
-				title: "¡Éxito!",
-				text: `El usuario ha sido marcado como ${nuevoEstado.toLowerCase()}.`,
-				icon: "success",
-				timer: 2000,
-				showConfirmButton: false,
-			});
-		} catch (error) {
-			if (error.status === 401) {
-				localStorage.clear();
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe volver a iniciar sesión para continuar.",
-					},
-				});
-
-				return;
-			}
-			setError("Error al cambiar el estado del usuario.");
-
-			Swal.fire({
-				title: "Error",
-				text: "No se pudo actualizar el estado del usuario.",
-				icon: "error",
-			});
-		}
-	};
-
-	// const handleEliminar = async (id) => {
-	//     if (
-	//         !window.confirm(
-	//             "¿Estás seguro de que deseas eliminar este usuario?"
-	//         )
-	//     )
-	//         return;
-
-	//     try {
-	//         const token = localStorage.getItem("token");
-	//         await axios.delete(
-	//             `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-	//             {
-	//                 headers: { Authorization: `Bearer ${token}` },
-	//             }
-	//         );
-
-	//         setUsuarios(usuarios.filter((usuario) => usuario._id !== id));
-	// 	} catch (error) {
-
-	//         setError("Error al eliminar el usuario permanentemente");
-	//     }
-	// };
-
-	const usuariosFiltrados = usuarios
-		.filter((usuario) => usuario.cedula.includes(search))
-		.filter((usuario) =>
-			estadoFiltro ? usuario.estado === estadoFiltro : true
-		);
-
-	const indexOfLastUser = paginaActual * usuariosPorPagina;
-	const indexOfFirstUser = indexOfLastUser - usuariosPorPagina;
-	//   const usuariosPaginados = usuariosFiltrados.slice(
-	//     indexOfFirstUser,
-	//     indexOfLastUser
-	//   );
-	const usuariosPaginados = usuariosFiltrados.slice(
-		indexOfFirstUser,
-		indexOfLastUser
+		},
+		[navigate, setError]
 	);
 
-	//   const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
-	const totalPaginas =
-		usuariosPorPagina >= usuariosFiltrados.length
-			? 1
-			: Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
+	const handleEditarUsuario = useCallback(
+		(id) => {
+			navigate(`/usuario/editar/${id}`);
+		},
+		[navigate]
+	);
+
+	const handleActivarDesactivar = useCallback(
+		async (id, estadoActual) => {
+			const nuevoEstado = estadoActual === "Activo" ? "Inactivo" : "Activo";
+			const result = await Swal.fire({
+				title: `¿Estás seguro?`,
+				text: `Este usuario será marcado como ${nuevoEstado.toLowerCase()}.`,
+				icon: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: `Sí, ${nuevoEstado.toLowerCase()}`,
+				cancelButtonText: "Cancelar",
+			});
+
+			if (!result.isConfirmed) return;
+
+			try {
+				const token = localStorage.getItem("token");
+				if (!token) {
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+
+				await axios.put(
+					`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
+					{ estado: nuevoEstado },
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
+
+				actualizarEstadoUsuario(id, nuevoEstado);
+
+				Swal.fire({
+					title: "¡Éxito!",
+					text: `El usuario ha sido marcado como ${nuevoEstado.toLowerCase()}.`,
+					icon: "success",
+					timer: 2000,
+					showConfirmButton: false,
+				});
+			} catch (error) {
+				if (error.status === 401) {
+					localStorage.clear();
+					navigate("/error", {
+						state: {
+							errorCode: 401,
+							mensaje: "Debe volver a iniciar sesión para continuar.",
+						},
+					});
+					return;
+				}
+				setError("Error al cambiar el estado del usuario.");
+
+				Swal.fire({
+					title: "Error",
+					text: "No se pudo actualizar el estado del usuario.",
+					icon: "error",
+				});
+			}
+		},
+		[navigate, setError, actualizarEstadoUsuario]
+	);
+
+	const handleCrearUsuario = useCallback(() => {
+		navigate("/usuario/crear");
+	}, [navigate]);
+
+	const handleSearchChange = useCallback((searchValue) => {
+		setSearch(searchValue);
+		setPaginaActual(1);
+	}, []);
+
+	const handleEstadoChange = useCallback((estado) => {
+		setEstadoFiltro(estado);
+		setPaginaActual(1);
+	}, []);
 
 	if (loading) {
 		return (
@@ -244,44 +348,19 @@ const Usuarios = () => {
 			</AdminLayout>
 		);
 	}
+
 	return (
 		<AdminLayout>
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
 				<h1 className="mb-4">Gestión de Usuarios</h1>
-				{error && <div className="alert alert-danger">{error}</div>}
 				<div style={{ marginBottom: "30px" }}></div>
-
-				{/* Filtros responsivos */}
-				<div className="d-flex justify-content-between flex-wrap gap-3 mb-4">
-					<button
-						className="thm-btn btn-verde"
-						onClick={() => navigate("/usuario/crear")}
-					>
-						Crear Usuario
-					</button>
-
-					<div className="search-container">
-						<FontAwesomeIcon icon={faSearch} className="icon-search" />
-						<input
-							type="text"
-							className="form-control search-input"
-							placeholder="Buscar por cédula..."
-							onChange={(e) => setSearch(e.target.value)}
-						/>
-					</div>
-
-					<div className="select-container">
-						<select
-							className="form-control select-input"
-							onChange={(e) => setEstadoFiltro(e.target.value)}
-						>
-							<option value="">Todos</option>
-							<option value="Activo">Activos</option>
-							<option value="Inactivo">Inactivos</option>
-						</select>
-						<FontAwesomeIcon icon={faChevronDown} className="icon-arrow" />
-					</div>
+				<div className="row mb-3">
+					<FiltrosUsuarios
+						onSearchChange={handleSearchChange}
+						onEstadoChange={handleEstadoChange}
+						onCrearUsuario={handleCrearUsuario}
+					/>
 				</div>
 
 				<div className="div-table">
@@ -298,153 +377,57 @@ const Usuarios = () => {
 							</Tr>
 						</Thead>
 						<Tbody>
-							{usuariosPaginados.map((usuario) => (
-								<Tr key={usuario._id}>
-									<Td className="col-nombre" data-label="Nombre">
-										{usuario.nombre}
-									</Td>
-									<Td className="col-usuario" data-label="Usuario">
-										{usuario.usuario}
-									</Td>
-									<Td className="col-cedula" data-label="Cédula">
-										{usuario.cedula}
-									</Td>
-									<Td className="col-email" data-label="Email">
-										{usuario.email}
-									</Td>
-									<Td className="col-tipo" data-label="Tipo">
-										{usuario.tipo_usuario}
-									</Td>
-									<Td className="col-estado" data-label="Estado">
-										<span
-											className={`badge ${
-												usuario.estado === "Activo"
-													? "badge-verde"
-													: "badge-rojo"
-											}`}
-										>
-											{usuario.estado}
-										</span>
-									</Td>
-									<Td
-										className="text-center col-acciones"
-										data-label="Acciones"
-									>
-										<div className="botones-grupo">
-											<button
-												className="thm-btn thm-btn-small btn-amarillo"
-												onClick={() => handleVerUsuario(usuario._id)}
-											>
-												<FontAwesomeIcon icon={faEye} />
-											</button>
-											<button
-												className="thm-btn thm-btn-small btn-azul"
-												onClick={() => handleEditarUsuario(usuario._id)}
-											>
-												<FontAwesomeIcon icon={faPencil} />
-											</button>
-											<button
-												className={`thm-btn thm-btn-small ${
-													usuario.estado === "Activo" ? "btn-verde" : "btn-rojo"
+							{usuariosPaginados.map((usuario) => {
+								if (!validateUsuario(usuario)) {
+									console.warn(`Usuario con datos inválidos:`, usuario);
+									return null;
+								}
+
+								return (
+									<Tr key={usuario._id}>
+										<Td className="col-nombre" data-label="Nombre">
+											{usuario.nombre}
+										</Td>
+										<Td className="col-usuario" data-label="Usuario">
+											{usuario.usuario}
+										</Td>
+										<Td className="col-cedula" data-label="Cédula">
+											{usuario.cedula}
+										</Td>
+										<Td className="col-email" data-label="Email">
+											{usuario.email}
+										</Td>
+										<Td className="col-tipo" data-label="Tipo">
+											{usuario.tipo_usuario}
+										</Td>
+										<Td className="col-estado" data-label="Estado">
+											<span
+												className={`badge ${
+													usuario.estado === "Activo"
+														? "badge-verde"
+														: "badge-rojo"
 												}`}
-												onClick={() =>
-													handleActivarDesactivar(usuario._id, usuario.estado)
-												}
 											>
-												<FontAwesomeIcon
-													icon={
-														usuario.estado === "Activo"
-															? faToggleOff
-															: faToggleOn
-													}
-												/>
-											</button>
-											{/* <button
-												className="thm-btn thm-btn-small btn-rojo"
-												onClick={() => handleEliminar(usuario._id)}
-											>
-												<FontAwesomeIcon icon={faTrash} />
-											</button> */}
-										</div>
-									</Td>
-								</Tr>
-							))}
+												{usuario.estado}
+											</span>
+										</Td>
+										<Td
+											className="text-center col-acciones"
+											data-label="Acciones"
+										>
+											<AccionesUsuario
+												usuario={usuario}
+												onVer={handleVerUsuario}
+												onEditar={handleEditarUsuario}
+												onActivarDesactivar={handleActivarDesactivar}
+											/>
+										</Td>
+									</Tr>
+								);
+							})}
 						</Tbody>
 					</Table>
 				</div>
-
-				{/* ---------------TABLA ANTERIOR---------------- */}
-				{/* <table className="table kreativa-table">
-					<thead>
-						<tr>
-							<th>Nombre</th>
-							<th>Usuario</th>
-							<th>Cédula</th>
-							<th>Email</th>
-							<th>Tipo</th>
-							<th>Estado</th>
-							<th>Acciones</th>
-						</tr>
-					</thead>
-					<tbody>
-						{usuariosPaginados.map((usuario) => (
-							<tr key={usuario._id}>
-								<td data-label="Nombre">{usuario.nombre}</td>
-								<td data-label="Usuario">{usuario.usuario}</td>
-								<td data-label="Cédula">{usuario.cedula}</td>
-								<td data-label="Email">{usuario.email}</td>
-								<td data-label="Tipo">{usuario.tipo_usuario}</td>
-								<td data-label="Estado">{usuario.estado}</td>
-								<td className="acciones" data-label="Acciones">
-									<div className="botones-grupo">
-										<button
-											className="thm-btn thm-btn-small btn-amarillo"
-											onClick={() => handleVerUsuario(usuario._id)}
-										>
-											<FontAwesomeIcon icon={faEye} />
-										</button>
-										<button
-											className="thm-btn thm-btn-small btn-azul"
-											onClick={() => handleEditarUsuario(usuario._id)}
-										>
-											<FontAwesomeIcon icon={faPencil} />
-										</button>
-										<button
-											className={`thm-btn thm-btn-small ${usuario.estado === "Activo" ? "btn-verde" : "btn-naranja"}`}
-											onClick={() =>
-												handleActivarDesactivar(usuario._id, usuario.estado)
-											}
-										>
-											{usuario.estado === "Activo" ? (
-												<FontAwesomeIcon icon={faToggleOff} />
-											) : (
-												<FontAwesomeIcon icon={faToggleOn} />
-											)}
-										</button>
-										<button
-											className="thm-btn thm-btn-small btn-rojo"
-											onClick={() => handleEliminar(usuario._id)}
-										>
-											<FontAwesomeIcon icon={faTrash} />
-										</button>
-									</div>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table> */}
-
-				{/* <div className="kreativa-paginacion">
-                    {Array.from({ length: totalPaginas }, (_, i) => (
-                        <button
-                            key={i}
-                            className={`thm-btn btn-volver ${paginaActual === i + 1 ? "active" : ""}`}
-                            onClick={() => setPaginaActual(i + 1)}
-                        >
-                            {i + 1}
-                        </button>
-                    ))}
-                </div> */}
 
 				{usuariosPaginados.length > 0 && (
 					<TablaPaginacion
