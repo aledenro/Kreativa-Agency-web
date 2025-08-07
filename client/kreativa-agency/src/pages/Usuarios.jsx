@@ -18,6 +18,9 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
+import ModalCrearUsuario from "../components/Usuarios/ModalCrearUsuario";
+import ModalEditarUsuario from "../components/Usuarios/ModalEditarUsuario";
+import ModalVerUsuario from "../components/Usuarios/ModalVerUsuario";
 
 const useUsuarios = () => {
 	const navigate = useNavigate();
@@ -177,6 +180,11 @@ const Usuarios = () => {
 		actualizarEstadoUsuario,
 	} = useUsuarios();
 
+	const [mostrarModalCrear, setMostrarModalCrear] = useState(false);
+	const [mostrarModalEditar, setMostrarModalEditar] = useState(false);
+	const [mostrarModalVer, setMostrarModalVer] = useState(false);
+	const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+
 	const [search, setSearch] = useState("");
 	const [estadoFiltro, setEstadoFiltro] = useState("");
 	const [paginaActual, setPaginaActual] = useState(1);
@@ -189,7 +197,6 @@ const Usuarios = () => {
 	const usuariosFiltrados = useMemo(() => {
 		return usuarios
 			.filter((usuario) => {
-				// 9. Validación de datos antes de filtrar
 				if (!validateUsuario(usuario)) return false;
 				return usuario.cedula.includes(search);
 			})
@@ -210,52 +217,30 @@ const Usuarios = () => {
 			: Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
 	}, [usuariosFiltrados.length, usuariosPorPagina]);
 
-	const handleVerUsuario = useCallback(
-		async (id) => {
-			try {
-				const token = localStorage.getItem("token");
-				if (!token) {
-					navigate("/error", {
-						state: {
-							errorCode: 401,
-							mensaje: "Debe iniciar sesión para continuar.",
-						},
-					});
-					return;
-				}
+	const handleVerUsuario = useCallback((id) => {
+		setUsuarioSeleccionado(id);
+		setMostrarModalVer(true);
+	}, []);
 
-				const { data } = await axios.get(
-					`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
-					{
-						headers: { Authorization: `Bearer ${token}` },
-					}
-				);
+	const handleEditarUsuario = useCallback((id) => {
+		setUsuarioSeleccionado(id);
+		setMostrarModalEditar(true);
+	}, []);
 
-				console.log("Detalles del usuario:", data);
-				navigate(`/usuario/${id}`);
-			} catch (error) {
-				if (error.status === 401) {
-					localStorage.clear();
-					navigate("/error", {
-						state: {
-							errorCode: 401,
-							mensaje: "Debe volver a iniciar sesión para continuar.",
-						},
-					});
-					return;
-				}
-				setError("Error al obtener los detalles del usuario.");
-			}
-		},
-		[navigate, setError]
-	);
+	const handleCrearUsuario = useCallback(() => {
+		setMostrarModalCrear(true);
+	}, []);
 
-	const handleEditarUsuario = useCallback(
-		(id) => {
-			navigate(`/usuario/editar/${id}`);
-		},
-		[navigate]
-	);
+	const handleCerrarModales = useCallback(() => {
+		setMostrarModalCrear(false);
+		setMostrarModalEditar(false);
+		setMostrarModalVer(false);
+		setUsuarioSeleccionado(null);
+	}, []);
+
+	const handleUpdateUsuarios = useCallback(() => {
+		fetchUsuarios();
+	}, [fetchUsuarios]);
 
 	const handleActivarDesactivar = useCallback(
 		async (id, estadoActual) => {
@@ -324,10 +309,6 @@ const Usuarios = () => {
 		},
 		[navigate, setError, actualizarEstadoUsuario]
 	);
-
-	const handleCrearUsuario = useCallback(() => {
-		navigate("/usuario/crear");
-	}, [navigate]);
 
 	const handleSearchChange = useCallback((searchValue) => {
 		setSearch(searchValue);
@@ -441,6 +422,25 @@ const Usuarios = () => {
 						onPaginaChange={(pagina) => setPaginaActual(pagina)}
 					/>
 				)}
+
+				<ModalCrearUsuario
+					show={mostrarModalCrear}
+					handleClose={handleCerrarModales}
+					onUpdate={handleUpdateUsuarios}
+				/>
+
+				<ModalEditarUsuario
+					show={mostrarModalEditar}
+					handleClose={handleCerrarModales}
+					usuarioId={usuarioSeleccionado}
+					onUpdate={handleUpdateUsuarios}
+				/>
+
+				<ModalVerUsuario
+					show={mostrarModalVer}
+					handleClose={handleCerrarModales}
+					usuarioId={usuarioSeleccionado}
+				/>
 			</div>
 		</AdminLayout>
 	);
