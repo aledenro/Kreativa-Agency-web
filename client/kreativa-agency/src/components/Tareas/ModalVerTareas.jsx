@@ -23,7 +23,7 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 	const [api, contextHolder] = notification.useNotification();
 	const user_id = localStorage.getItem("user_id");
 	const [contenido, setContenido] = useState("");
-	const [estadoTarea, setEstadoTarea] = useState(tarea?.estado || "");
+	const [estadoTarea, setEstadoTarea] = useState("");
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -51,9 +51,15 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 
 		if (show && !lodash.isEmpty(tareaModal)) {
 			setTarea(tareaModal);
-			setEstadoTarea(tareaModal.estado);
+			setEstadoTarea(tareaModal.estado || "");
 		}
-	}, [tareaModal, show]);
+	}, [tareaModal, show, navigate]);
+
+	useEffect(() => {
+		if (tarea && tarea.estado) {
+			setEstadoTarea(tarea.estado);
+		}
+	}, [tarea]);
 
 	const showNotification = (type, message) => {
 		api[type]({
@@ -139,10 +145,22 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 
 	const handleEstadoChange = async (e) => {
 		const nuevoEstado = e.target.value;
+
 		setEstadoTarea(nuevoEstado);
 
 		try {
 			const token = localStorage.getItem("token");
+
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Acceso no autorizado.",
+					},
+				});
+				return;
+			}
+
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/estado/${tarea._id}`,
 				{ estado: nuevoEstado },
@@ -151,7 +169,10 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 
 			if (response.status === 200) {
 				showNotification("success", "Estado actualizado correctamente.");
+
 				setTarea(response.data);
+
+				setEstadoTarea(response.data.estado);
 
 				if (onUpdated) {
 					onUpdated();
@@ -159,6 +180,20 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 			}
 		} catch (error) {
 			console.error("Error al cambiar estado:", error);
+
+			setEstadoTarea(tarea.estado);
+
+			if (error.response?.status === 401) {
+				localStorage.clear();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+
 			showNotification("error", "No se pudo actualizar el estado.");
 		}
 	};
