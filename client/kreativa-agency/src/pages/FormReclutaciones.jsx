@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
+import axios from "axios";
 import fileUpload from "../utils/fileUpload";
 import sendEmailExterno from "../utils/sendEmailExterno";
 import { useFormStatus } from "../context/FormStatusContext";
@@ -20,6 +21,7 @@ const FormReclutaciones = () => {
 	const [loading, setLoading] = useState(false);
 	const [api, contextHolder] = notification.useNotification();
 	const [isHovered, setIsHovered] = useState(false);
+	const [draggerKey, setDraggerKey] = useState(0);
 
 	const { formActive, checkingStatus } = useFormStatus();
 
@@ -44,7 +46,6 @@ const FormReclutaciones = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setLoading(true);
 
 		const { nombre, apellido, correo, telefono } = formData;
 
@@ -59,9 +60,28 @@ const FormReclutaciones = () => {
 				"error",
 				"Debes completar todos los campos y adjuntar un CV."
 			);
-			setLoading(false);
 			return;
 		}
+
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(correo)) {
+			showNotification(
+				"error",
+				"Por favor ingresa un correo electrónico válido."
+			);
+			return;
+		}
+
+		const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+		if (!phoneRegex.test(telefono)) {
+			showNotification(
+				"error",
+				"El teléfono solo debe contener números, espacios y los símbolos + - ( )"
+			);
+			return;
+		}
+
+		setLoading(true);
 
 		try {
 			const response = await axios.post(
@@ -94,8 +114,7 @@ const FormReclutaciones = () => {
 					await axios.delete(
 						`${import.meta.env.VITE_API_URL}/reclutaciones/${reclutacionId}`
 					);
-					setLoading(false);
-					return;
+					throw error;
 				}
 			}
 
@@ -109,6 +128,7 @@ const FormReclutaciones = () => {
 				cv: [],
 			});
 			setFiles([]);
+			setDraggerKey((prev) => prev + 1);
 
 			if (response.status === 201) {
 				await sendEmailExterno(
@@ -175,7 +195,7 @@ const FormReclutaciones = () => {
 							</p>
 						</div>
 
-						<Form onSubmit={handleSubmit} className="contacto_form">
+						<Form onSubmit={handleSubmit} className="contacto_form" noValidate>
 							<div className="row">
 								<div className="col">
 									<label className="form-label" htmlFor="nombre">
@@ -188,7 +208,6 @@ const FormReclutaciones = () => {
 										onChange={handleChange}
 										aria-label="Nombre"
 										className="form_input"
-										required
 									/>
 								</div>
 								<div className="col">
@@ -201,7 +220,6 @@ const FormReclutaciones = () => {
 										name="apellido"
 										value={formData.apellido}
 										onChange={handleChange}
-										required
 									/>
 								</div>
 							</div>
@@ -213,22 +231,20 @@ const FormReclutaciones = () => {
 									</label>
 									<input
 										className="form_input"
-										type="email"
+										type="text"
 										name="correo"
 										value={formData.correo}
 										onChange={handleChange}
-										required
 									/>
 									<label className="form-label">
 										Teléfono <span className="text-danger">*</span>
 									</label>
 									<input
 										className="form_input"
-										type="tel"
+										type="text"
 										name="telefono"
 										value={formData.telefono}
 										onChange={handleChange}
-										required
 									/>
 								</div>
 							</div>
@@ -250,6 +266,7 @@ const FormReclutaciones = () => {
 										}}
 									>
 										<Dragger
+											key={draggerKey}
 											name="file"
 											multiple={false}
 											action="#"
