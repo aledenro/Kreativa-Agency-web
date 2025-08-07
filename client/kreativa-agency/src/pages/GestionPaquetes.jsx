@@ -60,12 +60,17 @@ const GestionPaquetes = () => {
 
 			try {
 				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/servicios`,
+					`${import.meta.env.VITE_API_URL}/servicios/con-paquetes`,
 					{
 						headers: { Authorization: `Bearer ${token}` },
 					}
 				);
-				setServicios(response.data);
+
+				if (Array.isArray(response.data)) {
+					setServicios(response.data);
+				} else {
+					setServicios([]);
+				}
 			} catch (err) {
 				if (err.status === 401) {
 					navigate("/error", {
@@ -78,6 +83,7 @@ const GestionPaquetes = () => {
 				}
 				setError("Error al cargar los servicios");
 				openErrorNotification("No se pudieron cargar los servicios.");
+				setServicios([]);
 			} finally {
 				setLoading(false);
 			}

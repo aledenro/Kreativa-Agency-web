@@ -374,6 +374,25 @@ class ServiciosService {
 			throw new Error("No se pudieron obtener los servicios: " + error.message);
 		}
 	}
+
+	async getServiciosConPaquetes() {
+		try {
+			const servicios = await Servicios.find(
+				{},
+				{
+					nombre: 1,
+					activo: 1,
+					paquetes: 1,
+				}
+			).lean();
+
+			return servicios;
+		} catch (error) {
+			throw new Error(
+				"No se pudieron obtener los servicios con paquetes: " + error.message
+			);
+		}
+	}
 }
 
 module.exports = new ServiciosService();
