@@ -14,7 +14,12 @@ router.post(
 router.get("/", ServiciosController.getServicios);
 router.get("/nombres", ServiciosController.getServiciosNombres);
 router.post("/agregar", verificarToken, ServiciosController.agregarServicio);
-router.get("/listado", ServiciosController.getServiciosListado);
+router.get("/listado", verificarToken, ServiciosController.getServiciosListado);
+router.get(
+	"/con-paquetes",
+	verificarToken,
+	ServiciosController.getServiciosConPaquetes
+);
 router.get("/:id", ServiciosController.getServicioById);
 router.put(
 	"/modificar/:id",
@@ -48,7 +53,5 @@ router.put(
 	verificarToken,
 	ServiciosController.desactivarServicio
 );
-
-router.get("/listado", ServiciosController.getServiciosListado);
 
 module.exports = router;

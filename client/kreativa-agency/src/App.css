@@ -582,6 +582,15 @@ h3 {
 	color: var(--kreativa-secondary);
 }
 
+.dropdown-toggle.thm-btn:not(:disabled):not(.disabled).active,
+.dropdown-toggle.thm-btn:not(:disabled):not(.disabled):active,
+.show > .dropdown-toggle.thm-btn.dropdown-toggle {
+	color: var(--kreativa-base) !important;
+	background-color: white !important;
+	border-color: var(--kreativa-base) !important;
+	box-shadow: none !important;
+}
+
 .login-button {
 	background-color: var(--kreativa-base);
 	color: var(--kreativa-white);

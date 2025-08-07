@@ -35,7 +35,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		api[type]({
 			message: type === "success" ? "Éxito" : "Error",
 			description: message,
-			placement: "bottomRight",
+			placement: "top",
 			duration: 3,
 		});
 	};

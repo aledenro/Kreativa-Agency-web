@@ -188,6 +188,18 @@ class ServiciosController {
 			});
 		}
 	}
+
+	async getServiciosConPaquetes(req, res) {
+		try {
+			const servicios = await ServiciosService.getServiciosConPaquetes();
+			res.status(200).json(servicios);
+		} catch (error) {
+			res.status(500).json({
+				mensaje: "Error al obtener servicios con paquetes",
+				error: error.message,
+			});
+		}
+	}
 }
 
 module.exports = new ServiciosController();

@@ -22,22 +22,12 @@ const FormContacto = () => {
 
 	const [servicios, setServicios] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [emailError, setEmailError] = useState("");
 
 	const [api, contextHolder] = notification.useNotification();
 
-	const openSuccessNotification = (message) => {
-		api.success({
-			message: "Éxito",
-			description: message,
-			placement: "bottomRight",
-			duration: 4,
-		});
-	};
-
-	const openErrorNotification = (message) => {
-		api.error({
-			message: "Error",
+	const showNotification = (type, message) => {
+		api[type]({
+			message: type === "success" ? "Éxito" : "Error",
 			description: message,
 			placement: "bottomRight",
 			duration: 4,
@@ -61,7 +51,7 @@ const FormContacto = () => {
 				}
 			} catch (err) {
 				console.error("Error al cargar los servicios:", err);
-				openErrorNotification("No se pudieron cargar los servicios.");
+				showNotification("error", "No se pudieron cargar los servicios.");
 			}
 		};
 
@@ -70,16 +60,6 @@ const FormContacto = () => {
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-
-		if (name === "correo") {
-			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			if (!emailRegex.test(value) && value !== "") {
-				setEmailError("Por favor ingrese un correo electrónico válido");
-			} else {
-				setEmailError("");
-			}
-		}
-
 		setFormData({
 			...formData,
 			[name]: value,
@@ -136,18 +116,68 @@ const FormContacto = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		if (emailError) {
+		const {
+			nombre,
+			apellido,
+			correo,
+			telefono,
+			nombre_negocio,
+			dedicacion_negocio,
+			objetivos,
+			servicios_id,
+		} = formData;
+
+		if (
+			!nombre.trim() ||
+			!apellido.trim() ||
+			!correo.trim() ||
+			!telefono.trim() ||
+			!nombre_negocio.trim() ||
+			!dedicacion_negocio.trim() ||
+			!objetivos.trim() ||
+			servicios_id.length === 0
+		) {
+			showNotification(
+				"error",
+				"Debes completar todos los campos obligatorios y seleccionar al menos un servicio."
+			);
+			return;
+		}
+
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(correo)) {
+			showNotification(
+				"error",
+				"Por favor ingresa un correo electrónico válido."
+			);
+			return;
+		}
+
+		const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+		if (!phoneRegex.test(telefono)) {
+			showNotification(
+				"error",
+				"El teléfono solo debe contener números, espacios y los símbolos + - ( )"
+			);
 			return;
 		}
 
 		setLoading(true);
 
 		try {
+			const formDataToSend = {
+				...formData,
+				redes_sociales: formData.redes_sociales.filter(
+					(red) => red.trim() !== ""
+				),
+			};
+
 			const response = await axios.post(
 				`${import.meta.env.VITE_API_URL}/contacto`,
-				formData
+				formDataToSend
 			);
-			openSuccessNotification("Formulario enviado exitosamente");
+			showNotification("success", "Formulario enviado exitosamente");
+
 			setFormData({
 				nombre: "",
 				apellido: "",
@@ -161,7 +191,7 @@ const FormContacto = () => {
 				servicios_id: [],
 			});
 
-			if (response.status == 201) {
+			if (response.status === 201) {
 				await sendEmailExterno(
 					formData.correo,
 					"Tu mensaje ha sido enviado. Pronto un miembro del equipo de Kreativa se pondrá en contacto.",
@@ -170,7 +200,8 @@ const FormContacto = () => {
 			}
 		} catch (error) {
 			console.error("Error al enviar el formulario:", error);
-			openErrorNotification(
+			showNotification(
+				"error",
 				"Hubo un error al enviar el formulario. Inténtalo de nuevo."
 			);
 		} finally {
@@ -180,7 +211,7 @@ const FormContacto = () => {
 
 	return (
 		<div style={{ position: "relative" }}>
-			{contextHolder}{" "}
+			{contextHolder}
 			<img
 				src="/src/assets/img/40.svg"
 				alt="decoración"
@@ -203,7 +234,7 @@ const FormContacto = () => {
 							</p>
 						</div>
 
-						<Form onSubmit={handleSubmit} className="contacto_form">
+						<Form onSubmit={handleSubmit} className="contacto_form" noValidate>
 							<div className="row">
 								<div className="col">
 									<label className="form-label" htmlFor="nombre">
@@ -214,7 +245,6 @@ const FormContacto = () => {
 										name="nombre"
 										value={formData.nombre}
 										onChange={handleChange}
-										required
 										aria-label="Nombre"
 										className="form_input"
 									/>
@@ -229,7 +259,6 @@ const FormContacto = () => {
 										name="apellido"
 										value={formData.apellido}
 										onChange={handleChange}
-										required
 									/>
 								</div>
 							</div>
@@ -240,16 +269,12 @@ const FormContacto = () => {
 										Correo Electrónico <span className="text-danger">*</span>
 									</label>
 									<input
-										className={`form_input ${emailError ? "is-invalid" : ""}`}
-										type="email"
+										className="form_input"
+										type="text"
 										name="correo"
 										value={formData.correo}
 										onChange={handleChange}
-										required
 									/>
-									{emailError && (
-										<div className="invalid-feedback">{emailError}</div>
-									)}
 								</div>
 								<div className="col">
 									<label className="form-label">
@@ -257,11 +282,10 @@ const FormContacto = () => {
 									</label>
 									<input
 										className="form_input"
-										type="tel"
+										type="text"
 										name="telefono"
 										value={formData.telefono}
 										onChange={handleChange}
-										required
 									/>
 								</div>
 							</div>
@@ -277,7 +301,6 @@ const FormContacto = () => {
 										name="nombre_negocio"
 										value={formData.nombre_negocio}
 										onChange={handleChange}
-										required
 									/>
 								</div>
 							</div>
@@ -294,7 +317,6 @@ const FormContacto = () => {
 										name="dedicacion_negocio"
 										value={formData.dedicacion_negocio}
 										onChange={handleChange}
-										required
 									/>
 								</div>
 							</div>
@@ -350,7 +372,6 @@ const FormContacto = () => {
 										name="objetivos"
 										value={formData.objetivos}
 										onChange={handleChange}
-										required
 									/>
 								</div>
 							</div>
@@ -389,7 +410,7 @@ const FormContacto = () => {
 									className="thm-btn form-btn"
 									variant="primary"
 									type="submit"
-									disabled={loading || emailError}
+									disabled={loading}
 								>
 									{loading ? (
 										<Spinner animation="border" size="sm" />

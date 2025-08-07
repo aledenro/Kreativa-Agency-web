@@ -34,7 +34,7 @@ const ModificarServicio = () => {
         api.success({
             message: "Éxito",
             description: message,
-            placement: "bottomRight",
+            placement: "top",
             duration: 4,
         });
     };
@@ -43,7 +43,7 @@ const ModificarServicio = () => {
         api.error({
             message: "Error",
             description: message,
-            placement: "bottomRight",
+            placement: "top",
             duration: 4,
         });
     };
