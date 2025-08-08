@@ -141,7 +141,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
 			} catch (error) {
-				console.error("Error al obtener proyecto:", error);
+				console.error("Error al obtener proyecto");
 			}
 		}
 
@@ -286,10 +286,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 						`tareas`
 					);
 				} catch (emailError) {
-					console.error(
-						"Error al enviar email sobre cambio de estado:",
-						emailError
-					);
+					console.error("Error al enviar email");
 				}
 
 				if (typeof onUpdate === "function") {
@@ -421,10 +418,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 								"tareas"
 							);
 						} catch (emailError) {
-							console.error(
-								"Error al enviar email al colaborador anterior:",
-								emailError
-							);
+							console.error("Error al enviar email");
 						}
 
 						try {
@@ -438,10 +432,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 								"tareas"
 							);
 						} catch (emailError) {
-							console.error(
-								"Error al enviar email al nuevo colaborador:",
-								emailError
-							);
+							console.error("Error al enviar email");
 						}
 					} else {
 						try {
@@ -455,14 +446,11 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 								"tareas"
 							);
 						} catch (emailError) {
-							console.error(
-								"Error al enviar email de actualización:",
-								emailError
-							);
+							console.error("Error al enviar email");
 						}
 					}
 				} catch (emailError) {
-					console.error("Error general al enviar emails:", emailError);
+					console.error("Error al enviar email");
 				}
 
 				if (typeof onUpdate === "function") {

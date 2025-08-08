@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import validTokenActive from "../../utils/validateToken";
+import sendEmail from "../../utils/emailSender";
 
 function construirJsonRequest(
 	nombre,
@@ -128,19 +129,70 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
-			if (res.status == 201) {
-				openSuccessNotification("Proyecto creado correctamente.");
-
+			if (res.status === 201 || res.status === 200) {
 				if (formRef.current) {
 					formRef.current.reset();
 				}
 
-				if (typeof onUpdate === "function") {
-					onUpdate();
+				openSuccessNotification("Proyecto creado correctamente.");
+
+				try {
+					const fechaEntregaFormatted = new Date(
+						fechaEntrega
+					).toLocaleDateString("es-ES");
+					const prioridadTexto = urgente ? "URGENTE" : "Normal";
+
+					try {
+						const emailBodyCliente = `Su proyecto "${nombre}" ha sido creado exitosamente con fecha de entrega al ${fechaEntregaFormatted}. Por favor, acceda al sistema para revisar todos los detalles y seguir el progreso.`;
+
+						await sendEmail(
+							cliente,
+							emailBodyCliente,
+							`Nuevo Proyecto Creado: ${nombre}`,
+							"Ver",
+							`dashboard`
+						);
+					} catch (emailError) {
+						console.error("Error al enviar email");
+					}
+
+					for (const colaboradorId of colab) {
+						try {
+							const emailBodyColaborador = `Ha sido asignado al nuevo proyecto "${nombre}" con fecha de entrega al ${fechaEntregaFormatted}. Por favor, acceda al sistema para revisar todos los detalles del proyecto.`;
+
+							await sendEmail(
+								colaboradorId,
+								emailBodyColaborador,
+								`Nuevo Proyecto Asignado: ${nombre}`,
+								"Ver",
+								`dashboard`
+							);
+						} catch (emailError) {
+							console.error(`Error al enviar email`);
+						}
+					}
+				} catch (emailError) {
+					console.error("Error general al enviar");
 				}
+
+				setTimeout(() => {
+					if (typeof onUpdate === "function") {
+						onUpdate();
+					}
+
+					setTimeout(() => {
+						handleClose();
+					});
+				}, 1000);
+			} else {
+				openErrorNotification(
+					"Error inesperado al crear el proyecto. Status: " + res.status
+				);
 			}
 		} catch (error) {
-			if (error.status === 401) {
+			console.error("Error al crear proyecto");
+
+			if (error.response?.status === 401) {
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -148,7 +200,6 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 						mensaje: "Debe volver a iniciar sesión para continuar.",
 					},
 				});
-
 				return;
 			}
 
@@ -157,7 +208,6 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			);
 		}
 	};
-
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 

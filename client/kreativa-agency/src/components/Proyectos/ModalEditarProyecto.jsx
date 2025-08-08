@@ -201,7 +201,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 								"dashboard"
 							);
 						} catch (emailError) {
-							console.error(`Error al enviar email`, emailError);
+							console.error(`Error al enviar email`);
 						}
 					}
 
@@ -242,20 +242,23 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 									"dashboard"
 								);
 							} catch (emailError) {
-								console.error(
-									`Error al enviar email de actualización al colaborador ${colaboradorId}:`,
-									emailError
-								);
+								console.error("Error al enviar email");
 							}
 						}
 					}
 				} catch (emailError) {
-					console.error("Error general al enviar emails");
+					console.error("Error al enviar email");
 				}
 
-				if (typeof onUpdate === "function") {
-					onUpdate();
-				}
+				setTimeout(() => {
+					if (typeof onUpdate === "function") {
+						onUpdate();
+					}
+
+					setTimeout(() => {
+						handleClose();
+					});
+				}, 1000);
 			}
 		} catch (error) {
 			if (error.status === 401) {
@@ -274,6 +277,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			);
 		}
 	};
+
 	const handleChangeEstado = async (event) => {
 		event.preventDefault();
 		const estadoEdit = event.target.value;
@@ -301,9 +305,15 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				setEstado(estadoEdit);
 				await addActionLog(`Cambió el estado del proyecto a: ${estadoEdit}.`);
 
-				if (typeof onUpdate === "function") {
-					onUpdate();
-				}
+				setTimeout(() => {
+					if (typeof onUpdate === "function") {
+						onUpdate();
+					}
+
+					setTimeout(() => {
+						handleClose();
+					});
+				}, 1000);
 
 				try {
 					const clienteId =
@@ -329,14 +339,9 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 								`dashboard`
 							);
 						}
-					} else {
-						console.error("ID de cliente no válido:", proyecto.cliente_id);
 					}
 				} catch (emailError) {
-					console.error(
-						"Error al enviar email al cliente sobre cambio de estado:",
-						emailError
-					);
+					console.error("Error al enviar email");
 				}
 
 				try {
@@ -390,10 +395,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 						}
 					}
 				} catch (emailError) {
-					console.error(
-						"Error general al enviar emails a colaboradores sobre cambio de estado:",
-						emailError
-					);
+					console.error("Error general al enviar email");
 				}
 			}
 		} catch (error) {

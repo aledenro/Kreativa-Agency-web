@@ -266,7 +266,7 @@ const ModalAgregarTarea = ({
 						`tareas`
 					);
 				} catch (emailError) {
-					console.error("Error al enviar email:", emailError);
+					console.error("Error al enviar email");
 				}
 
 				if (typeof onUpdate === "function") {
@@ -315,7 +315,7 @@ const ModalAgregarTarea = ({
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
 			} catch (error) {
-				console.error("Error al obtener proyecto:", error);
+				console.error("Error al obtener proyecto");
 				if (error.response?.status === 401) {
 					handleUnauthorized();
 					return;
@@ -459,7 +459,7 @@ const ModalAgregarTarea = ({
 
 			setEmpleados(response.data);
 		} catch (error) {
-			console.error(`Error al obtener los empleados: ${error.message}`);
+			console.error(`Error al obtener los empleados`);
 			if (error.response?.status === 401) {
 				handleUnauthorized();
 				return;
@@ -504,7 +504,7 @@ const ModalAgregarTarea = ({
 				}));
 			}
 		} catch (error) {
-			console.error(`Error al obtener los proyectos: ${error.message}`);
+			console.error(`Error al obtener los proyectos`);
 			if (error.response?.status === 401) {
 				handleUnauthorized();
 				return;
