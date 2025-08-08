@@ -179,7 +179,6 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				console.log("subidos");
 			}
 
-			// Limpieza
 			event.target.reset();
 			setFiles([]);
 			clearDragger();
@@ -217,7 +216,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 						`El cliente ha enviado una respuesta/feedback sobre el proyecto, ingrese para ver los detalles.`,
 						`Actualización en el proyecto ${proyecto.nombre}`,
 						"Ver",
-						"test"
+						"dashboard"
 					);
 				});
 			} else {
@@ -226,7 +225,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 					`Un colaborador de Kreativa Agency ha respondido a su proyecto, ingrese para ver los detalles.`,
 					`Actualización en su proyecto ${proyecto.nombre}`,
 					"Ver",
-					"test"
+					"dashboard"
 				);
 			}
 		} catch (error) {

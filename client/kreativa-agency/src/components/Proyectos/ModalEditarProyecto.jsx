@@ -170,6 +170,89 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				openSuccessNotification("Proyecto editado correctamente.");
 				await addActionLog("Editó el proyecto.");
 
+				const colaboradoresOriginales = proyecto.colaboradores.map((colab) =>
+					typeof colab.colaborador_id === "object"
+						? colab.colaborador_id._id
+						: colab.colaborador_id
+				);
+				const colaboradoresNuevos = colab;
+
+				const colaboradoresRemovidos = colaboradoresOriginales.filter(
+					(original) => !colaboradoresNuevos.includes(original)
+				);
+				const colaboradoresAgregados = colaboradoresNuevos.filter(
+					(nuevo) => !colaboradoresOriginales.includes(nuevo)
+				);
+
+				try {
+					const fechaEntregaFormatted = new Date(
+						fechaEntrega
+					).toLocaleDateString("es-ES");
+
+					for (const colaboradorId of colaboradoresRemovidos) {
+						try {
+							const emailBodyRemovido = `Ha sido removido del proyecto "${nombre}". Ya no tiene asignado este proyecto. Por favor, acceda al sistema para revisar sus proyectos actuales.`;
+
+							await sendEmail(
+								colaboradorId,
+								emailBodyRemovido,
+								"Removido del Proyecto",
+								"Acceder al Sistema",
+								"dashboard"
+							);
+						} catch (emailError) {
+							console.error(`Error al enviar email`, emailError);
+						}
+					}
+
+					for (const colaboradorId of colaboradoresAgregados) {
+						try {
+							const emailBodyAgregado = `Ha sido asignado al proyecto "${nombre}" con fecha de entrega al ${fechaEntregaFormatted}. Por favor, acceda al sistema para revisar todos los detalles del proyecto.`;
+
+							await sendEmail(
+								colaboradorId,
+								emailBodyAgregado,
+								"Nuevo Proyecto Asignado",
+								"Acceder al Sistema",
+								"dashboard"
+							);
+						} catch (emailError) {
+							console.error(`Error al enviar email`);
+						}
+					}
+
+					const colaboradoresQuePerManecen = colaboradoresNuevos.filter(
+						(nuevo) => colaboradoresOriginales.includes(nuevo)
+					);
+
+					if (
+						colaboradoresQuePerManecen.length > 0 &&
+						colaboradoresRemovidos.length === 0 &&
+						colaboradoresAgregados.length === 0
+					) {
+						for (const colaboradorId of colaboradoresQuePerManecen) {
+							try {
+								const emailBodyActualizado = `El proyecto "${nombre}" en el que está trabajando ha sido actualizado. Por favor, acceda al sistema para revisar los cambios realizados.`;
+
+								await sendEmail(
+									colaboradorId,
+									emailBodyActualizado,
+									"Proyecto Actualizado",
+									"Acceder al Sistema",
+									"dashboard"
+								);
+							} catch (emailError) {
+								console.error(
+									`Error al enviar email de actualización al colaborador ${colaboradorId}:`,
+									emailError
+								);
+							}
+						}
+					}
+				} catch (emailError) {
+					console.error("Error general al enviar emails");
+				}
+
 				if (typeof onUpdate === "function") {
 					onUpdate();
 				}
@@ -191,7 +274,6 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			);
 		}
 	};
-
 	const handleChangeEstado = async (event) => {
 		event.preventDefault();
 		const estadoEdit = event.target.value;
@@ -223,21 +305,94 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 					onUpdate();
 				}
 
-				if (estadoEdit !== "Finalizado") {
-					await sendEmail(
-						proyecto.cliente_id,
-						`El estado de su proyecto ha sido actualizado a ${estadoEdit}.`,
-						`Actualización en su proyecto ${proyecto.nombre}`,
-						"Ver",
-						"test"
+				try {
+					const clienteId =
+						typeof proyecto.cliente_id === "object"
+							? proyecto.cliente_id._id
+							: proyecto.cliente_id;
+
+					if (clienteId) {
+						if (estadoEdit !== "Finalizado") {
+							await sendEmail(
+								clienteId,
+								`El estado de su proyecto ha sido actualizado a ${estadoEdit}.`,
+								`Actualización en su proyecto ${proyecto.nombre}`,
+								"Ver",
+								`dashboard`
+							);
+						} else {
+							await sendEmail(
+								clienteId,
+								`El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingrese para ver más detalles.`,
+								`Actualización en su proyecto ${proyecto.nombre}`,
+								"Ver",
+								`dashboard`
+							);
+						}
+					} else {
+						console.error("ID de cliente no válido:", proyecto.cliente_id);
+					}
+				} catch (emailError) {
+					console.error(
+						"Error al enviar email al cliente sobre cambio de estado:",
+						emailError
 					);
-				} else {
-					await sendEmail(
-						proyecto.cliente_id,
-						`El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingrese para ver más detalles.`,
-						`Actualización en su proyecto ${proyecto.nombre}`,
-						"Ver",
-						"test"
+				}
+
+				try {
+					if (proyecto.colaboradores && proyecto.colaboradores.length > 0) {
+						for (const colaborador of proyecto.colaboradores) {
+							try {
+								const colaboradorId =
+									typeof colaborador.colaborador_id === "object"
+										? colaborador.colaborador_id._id
+										: colaborador.colaborador_id;
+
+								let emailBody;
+								let emailSubject;
+								switch (estadoEdit) {
+									case "Finalizado":
+										emailBody = `El proyecto "${proyecto.nombre}" ha sido marcado como Finalizado. Por favor, acceda al sistema para revisar los detalles finales del proyecto.`;
+										emailSubject = "Proyecto Finalizado";
+										break;
+									case "Cancelado":
+										emailBody = `El proyecto "${proyecto.nombre}" ha sido cancelado. Por favor, acceda al sistema para revisar la información actualizada.`;
+										emailSubject = "Proyecto Cancelado";
+										break;
+									case "En Revisión":
+										emailBody = `El proyecto "${proyecto.nombre}" está ahora en revisión. Por favor, acceda al sistema para revisar los comentarios y realizar los ajustes necesarios.`;
+										emailSubject = "Proyecto en Revisión";
+										break;
+									case "En Progreso":
+										emailBody = `El proyecto "${proyecto.nombre}" está ahora en progreso. Por favor, acceda al sistema para continuar con las tareas asignadas.`;
+										emailSubject = "Proyecto en Progreso";
+										break;
+									case "Por Hacer":
+										emailBody = `El proyecto "${proyecto.nombre}" ha cambiado su estado a "Por Hacer". Por favor, acceda al sistema para revisar la información actualizada.`;
+										emailSubject = "Estado de Proyecto Actualizado";
+										break;
+									default:
+										emailBody = `El estado del proyecto "${proyecto.nombre}" ha sido actualizado a ${estadoEdit}. Por favor, acceda al sistema para revisar los cambios.`;
+										emailSubject = "Estado de Proyecto Actualizado";
+										break;
+								}
+
+								await sendEmail(
+									colaboradorId,
+									emailBody,
+									emailSubject,
+									"Acceder al Sistema",
+									"dashboard"
+								);
+							} catch (emailError) {
+								console.error(`Error al enviar email`);
+							}
+						}
+					}
+				} catch (emailError) {
+					console.error(
+						"Error general al enviar emails a colaboradores sobre cambio de estado:",
+						emailError
 					);
 				}
 			}
@@ -250,7 +405,6 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 						mensaje: "Debe volver a iniciar sesión para continuar.",
 					},
 				});
-
 				return;
 			}
 			openErrorNotification("Error al cambiar el estado del proyecto.");
