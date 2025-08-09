@@ -157,6 +157,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 					mensaje: "Acceso no autorizado.",
 				},
 			});
+			setLoading(false);
 			return;
 		}
 
@@ -184,8 +185,56 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			clearDragger();
 			showNotification("success", "Respuesta enviada correctamente.");
 			fetchProyecto();
+
+			try {
+				const tipoUsuario = localStorage.getItem("tipo_usuario");
+
+				if (tipoUsuario === "Cliente") {
+					for (const colab of proyecto.colaboradores) {
+						try {
+							const colaboradorId =
+								typeof colab.colaborador_id === "object"
+									? colab.colaborador_id._id
+									: colab.colaborador_id;
+
+							if (colaboradorId) {
+								await sendEmail(
+									colaboradorId,
+									`El cliente ha enviado una respuesta/feedback sobre el proyecto "${proyecto.nombre}". Por favor, acceda al sistema para ver los detalles.`,
+									`Nueva Respuesta del Cliente - ${proyecto.nombre}`,
+									"Ver",
+									`dashboard`
+								);
+							}
+						} catch (emailError) {
+							console.error(`Error al enviar email`);
+						}
+					}
+				} else {
+					try {
+						const clienteId =
+							typeof proyecto.cliente_id === "object"
+								? proyecto.cliente_id._id
+								: proyecto.cliente_id;
+
+						if (clienteId) {
+							await sendEmail(
+								clienteId,
+								`Un colaborador de Kreativa Agency ha respondido a su proyecto "${proyecto.nombre}". Por favor, acceda al sistema para ver los detalles.`,
+								`Nueva Respuesta de Kreativa - ${proyecto.nombre}`,
+								"Ver",
+								`dashboard`
+							);
+						}
+					} catch (emailError) {
+						console.error("Error al enviar email");
+					}
+				}
+			} catch (emailError) {
+				console.error("Error al enviar el email");
+			}
 		} catch (error) {
-			if (error.status === 401) {
+			if (error.response?.status === 401) {
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -193,7 +242,6 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 						mensaje: "Debe volver a iniciar sesión para continuar.",
 					},
 				});
-
 				return;
 			}
 			console.error(`Error al enviar la respuesta`);
@@ -201,51 +249,8 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				"error",
 				"Error al enviar la respuesta, por favor intente de nuevo o contacte al soporte técnico."
 			);
-			return;
 		} finally {
 			setLoading(false);
-		}
-
-		try {
-			const tipoUsuario = localStorage.getItem("tipo_usuario");
-
-			if (tipoUsuario === "Cliente") {
-				proyecto.colaboradores.forEach(async (colab) => {
-					await sendEmail(
-						colab.colaborador_id._id,
-						`El cliente ha enviado una respuesta/feedback sobre el proyecto, ingrese para ver los detalles.`,
-						`Actualización en el proyecto ${proyecto.nombre}`,
-						"Ver",
-						"dashboard"
-					);
-				});
-			} else {
-				await sendEmail(
-					proyecto.cliente_id,
-					`Un colaborador de Kreativa Agency ha respondido a su proyecto, ingrese para ver los detalles.`,
-					`Actualización en su proyecto ${proyecto.nombre}`,
-					"Ver",
-					"dashboard"
-				);
-			}
-		} catch (error) {
-			if (error.status === 401) {
-				localStorage.clear();
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe volver a iniciar sesión para continuar.",
-					},
-				});
-
-				return;
-			}
-			console.error(`Error al enviar la notificacion`);
-			showNotification(
-				"error",
-				"Error al enviar la notificación, por favor intente de nuevo o contacte al soporte técnico."
-			);
-			return;
 		}
 	}
 
@@ -258,7 +263,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
 			await fileUpload(files, "proyectos", proyecto._id, respuestaDbId);
 		} catch (error) {
-			console.error(`Error al subir los archivos: ${error.message}`);
+			console.error(`Error al subir los archivos`);
 			showNotification(
 				"error",
 				"Error al subir los archivos, por favor intente de nuevo o contacte al soporte técnico."
