@@ -10,10 +10,18 @@ const SessionsModel = new mongoose.Schema({
         type: Boolean,
         required: true
     },
+    token: {
+        type: String,
+        required: true
+    },
     fecha: {
         type: Date,
         required: true,
         default: Date.now(),
+    },
+    motivoFinalizacion: {
+        type: String,
+        required: false
     }
 }, {collection: "sessions"})
 

@@ -28,6 +28,26 @@ const Login = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const addSession = async(token) =>{
+         try {
+            await axios.post(
+                `${import.meta.env.VITE_API_URL}/sessions`,
+                {   username: formData.usuario,
+                    token: token
+                }
+            );
+
+        }catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    "Error al iniciar sesión.",
+                confirmButtonColor: " #ff0072",
+            });
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -38,6 +58,8 @@ const Login = () => {
             );
             const { token } = response.data;
             if (!token) return;
+
+            await addSession(token)
 
             localStorage.setItem("token", token);
             const decodedToken = jwtDecode(token);

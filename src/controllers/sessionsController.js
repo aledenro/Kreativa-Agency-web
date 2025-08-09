@@ -1,13 +1,38 @@
 const SessionsService = require("../services/sessionsService")
+const lodash = require("lodash")
+const {verificarUsuarioExistente} = require("../services/usuarioService")
 
 class SessionsController {
     async addSession(req, res){
         try {
             const data = req.body
 
-            const session = await SessionsService.addSession(data)
+            if(!data || lodash.isEmpty(data) || !data.username || !data.token){
+                 return res.sendStatus(400)
+            }
 
-            return res.sendStatus(201)
+            const user = await verificarUsuarioExistente(data.username)
+
+            console.log(data.username)
+            console.log(user)
+
+            if (!user || lodash.isEmpty(user)){
+                return res.sendStatus(404)
+            }
+
+            const sessionData = {
+                user: user._id,
+                estado: true,
+                token: data.token,
+                fecha: Date.now(),
+                motivoFinalizacion: ""
+            }
+
+            const session = await SessionsService.addSession(sessionData)
+
+            if(session && !lodash.isEmpty(session)){
+                return res.sendStatus(201)
+            }
         } catch (error) {
             return res.sendStatus(500)
         }
