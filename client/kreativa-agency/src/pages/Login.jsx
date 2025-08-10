@@ -138,6 +138,7 @@ const Login = () => {
             });
             localStorage.setItem("tipo_usuario", decodedToken.tipo_usuario);
             localStorage.setItem("user_id", decodedToken.id);
+            localStorage.setItem("user_name", formData.usuario)
 
             Swal.fire({
                 icon: "success",
