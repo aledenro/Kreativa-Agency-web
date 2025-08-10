@@ -45,6 +45,7 @@ const Login = () => {
                     "Error al iniciar sesión.",
                 confirmButtonColor: " #ff0072",
             });
+            throw new Error("Error al crear la sesion.")
         }
     }
 
@@ -63,6 +64,30 @@ const Login = () => {
                     "Error al iniciar sesión.",
                 confirmButtonColor: " #ff0072",
             });
+            throw new Error("Error al buscar si existe una sesion.")
+        }
+    }
+
+    const updateSessionStatus = async() => {
+
+            try {
+                const response = await axios.put(
+                    `${import.meta.env.VITE_API_URL}/sessions`,
+                    {   username: formData.usuario,
+                        motivo: "Nueva sesion en otro dispositivo"
+                    }
+            );
+
+        }catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    "Error al iniciar sesión.",
+                confirmButtonColor: " #ff0072",
+            });
+
+            throw new Error("Error al actualizar la sesion.")
         }
     }
 
@@ -71,7 +96,7 @@ const Login = () => {
         setError("");
         try {
 
-            const existingSession = checkForExistingSession()
+            const existingSession =  await checkForExistingSession()
 
             if(existingSession){
                 const result = await Swal.fire({
@@ -87,6 +112,8 @@ const Login = () => {
 
                 if(!result.isConfirmed){
                     return
+                }else if(result.isConfirmed){
+                    await updateSessionStatus()
                 }
             }
 
@@ -94,6 +121,7 @@ const Login = () => {
                 `${import.meta.env.VITE_API_URL}/login`,
                 formData
             );
+
             const { token } = response.data;
             if (!token) return;
 

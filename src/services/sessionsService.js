@@ -14,17 +14,18 @@ class SessionsService{
         }
     }
 
-    async updateSessionStatus(userId){
+    async updateSessionStatus(userId, motivo){
         try {
-            const session = await SessionsModel.find({user: userId, estado: true})
+            const session = await SessionsModel.findOne({user: userId, estado: true})
 
             if(!session || lodash.isEmpty(session)){
                 return {error: "No se encontró una sesión activa"}
             }
 
             session.estado = false
+            session.motivoFinalizacion = motivo
 
-            session.save
+            await session.save()
 
             return {message: "Estado actualizado de manera correcta."}
         } catch (error) {
@@ -38,7 +39,7 @@ class SessionsService{
 
             if(!session || lodash.isEmpty(session)){
                 return false
-            }else{
+            }else if (!lodash.isEmpty(session)){
                 return true
             }
 

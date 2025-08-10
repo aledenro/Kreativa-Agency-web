@@ -36,10 +36,17 @@ class SessionsController {
     }
 
     async updateSessionStatus(req, res){
-        const userId = req.body;
+        const userId = req.body.username;
+        const motivo = req.body.motivo;
 
         try {
-            const sessionRes = await SessionsService.updateSessionStatus(userId)
+            const user = await verificarUsuarioExistente(userId)
+
+            if (!user || lodash.isEmpty(user)){
+                return res.sendStatus(404)
+            }
+
+            const sessionRes = await SessionsService.updateSessionStatus(user._id, motivo)
 
             if(sessionRes.error){
                 return res.status(404).json(sessionRes.error)
