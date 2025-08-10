@@ -293,6 +293,7 @@ const ingresosService = {
 				fecha: ingreso.fecha,
 				monto: ingreso.monto,
 				categoria: ingreso.categoria,
+				nombre_cliente: ingreso.nombre_cliente,
 			}));
 
 			return {
