@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
-import { notification } from "antd";
 import sendEmail from "../../utils/emailSender";
+import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import validTokenActive from "../../utils/validateToken";
 
@@ -178,7 +178,6 @@ const ModalAgregarTarea = ({
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-
 		if (!validateTokenAndRedirect()) {
 			return;
 		}
@@ -248,16 +247,27 @@ const ModalAgregarTarea = ({
 
 			if (res.status === 201) {
 				openSuccessNotification("Tarea creada correctamente.");
-
 				resetForm();
 
-				await sendEmail(
-					colab,
-					"Se le ha asignado una nueva tarea.",
-					"Nueva Asignación de Trabajo",
-					"Ver",
-					"test"
-				);
+				const fechaEntregaFormatted = new Date(
+					fecha_entrega
+				).toLocaleDateString("es-ES");
+				const nombreProyecto =
+					proyectoSeleccionado?.nombre || "Proyecto no especificado";
+
+				const emailBody = `Se le ha asignado una nueva tarea "${nombre}" con los siguientes detalles al proyecto ${nombreProyecto} con fecha de entrega al ${fechaEntregaFormatted}. Por favor, acceda al sistema para revisar todos los detalles.`;
+
+				try {
+					await sendEmail(
+						colab,
+						emailBody,
+						`Nueva Tarea Asignada`,
+						"Acceder al Sistema",
+						`tareas`
+					);
+				} catch (emailError) {
+					console.error("Error al enviar email");
+				}
 
 				if (typeof onUpdate === "function") {
 					onUpdate();
@@ -305,7 +315,7 @@ const ModalAgregarTarea = ({
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
 			} catch (error) {
-				console.error("Error al obtener proyecto:", error);
+				console.error("Error al obtener proyecto");
 				if (error.response?.status === 401) {
 					handleUnauthorized();
 					return;
@@ -449,7 +459,7 @@ const ModalAgregarTarea = ({
 
 			setEmpleados(response.data);
 		} catch (error) {
-			console.error(`Error al obtener los empleados: ${error.message}`);
+			console.error(`Error al obtener los empleados`);
 			if (error.response?.status === 401) {
 				handleUnauthorized();
 				return;
@@ -494,7 +504,7 @@ const ModalAgregarTarea = ({
 				}));
 			}
 		} catch (error) {
-			console.error(`Error al obtener los proyectos: ${error.message}`);
+			console.error(`Error al obtener los proyectos`);
 			if (error.response?.status === 401) {
 				handleUnauthorized();
 				return;

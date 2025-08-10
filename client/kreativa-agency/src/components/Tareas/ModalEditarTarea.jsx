@@ -141,7 +141,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
 			} catch (error) {
-				console.error("Error al obtener proyecto:", error);
+				console.error("Error al obtener proyecto");
 			}
 		}
 
@@ -266,6 +266,29 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				setEstado(estadoEdit);
 				await addActionLog(`Cambió el estado de la tarea a: ${estadoEdit}.`);
 
+				try {
+					const colaboradorId =
+						typeof tarea.colaborador_id === "object"
+							? tarea.colaborador_id._id
+							: tarea.colaborador_id;
+
+					const nombreProyecto =
+						proyectoSeleccionado?.nombre || "Proyecto no especificado";
+					const nombreTarea = tarea?.nombre || "Tarea";
+
+					const emailBody = `El estado de su tarea "${nombreTarea}" del proyecto "${nombreProyecto}" ha sido actualizado a ${estadoEdit}. Por favor, acceda al sistema para revisar los detalles.`;
+
+					await sendEmail(
+						colaboradorId,
+						emailBody,
+						`Estado de Tarea Actualizado`,
+						"Acceder al Sistema",
+						`tareas`
+					);
+				} catch (emailError) {
+					console.error("Error al enviar email");
+				}
+
 				if (typeof onUpdate === "function") {
 					onUpdate();
 				}
@@ -374,14 +397,60 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				openSuccessNotification("Tarea editada correctamente.");
 				await addActionLog("Editó la tarea.");
 
-				if (colaboradorOriginal !== colab) {
-					await sendEmail(
-						colab,
-						"Se le ha asignado una nueva tarea.",
-						"Nueva Asignación de Trabajo",
-						"Ver",
-						"test"
-					);
+				const colaboradorCambio = colaboradorOriginal !== colab;
+
+				try {
+					const nombreProyecto =
+						proyectoSeleccionado?.nombre || "Proyecto no especificado";
+					const fechaEntregaFormatted = new Date(
+						fechaEntrega
+					).toLocaleDateString("es-ES");
+
+					if (colaboradorCambio) {
+						try {
+							const emailBodyAnterior = `La tarea "${nombre}" del proyecto ${nombreProyecto} ya no está asignada a usted. Ha sido reasignada a otro colaborador. Por favor, acceda al sistema para revisar sus tareas actuales.`;
+
+							await sendEmail(
+								colaboradorOriginal,
+								emailBodyAnterior,
+								"Tarea Reasignada",
+								"Acceder al Sistema",
+								"tareas"
+							);
+						} catch (emailError) {
+							console.error("Error al enviar email");
+						}
+
+						try {
+							const emailBodyNuevo = `Se le ha asignado la tarea "${nombre}" del proyecto ${nombreProyecto} con fecha de entrega al ${fechaEntregaFormatted}. Por favor, acceda al sistema para revisar todos los detalles.`;
+
+							await sendEmail(
+								colab,
+								emailBodyNuevo,
+								"Nueva Tarea Asignada",
+								"Acceder al Sistema",
+								"tareas"
+							);
+						} catch (emailError) {
+							console.error("Error al enviar email");
+						}
+					} else {
+						try {
+							const emailBody = `Su tarea ${nombre} del proyecto ${nombreProyecto} ha sido actualizada. Por favor, acceda al sistema para revisar los cambios realizados.`;
+
+							await sendEmail(
+								colab,
+								emailBody,
+								"Tarea Actualizada",
+								"Acceder al Sistema",
+								"tareas"
+							);
+						} catch (emailError) {
+							console.error("Error al enviar email");
+						}
+					}
+				} catch (emailError) {
+					console.error("Error al enviar email");
 				}
 
 				if (typeof onUpdate === "function") {
