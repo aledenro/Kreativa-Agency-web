@@ -82,6 +82,30 @@ class SessionsController {
             
          }
     }
+
+    async updateSessionStatusToken(req, res){
+        const userId = req.body.username;
+        const motivo = req.body.motivo;
+        const token = req.body.token
+
+        try {
+            const user = await verificarUsuarioExistente(userId)
+
+            if (!user || lodash.isEmpty(user)){
+                return res.sendStatus(404)
+            }
+
+            const sessionRes = await SessionsService.updateSessionStatusToken(user._id, motivo, token)
+
+            if(sessionRes.error){
+                return res.status(404).json(sessionRes.error)
+            }
+
+            return res.status(200).json(sessionRes.message)
+        } catch (error) {
+            return res.sendStatus(500)
+        }   
+    }
 }
 
 module.exports = new SessionsController();

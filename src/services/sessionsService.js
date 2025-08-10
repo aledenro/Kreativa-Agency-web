@@ -47,6 +47,25 @@ class SessionsService{
             throw new Error("Error al buscar la sesión.")
         }
     }
+
+    async updateSessionStatusToken(userId, motivo, token){
+        try {
+            const session = await SessionsModel.findOne({user: userId, token: token})
+
+            if(!session || lodash.isEmpty(session)){
+                return {error: "No se encontró una sesión con ese token"}
+            }
+
+            session.estado = false
+            session.motivoFinalizacion = motivo
+
+            await session.save()
+
+            return {message: "Estado actualizado de manera correcta."}
+        } catch (error) {
+            throw new Error("Error al actualizar el estado de la sesión.")
+        }
+    }
 }
 
 module.exports = new SessionsService()
