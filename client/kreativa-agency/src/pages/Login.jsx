@@ -48,10 +48,48 @@ const Login = () => {
         }
     }
 
+    const checkForExistingSession = async() => {
+         try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/sessions/${formData.usuario}`,
+            );
+
+            return response.data.found
+        }catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    "Error al iniciar sesión.",
+                confirmButtonColor: " #ff0072",
+            });
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         try {
+
+            const existingSession = checkForExistingSession()
+
+            if(existingSession){
+                const result = await Swal.fire({
+                                title: `Ya tiene una sesión abierta`,
+                                text: `¿Desea cerrar la otra sesión e iniciar una nueva en este dispositivo?`,
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#ff0072",
+                                cancelButtonColor: "#888",
+                                confirmButtonText: `Sí`,
+                                cancelButtonText: "Cancelar",
+                            });
+
+                if(!result.isConfirmed){
+                    return
+                }
+            }
+
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/login`,
                 formData

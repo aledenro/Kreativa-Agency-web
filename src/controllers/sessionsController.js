@@ -13,9 +13,6 @@ class SessionsController {
 
             const user = await verificarUsuarioExistente(data.username)
 
-            console.log(data.username)
-            console.log(user)
-
             if (!user || lodash.isEmpty(user)){
                 return res.sendStatus(404)
             }
@@ -57,12 +54,25 @@ class SessionsController {
     async getSessionByUserId(req, res){
          const userId = req.params.id;
 
+         if(!userId){
+                 return res.sendStatus(400)
+            }
+
          try {
-            const sessionFound = await SessionsService.findActiveSessionByUserId(userId)
+
+            const user = await verificarUsuarioExistente(userId)
+
+            if (!user || lodash.isEmpty(user)){
+                return res.sendStatus(404)
+            }
+
+            const sessionFound = await SessionsService.findActiveSessionByUserId(user._id)
 
             return res.json({found: sessionFound})
          } catch (error) {
+            console.log(error.message)
             return res.sendStatus(500)
+            
          }
     }
 }
