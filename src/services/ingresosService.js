@@ -181,6 +181,7 @@ const ingresosService = {
 				monto: ingreso.monto,
 				categoria: ingreso.categoria._id,
 				categoriaNombre: ingreso.categoria.nombre,
+				nombre_cliente: ingreso.nombre_cliente,
 			}));
 
 			const datosGrafico = detalle.reduce((acc, ingreso) => {
