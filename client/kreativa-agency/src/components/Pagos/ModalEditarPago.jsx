@@ -50,6 +50,7 @@ const ModalEditarPago = ({
 
     const handleEditar = async () => {
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -65,7 +66,10 @@ const ModalEditarPago = ({
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/pagos/update/${pagoEditado._id}`,
                 pagoEditado,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status === 200) {

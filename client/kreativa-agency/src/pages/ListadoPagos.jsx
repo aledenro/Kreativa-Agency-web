@@ -43,9 +43,14 @@ const ListadoPagos = () => {
 
             url += rol === "Cliente" ? `/cliente/${idUsuario}` : "";
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             const response = await axios.get(url, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
             });
             setPagos(response.data);
         } catch (error) {
@@ -57,11 +62,16 @@ const ListadoPagos = () => {
         async function fetchClientes() {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
 
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 

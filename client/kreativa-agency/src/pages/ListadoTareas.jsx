@@ -96,6 +96,7 @@ const ListadoTareas = () => {
 			url += "/tareas";
 			url += rol === "Colaborador" ? `/getByColab/${idUsuario}` : "";
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -107,7 +108,11 @@ const ListadoTareas = () => {
 			}
 
 			const response = await axios.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setTareas(response.data.tareas);
@@ -129,6 +134,7 @@ const ListadoTareas = () => {
 	const fetchColabs = async () => {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -140,7 +146,11 @@ const ListadoTareas = () => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 

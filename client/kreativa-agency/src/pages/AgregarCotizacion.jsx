@@ -40,6 +40,7 @@ const AgregarCotizacion = () => {
 
         const data = construirJsonRequest(titulo, descripcion, urgente);
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -55,7 +56,10 @@ const AgregarCotizacion = () => {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status == 201) {

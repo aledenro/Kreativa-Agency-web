@@ -223,6 +223,7 @@ const ModalAgregarTarea = ({
 		}
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 		const enviar = confirm("¿Desea enviar su tarea?");
 
 		if (!enviar) {
@@ -242,7 +243,10 @@ const ModalAgregarTarea = ({
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/tareas/crear`,
 				data,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (res.status === 201) {
@@ -307,10 +311,15 @@ const ModalAgregarTarea = ({
 		if (!proyectoEncontrado) {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
@@ -361,11 +370,16 @@ const ModalAgregarTarea = ({
 		} else {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 
@@ -439,6 +453,7 @@ const ModalAgregarTarea = ({
 	async function fetchEmpleados() {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -453,7 +468,11 @@ const ModalAgregarTarea = ({
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -471,6 +490,7 @@ const ModalAgregarTarea = ({
 		const token = localStorage.getItem("token");
 		const rol = localStorage.getItem("tipo_usuario");
 		const userId = localStorage.getItem("user_id");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -492,7 +512,11 @@ const ModalAgregarTarea = ({
 			}
 
 			const response = await axios.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setProyectos(response.data);

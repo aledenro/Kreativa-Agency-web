@@ -54,6 +54,7 @@ const ModificarServicio = () => {
 
 	const fetchCategorias = async () => {
 		const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -70,6 +71,7 @@ const ModificarServicio = () => {
 				`${import.meta.env.VITE_API_URL}/servicios/categorias`,
 				{
 					headers: { Authorization: `Bearer ${token}` },
+          user: user
 				}
 			);
 			setCategorias(res.data);
@@ -96,6 +98,7 @@ const ModificarServicio = () => {
 	useEffect(() => {
 		const fetchServicio = async () => {
 			const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -112,6 +115,7 @@ const ModificarServicio = () => {
 					`${import.meta.env.VITE_API_URL}/servicios/${id}`,
 					{
 						headers: { Authorization: `Bearer ${token}` },
+            user: user
 					}
 				);
 				setServicio(res.data);
@@ -214,6 +218,7 @@ const ModificarServicio = () => {
 						);
 
 						const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
 						if (!token) {
 							navigate("/error", {
@@ -227,7 +232,7 @@ const ModificarServicio = () => {
 						const imageUpdateResponse = await axios.put(
 							`${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
 							imagenes,
-							{ headers: { Authorization: `Bearer ${token}` } }
+							{ headers: { Authorization: `Bearer ${token}`, user: user } }
 						);
 
 						console.log("Image update response:", imageUpdateResponse.data);
@@ -248,6 +253,7 @@ const ModificarServicio = () => {
 			};
 
 			const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -261,7 +267,7 @@ const ModificarServicio = () => {
 			const updateResponse = await axios.put(
 				`${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
 				serviceData,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { Authorization: `Bearer ${token}`,user: user } }
 			);
 
 			openSuccessNotification(
@@ -315,6 +321,7 @@ const ModificarServicio = () => {
 			return;
 		}
 		const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -333,7 +340,7 @@ const ModificarServicio = () => {
 				{
 					nombre: nuevaCategoria,
 				},
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { Authorization: `Bearer ${token}` },user: user }
 			);
 
 			await fetchCategorias();

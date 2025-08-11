@@ -23,6 +23,7 @@ const EditarUsuario = () => {
         const fetchUsuario = async () => {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
                 if (!token) {
                     navigate("/error", {
                         state: {
@@ -35,7 +36,11 @@ const EditarUsuario = () => {
                 const { data } = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -81,6 +86,7 @@ const EditarUsuario = () => {
             if (["usuario", "email", "cedula"].includes(name)) {
                 try {
                     const token = localStorage.getItem("token");
+                    const user = localStorage.getItem("user_name");
                     if (!token) {
                         navigate("/error", {
                             state: {
@@ -93,7 +99,11 @@ const EditarUsuario = () => {
                     const response = await axios.get(
                         `${import.meta.env.VITE_API_URL}/usuarios`,
                         {
-                            headers: { Authorization: `Bearer ${token}` },
+                            headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                         }
                     );
 
@@ -132,6 +142,7 @@ const EditarUsuario = () => {
 
         try {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
             if (!token) {
                 navigate("/error", {
                     state: {
@@ -145,7 +156,11 @@ const EditarUsuario = () => {
                 `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
                 formData,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                 }
             );
 

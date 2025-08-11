@@ -103,12 +103,17 @@ const Estadisticas = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             try {
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/categorias`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
                 setCategories(res.data);
@@ -137,6 +142,7 @@ const Estadisticas = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -156,7 +162,10 @@ const Estadisticas = () => {
                 axios
                     .get(
                         `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
+                        { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                     )
                     .then((response) => {
                         const data = response.data;
@@ -192,7 +201,10 @@ const Estadisticas = () => {
                 axios
                     .get(
                         `${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
+                        { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                     )
                     .then((response) => {
                         const data = response.data;
@@ -227,7 +239,10 @@ const Estadisticas = () => {
                 axios
                     .get(
                         `${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
+                        { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                     )
                     .then((response) => {
                         if (!response.data.success) {
@@ -280,7 +295,11 @@ const Estadisticas = () => {
                     .get(
                         `${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`,
                         {
-                            headers: { Authorization: `Bearer ${token}` },
+                            headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                         }
                     )
                     .then((response) => {
@@ -332,7 +351,10 @@ const Estadisticas = () => {
             axios
                 .get(
                     `${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                 )
                 .then((response) => {
                     const data = response.data;
@@ -350,7 +372,10 @@ const Estadisticas = () => {
             axios
                 .get(
                     `${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                 )
                 .then((response) => {
                     const data = response.data;

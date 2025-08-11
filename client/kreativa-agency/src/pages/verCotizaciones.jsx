@@ -53,6 +53,7 @@ const VerCotizaciones = () => {
 			url += tipoUsuario === "Cliente" ? `getByUser/${user_id}` : "";
 
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -65,7 +66,11 @@ const VerCotizaciones = () => {
 			}
 
 			const response = await axios.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setCotizaciones(response.data.cotizaciones);

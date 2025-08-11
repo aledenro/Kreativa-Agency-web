@@ -133,6 +133,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 		setIsSubmitting(true);
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			handleUnauthorized("Acceso no autorizado.");
@@ -144,7 +145,10 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 				`${import.meta.env.VITE_API_URL}/egresos`,
 				formData,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+					},
 				}
 			);
 			if (res.status === 201) {

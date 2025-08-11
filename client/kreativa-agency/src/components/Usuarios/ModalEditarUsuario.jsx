@@ -43,6 +43,7 @@ const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 		if (!usuarioId) return;
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 		if (!token) {
 			navigate("/error", {
 				state: {
@@ -57,7 +58,11 @@ const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 			const { data } = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/${usuarioId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -150,7 +155,11 @@ const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 					const response = await axios.get(
 						`${import.meta.env.VITE_API_URL}/usuarios`,
 						{
-							headers: { Authorization: `Bearer ${token}` },
+							headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 						}
 					);
 
@@ -197,6 +206,8 @@ const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
+			
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -211,7 +222,11 @@ const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 				`${import.meta.env.VITE_API_URL}/usuarios/${usuarioId}`,
 				formData,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 

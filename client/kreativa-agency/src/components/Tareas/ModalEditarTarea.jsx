@@ -133,10 +133,15 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		if (!proyectoEncontrado) {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
@@ -185,11 +190,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		} else {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 
@@ -243,6 +253,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		event.preventDefault();
 		const estadoEdit = event.target.value;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -258,7 +269,10 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
 				{ estado: estadoEdit },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (response.status === 200) {
@@ -375,6 +389,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		);
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -390,7 +405,10 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
 				data,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (res.status === 200) {
@@ -497,13 +515,17 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
 		try {
 			const user_id = localStorage.getItem("user_id");
+			const user = localStorage.getItem("user_name");
 			await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/actualizarLog/${tareaId}`,
 				{
 					usuario_id: user_id,
 					accion: accion,
 				},
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 		} catch (error) {
 			if (error.status === 401) {
@@ -523,6 +545,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 	const fetchTarea = useCallback(async () => {
 		if (!tareaId) return;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -538,7 +561,11 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/tareas/id/${tareaId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -551,7 +578,8 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();				
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -603,6 +631,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
 	async function fetchEmpleados() {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -618,7 +647,11 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 			setEmpleados(response.data);
@@ -652,6 +685,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		}
 		const rol = localStorage.getItem("tipo_usuario");
 		const userId = localStorage.getItem("user_id");
+		const user = localStorage.getItem("user_name");
 
 		try {
 			let url = `${import.meta.env.VITE_API_URL}/proyectos`;
@@ -665,7 +699,11 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			}
 
 			const response = await axios.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setProyectos(response.data.proyectos);

@@ -87,12 +87,16 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 			if (name === "cedula" && !/^\d{8,9}$/.test(value)) {
 				errorMsg = "La cédula debe tener entre 8 y 9 dígitos";
 			}
-			if (name === "contraseña" && value.length < 6) {
-				errorMsg = "La contraseña debe tener al menos 6 caracteres";
+
+			if(name === "contraseña" && !/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,}$/.test(value)){
+				errorMsg = "La contraseña debe tener al menos 8 caracteres y al menos 1 caracter especial, 1 mayuscula y un numero.";
 			}
+			
 			if (["usuario", "email", "cedula"].includes(name)) {
 				try {
 					const token = localStorage.getItem("token");
+					const user = localStorage.getItem("user_name");
+
 					if (!token) {
 						navigate("/error", {
 							state: {
@@ -106,7 +110,11 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 					const response = await axios.get(
 						`${import.meta.env.VITE_API_URL}/usuarios`,
 						{
-							headers: { Authorization: `Bearer ${token}` },
+							headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 						}
 					);
 
@@ -155,6 +163,8 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 		e.preventDefault();
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+
 		if (!token) {
 			navigate("/error", {
 				state: {
@@ -175,7 +185,11 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 
 		try {
 			await axios.post(`${import.meta.env.VITE_API_URL}/usuarios`, formData, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			openSuccessNotification("Usuario creado correctamente.");

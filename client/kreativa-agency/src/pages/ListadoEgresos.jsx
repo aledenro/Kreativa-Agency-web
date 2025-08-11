@@ -93,6 +93,7 @@ const ListadoEgresos = () => {
 
 	const fetchEgresos = useCallback(async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -106,7 +107,11 @@ const ListadoEgresos = () => {
 
 		try {
 			const res = await axios.get(`${import.meta.env.VITE_API_URL}/egresos`, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 			setEgresos(res.data);
 		} catch (error) {
@@ -195,6 +200,7 @@ const ListadoEgresos = () => {
 	const handleConfirmToggle = async () => {
 		if (toggleEgreso) {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -210,15 +216,13 @@ const ListadoEgresos = () => {
 				const url = toggleEgreso.activo
 					? `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/desactivar`
 					: `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/activar`;
-
-				await axios.put(
-					url,
-					{},
-					{
-						headers: { Authorization: `Bearer ${token}` },
-					}
-				);
-
+				await axios.put(url, {},{
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
+				});
 				setEgresos((prev) =>
 					prev.map((e) =>
 						e._id === toggleEgreso._id ? { ...e, activo: !e.activo } : e

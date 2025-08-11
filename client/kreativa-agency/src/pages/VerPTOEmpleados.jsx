@@ -28,6 +28,7 @@ const VerPTOEmpleados = () => {
 		const fetchEmpleados = async () => {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 				if (!token) {
 					navigate("/error", {
 						state: {
@@ -40,7 +41,11 @@ const VerPTOEmpleados = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/pto/empleados-con-pto/listado`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 
@@ -100,6 +105,7 @@ const VerPTOEmpleados = () => {
 	// Función global de cambio de estado PTO
 	window.toggleEstadoPTO = async (ptoId, estadoActual, empleadoId, nombre) => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -130,7 +136,11 @@ const VerPTOEmpleados = () => {
 				`${import.meta.env.VITE_API_URL}/pto/${ptoId}`,
 				{ estado: nuevoEstado },
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -171,6 +181,7 @@ const VerPTOEmpleados = () => {
 	) => {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -184,7 +195,11 @@ const VerPTOEmpleados = () => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/pto/${empleadoId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 

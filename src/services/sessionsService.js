@@ -48,6 +48,21 @@ class SessionsService{
         }
     }
 
+     async getctiveSessionByUserId(userId){
+        try {
+            const session = await SessionsModel.findOne({user: userId, estado: true})
+
+            if(!session || lodash.isEmpty(session)){
+                return {}
+            }else if (!lodash.isEmpty(session)){
+                return session
+            }
+
+        } catch (error) {
+            throw new Error("Error al buscar la sesión.")
+        }
+    }
+
     async updateSessionStatusToken(userId, motivo, token){
         try {
             const session = await SessionsModel.findOne({user: userId, token: token})

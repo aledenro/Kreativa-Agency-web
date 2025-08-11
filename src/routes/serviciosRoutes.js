@@ -1,6 +1,6 @@
 const express = require("express");
 const ServiciosController = require("../controllers/serviciosController");
-const verificarToken = require("../middleware/authMiddleware");
+const {verificarToken, verificarTokenValidoSesion} = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -13,8 +13,8 @@ router.post(
 
 router.get("/", ServiciosController.getServicios);
 router.get("/nombres", ServiciosController.getServiciosNombres);
-router.post("/agregar", verificarToken, ServiciosController.agregarServicio);
-router.get("/listado", verificarToken, ServiciosController.getServiciosListado);
+router.post("/agregar", verificarToken, verificarTokenValidoSesion, ServiciosController.agregarServicio);
+router.get("/listado", verificarToken, verificarTokenValidoSesion, ServiciosController.getServiciosListado);
 router.get(
 	"/con-paquetes",
 	verificarToken,
@@ -47,7 +47,7 @@ router.put(
 	ServiciosController.activarPaquete
 );
 
-router.put("/:id/activar", verificarToken, ServiciosController.activarServicio);
+router.put("/:id/activar", verificarToken, verificarTokenValidoSesion, ServiciosController.activarServicio);
 router.put(
 	"/:id/desactivar",
 	verificarToken,

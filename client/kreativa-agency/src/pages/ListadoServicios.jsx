@@ -89,13 +89,18 @@ const ListadoServicios = () => {
 	useEffect(() => {
 		async function getServicios() {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			validTokenActive();
 			try {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 

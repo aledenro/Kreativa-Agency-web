@@ -18,6 +18,7 @@ const VerDetalleCotizacion = () => {
 
     const fetchCotizacion = useCallback(async () => {
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -33,7 +34,11 @@ const VerDetalleCotizacion = () => {
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/id/${id}`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                 }
             );
 
@@ -76,6 +81,7 @@ const VerDetalleCotizacion = () => {
             contenido: content,
         };
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -91,7 +97,10 @@ const VerDetalleCotizacion = () => {
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${id}`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             setAlertMessage("Respuesta enviada correctamente.");
@@ -135,6 +144,7 @@ const VerDetalleCotizacion = () => {
     async function handleChangeEstado(event) {
         const estado = event.target.value;
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -150,7 +160,10 @@ const VerDetalleCotizacion = () => {
             axios.put(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${id}`,
                 { estado: estado },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             setAlertMessage("Estado cambiado  correctamente.");

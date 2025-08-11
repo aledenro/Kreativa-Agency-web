@@ -63,6 +63,7 @@ const ModalVerContacto = ({ show, handleClose, form, onUpdate }) => {
 	const handleChangeEstado = async (event) => {
 		const nuevoEstado = event.target.value === "true";
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -87,7 +88,10 @@ const ModalVerContacto = ({ show, handleClose, form, onUpdate }) => {
 			await axios.put(
 				`${import.meta.env.VITE_API_URL}/contacto/actualizar/${currentForm._id}`,
 				{ activo: nuevoEstado },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			showNotification("success", "Estado actualizado correctamente.");

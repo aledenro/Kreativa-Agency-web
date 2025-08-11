@@ -36,6 +36,7 @@ const GestionServicios = () => {
 	useEffect(() => {
 		const fetchServicios = async () => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -50,7 +51,11 @@ const GestionServicios = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/listado`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				if (Array.isArray(response.data)) {
@@ -108,6 +113,7 @@ const GestionServicios = () => {
 				: `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
 
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -119,7 +125,11 @@ const GestionServicios = () => {
 			}
 
 			const response = await axios.put(endpoint, {},{
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setServicios(

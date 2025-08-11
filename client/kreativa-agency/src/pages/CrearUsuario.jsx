@@ -74,6 +74,7 @@ const CrearUsuario = () => {
 			if (["usuario", "email", "cedula"].includes(name)) {
 				try {
 					const token = localStorage.getItem("token");
+					const user = localStorage.getItem("user_name");
 					if (!token) {
 						navigate("/error", {
 							state: {
@@ -86,7 +87,11 @@ const CrearUsuario = () => {
 					const response = await axios.get(
 						`${import.meta.env.VITE_API_URL}/usuarios`,
 						{
-							headers: { Authorization: `Bearer ${token}` },
+							headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 						}
 					);
 
@@ -123,6 +128,8 @@ const CrearUsuario = () => {
 		setErrorServidor("");
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+		
 		if (!token) {
 			navigate("/error", {
 				state: {
@@ -141,7 +148,11 @@ const CrearUsuario = () => {
 
 		try {
 			await axios.post(`${import.meta.env.VITE_API_URL}/usuarios`, formData, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			Swal.fire({

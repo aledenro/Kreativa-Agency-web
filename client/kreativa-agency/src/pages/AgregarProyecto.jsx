@@ -75,6 +75,7 @@ const AgregarProyecto = () => {
         );
 
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -90,7 +91,10 @@ const AgregarProyecto = () => {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/proyectos/crear`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status == 201) {
@@ -125,6 +129,7 @@ const AgregarProyecto = () => {
         async function fetchClientes() {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
 
                 if (!token) {
                     navigate("/error", {
@@ -138,7 +143,11 @@ const AgregarProyecto = () => {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -161,6 +170,7 @@ const AgregarProyecto = () => {
         async function fetchEmpleados() {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
 
                 if (!token) {
                     navigate("/error", {
@@ -174,7 +184,11 @@ const AgregarProyecto = () => {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 

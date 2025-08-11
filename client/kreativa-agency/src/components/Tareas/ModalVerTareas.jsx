@@ -101,6 +101,7 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 					fecha: Date.now(),
 				};
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -114,7 +115,11 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 
 		try {
 			const response = await axios.put(`${url}${tarea._id}`, data, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			if (response.status === 200) {
@@ -150,6 +155,7 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -164,7 +170,10 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/estado/${tarea._id}`,
 				{ estado: nuevoEstado },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (response.status === 200) {
