@@ -13,7 +13,6 @@ const ingresosController = {
 				accion: "creación",
 				descripcion: "Creación del ingreso",
 				detalle: { datosNuevos: nuevoIngreso },
-				usuario: req.user ? req.user.username : "sistema",
 			});
 
 			res.status(201).json({
@@ -28,7 +27,19 @@ const ingresosController = {
 	async obtenerIngresos(req, res) {
 		try {
 			const ingresos = await ingresosService.obtenerIngresos();
-			res.status(200).json(ingresos);
+			const ingresosActualizados = await Promise.all(ingresos.map(async (ingreso) => {
+				const usuario = await Usuario.findOne({ cedula: ingreso.cedula });
+				if (usuario) {
+					return {
+						...ingreso._doc,
+						nombre_cliente: usuario.nombre,
+						email: usuario.email
+					};
+				}
+				return ingreso;
+			}));
+
+			res.status(200).json(ingresosActualizados);
 		} catch (error) {
 			res.status(500).json({ message: "Error al obtener ingresos." });
 		}
@@ -79,7 +90,6 @@ const ingresosController = {
 					datosAnteriores: ingresoAnterior,
 					datosNuevos: ingresoActualizado,
 				},
-				usuario: req.user ? req.user.username : "sistema",
 			});
 
 			res.status(200).json({
@@ -104,7 +114,6 @@ const ingresosController = {
 				accion: "activación",
 				descripcion: "Activación del ingreso",
 				detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingreso },
-				usuario: req.user ? req.user.username : "sistema",
 			});
 			return res.status(200).json({ mensaje: "Ingreso activado", ingreso });
 		} catch (error) {
@@ -127,7 +136,6 @@ const ingresosController = {
 				accion: "desactivación",
 				descripcion: "Desactivación del ingreso",
 				detalle: { datosAnteriores: ingresoAnterior, datosNuevos: ingreso },
-				usuario: req.user ? req.user.username : "sistema",
 			});
 			return res.status(200).json({ mensaje: "Ingreso desactivado", ingreso });
 		} catch (error) {

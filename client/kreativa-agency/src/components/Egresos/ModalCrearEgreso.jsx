@@ -17,6 +17,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 		proveedor: "",
 		estado: "Pendiente",
 	});
+	const today = new Date().toISOString().split('T')[0];
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
@@ -115,6 +116,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 								value={formData.fecha}
 								onChange={handleChange}
 								required
+								min={today}
 							/>
 						</div>
 						<div className="mb-3">

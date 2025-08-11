@@ -349,6 +349,21 @@ const ListadoEgresos = () => {
 							</Form.Select>
 						</Form.Group>
 					</div>
+					{/* Botón para limpiar filtros */}
+					<div className="col-md-4 d-flex align-items-end">
+						<button
+							className="thm-btn btn-gris"
+							onClick={() => {
+								setFilterCliente("");
+								setFilterFecha("");
+								setFilterEstado("Activo");
+								setFilterEstadoPago("Pendiente de pago");
+								setPagActual(1);
+							}}
+						>
+							Limpiar Filtros
+						</button>
+					</div>
 				</div>
 
 				{/* Tabla de egresos */}
