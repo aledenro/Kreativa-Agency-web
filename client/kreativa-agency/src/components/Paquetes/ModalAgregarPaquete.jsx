@@ -159,15 +159,17 @@ const ModalAgregarPaquete = ({
 			precio,
 		} = formData;
 
+		// Updated validation - precio is no longer required
 		if (
 			!nombre ||
 			!descripcion ||
 			!nivel ||
 			!duracionNumero ||
-			!duracionUnidad ||
-			!precio
+			!duracionUnidad
 		) {
-			openErrorNotification("Todos los campos son obligatorios.");
+			openErrorNotification(
+				"Los campos nombre, descripción, nivel y duración son obligatorios."
+			);
 			return;
 		}
 
@@ -199,7 +201,8 @@ const ModalAgregarPaquete = ({
 			nivel,
 			duracion,
 			beneficios: beneficiosFiltrados,
-			precio: parseFloat(precio),
+			// Only include precio if it has a value
+			...(precio && precio !== "" && { precio: parseFloat(precio) }),
 		};
 
 		const token = localStorage.getItem("token");
@@ -352,7 +355,7 @@ const ModalAgregarPaquete = ({
 						<div className="col-md-6">
 							<div className="mb-3">
 								<label htmlFor="precio" className="form-label">
-									Precio
+									Precio (opcional)
 								</label>
 								<input
 									type="number"
@@ -361,10 +364,10 @@ const ModalAgregarPaquete = ({
 									className="form_input"
 									value={formData.precio}
 									onChange={handleChange}
-									required
 									disabled={loading}
 									step="0.01"
 									min="0"
+									placeholder="Ingrese el precio (opcional)"
 								/>
 							</div>
 						</div>

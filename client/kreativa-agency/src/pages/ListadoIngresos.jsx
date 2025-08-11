@@ -22,8 +22,8 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
 import { notification } from "antd";
+import sendEmail from '../utils/emailSender';
 import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
-
 
 const ListadoIngresos = () => {
 	// Datos principales
@@ -388,24 +388,13 @@ const ListadoIngresos = () => {
 				throw new Error("El cliente no tiene email registrado");
 			}
 
-			const emailContent = `
-            <html>
-                <body>
-                    Estimado ${ingresoNotificar.nombre_cliente},<br>
-                    Le recordamos que tiene un pago pendiente de ₡${ingresoNotificar.monto} 
-                    con fecha de vencimiento ${new Date(ingresoNotificar.fecha).toLocaleDateString()}.<br>
-                    Por favor, realice el pago a la brevedad.
-                </body>
-            </html>
-        `;
+			const emailContent = `Estimado ${ingresoNotificar.nombre_cliente}, le recordamos que mantiene un pago pendiente por un monto de ₡${ingresoNotificar.monto} con fecha de vencimiento ${new Date(ingresoNotificar.fecha).toLocaleDateString()} por los servicios brindados. Agradecemos su pronta gestión.`;
 
-			const subject = "Notificación de Pago Pendiente";
-
-			await axios.post(`${import.meta.env.VITE_API_URL}/email/externo`, {
-				recipientEmail: cliente.email,
-				subject,
+			await sendEmail(
+				cliente._id, // Usar el ID del cliente, no el email directamente
 				emailContent,
-			});
+				"Notificación de Pago Pendiente",
+			);
 
 			openSuccessNotification("Correo de notificación enviado correctamente.");
 			setIngresoNotificar(null);
@@ -486,7 +475,7 @@ const ListadoIngresos = () => {
 									setFilterCliente(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="">Todos</option>
 								{clientes
@@ -507,7 +496,7 @@ const ListadoIngresos = () => {
 									setFilterFecha(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							/>
 						</Form.Group>
 					</div>
@@ -521,7 +510,7 @@ const ListadoIngresos = () => {
 									setFilterEstado(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="Todos">Todos</option>
 								<option value="Activo">Activo</option>
@@ -536,13 +525,28 @@ const ListadoIngresos = () => {
 									setFilterEstadoPago(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="">Todos</option>
 								<option value="Pendiente de pago">Pendiente de pago</option>
 								<option value="Pagado">Pagado</option>
 							</Form.Select>
 						</Form.Group>
+					</div>
+					{/* Botón para limpiar filtros */}
+					<div className="col-md-4 d-flex align-items-end">
+						<button
+							className="thm-btn btn-gris"
+							onClick={() => {
+								setFilterCliente("");
+								setFilterFecha("");
+								setFilterEstado("Activo");
+								setFilterEstadoPago("Pendiente de pago");
+								setPagActual(1);
+							}}
+						>
+							Limpiar Filtros
+						</button>
 					</div>
 				</div>
 

@@ -17,6 +17,8 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 
 	const [api, contextHolder] = notification.useNotification();
 
+	const today = new Date().toISOString().split('T')[0];
+
 	const [formData, setFormData] = useState({
 		cedula: "",
 		categoria: "",
@@ -153,7 +155,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 				setNombreCliente(res.data.nombre);
 				setEmailCliente(res.data.email);
 				setEstadoCliente(res.data.estado || "Inactivo");
-				setClienteEncontrado(true); // Cliente fue encontrado
+				setClienteEncontrado(true);
 
 				if (res.data.estado !== "Activo") {
 					setErrorCedula("El cliente está inactivo.");
@@ -416,6 +418,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 								value={formData.fecha}
 								onChange={handleChange}
 								disabled={isSubmitting}
+								min={today}
 							/>
 						</div>
 					</Modal.Body>

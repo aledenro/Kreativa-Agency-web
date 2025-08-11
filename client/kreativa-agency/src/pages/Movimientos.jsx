@@ -425,7 +425,7 @@ const Movimientos = () => {
 										type="date"
 										value={fecha}
 										onChange={(e) => setFecha(e.target.value)}
-										className="thm-btn"
+										className="form_input"
 									/>
 								</Form.Group>
 							)}
@@ -437,7 +437,7 @@ const Movimientos = () => {
 										type="number"
 										value={anio}
 										onChange={(e) => setAnio(e.target.value)}
-										className="thm-btn"
+										className="form_input"
 									/>
 								</Form.Group>
 							)}
@@ -450,7 +450,7 @@ const Movimientos = () => {
 											type="date"
 											value={fechaInicio}
 											onChange={(e) => setFechaInicio(e.target.value)}
-											className="thm-btn"
+											className="form_input"
 										/>
 									</Form.Group>
 									<Form.Group controlId="fechaFin">
@@ -459,7 +459,7 @@ const Movimientos = () => {
 											type="date"
 											value={fechaFin}
 											onChange={(e) => setFechaFin(e.target.value)}
-											className="thm-btn"
+											className="form_input"
 										/>
 									</Form.Group>
 								</>

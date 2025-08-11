@@ -359,6 +359,7 @@ const GestionPaquetes = () => {
 											<FontAwesomeIcon icon={faSort} />
 										</span>
 									</Th>
+
 									<Th
 										onClick={() => handleSort("duracion")}
 										className="col-fecha"
@@ -393,7 +394,11 @@ const GestionPaquetes = () => {
 											</Td>
 											<Td className="col-proyecto">{paquete.nombre}</Td>
 											<Td className="col-nivel">{paquete.nivel}</Td>
-											<Td className="col-precio">${paquete.precio}</Td>
+											<Td className="col-precio">
+												{paquete.precio !== null && paquete.precio !== undefined
+													? `$${paquete.precio}`
+													: "N/A"}
+											</Td>
 											<Td className="col-fecha">{paquete.duracion}</Td>
 											<Td className="col-estado">
 												<span

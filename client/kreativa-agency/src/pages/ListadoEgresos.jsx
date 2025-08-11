@@ -15,6 +15,7 @@ import {
 	faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { Form, Button, Modal } from "react-bootstrap";
+import { notification } from "antd";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ModalVerEgreso from "../components/Egresos/ModalVerEgreso";
 import ModalEditarEgreso from "../components/Egresos/ModalEditarEgreso";
@@ -66,11 +67,29 @@ const ListadoEgresos = () => {
 	// Estados para modales de confirmación
 	const [showConfirmToggle, setShowConfirmToggle] = useState(false);
 	const [toggleEgreso, setToggleEgreso] = useState(null);
-	const [showConfirmEditar, setShowConfirmEditar] = useState(false);
-	const [showConfirmCrear, setShowConfirmCrear] = useState(false);
 
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
+
+	const [api, contextHolder] = notification.useNotification();
+
+	const openSuccessNotification = (message) => {
+		api.success({
+			message: "Éxito",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
+
+	const openErrorNotification = (message) => {
+		api.error({
+			message: "Error",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
 
 	const fetchEgresos = useCallback(async () => {
 		const token = localStorage.getItem("token");
@@ -190,6 +209,7 @@ const ListadoEgresos = () => {
 						mensaje: "Debe iniciar sesión para continuar.",
 					},
 				});
+				return;
 			}
 
 			try {
@@ -208,6 +228,12 @@ const ListadoEgresos = () => {
 						e._id === toggleEgreso._id ? { ...e, activo: !e.activo } : e
 					)
 				);
+
+				const message = toggleEgreso.activo
+					? "Egreso desactivado exitosamente."
+					: "Egreso activado exitosamente.";
+				openSuccessNotification(message);
+
 				setShowConfirmToggle(false);
 				setToggleEgreso(null);
 			} catch (error) {
@@ -220,6 +246,12 @@ const ListadoEgresos = () => {
 					});
 					return;
 				}
+
+				const errorMessage = toggleEgreso.activo
+					? "Error al desactivar el egreso. Por favor, intente nuevamente."
+					: "Error al activar el egreso. Por favor, intente nuevamente.";
+				openErrorNotification(errorMessage);
+
 				console.error("Error al cambiar estado de egreso");
 			}
 		}
@@ -228,23 +260,13 @@ const ListadoEgresos = () => {
 	// Al editar
 	const onSaveEdit = (data) => {
 		setShowModalEditar(false);
-		setShowConfirmEditar(true);
 		fetchEgresos();
 	};
 
 	// Al crear
 	const onSaveCrear = () => {
 		setShowModalCrear(false);
-		setShowConfirmCrear(true);
 		fetchEgresos();
-	};
-
-	const handleConfirmEditar = () => {
-		setShowConfirmEditar(false);
-	};
-
-	const handleConfirmCrear = () => {
-		setShowConfirmCrear(false);
 	};
 
 	const handleSort = (field) => {
@@ -270,6 +292,7 @@ const ListadoEgresos = () => {
 
 	return (
 		<AdminLayout>
+			{contextHolder}
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
 				{/* Encabezado */}
@@ -295,7 +318,7 @@ const ListadoEgresos = () => {
 									setFilterCategoria(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="Todos">Todos</option>
 								{fixedCategories.map((cat, index) => (
@@ -314,7 +337,7 @@ const ListadoEgresos = () => {
 									setFilterFecha(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							/>
 						</Form.Group>
 					</div>
@@ -332,7 +355,7 @@ const ListadoEgresos = () => {
 									setFilterEstado(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="Todos">Todos</option>
 								<option value="Activo">Activo</option>
@@ -350,7 +373,7 @@ const ListadoEgresos = () => {
 									setFilterEgresoEstado(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="Todos">Todos</option>
 								<option value="Pendiente">Pendiente</option>
@@ -358,6 +381,21 @@ const ListadoEgresos = () => {
 								<option value="Rechazado">Rechazado</option>
 							</Form.Select>
 						</Form.Group>
+					</div>
+					{/* Botón para limpiar filtros */}
+					<div className="col-md-4 d-flex align-items-end">
+						<button
+							className="thm-btn btn-gris"
+							onClick={() => {
+								setFilterCliente("");
+								setFilterFecha("");
+								setFilterEstado("Activo");
+								setFilterEstadoPago("Pendiente de pago");
+								setPagActual(1);
+							}}
+						>
+							Limpiar Filtros
+						</button>
 					</div>
 				</div>
 
@@ -475,32 +513,15 @@ const ListadoEgresos = () => {
 						: "¿Está seguro de que desea activar este egreso?"}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button
-						variant="secondary"
+					<button
+						className="thm-btn thm-btn-small btn-gris mx-1"
 						onClick={() => setShowConfirmToggle(false)}
 					>
 						Cancelar
-					</Button>
-					<Button variant="primary" onClick={handleConfirmToggle}>
-						Aceptar
-					</Button>
-				</Modal.Footer>
-			</Modal>
-
-			{/* Modal de confirmación para editar */}
-			<Modal
-				show={showConfirmEditar}
-				onHide={() => setShowConfirmEditar(false)}
-				centered
-			>
-				<Modal.Header closeButton>
-					<Modal.Title>Egreso Editado</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>Egreso actualizado exitosamente.</Modal.Body>
-				<Modal.Footer>
+					</button>
 					<button
 						className="thm-btn thm-btn-small"
-						onClick={handleConfirmEditar}
+						onClick={handleConfirmToggle}
 					>
 						Aceptar
 					</button>

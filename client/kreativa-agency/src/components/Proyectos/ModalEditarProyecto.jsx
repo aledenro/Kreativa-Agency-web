@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/ui/LoadingComponent";
 import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const estados = [
@@ -77,6 +78,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	const [formRef, setFormRef] = useState(null);
 	const [api, contextHolder] = notification.useNotification();
 	const navigate = useNavigate();
+	const [loading, setLoading] = useState(true);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -506,7 +508,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				setEstado(response.data.proyecto.estado);
 			}
 
-			fetchClientes();
+			await fetchClientes();
 		} catch (error) {
 			if (error.status === 401) {
 				await updateSessionStatus();				localStorage.clear();
@@ -520,6 +522,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				return;
 			}
 			console.error(`Error al obtener el proyecto`);
+		} finally {
+			setLoading(false);
 		}
 	}, [proyectoId]);
 
@@ -547,6 +551,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		}
 
 		if (show) {
+			setLoading(true);
 			fetchProyecto();
 			fetchEmpleados();
 		}
@@ -654,6 +659,26 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		return today.toISOString().split("T")[0];
 	};
 
+	if (loading) {
+		return (
+			<Modal
+				scrollable
+				show={show}
+				onHide={handleClose}
+				size="xl"
+				centered
+				dialogClassName="proyecto-modal"
+			>
+				<Modal.Body
+					className="d-flex justify-content-center align-items-center"
+					style={{ minHeight: "200px" }}
+				>
+					<Loading />
+				</Modal.Body>
+			</Modal>
+		);
+	}
+
 	return (
 		<Modal
 			scrollable
@@ -672,8 +697,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				style={{ maxHeight: "70vh", overflowY: "auto" }}
 			>
 				{!proyecto ? (
-					<div className="text-center p-5">
-						<p>Cargando proyecto...</p>
+					<div className="d-flex justify-content-center align-items-center p-5">
+						<Loading />
 					</div>
 				) : (
 					<>
