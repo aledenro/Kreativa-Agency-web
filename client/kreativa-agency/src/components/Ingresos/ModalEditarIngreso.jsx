@@ -18,6 +18,7 @@ const ModalEditarIngreso = ({
 	const navigate = useNavigate();
 
 	const [api, contextHolder] = notification.useNotification();
+	const today = new Date().toISOString().split('T')[0];
 
 	const openSuccessNotification = (message) => {
 		api.success({
@@ -321,6 +322,7 @@ const ModalEditarIngreso = ({
 								onChange={handleChange}
 								required
 								disabled={isSubmitting}
+								min={today}
 							/>
 						</div>
 					</Modal.Body>
