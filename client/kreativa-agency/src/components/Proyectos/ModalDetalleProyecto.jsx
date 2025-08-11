@@ -40,6 +40,22 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		});
 	};
 
+	const isProyectoBloqueado = () => {
+		return (
+			proyecto &&
+			(proyecto.estado === "Finalizado" || proyecto.estado === "Cancelado")
+		);
+	};
+
+	const getMensajeBloqueo = () => {
+		if (proyecto.estado === "Finalizado") {
+			return "Este proyecto ha sido finalizado y no permite más interacciones. El proyecto ha sido completado exitosamente.";
+		} else if (proyecto.estado === "Cancelado") {
+			return "Este proyecto ha sido cancelado y no permite más interacciones. Si tiene alguna pregunta, no dude en contactarnos.";
+		}
+		return "";
+	};
+
 	const fetchProyecto = useCallback(async () => {
 		if (!proyectoId) return;
 
@@ -109,7 +125,6 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 	}, [show, fetchProyecto, navigate]);
 
 	const handleFileChange = (info) => {
-		// Verificar archivos seleccionados
 		if (info.fileList && info.fileList.length > 0) {
 			const fileObjects = info.fileList.map((file) => file.originFileObj);
 			setFiles(fileObjects);
@@ -118,13 +133,21 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		}
 	};
 
-	// Función para limpiar el dragger
 	const clearDragger = () => {
 		setFiles([]);
 	};
 
 	async function handleSubmit(event) {
 		event.preventDefault();
+
+		if (isProyectoBloqueado()) {
+			showNotification(
+				"error",
+				"No puede responder a un proyecto finalizado o cancelado."
+			);
+			return;
+		}
+
 		setLoading(true);
 
 		const enviar = confirm("¿Desea enviar su respuesta?");
@@ -520,86 +543,96 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 												</div>
 											)}
 
-											<div className="responder-form mt-4">
-												<form onSubmit={handleSubmit}>
-													<h6 className="mb-3">Responder:</h6>
-													<div className="form-group mb-3">
-														<textarea
-															name="message"
-															className="form-control form_input form-textarea"
-															rows="3"
-															placeholder="Por favor escriba su respuesta"
-															required
-														></textarea>
-													</div>
+											{!isProyectoBloqueado() && (
+												<div className="responder-form mt-4">
+													<form onSubmit={handleSubmit}>
+														<h6 className="mb-3">Responder:</h6>
+														<div className="form-group mb-3">
+															<textarea
+																name="message"
+																className="form-control form_input form-textarea"
+																rows="3"
+																placeholder="Por favor escriba su respuesta"
+																required
+															></textarea>
+														</div>
 
-													{/* Implementación del Dragger */}
-													<div className="form-group mb-3">
-														<label className="form-label">
-															Archivos adjuntos
-														</label>
-														<ConfigProvider
-															theme={{
-																components: {
-																	Upload: {
-																		lineWidth: "1px",
-																		lineType: "solid",
-																		colorBorder: "#8788ab",
-																		colorBgContainer: "transparent",
+														{/* Implementación del Dragger */}
+														<div className="form-group mb-3">
+															<label className="form-label">
+																Archivos adjuntos
+															</label>
+															<ConfigProvider
+																theme={{
+																	components: {
+																		Upload: {
+																			lineWidth: "1px",
+																			lineType: "solid",
+																			colorBorder: "#8788ab",
+																			colorBgContainer: "transparent",
+																		},
 																	},
-																},
-															}}
-														>
-															<Dragger
-																name="filesUploaded"
-																multiple={true}
-																action="#"
-																beforeUpload={() => false}
-																onChange={handleFileChange}
-																className="custom-dragger"
-																style={{
-																	borderRadius: "12px",
-																	borderColor: isHovered
-																		? "#110d27"
-																		: "#8788ab",
-																	borderWidth: "1px",
-																	borderStyle: "solid",
-																	backgroundColor: "transparent",
-																	transition: "border-color 0.3s",
 																}}
-																onMouseEnter={handleMouseEnter}
-																onMouseLeave={handleMouseLeave}
 															>
-																<p className="ant-upload-drag-icon custom-icon">
-																	<InboxOutlined
-																		style={{
-																			color: isHovered ? "#110d27" : "#8788ab",
-																			transition: "color 0.3s",
-																		}}
-																	/>
-																</p>
-																<p className="ant-upload-text">
-																	Haz clic o arrastra tus archivos aquí para
-																	subirlos
-																</p>
-																<p className="ant-upload-hint">
-																	Puedes subir múltiples archivos
-																</p>
-															</Dragger>
-														</ConfigProvider>
-													</div>
+																<Dragger
+																	name="filesUploaded"
+																	multiple={true}
+																	action="#"
+																	beforeUpload={() => false}
+																	onChange={handleFileChange}
+																	className="custom-dragger"
+																	style={{
+																		borderRadius: "12px",
+																		borderColor: isHovered
+																			? "#110d27"
+																			: "#8788ab",
+																		borderWidth: "1px",
+																		borderStyle: "solid",
+																		backgroundColor: "transparent",
+																		transition: "border-color 0.3s",
+																	}}
+																	onMouseEnter={handleMouseEnter}
+																	onMouseLeave={handleMouseLeave}
+																>
+																	<p className="ant-upload-drag-icon custom-icon">
+																		<InboxOutlined
+																			style={{
+																				color: isHovered
+																					? "#110d27"
+																					: "#8788ab",
+																				transition: "color 0.3s",
+																			}}
+																		/>
+																	</p>
+																	<p className="ant-upload-text">
+																		Haz clic o arrastra tus archivos aquí para
+																		subirlos
+																	</p>
+																	<p className="ant-upload-hint">
+																		Puedes subir múltiples archivos
+																	</p>
+																</Dragger>
+															</ConfigProvider>
+														</div>
 
-													<div className="d-flex justify-content-end">
-														<button
-															type="submit"
-															className="thm-btn"
-															disabled={loading}
-														>
-															{loading ? "Enviando..." : "Enviar"}
-														</button>
-													</div>
-												</form>
-											</div>
+														<div className="d-flex justify-content-end">
+															<button
+																type="submit"
+																className="thm-btn"
+																disabled={loading}
+															>
+																{loading ? "Enviando..." : "Enviar"}
+															</button>
+														</div>
+													</form>
+												</div>
+											)}
+
+											{isProyectoBloqueado() && (
+												<div className="descripcion-content p-3 bg-light rounded mt-4">
+													<strong>Información:</strong> {getMensajeBloqueo()}
+												</div>
+											)}
 										</Col>
 									</Row>
 								</Tab.Pane>
