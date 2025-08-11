@@ -5,7 +5,10 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
-import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 
 const ModalEditarPaquete = ({ show, onHide, paquete, onPaqueteEditado }) => {
 	const navigate = useNavigate();
@@ -178,10 +181,11 @@ const ModalEditarPaquete = ({ show, onHide, paquete, onPaqueteEditado }) => {
 			!descripcion ||
 			!nivel ||
 			!duracionNumero ||
-			!duracionUnidad ||
-			!precio
+			!duracionUnidad
 		) {
-			openErrorNotification("Todos los campos son obligatorios.");
+			openErrorNotification(
+				"Los campos nombre, descripción, nivel y duración son obligatorios."
+			);
 			return;
 		}
 
@@ -213,7 +217,7 @@ const ModalEditarPaquete = ({ show, onHide, paquete, onPaqueteEditado }) => {
 			nivel,
 			duracion,
 			beneficios: beneficiosFiltrados,
-			precio: parseFloat(precio),
+			...(precio && precio !== "" && { precio: parseFloat(precio) }),
 		};
 
 		const token = localStorage.getItem("token");
@@ -223,10 +227,12 @@ const ModalEditarPaquete = ({ show, onHide, paquete, onPaqueteEditado }) => {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/servicios/${paquete.servicioId}/paquetes/${paquete._id}`,
 				paqueteEditado,
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (res.status === 200) {
@@ -366,7 +372,7 @@ const ModalEditarPaquete = ({ show, onHide, paquete, onPaqueteEditado }) => {
 						<div className="col-md-6">
 							<div className="mb-3">
 								<label htmlFor="precio" className="form-label">
-									Precio
+									Precio (opcional)
 								</label>
 								<input
 									type="number"
@@ -375,10 +381,10 @@ const ModalEditarPaquete = ({ show, onHide, paquete, onPaqueteEditado }) => {
 									className="form_input"
 									value={formData.precio}
 									onChange={handleChange}
-									required
 									disabled={loading}
 									step="0.01"
 									min="0"
+									placeholder="Ingrese el precio (opcional)"
 								/>
 							</div>
 						</div>
