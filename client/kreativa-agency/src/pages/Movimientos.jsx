@@ -14,6 +14,8 @@ import ModalVerEgreso from "../components/Egresos/ModalVerEgreso";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import Loading from "../components/ui/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const Movimientos = () => {
 	// Estados para filtros
@@ -88,9 +90,9 @@ const Movimientos = () => {
 				setMovimientos(response.data);
 				setPagActual(1); // Reinicia a la primera página al buscar
 			})
-			.catch((error) => {
+			.catch(async(error) => {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -139,9 +141,10 @@ const Movimientos = () => {
 				.then((res) => {
 					setCategories(res.data);
 				})
-				.catch((error) => {
+				.catch(async (error) => {
 					if (error.status === 401) {
-						navigate("/error", {
+					await updateSessionStatus();						
+					navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -237,9 +240,9 @@ const Movimientos = () => {
 					setRegistroSeleccionado(response.data);
 					setShowModalVerIngreso(true);
 				})
-				.catch((error) => {
+				.catch(async (error) => {
 					if (error.status === 401) {
-						navigate("/error", {
+						await updateSessionStatus();						navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -258,9 +261,9 @@ const Movimientos = () => {
 					setRegistroSeleccionado(response.data);
 					setShowModalVerEgreso(true);
 				})
-				.catch((error) => {
+				.catch(async(error) => {
 					if (error.status === 401) {
-						navigate("/error", {
+				await updateSessionStatus();						navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",

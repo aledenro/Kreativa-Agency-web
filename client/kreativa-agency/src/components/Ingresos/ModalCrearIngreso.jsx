@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 	const navigate = useNavigate();
@@ -16,6 +16,8 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 	const [clienteEncontrado, setClienteEncontrado] = useState(false);
 
 	const [api, contextHolder] = notification.useNotification();
+
+	const today = new Date().toISOString().split('T')[0];
 
 	const [formData, setFormData] = useState({
 		cedula: "",
@@ -148,7 +150,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 				setNombreCliente(res.data.nombre);
 				setEmailCliente(res.data.email);
 				setEstadoCliente(res.data.estado || "Inactivo");
-				setClienteEncontrado(true); // Cliente fue encontrado
+				setClienteEncontrado(true);
 
 				if (res.data.estado !== "Activo") {
 					setErrorCedula("El cliente está inactivo.");
@@ -166,7 +168,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				handleUnauthorized();
+				await updateSessionStatus();				handleUnauthorized();
 				return;
 			}
 
@@ -270,7 +272,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				handleUnauthorized();
+				await updateSessionStatus();				handleUnauthorized();
 				return;
 			}
 
@@ -407,6 +409,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 								value={formData.fecha}
 								onChange={handleChange}
 								disabled={isSubmitting}
+								min={today}
 							/>
 						</div>
 					</Modal.Body>

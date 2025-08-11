@@ -5,7 +5,7 @@ import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { UserPlus } from "lucide-react";
 import Swal from "sweetalert2";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import validTokenActive from "../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../utils/validateToken";
 
 const CrearUsuario = () => {
 	const navigate = useNavigate();
@@ -101,7 +101,8 @@ const CrearUsuario = () => {
 					}
 				} catch (error) {
 					if (error.status === 401) {
-						navigate("/error", {
+				await updateSessionStatus();						
+				navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -154,7 +155,7 @@ const CrearUsuario = () => {
 			});
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

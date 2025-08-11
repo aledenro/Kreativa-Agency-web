@@ -12,7 +12,7 @@ import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
 import sendEmailExterno from "../../utils/sendEmailExterno";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 import axios from "axios";
 
 const ModalVerReclutacion = ({ show, handleClose, form, onUpdate }) => {
@@ -101,7 +101,7 @@ const ModalVerReclutacion = ({ show, handleClose, form, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

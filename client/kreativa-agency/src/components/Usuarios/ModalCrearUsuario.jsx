@@ -5,7 +5,7 @@ import { UserPlus } from "lucide-react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 	const navigate = useNavigate();
@@ -121,7 +121,7 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 					}
 				} catch (error) {
 					if (error.status === 401) {
-						navigate("/error", {
+				await updateSessionStatus();						navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -190,7 +190,7 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 			}, 2000);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

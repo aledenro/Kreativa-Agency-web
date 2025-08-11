@@ -83,7 +83,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			setProyecto(res.data.proyecto);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -260,8 +260,9 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				console.error("Error al enviar el email");
 			}
 		} catch (error) {
-			if (error.response?.status === 401) {
-				localStorage.clear();
+
+			if (error.status === 401) {
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

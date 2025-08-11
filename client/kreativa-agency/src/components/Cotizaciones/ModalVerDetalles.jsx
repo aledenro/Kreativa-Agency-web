@@ -16,7 +16,7 @@ import deleteFile from "../../utils/fileDelete";
 import sendEmail from "../../utils/emailSender";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 import Loading from "../../components/ui/LoadingComponent";
 
 const { Dragger } = Upload;
@@ -90,7 +90,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			setCotizacion(res.data.cotizacion);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -242,7 +242,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -290,7 +290,6 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 		if (nuevoEstado === estadoAnterior) {
 			return;
 		}
-
 		const token = localStorage.getItem("token");
 
 		if (!token) {
@@ -321,10 +320,8 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 				await sendEstadoNotification(nuevoEstado, estadoAnterior);
 			}
 		} catch (error) {
-			console.error("Error al cambiar estado");
-
-			if (error.response?.status === 401 || error.status === 401) {
-				localStorage.clear();
+			if (error.status === 401) {
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

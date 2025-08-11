@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { UserRound } from "lucide-react";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const VerPerfil = () => {
     const navigate = useNavigate();
@@ -43,7 +45,7 @@ const VerPerfil = () => {
                 });
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -102,7 +104,7 @@ const VerPerfil = () => {
             setEditMode(false);
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,

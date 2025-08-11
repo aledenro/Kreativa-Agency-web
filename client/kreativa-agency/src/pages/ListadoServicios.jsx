@@ -13,8 +13,9 @@ import {
 	usePrevNextButtons,
 } from "../components/ui/EmblaCarouselArrowButtons";
 import useEmblaCarousel from "embla-carousel-react";
-import validToken from "../utils/validateToken";
+import TokenUtils, { updateSessionStatus, validTokenActive} from "../utils/validateToken";
 import Loading from "../components/ui/LoadingComponent";
+
 
 const EmblaCarousel = (props) => {
 	const { servicios, options, onClickServicio } = props;
@@ -89,7 +90,7 @@ const ListadoServicios = () => {
 		async function getServicios() {
 			const token = localStorage.getItem("token");
 
-			validToken();
+			validTokenActive();
 			try {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/`,
@@ -122,7 +123,7 @@ const ListadoServicios = () => {
 				}
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",

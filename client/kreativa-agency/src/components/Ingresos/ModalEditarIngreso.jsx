@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const ModalEditarIngreso = ({
 	show,
@@ -18,6 +18,7 @@ const ModalEditarIngreso = ({
 	const navigate = useNavigate();
 
 	const [api, contextHolder] = notification.useNotification();
+	const today = new Date().toISOString().split('T')[0];
 
 	const openSuccessNotification = (message) => {
 		api.success({
@@ -154,7 +155,7 @@ const ModalEditarIngreso = ({
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				handleUnauthorized();
+				await updateSessionStatus();				handleUnauthorized();
 				return;
 			}
 
@@ -321,6 +322,7 @@ const ModalEditarIngreso = ({
 								onChange={handleChange}
 								required
 								disabled={isSubmitting}
+								min={today}
 							/>
 						</div>
 					</Modal.Body>

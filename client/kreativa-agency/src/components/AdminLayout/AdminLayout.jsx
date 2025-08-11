@@ -19,26 +19,51 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import axios from "axios";
 
-const handleLogout = () => {
-	Swal.fire({
-		title: "¿Cerrar sesión?",
-		text: "¿Estás seguro que deseas cerrar tu sesión?",
-		icon: "warning",
-		showCancelButton: true,
-		confirmButtonColor: "#FF0072",
-		cancelButtonColor: "#888",
-		confirmButtonText: "Sí, cerrar sesión",
-		cancelButtonText: "Cancelar",
-	}).then((result) => {
-		if (result.isConfirmed) {
-			localStorage.removeItem("token");
-			localStorage.removeItem("tipo_usuario");
-			localStorage.removeItem("user_id");
-			window.location.href = "/";
-		}
-	});
+const handleLogout = async() => {
+    Swal.fire({
+        title: "¿Cerrar sesión?",
+        text: "¿Estás seguro que deseas cerrar tu sesión?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FF0072",
+        cancelButtonColor: "#888",
+        confirmButtonText: "Sí, cerrar sesión",
+        cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+             await updateSessionStatus()
+            localStorage.clear()
+            window.location.href = "/";
+        }
+    });
 };
+
+const updateSessionStatus = async() => {
+
+        const user = localStorage.getItem("user_name")
+
+            try {
+                const response = await axios.put(
+                    `${import.meta.env.VITE_API_URL}/sessions`,
+                    {   username: user,
+                        motivo: "Logout"
+                    }
+            );
+
+        }catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    "Error al iniciar sesión.",
+                confirmButtonColor: " #ff0072",
+            });
+
+            throw new Error("Error al actualizar la sesion.")
+        }
+    }
 
 const sidebarItemVariants = {
 	hidden: { opacity: 0, x: -20 },

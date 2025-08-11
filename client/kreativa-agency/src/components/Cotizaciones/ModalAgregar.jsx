@@ -11,7 +11,7 @@ import fileUpload from "../../utils/fileUpload";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const { Dragger } = Upload;
 
@@ -128,7 +128,7 @@ const ModalAgregar = ({ show, handleClose }) => {
 			await fileUpload(files, "cotizaciones", "cotizacion", respuestaDbId);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -210,6 +210,7 @@ const ModalAgregar = ({ show, handleClose }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

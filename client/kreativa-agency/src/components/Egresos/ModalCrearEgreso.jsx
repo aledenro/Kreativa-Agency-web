@@ -6,6 +6,7 @@ import axios from "axios";
 import { notification } from "antd";
 import validTokenActive from "../../utils/validateToken";
 
+
 const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 	const navigate = useNavigate();
 
@@ -18,6 +19,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 		proveedor: "",
 		estado: "Pendiente",
 	});
+	const today = new Date().toISOString().split('T')[0];
 
 	const [api, contextHolder] = notification.useNotification();
 
@@ -155,6 +157,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 		} catch (error) {
 			if (error.status === 401) {
 				handleUnauthorized();
+
 				return;
 			}
 
@@ -186,6 +189,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 								onChange={handleChange}
 								disabled={isSubmitting}
 								required
+								min={today}
 							/>
 						</div>
 						<div className="mb-3">

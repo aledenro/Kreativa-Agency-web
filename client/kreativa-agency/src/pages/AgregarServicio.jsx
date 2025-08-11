@@ -8,6 +8,7 @@ import AdminLayout from "../components/AdminLayout/AdminLayout";
 import fileUpload from "../utils/fileUpload";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/ui/LoadingComponent";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 const AgregarServicio = () => {
 	const [categorias, setCategorias] = useState([]);
@@ -69,6 +70,7 @@ const AgregarServicio = () => {
 			setCategorias(res.data);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();				
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -175,6 +177,55 @@ const AgregarServicio = () => {
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
+			const servicioId = res.data._id;
+
+			let imagenes = [];
+			if (fileList.length > 0) {
+				try {
+					const file = fileList[0].originFileObj;
+
+					if (file) {
+						imagenes = await fileUpload(
+							[file],
+							"landingpage",
+							"servicios",
+							servicioId
+						);
+					}
+
+					const token = localStorage.getItem("token");
+
+					if (!token) {
+						navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe iniciar sesión para continuar.",
+							},
+						});
+					}
+
+					await axios.put(
+						`${import.meta.env.VITE_API_URL}/servicios/modificar/${servicioId}`,
+						imagenes,
+						{ headers: { Authorization: `Bearer ${token}` } }
+					);
+				} catch (error) {
+					if (error.status === 401) {
+				await updateSessionStatus();						
+				navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe volver a iniciar sesión para continuar.",
+							},
+						});
+						return;
+					}
+					console.error("Error al subir archivos:", error);
+					openErrorNotification("No se pudieron subir las imágenes.");
+					return;
+				}
+			}
+
 			openSuccessNotification("Servicio agregado exitosamente.");
 
 			event.target.reset();
@@ -186,7 +237,7 @@ const AgregarServicio = () => {
 			}, 2000);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -244,7 +295,7 @@ const AgregarServicio = () => {
 			console.error("Error al agregar la categoria:", error);
 			if (error.response) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",

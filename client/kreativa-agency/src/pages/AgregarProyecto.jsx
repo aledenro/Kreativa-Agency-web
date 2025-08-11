@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 function construirJsonRequest(
     nombre,
@@ -100,6 +101,7 @@ const AgregarProyecto = () => {
             }
         } catch (error) {
             if (error.status === 401) {
+				await updateSessionStatus();                
                 localStorage.clear();
                 navigate("/error", {
                     state: {
@@ -143,7 +145,7 @@ const AgregarProyecto = () => {
                 setClientes(response.data);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -179,7 +181,7 @@ const AgregarProyecto = () => {
                 setEmpleados(response.data);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
