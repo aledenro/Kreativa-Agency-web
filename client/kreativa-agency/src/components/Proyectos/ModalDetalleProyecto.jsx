@@ -15,6 +15,7 @@ import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import validTokenActive from "../../utils/validateToken";
+import Loading from "../../components/ui/LoadingComponent";
 
 const { Dragger } = Upload;
 
@@ -93,6 +94,8 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				return;
 			}
 			console.error("Error al obtener la proyecto");
+		} finally {
+			setLoading(false);
 		}
 	}, [proyectoId]);
 
@@ -307,6 +310,26 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		}
 	};
 
+	if (loading) {
+		return (
+			<Modal
+				scrollable
+				show={show}
+				onHide={handleClose}
+				size="xl"
+				centered
+				dialogClassName="proyecto-modal"
+			>
+				<Modal.Body
+					className="d-flex justify-content-center align-items-center"
+					style={{ minHeight: "200px" }}
+				>
+					<Loading />
+				</Modal.Body>
+			</Modal>
+		);
+	}
+
 	return (
 		<Modal
 			scrollable
@@ -322,8 +345,8 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			</Modal.Header>
 			<Modal.Body className="p-0">
 				{!proyecto ? (
-					<div className="text-center p-5">
-						<p>Cargando proyecto...</p>
+					<div className="d-flex justify-content-center align-items-center p-5">
+						<Loading />
 					</div>
 				) : (
 					<div className="proyecto-modal-content">
