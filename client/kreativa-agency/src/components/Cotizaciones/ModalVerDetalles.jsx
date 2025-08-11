@@ -27,12 +27,34 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 	const [isHovered, setIsHovered] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const user_id = localStorage.getItem("user_id");
+	const userRole = localStorage.getItem("tipo_usuario");
 	const navigate = useNavigate();
 
 	const [api, contextHolder] = notification.useNotification();
 
 	const handleMouseEnter = () => setIsHovered(true);
 	const handleMouseLeave = () => setIsHovered(false);
+
+	const isCotizacionBloqueada = () => {
+		return (
+			userRole === "Cliente" &&
+			cotizacion &&
+			(cotizacion.estado === "Aceptado" || cotizacion.estado === "Cancelado")
+		);
+	};
+
+	const getBadgeClass = (estado) => {
+		switch (estado) {
+			case "Nuevo":
+				return "badge-azul";
+			case "Aceptado":
+				return "badge-verde";
+			case "Cancelado":
+				return "badge-rojo";
+			default:
+				return "badge-gris";
+		}
+	};
 
 	const showNotification = (type, message) => {
 		api[type]({
@@ -139,6 +161,14 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 	async function handleSubmit(event) {
 		event.preventDefault();
 
+		if (isCotizacionBloqueada()) {
+			showNotification(
+				"error",
+				"No puede responder a una cotización aceptada o cancelada."
+			);
+			return;
+		}
+
 		const enviar = confirm("¿Desea enviar su respuesta?");
 
 		if (!enviar) {
@@ -175,6 +205,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 				data,
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
+
 			showNotification("success", "Respuesta enviada correctamente.");
 
 			if (
@@ -184,9 +215,31 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			) {
 				await fileUploadErrorHandler(filesArray, res.data._id);
 			}
+
 			event.target.reset();
 			clearDragger();
 			fetchCotizacion(cotizacionId);
+
+			if (userRole !== "Cliente") {
+				try {
+					const clienteId =
+						typeof cotizacion.cliente_id === "object"
+							? cotizacion.cliente_id._id
+							: cotizacion.cliente_id;
+
+					if (clienteId) {
+						await sendEmail(
+							clienteId,
+							`Un colaborador de Kreativa Agency ha respondido a su cotización. Por favor, acceda al sistema para revisar los detalles de la respuesta.`,
+							`Actualización en su cotización: ${cotizacion.titulo}`
+						);
+					} else {
+						console.error("ID de cliente no válido");
+					}
+				} catch (emailError) {
+					console.error("Error al enviar notificación");
+				}
+			}
 		} catch (error) {
 			if (error.status === 401) {
 				await updateSessionStatus();				localStorage.clear();
@@ -196,30 +249,12 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 						mensaje: "Debe volver a iniciar sesión para continuar.",
 					},
 				});
-
 				return;
 			}
 			showNotification(
 				"error",
-				"Error al enviar su respuesta, por favor intente de nuevo o contacte al soporte tecnico."
+				"Error al enviar su respuesta, por favor intente de nuevo o contacte al soporte técnico."
 			);
-		}
-
-		try {
-			await sendEmail(
-				cotizacion.cliente_id._id,
-				`Un colaborador de Kreativa Agency ha respondido a su cotización, ingrese para ver los detalles.`,
-				`Actualización en su cotización ${cotizacion.titulo}`,
-				"Ver",
-				"test"
-			);
-		} catch (error) {
-			console.error(`Error al enviar la notificacion`);
-			showNotification(
-				"error",
-				"Error al enviar la notificación, por favor intente de nuevo o contacte al soporte técnico."
-			);
-			return;
 		}
 	}
 
@@ -249,7 +284,12 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 	}
 
 	async function handleChangeEstado(event) {
-		const estado = event.target.value;
+		const nuevoEstado = event.target.value;
+		const estadoAnterior = cotizacion.estado;
+
+		if (nuevoEstado === estadoAnterior) {
+			return;
+		}
 		const token = localStorage.getItem("token");
 
 		if (!token) {
@@ -263,14 +303,22 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 		}
 
 		try {
-			axios.put(
+			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${cotizacionId}`,
-
-				{ estado: estado },
+				{ estado: nuevoEstado },
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
-			showNotification("success", "Estado cambiado  correctamente.");
+			if (response.status === 200) {
+				showNotification("success", "Estado cambiado correctamente.");
+
+				setCotizacion((prev) => ({
+					...prev,
+					estado: nuevoEstado,
+				}));
+
+				await sendEstadoNotification(nuevoEstado, estadoAnterior);
+			}
 		} catch (error) {
 			if (error.status === 401) {
 				await updateSessionStatus();				localStorage.clear();
@@ -280,16 +328,94 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 						mensaje: "Debe volver a iniciar sesión para continuar.",
 					},
 				});
-
 				return;
 			}
 
 			showNotification(
 				"error",
-				"Error al cambiar el estado de la cotizacion, por favor intente de nuevo o contacte al soporte tecnico."
+				"Error al cambiar el estado de la cotización, por favor intente de nuevo o contacte al soporte técnico."
 			);
+
+			event.target.value = estadoAnterior;
+		}
+
+		async function sendEstadoNotification(nuevoEstado, estadoAnterior) {
+			try {
+				const clienteId =
+					typeof cotizacion.cliente_id === "object"
+						? cotizacion.cliente_id._id
+						: cotizacion.cliente_id;
+
+				if (!clienteId) {
+					console.error("ID de cliente no válido para envío de email");
+					return;
+				}
+
+				const mensajes = {
+					Nuevo: {
+						asunto: `Su cotización ha sido recibida`,
+						mensaje: `Su cotización "${cotizacion.titulo}" ha sido recibida y está siendo procesada por nuestro equipo. Le notificaremos cualquier actualización.`,
+					},
+					Aceptado: {
+						asunto: `¡Su cotización ha sido aceptada!`,
+						mensaje: `¡Excelentes noticias! Su cotización "${cotizacion.titulo}" ha sido aceptada. Nos pondremos en contacto con usted pronto para continuar con el proceso.`,
+					},
+					Cancelado: {
+						asunto: `Actualización sobre su cotización: ${cotizacion.titulo}`,
+						mensaje: `Le informamos que su cotización "${cotizacion.titulo}" ha sido cancelada. Si tiene alguna pregunta, no dude en contactarnos.`,
+					},
+				};
+
+				const notificacion = mensajes[nuevoEstado] || {
+					asunto: `Actualización en su cotización: ${cotizacion.titulo}`,
+					mensaje: `El estado de su cotización "${cotizacion.titulo}" ha cambiado de estado a "${nuevoEstado}".`,
+				};
+
+				await sendEmail(
+					clienteId,
+					notificacion.mensaje,
+					notificacion.asunto,
+					"Ver Cotización",
+					"cotizacion"
+				);
+			} catch (emailError) {
+				console.error("Error al enviar notificación de cambio de estado");
+			}
 		}
 	}
+
+	const renderEstadoControl = () => {
+		if (userRole !== "Cliente") {
+			return (
+				<select
+					className="form-select form_input"
+					onChange={handleChangeEstado}
+				>
+					{opciones.map((opcion) => renderOpciones(opcion, cotizacion.estado))}
+				</select>
+			);
+		} else {
+			return (
+				<div className="info-item">
+					<div className="text-muted mb-1">Estado</div>
+					<div className="estado-badge fw-medium">
+						<span className={`badge ${getBadgeClass(cotizacion.estado)}`}>
+							{cotizacion.estado}
+						</span>
+					</div>
+				</div>
+			);
+		}
+	};
+
+	const getMensajeBloqueo = () => {
+		if (cotizacion.estado === "Aceptado") {
+			return "Esta cotización ha sido aceptada y no permite más interacciones. Nos pondremos en contacto con usted pronto para continuar con el proceso.";
+		} else if (cotizacion.estado === "Cancelado") {
+			return "Esta cotización ha sido cancelada y no permite más interacciones. Si tiene alguna pregunta, no dude en contactarnos.";
+		}
+		return "";
+	};
 
 	return (
 		<Modal
@@ -355,16 +481,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 														</div>
 													</div>
 												</div>
-												<div className="col-md-6">
-													<select
-														className="form-select"
-														onChange={handleChangeEstado}
-													>
-														{opciones.map((opcion) =>
-															renderOpciones(opcion, cotizacion.estado)
-														)}
-													</select>
-												</div>
+												<div className="col-md-6">{renderEstadoControl()}</div>
 											</div>
 
 											<div className="row mb-3">
@@ -500,86 +617,96 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 												</div>
 											)}
 
-											<div className="responder-form">
-												<form onSubmit={handleSubmit}>
-													<h6 className="mb-3">Responder:</h6>
-													<div className="form-group mb-3">
-														<textarea
-															name="message"
-															className="form-control form_input form-textarea"
-															rows="3"
-															placeholder="Por favor escriba su respuesta"
-															required
-														></textarea>
-													</div>
+											{!isCotizacionBloqueada() && (
+												<div className="responder-form">
+													<form onSubmit={handleSubmit}>
+														<h6 className="mb-3">Responder:</h6>
+														<div className="form-group mb-3">
+															<textarea
+																name="message"
+																className="form-control form_input form-textarea"
+																rows="3"
+																placeholder="Por favor escriba su respuesta"
+																required
+															></textarea>
+														</div>
 
-													{/* Implementación del Dragger */}
-													<div className="form-group mb-3">
-														<label className="form-label">
-															Archivos adjuntos
-														</label>
-														<ConfigProvider
-															theme={{
-																components: {
-																	Upload: {
-																		lineWidth: "1px",
-																		lineType: "solid",
-																		colorBorder: "#8788ab",
-																		colorBgContainer: "transparent",
+														{/* Implementación del Dragger */}
+														<div className="form-group mb-3">
+															<label className="form-label">
+																Archivos adjuntos
+															</label>
+															<ConfigProvider
+																theme={{
+																	components: {
+																		Upload: {
+																			lineWidth: "1px",
+																			lineType: "solid",
+																			colorBorder: "#8788ab",
+																			colorBgContainer: "transparent",
+																		},
 																	},
-																},
-															}}
-														>
-															<Dragger
-																name="filesUploaded"
-																multiple={true}
-																action="#"
-																beforeUpload={() => false}
-																onChange={handleFileChange}
-																className="custom-dragger"
-																style={{
-																	borderRadius: "12px",
-																	borderColor: isHovered
-																		? "#110d27"
-																		: "#8788ab",
-																	borderWidth: "1px",
-																	borderStyle: "solid",
-																	backgroundColor: "transparent",
-																	transition: "border-color 0.3s",
 																}}
-																onMouseEnter={handleMouseEnter}
-																onMouseLeave={handleMouseLeave}
 															>
-																<p className="ant-upload-drag-icon custom-icon">
-																	<InboxOutlined
-																		style={{
-																			color: isHovered ? "#110d27" : "#8788ab",
-																			transition: "color 0.3s",
-																		}}
-																	/>
-																</p>
-																<p className="ant-upload-text">
-																	Haz clic o arrastra tus archivos aquí para
-																	subirlos
-																</p>
-																<p className="ant-upload-hint">
-																	Puedes subir múltiples archivos
-																</p>
-															</Dragger>
-														</ConfigProvider>
-													</div>
+																<Dragger
+																	name="filesUploaded"
+																	multiple={true}
+																	action="#"
+																	beforeUpload={() => false}
+																	onChange={handleFileChange}
+																	className="custom-dragger"
+																	style={{
+																		borderRadius: "12px",
+																		borderColor: isHovered
+																			? "#110d27"
+																			: "#8788ab",
+																		borderWidth: "1px",
+																		borderStyle: "solid",
+																		backgroundColor: "transparent",
+																		transition: "border-color 0.3s",
+																	}}
+																	onMouseEnter={handleMouseEnter}
+																	onMouseLeave={handleMouseLeave}
+																>
+																	<p className="ant-upload-drag-icon custom-icon">
+																		<InboxOutlined
+																			style={{
+																				color: isHovered
+																					? "#110d27"
+																					: "#8788ab",
+																				transition: "color 0.3s",
+																			}}
+																		/>
+																	</p>
+																	<p className="ant-upload-text">
+																		Haz clic o arrastra tus archivos aquí para
+																		subirlos
+																	</p>
+																	<p className="ant-upload-hint">
+																		Puedes subir múltiples archivos
+																	</p>
+																</Dragger>
+															</ConfigProvider>
+														</div>
 
-													<div className="d-flex justify-content-end">
-														<button
-															type="submit"
-															className="thm-btn"
-															disabled={loading}
-														>
-															{loading ? "Enviando..." : "Enviar"}
-														</button>
-													</div>
-												</form>
-											</div>
+														<div className="d-flex justify-content-end">
+															<button
+																type="submit"
+																className="thm-btn"
+																disabled={loading}
+															>
+																{loading ? "Enviando..." : "Enviar"}
+															</button>
+														</div>
+													</form>
+												</div>
+											)}
+
+											{isCotizacionBloqueada() && (
+												<div className="descripcion-content p-3 bg-light rounded">
+													<strong>Información:</strong> {getMensajeBloqueo()}
+												</div>
+											)}
 										</div>
 									</div>
 								</Tab.Pane>

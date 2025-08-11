@@ -470,7 +470,6 @@ const DashboardColaborador = () => {
 	const handleCloseEditarTareaModal = () => {
 		setShowModalEditarTarea(false);
 		setEditingTareaId(null);
-		reloadData();
 	};
 
 	const handleAgregarProyecto = () => {
@@ -479,7 +478,6 @@ const DashboardColaborador = () => {
 
 	const handleCloseAgregarProyectoModal = () => {
 		setShowModalAgregarProyecto(false);
-		reloadData();
 	};
 
 	const handleAgregarTarea = (proyectoId) => {
