@@ -217,12 +217,16 @@ const ModalEditarPaquete = ({ show, onHide, paquete, onPaqueteEditado }) => {
 		};
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		try {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/servicios/${paquete.servicioId}/paquetes/${paquete._id}`,
 				paqueteEditado,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (res.status === 200) {

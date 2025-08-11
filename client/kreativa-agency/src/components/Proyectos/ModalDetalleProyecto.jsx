@@ -44,6 +44,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		if (!proyectoId) return;
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -59,7 +60,11 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -149,6 +154,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		};
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -165,7 +171,10 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${proyectoId}`,
 				data,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			const respuestaDb = response.data.respuesta;

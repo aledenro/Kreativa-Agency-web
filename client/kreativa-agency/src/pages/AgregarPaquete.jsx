@@ -69,6 +69,7 @@ const GestionPaquetes = () => {
 
 	const fetchServicios = async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -83,7 +84,11 @@ const GestionPaquetes = () => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/servicios/con-paquetes`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -139,6 +144,7 @@ const GestionPaquetes = () => {
 
 		const { servicioId, paqueteId, estadoActual } = selectedPaquete;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -155,7 +161,11 @@ const GestionPaquetes = () => {
 				: `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
 
 			const response = await axios.put(endpoint, null, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setServicios((prevServicios) =>

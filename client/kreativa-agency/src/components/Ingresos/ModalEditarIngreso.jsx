@@ -131,6 +131,7 @@ const ModalEditarIngreso = ({
 		setIsSubmitting(true);
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			handleUnauthorized("Acceso no autorizado.");
@@ -141,7 +142,10 @@ const ModalEditarIngreso = ({
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/ingresos/${ingresoEditado._id}`,
 				ingresoEditado,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (res.status === 200) {

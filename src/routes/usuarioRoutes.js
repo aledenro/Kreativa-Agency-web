@@ -1,5 +1,5 @@
 const express = require("express");
-const verificarToken = require("../middleware/authMiddleware");
+const {verificarToken, verificarTokenValidoSesion} = require("../middleware/authMiddleware");
 
 const {
     crearUsuario,
@@ -22,13 +22,13 @@ router.post("/login", iniciarSesion);
 router.get("/usuarios/jerarquia", getJerarquiaUsuarios);
 
 //Rutas protegidas
-router.post("/usuarios", verificarToken, crearUsuario);
-router.get("/usuarios", verificarToken, obtenerTodosLosUsuarios);
-router.get("/usuarios/clientes", verificarToken, getClientes);
-router.get("/usuarios/empleados", verificarToken, getEmpleados);
-router.get("/usuarios/:id", verificarToken, obtenerUsuario);
-router.put("/usuarios/:id", verificarToken, actualizarUsuarioPorId);
-router.delete("/usuarios/:id", verificarToken, eliminarUsuarioPorId);
+router.post("/usuarios", verificarToken, verificarTokenValidoSesion, crearUsuario);
+router.get("/usuarios", verificarToken, verificarTokenValidoSesion, obtenerTodosLosUsuarios);
+router.get("/usuarios/clientes", verificarToken, verificarTokenValidoSesion, getClientes);
+router.get("/usuarios/empleados", verificarToken, verificarTokenValidoSesion, getEmpleados);
+router.get("/usuarios/:id", verificarToken, verificarTokenValidoSesion, obtenerUsuario);
+router.put("/usuarios/:id", verificarToken, verificarTokenValidoSesion, actualizarUsuarioPorId);
+router.delete("/usuarios/:id", verificarToken, verificarTokenValidoSesion, eliminarUsuarioPorId);
 router.post("/recuperar", recuperarContraseña);
 router.post("/restablecer", restablecerContraseña);
 

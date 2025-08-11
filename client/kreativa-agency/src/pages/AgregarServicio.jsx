@@ -46,6 +46,7 @@ const AgregarServicio = () => {
 
 	const fetchCategorias = async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -61,7 +62,11 @@ const AgregarServicio = () => {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/servicios/categorias`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 			setCategorias(res.data);
@@ -118,6 +123,7 @@ const AgregarServicio = () => {
 		}
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -138,7 +144,10 @@ const AgregarServicio = () => {
 					categoria_id: selectedCategoria,
 					imagenes: [],
 				},
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			const servicioId = res.data._id;
@@ -171,7 +180,10 @@ const AgregarServicio = () => {
 					await axios.put(
 						`${import.meta.env.VITE_API_URL}/servicios/modificar/${servicioId}`,
 						imagenes,
-						{ headers: { Authorization: `Bearer ${token}` } }
+						{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 					);
 				} catch (error) {
 					if (error.status === 401) {
@@ -225,6 +237,7 @@ const AgregarServicio = () => {
 			return;
 		}
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -242,7 +255,10 @@ const AgregarServicio = () => {
 				{
 					nombre: nuevaCategoria,
 				},
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			await fetchCategorias();

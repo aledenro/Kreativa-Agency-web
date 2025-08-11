@@ -111,6 +111,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			colabFormateado
 		);
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -126,7 +127,10 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/proyectos/crear`,
 				data,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (res.status === 201 || res.status === 200) {
@@ -239,6 +243,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 	async function fetchClientes() {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -252,7 +257,11 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/clientes`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -277,6 +286,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 	async function fetchEmpleados() {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -290,7 +300,11 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 

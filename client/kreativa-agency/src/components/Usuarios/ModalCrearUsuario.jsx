@@ -93,6 +93,8 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 			if (["usuario", "email", "cedula"].includes(name)) {
 				try {
 					const token = localStorage.getItem("token");
+					const user = localStorage.getItem("user_name");
+
 					if (!token) {
 						navigate("/error", {
 							state: {
@@ -106,7 +108,11 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 					const response = await axios.get(
 						`${import.meta.env.VITE_API_URL}/usuarios`,
 						{
-							headers: { Authorization: `Bearer ${token}` },
+							headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 						}
 					);
 
@@ -155,6 +161,8 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 		e.preventDefault();
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+
 		if (!token) {
 			navigate("/error", {
 				state: {
@@ -175,7 +183,11 @@ const ModalCrearUsuario = ({ show, handleClose, onUpdate }) => {
 
 		try {
 			await axios.post(`${import.meta.env.VITE_API_URL}/usuarios`, formData, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			openSuccessNotification("Usuario creado correctamente.");

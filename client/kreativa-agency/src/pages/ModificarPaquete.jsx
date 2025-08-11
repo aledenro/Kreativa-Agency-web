@@ -28,6 +28,7 @@ const ModificarPaquete = () => {
     useEffect(() => {
         const fetchPaquete = async () => {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             if (!token) {
                 navigate("/error", {
@@ -42,7 +43,11 @@ const ModificarPaquete = () => {
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/${servicioId}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -157,6 +162,7 @@ const ModificarPaquete = () => {
 
     const handleSubmit = async () => {
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -172,7 +178,10 @@ const ModificarPaquete = () => {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}`,
                 paqueteEditado,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
             console.log("Respuesta del backend:", res.data);
             openSuccessNotification("Paquete editado exitosamente");

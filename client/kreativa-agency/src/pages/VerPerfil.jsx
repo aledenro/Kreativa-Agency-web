@@ -21,6 +21,8 @@ const VerPerfil = () => {
         const fetchPerfil = async () => {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
+
                 if (!token) {
                     navigate("/error", {
                         state: {
@@ -34,7 +36,11 @@ const VerPerfil = () => {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/${decoded.id}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -76,6 +82,8 @@ const VerPerfil = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
+            
             if (!token) {
                 navigate("/error", {
                     state: {
@@ -89,7 +97,11 @@ const VerPerfil = () => {
                 `${import.meta.env.VITE_API_URL}/usuarios/${usuario._id}`,
                 formData,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                 }
             );
 

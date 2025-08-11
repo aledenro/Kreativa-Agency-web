@@ -148,6 +148,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		);
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -163,7 +164,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
 				data,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (res.status === 200) {
@@ -282,6 +286,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		event.preventDefault();
 		const estadoEdit = event.target.value;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -297,7 +302,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
 				{ estado: estadoEdit },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (response.status === 200) {
@@ -417,6 +425,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		try {
 			const token = localStorage.getItem("token");
 			const user_id = localStorage.getItem("user_id");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -433,7 +442,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 					usuario_id: user_id,
 					accion: accion,
 				},
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 		} catch (error) {
 			if (error.status === 401) {
@@ -465,6 +477,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	const fetchProyecto = useCallback(async () => {
 		if (!proyectoId) return;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -480,7 +493,11 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -538,6 +555,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	async function fetchEmpleados() {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -551,7 +569,11 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -580,6 +602,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	async function fetchClientes() {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -593,7 +616,11 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/clientes`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 

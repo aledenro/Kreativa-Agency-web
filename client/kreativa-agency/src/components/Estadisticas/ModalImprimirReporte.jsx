@@ -73,6 +73,7 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
 
 	const getDataSinglePageData = async (url) => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -85,7 +86,11 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
 		}
 
 		const res = await axios.get(url, {
-			headers: { Authorization: `Bearer ${token}` },
+			headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 		});
 
 		return res.data;
@@ -95,6 +100,7 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
 		const data = [];
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -109,7 +115,11 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
 		const resEgresos = await axios.get(
 			`${import.meta.env.VITE_API_URL}/egresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,
 			{
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user 
+				},
+
 			}
 		);
 
@@ -118,7 +128,10 @@ const ModalImprimirReportes = ({ show, handleClose }) => {
 		const resIngresos = await axios.get(
 			`${import.meta.env.VITE_API_URL}/ingresos/getByDateRange?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,
 			{
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+				},
 			}
 		);
 

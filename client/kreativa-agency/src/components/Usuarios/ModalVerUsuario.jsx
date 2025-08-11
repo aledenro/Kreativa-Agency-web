@@ -25,6 +25,8 @@ const ModalVerUsuario = ({ show, handleClose, usuarioId }) => {
 
 		setLoading(true);
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+		
 		if (!token) {
 			navigate("/error", {
 				state: {
@@ -39,7 +41,11 @@ const ModalVerUsuario = ({ show, handleClose, usuarioId }) => {
 			const { data } = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/${usuarioId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 

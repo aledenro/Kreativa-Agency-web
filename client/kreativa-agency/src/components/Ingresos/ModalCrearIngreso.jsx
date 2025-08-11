@@ -131,6 +131,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				handleUnauthorized("Debe iniciar sesión para continuar.");
@@ -140,7 +141,11 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/ingresos/buscarPorCedula/${formData.cedula}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -247,6 +252,7 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 		setIsSubmitting(true);
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			handleUnauthorized("Acceso no autorizado.");
@@ -257,7 +263,10 @@ const ModalCrearIngreso = ({ show, handleClose, categories, onSave }) => {
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/ingresos`,
 				formData,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (res.status === 201) {

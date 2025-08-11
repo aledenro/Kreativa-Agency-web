@@ -116,12 +116,16 @@ const AgregarProyecto = () => {
             colabFormateado
         );
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/editar/${id}`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status == 200) {
@@ -146,12 +150,16 @@ const AgregarProyecto = () => {
         const estadoEdit = event.target.value;
 
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/editar/${id}`,
                 { estado: estadoEdit },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (response.status === 200) {
@@ -195,6 +203,7 @@ const AgregarProyecto = () => {
         try {
             const user_id = localStorage.getItem("user_id");
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/actualizarLog/${id}`,
@@ -202,7 +211,10 @@ const AgregarProyecto = () => {
                     usuario_id: user_id,
                     accion: accion,
                 },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
         } catch (error) {
             console.error(error.message);
@@ -223,12 +235,17 @@ const AgregarProyecto = () => {
 
     const fetchProyecto = useCallback(async () => {
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         try {
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/proyectos/id/${id}`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                 }
             );
 
@@ -248,11 +265,16 @@ const AgregarProyecto = () => {
         async function fetchEmpleados() {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
 
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -270,11 +292,16 @@ const AgregarProyecto = () => {
     async function fetchClientes() {
         try {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/usuarios/clientes`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                 }
             );
 

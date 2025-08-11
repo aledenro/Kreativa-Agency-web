@@ -70,6 +70,8 @@ const Movimientos = () => {
 		}
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+
 		setLoading(true);
 
 		if (!token) {
@@ -84,7 +86,11 @@ const Movimientos = () => {
 
 		axios
 			.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			})
 			.then((response) => {
 				setMovimientos(response.data);
@@ -109,6 +115,8 @@ const Movimientos = () => {
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+
 		if (!token) {
 			navigate("/error", {
 				state: {
@@ -123,7 +131,11 @@ const Movimientos = () => {
 		promises.push(
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/movimientos`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((response) => {
 					setMovimientos(response.data);
@@ -136,7 +148,11 @@ const Movimientos = () => {
 		promises.push(
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/servicios/categorias`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((res) => {
 					setCategories(res.data);
@@ -220,6 +236,7 @@ const Movimientos = () => {
 			return;
 		}
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -234,7 +251,11 @@ const Movimientos = () => {
 		if (mov.entidad === "ingreso") {
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/ingresos/${mov.idRegistro}`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((response) => {
 					setRegistroSeleccionado(response.data);
@@ -255,7 +276,11 @@ const Movimientos = () => {
 		} else if (mov.entidad === "egreso") {
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/egresos/${mov.idRegistro}`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((response) => {
 					setRegistroSeleccionado(response.data);
@@ -310,11 +335,16 @@ const Movimientos = () => {
 
 		setTimeout(() => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 			setLoading(true);
 
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/movimientos`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((response) => {
 					setMovimientos(response.data);

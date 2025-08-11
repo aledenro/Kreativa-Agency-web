@@ -133,6 +133,7 @@ const AgregarPTO = () => {
 
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -145,7 +146,11 @@ const AgregarPTO = () => {
 			}
 
 			await axios.post(`${import.meta.env.VITE_API_URL}/pto`, formData, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			Swal.fire({

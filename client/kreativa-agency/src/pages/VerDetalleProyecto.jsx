@@ -20,12 +20,17 @@ const VerDetalleProyecto = () => {
 
     const fetchproyecto = useCallback(async () => {
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         try {
             const res = await axios.get(
                 `${import.meta.env.VITE_API_URL}/proyectos/id/${id}`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                 }
             );
             console.log(res.data.proyecto);
@@ -62,12 +67,16 @@ const VerDetalleProyecto = () => {
         };
 
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${id}`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             const respuestaDb = response.data.respuesta;

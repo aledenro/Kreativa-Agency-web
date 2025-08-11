@@ -17,6 +17,7 @@ const JerarquiaUsuarios = () => {
 	useEffect(() => {
 		const fetchJerarquia = async () => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -31,7 +32,11 @@ const JerarquiaUsuarios = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/usuarios/jerarquia`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				setJerarquia(response.data);

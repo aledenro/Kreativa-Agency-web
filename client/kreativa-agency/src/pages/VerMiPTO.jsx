@@ -27,6 +27,7 @@ const VerMiPTO = () => {
 			try {
 				const token = localStorage.getItem("token");
 				const userId = localStorage.getItem("user_id");
+				const user = localStorage.getItem("user_name");
 
 				if (!token || !userId) {
 					Swal.fire({
@@ -41,7 +42,11 @@ const VerMiPTO = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/pto/${userId}`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 

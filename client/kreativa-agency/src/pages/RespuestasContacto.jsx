@@ -30,6 +30,7 @@ const RespuestasContacto = () => {
 	useEffect(() => {
 		const fetchFormularios = async () => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -44,7 +45,11 @@ const RespuestasContacto = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/contacto`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				setFormularios(response.data.forms);
@@ -75,11 +80,16 @@ const RespuestasContacto = () => {
 
 	const refetchFormularios = async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 		try {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/contacto`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 			setFormularios(response.data.forms);

@@ -36,6 +36,7 @@ const RespuestasReclutaciones = () => {
 	useEffect(() => {
 		const fetchFormularios = async () => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -50,7 +51,11 @@ const RespuestasReclutaciones = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/reclutaciones`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				setFormularios(response.data);
@@ -76,6 +81,7 @@ const RespuestasReclutaciones = () => {
 
 		const fetchFormStatus = async () => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -90,7 +96,11 @@ const RespuestasReclutaciones = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/form-status`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				setFormActive(response.data.active);
@@ -120,6 +130,7 @@ const RespuestasReclutaciones = () => {
 
 	const toggleFormStatus = async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -138,7 +149,11 @@ const RespuestasReclutaciones = () => {
 				`${import.meta.env.VITE_API_URL}/form-status`,
 				{},
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 			setFormActive(response.data.active);
@@ -168,11 +183,16 @@ const RespuestasReclutaciones = () => {
 
 	const refetchFormularios = async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 		try {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/reclutaciones`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 			setFormularios(response.data);

@@ -63,6 +63,7 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
             };
 
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             if (!token) {
                 navigate("/error", {
@@ -76,7 +77,10 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/pagos/`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status === 201) {

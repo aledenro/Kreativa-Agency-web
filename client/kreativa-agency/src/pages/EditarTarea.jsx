@@ -116,12 +116,16 @@ const EditarTarea = () => {
         event.preventDefault();
         const estadoEdit = event.target.value;
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         try {
             const response = await axios.put(
                 `${import.meta.env.VITE_API_URL}/tareas/editar/${id}`,
                 { estado: estadoEdit },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (response.status === 200) {
@@ -170,12 +174,16 @@ const EditarTarea = () => {
             fechaEntrega
         );
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         try {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/tareas/editar/${id}`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status == 200) {
@@ -210,13 +218,18 @@ const EditarTarea = () => {
 
         try {
             const user_id = localStorage.getItem("user_id");
+            const user = localStorage.getItem("user_name");
+
             await axios.put(
                 `${import.meta.env.VITE_API_URL}/tareas/actualizarLog/${id}`,
                 {
                     usuario_id: user_id,
                     accion: accion,
                 },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
         } catch (error) {
             console.error(error.message);
@@ -226,12 +239,17 @@ const EditarTarea = () => {
     useEffect(() => {
         async function fetchEmpleados() {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             try {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
                 setEmpleados(response.data);
@@ -244,12 +262,17 @@ const EditarTarea = () => {
 
         async function fetchProyectos() {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             try {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -263,12 +286,17 @@ const EditarTarea = () => {
 
         async function fetchTarea() {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             try {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/tareas/id/${id}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 

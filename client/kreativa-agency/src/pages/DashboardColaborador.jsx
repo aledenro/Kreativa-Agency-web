@@ -89,6 +89,8 @@ const DashboardColaborador = () => {
 	const fetchProyectos = async () => {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
+
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -106,7 +108,11 @@ const DashboardColaborador = () => {
 			}
 
 			const response = await axios.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setProyectos(response.data);
@@ -146,6 +152,8 @@ const DashboardColaborador = () => {
 	const fetchTareas = async () => {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
+
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -157,7 +165,11 @@ const DashboardColaborador = () => {
 			let url = `${import.meta.env.VITE_API_URL}/tareas`;
 
 			const response = await axios.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			let todasLasTareas = response.data.tareas || response.data || [];
@@ -187,6 +199,8 @@ const DashboardColaborador = () => {
 	const fetchEmpleados = async () => {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
+
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -198,7 +212,11 @@ const DashboardColaborador = () => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -223,6 +241,7 @@ const DashboardColaborador = () => {
 		const fetchProyectos = async () => {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 
 				if (!token) {
 					navigate("/error", {
@@ -240,7 +259,11 @@ const DashboardColaborador = () => {
 				}
 
 				const response = await axios.get(url, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				});
 
 				setProyectos(response.data);
@@ -266,6 +289,7 @@ const DashboardColaborador = () => {
 		const fetchTareas = async () => {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 
 				if (!token) {
 					navigate("/error", {
@@ -278,7 +302,11 @@ const DashboardColaborador = () => {
 				let url = `${import.meta.env.VITE_API_URL}/tareas`;
 
 				const response = await axios.get(url, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				});
 
 				setTareas(response.data.tareas || []);

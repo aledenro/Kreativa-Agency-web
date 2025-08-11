@@ -17,6 +17,8 @@ const VerUsuario = () => {
         const fetchUsuario = async () => {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
+                
                 if (!token) {
                     navigate("/error", {
                         state: {
@@ -29,7 +31,11 @@ const VerUsuario = () => {
                 const { data } = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 

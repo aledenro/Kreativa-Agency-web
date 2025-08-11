@@ -50,6 +50,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -66,7 +67,10 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 				`${import.meta.env.VITE_API_URL}/egresos`,
 				formData,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+					},
 				}
 			);
 			if (res.status === 201) {

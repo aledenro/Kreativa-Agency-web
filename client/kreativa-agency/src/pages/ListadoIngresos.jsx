@@ -118,6 +118,7 @@ const ListadoIngresos = () => {
 
 	const fetchIngresos = useCallback(async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -131,7 +132,11 @@ const ListadoIngresos = () => {
 
 		try {
 			const res = await axios.get(`${import.meta.env.VITE_API_URL}/ingresos`, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 			setIngresos(res.data);
 		} catch (error) {
@@ -150,7 +155,7 @@ const ListadoIngresos = () => {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			const token = localStorage.getItem("token");
-
+			const user = localStorage.getItem("user_name");
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -165,7 +170,11 @@ const ListadoIngresos = () => {
 				const res = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/categorias`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				setCategories(res.data);
@@ -181,6 +190,7 @@ const ListadoIngresos = () => {
 
 		const fetchClientes = async () => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -196,7 +206,11 @@ const ListadoIngresos = () => {
 				const res = await axios.get(
 					`${import.meta.env.VITE_API_URL}/usuarios`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				setClientes(res.data);
@@ -278,6 +292,7 @@ const ListadoIngresos = () => {
 		if (!toggleIngreso) return;
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			handleUnauthorized("Debe iniciar sesión para continuar.");
@@ -293,7 +308,11 @@ const ListadoIngresos = () => {
 				url,
 				{},
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
