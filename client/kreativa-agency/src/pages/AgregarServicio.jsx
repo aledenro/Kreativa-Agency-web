@@ -7,6 +7,7 @@ import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import fileUpload from "../utils/fileUpload";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/ui/LoadingComponent";
 
 const AgregarServicio = () => {
 	const [categorias, setCategorias] = useState([]);
@@ -24,6 +25,8 @@ const AgregarServicio = () => {
 
 	const handleMouseEnter = () => setIsHovered(true);
 	const handleMouseLeave = () => setIsHovered(false);
+
+	const [loading, setLoading] = useState(true);
 
 	const openSuccessNotification = (message) => {
 		api.success({
@@ -77,6 +80,8 @@ const AgregarServicio = () => {
 				return;
 			}
 			console.error("Error cargando categorias:", error);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -110,8 +115,21 @@ const AgregarServicio = () => {
 		const nombre = event.target.nombre.value.trim();
 		const descripcion = event.target.descripcion.value.trim();
 
-		if (!nombre || !descripcion || !selectedCategoria) {
-			openErrorNotification("Debes completar todos los campos.");
+		if (
+			!nombre ||
+			!descripcion ||
+			!selectedCategoria ||
+			fileList.length === 0
+		) {
+			const camposFaltantes = [];
+			if (!nombre) camposFaltantes.push("Nombre del servicio");
+			if (!descripcion) camposFaltantes.push("Descripción");
+			if (!selectedCategoria) camposFaltantes.push("Categoría");
+			if (fileList.length === 0) camposFaltantes.push("Imagen del servicio");
+
+			openErrorNotification(
+				`Los siguientes campos son obligatorios: ${camposFaltantes.join(", ")}`
+			);
 			return;
 		}
 
@@ -128,69 +146,44 @@ const AgregarServicio = () => {
 		}
 
 		try {
+			let imagenes = [];
+			try {
+				const file = fileList[0].originFileObj;
+
+				if (file) {
+					imagenes = await fileUpload(
+						[file],
+						"landingpage",
+						"servicios",
+						"temp"
+					);
+				}
+			} catch (error) {
+				console.error("Error al subir archivos:", error);
+				openErrorNotification("No se pudieron subir las imágenes.");
+				return;
+			}
+
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/servicios/agregar`,
 				{
 					nombre,
 					descripcion,
 					categoria_id: selectedCategoria,
-					imagenes: [],
+					imagenes: imagenes,
 				},
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
-			const servicioId = res.data._id;
-
-			let imagenes = [];
-			if (fileList.length > 0) {
-				try {
-					const file = fileList[0].originFileObj;
-
-					if (file) {
-						imagenes = await fileUpload(
-							[file],
-							"landingpage",
-							"servicios",
-							servicioId
-						);
-					}
-
-					const token = localStorage.getItem("token");
-
-					if (!token) {
-						navigate("/error", {
-							state: {
-								errorCode: 401,
-								mensaje: "Debe iniciar sesión para continuar.",
-							},
-						});
-					}
-
-					await axios.put(
-						`${import.meta.env.VITE_API_URL}/servicios/modificar/${servicioId}`,
-						imagenes,
-						{ headers: { Authorization: `Bearer ${token}` } }
-					);
-				} catch (error) {
-					if (error.status === 401) {
-						navigate("/error", {
-							state: {
-								errorCode: 401,
-								mensaje: "Debe volver a iniciar sesión para continuar.",
-							},
-						});
-						return;
-					}
-					console.error("Error al subir archivos:", error);
-					openErrorNotification("No se pudieron subir las imágenes.");
-					return;
-				}
-			}
-
 			openSuccessNotification("Servicio agregado exitosamente.");
+
 			event.target.reset();
 			setSelectedCategoria("");
 			setFileList([]);
+
+			setTimeout(() => {
+				navigate("/admin/servicios");
+			}, 2000);
 		} catch (error) {
 			if (error.status === 401) {
 				localStorage.clear();
@@ -278,6 +271,16 @@ const AgregarServicio = () => {
 		</button>
 	);
 
+	if (loading) {
+		return (
+			<AdminLayout>
+				<div className="main-container mx-auto">
+					<Loading />
+				</div>
+			</AdminLayout>
+		);
+	}
+
 	return (
 		<div>
 			<AdminLayout>
@@ -292,7 +295,7 @@ const AgregarServicio = () => {
 								<div className="row">
 									<div className="">
 										<label htmlFor="nombre" className="form-label">
-											Nombre del servicio
+											Nombre del servicio *
 										</label>
 										<input
 											type="text"
@@ -306,7 +309,7 @@ const AgregarServicio = () => {
 									<div className="col">
 										<div className="flex-grow-1">
 											<label htmlFor="categoria" className="form-label">
-												Categoría del servicio
+												Categoría del servicio *
 											</label>
 											<div className="d-flex align-items-center gap-2">
 												<Form.Select
@@ -337,7 +340,7 @@ const AgregarServicio = () => {
 								<div className="row">
 									<div className="col">
 										<label className="form-label" htmlFor="descripcion">
-											Descripción
+											Descripción *
 										</label>
 										<textarea
 											placeholder="Describa la información del paquete aquí..."
@@ -350,7 +353,7 @@ const AgregarServicio = () => {
 								<div className="row">
 									<div className="col">
 										<label className="form-label" htmlFor="imagenes">
-											Imagen del servicio (solo PNG o JPG)
+											Imagen del servicio * (solo PNG o JPG)
 										</label>
 										<div className="mt-2">
 											<ConfigProvider
@@ -359,7 +362,8 @@ const AgregarServicio = () => {
 														Upload: {
 															lineWidth: "1px",
 															lineType: "solid",
-															colorBorder: "#8788ab",
+															colorBorder:
+																fileList.length === 0 ? "#ff4d4f" : "#8788ab",
 															colorBgContainer: "transparent",
 														},
 													},
@@ -386,7 +390,12 @@ const AgregarServicio = () => {
 													onMouseLeave={handleMouseLeave}
 													style={{
 														borderRadius: "12px",
-														borderColor: isHovered ? "#110d27" : "#8788ab",
+														borderColor:
+															fileList.length === 0
+																? "#ff4d4f"
+																: isHovered
+																	? "#110d27"
+																	: "#8788ab",
 														borderWidth: "1px",
 														borderStyle: "solid",
 														backgroundColor: "transparent",
@@ -411,10 +420,28 @@ const AgregarServicio = () => {
 													/>
 												)}
 											</ConfigProvider>
+											{fileList.length === 0 && (
+												<small
+													style={{
+														color: "#ff4d4f",
+														marginTop: "5px",
+														display: "block",
+													}}
+												>
+													* La imagen es obligatoria
+												</small>
+											)}
 										</div>
 									</div>
 								</div>
-								<div className="d-flex justify-content-center mt-3">
+								<div className="d-flex justify-content-center gap-3 mt-3">
+									<button
+										type="button"
+										className="thm-btn btn-rojo form-btn"
+										onClick={() => navigate("/admin/servicios")}
+									>
+										Cancelar
+									</button>
 									<button type="submit" className="thm-btn form-btn">
 										Agregar
 									</button>
