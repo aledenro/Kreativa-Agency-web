@@ -314,10 +314,9 @@ const DashboardColaborador = () => {
 	useEffect(() => {
 		const loadInitialData = async () => {
 			setLoading(true);
-			await reloadData();
+			await Promise.all([reloadData(), fetchEmpleados()]);
 			setLoading(false);
 		};
-
 		loadInitialData();
 	}, [reloadData]);
 
