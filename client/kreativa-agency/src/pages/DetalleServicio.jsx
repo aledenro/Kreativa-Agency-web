@@ -27,13 +27,11 @@ const DetalleServicio = () => {
 
 	useEffect(() => {
 		const fetchServicio = async () => {
-			
 			try {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/${id}`
 				);
 				const servicioData = response.data;
-				console.log("Servicio recibido:", servicioData.imagen);
 				setServicio(servicioData);
 			} catch (err) {
 				setError(err.message);
@@ -74,9 +72,13 @@ const DetalleServicio = () => {
 				});
 			}
 
-			const response = await axios.put(endpoint, {},{
-				headers: { Authorization: `Bearer ${token}` },
-			});
+			const response = await axios.put(
+				endpoint,
+				{},
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 			setServicio(response.data.servicio);
 		} catch (err) {
 			if (err.status === 401) {
@@ -111,9 +113,13 @@ const DetalleServicio = () => {
 				});
 			}
 
-			const response = await axios.put(endpoint, {},{
-				headers: { Authorization: `Bearer ${token}` },
-			});
+			const response = await axios.put(
+				endpoint,
+				{},
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 
 			setServicio(response.data);
 		} catch (err) {
@@ -144,6 +150,10 @@ const DetalleServicio = () => {
 	if (error) return <p>Error: {error}</p>;
 	if (!servicio) return <p>No se encontró el servicio.</p>;
 
+	const paquetesActivos = servicio.paquetes.filter(
+		(paquete) => paquete.activo === true
+	);
+
 	return (
 		<div>
 			<Navbar />
@@ -155,40 +165,6 @@ const DetalleServicio = () => {
 							<div className="col-auto align-self-center">
 								<h1>{servicio.nombre}</h1>
 							</div>
-							{/* {rol === "Administrador" ? (
-                                <div className="col-lg text-end align-self-center">
-                                    <button
-                                        className="thm-btn btn-azul thm-btn-small"
-                                        type="button"
-                                        onClick={() =>
-                                            handleModificar(servicio._id)
-                                        }
-                                    >
-                                        <FontAwesomeIcon icon={faPencil} />
-                                    </button>
-                                    <button
-                                        className={`thm-btn thm-btn-small ${
-                                            servicio.activo
-                                                ? "btn-verde"
-                                                : "btn-rojo"
-                                        } ms-2`}
-                                        type="button"
-                                        onClick={toggleEstadoServicio}
-                                    >
-                                        {servicio.activo ? (
-                                            <FontAwesomeIcon
-                                                icon={faToggleOn}
-                                            />
-                                        ) : (
-                                            <FontAwesomeIcon
-                                                icon={faToggleOff}
-                                            />
-                                        )}
-                                    </button>
-                                </div>
-                            ) : (
-                                ""
-                            )} */}
 						</div>
 						<div className="col-12">
 							<div className="position-relative">
@@ -213,140 +189,71 @@ const DetalleServicio = () => {
 
 						<p className="mt-4">{servicio.descripcion}</p>
 
-						<div className="justify-content-center">
-							<div className="row mb-3 mt-4">
-								<div className="col-12">
-									<div className="row justify-content-between">
-										<div className="col align-self-center">
-											<h3>Paquetes disponibles</h3>
-										</div>
-										{/* {rol === "Administrador" ? (
-                                            <div className="col text-end align-self-center">
-                                                <button
-                                                    className="thm-btn thm-btn-small"
-                                                    type="button"
-                                                    onClick={() =>
-                                                        handleAgregarPaquete(
-                                                            servicio._id
-                                                        )
-                                                    }
-                                                >
-                                                    Agregar Paquete
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            ""
-                                        )} */}
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div className="row row-cols-1 g-3 g-lg-4">
-							{servicio.paquetes
-								.filter((paquete) => paquete.activo === true)
-								.map((paquete) => (
-									<div key={paquete._id} className="col h-100 d-flex">
-										<div className="card mb-2 card-paquete w-100">
-											<div className="card-body">
-												<div className="row justify-content-between">
-													<div className="col">
-														<h5 className="card-title">{paquete.nombre}</h5>
-													</div>
-													<div className="col text-end">
-														<h6 className="card-subtitle mb-2 text-muted">
-															Nivel: {paquete.nivel}
-														</h6>
-													</div>
-												</div>
-												<p className="card-text">{paquete.descripcion}</p>
-												<p>
-													<strong>Duración:</strong> {paquete.duracion}
-												</p>
-												<p>
-													<strong>Beneficios:</strong>
-												</p>
-												<ul className="list-unstyled">
-													{paquete.beneficios.map((beneficio, i) => (
-														<li key={i} className="d-flex align-items-center">
-															<FontAwesomeIcon
-																icon={faCheck}
-																className="check-icon"
-																style={{ marginRight: "10px" }}
-															/>
-															{beneficio}
-														</li>
-													))}
-												</ul>
-												<div className="row">
-													<div className="col">
-														<p className="card-text">
-															<strong>Precio:</strong> ${paquete.precio}
-														</p>
-													</div>
-													{/* {rol === "Administrador" ? (
-                                                    <div className="col text-end">
-                                                        <div
-                                                            className="btn-group"
-                                                            role="group"
-                                                        >
-                                                            <button
-                                                                className="thm-btn thm-btn-small btn-azul"
-                                                                onClick={() =>
-                                                                    handleModificarPaquete(
-                                                                        paquete
-                                                                    )
-                                                                }
-                                                            >
-                                                                <FontAwesomeIcon
-                                                                    icon={
-                                                                        faPencil
-                                                                    }
-                                                                />
-                                                            </button>
-                                                            <button
-                                                                className={`thm-btn thm-btn-small ${
-                                                                    paquete.activo
-                                                                        ? "btn-verde"
-                                                                        : "btn-rojo"
-                                                                }`}
-                                                                onClick={() =>
-                                                                    toggleEstadoPaquete(
-                                                                        paquete._id,
-                                                                        paquete.activo
-                                                                    )
-                                                                }
-                                                            >
-                                                                {paquete.activo ? (
-                                                                    <FontAwesomeIcon
-                                                                        icon={
-                                                                            faToggleOn
-                                                                        }
-                                                                    />
-                                                                ) : (
-                                                                    <FontAwesomeIcon
-                                                                        icon={
-                                                                            faToggleOff
-                                                                        }
-                                                                    />
-                                                                )}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    ""
-                                                )} */}
+						{/* Solo mostrar la sección de paquetes si hay paquetes activos */}
+						{paquetesActivos.length > 0 && (
+							<>
+								<div className="justify-content-center">
+									<div className="row mb-3 mt-4">
+										<div className="col-12">
+											<div className="row justify-content-between">
+												<div className="col align-self-center">
+													<h3>Paquetes disponibles</h3>
 												</div>
 											</div>
 										</div>
 									</div>
-								))}
-						</div>
+								</div>
 
-						{servicio.paquetes.length === 0 && (
-							<p className="mt-3">
-								Este servicio no tiene paquetes por mostrar.
-							</p>
+								<div className="row row-cols-1 g-3 g-lg-4">
+									{paquetesActivos.map((paquete) => (
+										<div key={paquete._id} className="col h-100 d-flex">
+											<div className="card mb-2 card-paquete w-100">
+												<div className="card-body">
+													<div className="row justify-content-between">
+														<div className="col">
+															<h5 className="card-title">{paquete.nombre}</h5>
+														</div>
+														<div className="col text-end">
+															<h6 className="card-subtitle mb-2 text-muted">
+																Nivel: {paquete.nivel}
+															</h6>
+														</div>
+													</div>
+													<p className="card-text">{paquete.descripcion}</p>
+													<p>
+														<strong>Duración:</strong> {paquete.duracion}
+													</p>
+													<p>
+														<strong>Beneficios:</strong>
+													</p>
+													<ul className="list-unstyled">
+														{paquete.beneficios.map((beneficio, i) => (
+															<li key={i} className="d-flex align-items-center">
+																<FontAwesomeIcon
+																	icon={faCheck}
+																	className="check-icon"
+																	style={{ marginRight: "10px" }}
+																/>
+																{beneficio}
+															</li>
+														))}
+													</ul>
+													<div className="row">
+														<div className="col">
+															{paquete.precio !== null &&
+																paquete.precio !== undefined && (
+																	<p className="card-text">
+																		<strong>Precio:</strong> ${paquete.precio}
+																	</p>
+																)}
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									))}
+								</div>
+							</>
 						)}
 					</div>
 				</div>

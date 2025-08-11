@@ -187,7 +187,7 @@ const RespuestasContacto = () => {
 										<Td className="col-negocio">{form.nombre_negocio}</Td>
 										<Td className="col-estado text-center">
 											<span
-												className={`badge ${form.activo !== false ? "bg-success" : "bg-secondary"}`}
+												className={`badge ${form.activo !== false ? "badge-verde" : "badge-rojo"}`}
 											>
 												{form.activo !== false ? "Activo" : "Inactivo"}
 											</span>
