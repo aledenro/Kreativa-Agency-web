@@ -22,7 +22,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
 import { notification } from "antd";
-import sendEmail from '../utils/emailSender';
+import sendEmail from "../utils/emailSender";
 import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 const ListadoIngresos = () => {
@@ -132,16 +132,16 @@ const ListadoIngresos = () => {
 
 		try {
 			const res = await axios.get(`${import.meta.env.VITE_API_URL}/ingresos`, {
-				headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+				headers: {
+					Authorization: `Bearer ${token}`,
+					user: user,
+				},
 			});
 			setIngresos(res.data);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				handleUnauthorized();
+				await updateSessionStatus();
+				handleUnauthorized();
 				return;
 			}
 			openErrorNotification(
@@ -170,18 +170,17 @@ const ListadoIngresos = () => {
 				const res = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/categorias`,
 					{
-						headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 				setCategories(res.data);
 			} catch (error) {
 				if (error.status === 401) {
-				await updateSessionStatus();					
-				handleUnauthorized();
+					await updateSessionStatus();
+					handleUnauthorized();
 					return;
 				}
 				openErrorNotification("Error al obtener las categorías.");
@@ -206,17 +205,17 @@ const ListadoIngresos = () => {
 				const res = await axios.get(
 					`${import.meta.env.VITE_API_URL}/usuarios`,
 					{
-						headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 				setClientes(res.data);
 			} catch (error) {
 				if (error.status === 401) {
-				await updateSessionStatus();					handleUnauthorized();
+					await updateSessionStatus();
+					handleUnauthorized();
 					return;
 				}
 				openErrorNotification("Error al obtener los clientes.");
@@ -308,10 +307,9 @@ const ListadoIngresos = () => {
 				url,
 				{},
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -330,7 +328,8 @@ const ListadoIngresos = () => {
 			setToggleIngreso(null);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				handleUnauthorized();
+				await updateSessionStatus();
+				handleUnauthorized();
 				return;
 			}
 			openErrorNotification(
@@ -393,14 +392,15 @@ const ListadoIngresos = () => {
 			await sendEmail(
 				cliente._id, // Usar el ID del cliente, no el email directamente
 				emailContent,
-				"Notificación de Pago Pendiente",
+				"Notificación de Pago Pendiente"
 			);
 
 			openSuccessNotification("Correo de notificación enviado correctamente.");
 			setIngresoNotificar(null);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				handleUnauthorized();
+				await updateSessionStatus();
+				handleUnauthorized();
 				return;
 			}
 			openErrorNotification(
@@ -453,100 +453,107 @@ const ListadoIngresos = () => {
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
 				{/* Encabezado */}
-				<div
-					className="d-flex justify-content-between align-items-center mb-4"
-					style={{ paddingRight: "80px" }}
-				>
+				<div className="d-flex justify-content-between align-items-center mb-4">
 					<h1>Gestión de Ingresos</h1>
 					<button className="thm-btn" onClick={() => setShowModalCrear(true)}>
 						<FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo Ingreso
 					</button>
 				</div>
 
-				{/* Filtros*/}
 				<div className="row mb-3">
-					{/* Filtro por Cliente */}
-					<div className="col-md-4">
-						<Form.Group controlId="filterCliente">
-							<Form.Label>Cliente:</Form.Label>
-							<Form.Select
-								value={filterCliente}
-								onChange={(e) => {
-									setFilterCliente(e.target.value);
-									setPagActual(1);
-								}}
-								className="form_input"
-							>
-								<option value="">Todos</option>
-								{clientes
-									.filter((c) => c.tipo_usuario === "Cliente")
-									.map((cliente) => (
-										<option key={cliente._id} value={cliente.nombre}>
-											{cliente.nombre}
-										</option>
-									))}
-							</Form.Select>
-						</Form.Group>
-						<Form.Group controlId="filterFecha">
-							<Form.Label>Fecha de Vencimiento:</Form.Label>
-							<Form.Control
-								type="date"
-								value={filterFecha}
-								onChange={(e) => {
-									setFilterFecha(e.target.value);
-									setPagActual(1);
-								}}
-								className="form_input"
-							/>
-						</Form.Group>
+					<div className="col-lg-6 col-md-12">
+						<div className="row">
+							<div className="col-sm-6">
+								<Form.Group controlId="filterCliente" className="mb-3">
+									<Form.Label>Cliente:</Form.Label>
+									<Form.Select
+										value={filterCliente}
+										onChange={(e) => {
+											setFilterCliente(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="">Todos</option>
+										{clientes
+											.filter((c) => c.tipo_usuario === "Cliente")
+											.map((cliente) => (
+												<option key={cliente._id} value={cliente.nombre}>
+													{cliente.nombre}
+												</option>
+											))}
+									</Form.Select>
+								</Form.Group>
+							</div>
+							<div className="col-sm-6">
+								<Form.Group controlId="filterEstadoPago" className="mb-3">
+									<Form.Label>Estado de Pago:</Form.Label>
+									<Form.Select
+										value={filterEstadoPago}
+										onChange={(e) => {
+											setFilterEstadoPago(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="">Todos</option>
+										<option value="Pendiente de pago">Pendiente de pago</option>
+										<option value="Pagado">Pagado</option>
+									</Form.Select>
+								</Form.Group>
+							</div>
+						</div>
 					</div>
-					{/* Filtros por Estado de Pago y Estado del Ingreso */}
-					<div className="col-md-4" style={{ paddingRight: "80px" }}>
-						<Form.Group controlId="filterEstado">
-							<Form.Label>Activo/Inactivo:</Form.Label>
-							<Form.Select
-								value={filterEstado}
-								onChange={(e) => {
-									setFilterEstado(e.target.value);
-									setPagActual(1);
-								}}
-								className="form_input"
-							>
-								<option value="Todos">Todos</option>
-								<option value="Activo">Activo</option>
-								<option value="Inactivo">Inactivo</option>
-							</Form.Select>
-						</Form.Group>
-						<Form.Group controlId="filterEstadoPago" className="mb-2">
-							<Form.Label>Estado de Pago:</Form.Label>
-							<Form.Select
-								value={filterEstadoPago}
-								onChange={(e) => {
-									setFilterEstadoPago(e.target.value);
-									setPagActual(1);
-								}}
-								className="form_input"
-							>
-								<option value="">Todos</option>
-								<option value="Pendiente de pago">Pendiente de pago</option>
-								<option value="Pagado">Pagado</option>
-							</Form.Select>
-						</Form.Group>
-					</div>
-					{/* Botón para limpiar filtros */}
-					<div className="col-md-4 d-flex align-items-end">
-						<button
-							className="thm-btn btn-gris"
-							onClick={() => {
-								setFilterCliente("");
-								setFilterFecha("");
-								setFilterEstado("Activo");
-								setFilterEstadoPago("Pendiente de pago");
-								setPagActual(1);
-							}}
-						>
-							Limpiar Filtros
-						</button>
+
+					<div className="col-lg-6 col-md-12">
+						<div className="row">
+							<div className="col-sm-4">
+								<Form.Group controlId="filterEstado" className="mb-3">
+									<Form.Label>Activo/Inactivo:</Form.Label>
+									<Form.Select
+										value={filterEstado}
+										onChange={(e) => {
+											setFilterEstado(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="Todos">Todos</option>
+										<option value="Activo">Activo</option>
+										<option value="Inactivo">Inactivo</option>
+									</Form.Select>
+								</Form.Group>
+							</div>
+							<div className="col-sm-4">
+								<Form.Group controlId="filterFecha" className="mb-3">
+									<Form.Label>Vencimiento:</Form.Label>
+									<Form.Control
+										type="date"
+										value={filterFecha}
+										onChange={(e) => {
+											setFilterFecha(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									/>
+								</Form.Group>
+							</div>
+							<div className="col-sm-4 d-flex align-items-end">
+								<button
+									className="thm-btn btn-gris w-100"
+									style={{ marginBottom: "1rem" }}
+									onClick={() => {
+										setFilterCliente("");
+										setFilterFecha("");
+										setFilterEstado("");
+										setFilterEstadoPago("");
+										setPagActual(1);
+									}}
+								>
+									Limpiar Filtros
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 

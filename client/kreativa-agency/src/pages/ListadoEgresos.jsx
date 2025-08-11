@@ -107,16 +107,15 @@ const ListadoEgresos = () => {
 
 		try {
 			const res = await axios.get(`${import.meta.env.VITE_API_URL}/egresos`, {
-				headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+				headers: {
+					Authorization: `Bearer ${token}`,
+					user: user,
+				},
 			});
 			setEgresos(res.data);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -216,13 +215,16 @@ const ListadoEgresos = () => {
 				const url = toggleEgreso.activo
 					? `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/desactivar`
 					: `${import.meta.env.VITE_API_URL}/egresos/${toggleEgreso._id}/activar`;
-				await axios.put(url, {},{
-					headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
-				});
+				await axios.put(
+					url,
+					{},
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
+					}
+				);
 				setEgresos((prev) =>
 					prev.map((e) =>
 						e._id === toggleEgreso._id ? { ...e, activo: !e.activo } : e
@@ -238,7 +240,8 @@ const ListadoEgresos = () => {
 				setToggleEgreso(null);
 			} catch (error) {
 				if (error.status === 401) {
-				await updateSessionStatus();					navigate("/error", {
+					await updateSessionStatus();
+					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -296,106 +299,106 @@ const ListadoEgresos = () => {
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
 				{/* Encabezado */}
-				<div
-					className="d-flex justify-content-between align-items-center mb-4"
-					style={{ paddingRight: "80px" }}
-				>
+				<div className="d-flex justify-content-between align-items-center mb-4">
 					<h1>Gestión de Egresos</h1>
 					<button className="thm-btn" onClick={() => setShowModalCrear(true)}>
 						<FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo Egreso
 					</button>
 				</div>
 
-				{/* Filtros en dos columnas */}
 				<div className="row mb-3">
-					{/* Fecha y Categoría */}
-					<div className="col-md-4">
-						<Form.Group controlId="filterCategoria">
-							<Form.Label>Categoría:</Form.Label>
-							<Form.Select
-								value={filterCategoria}
-								onChange={(e) => {
-									setFilterCategoria(e.target.value);
-									setPagActual(1);
-								}}
-								className="form_input"
-							>
-								<option value="Todos">Todos</option>
-								{fixedCategories.map((cat, index) => (
-									<option key={index} value={cat}>
-										{cat}
-									</option>
-								))}
-							</Form.Select>
-						</Form.Group>
-						<Form.Group controlId="filterFecha">
-							<Form.Label>Fecha:</Form.Label>
-							<Form.Control
-								type="date"
-								value={filterFecha}
-								onChange={(e) => {
-									setFilterFecha(e.target.value);
-									setPagActual(1);
-								}}
-								className="form_input"
-							/>
-						</Form.Group>
+					<div className="col-lg-6 col-md-12">
+						<div className="row">
+							<div className="col-sm-6">
+								<Form.Group controlId="filterCategoria" className="mb-3">
+									<Form.Label>Categoría:</Form.Label>
+									<Form.Select
+										value={filterCategoria}
+										onChange={(e) => {
+											setFilterCategoria(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="Todos">Todos</option>
+										{fixedCategories.map((cat, index) => (
+											<option key={index} value={cat}>
+												{cat}
+											</option>
+										))}
+									</Form.Select>
+								</Form.Group>
+							</div>
+							<div className="col-sm-6">
+								<Form.Group controlId="filterEgresoEstado" className="mb-3">
+									<Form.Label>Estado de Pago:</Form.Label>
+									<Form.Select
+										value={filterEgresoEstado}
+										onChange={(e) => {
+											setFilterEgresoEstado(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="Todos">Todos</option>
+										<option value="Pendiente">Pendiente</option>
+										<option value="Aprobado">Aprobado</option>
+										<option value="Rechazado">Rechazado</option>
+									</Form.Select>
+								</Form.Group>
+							</div>
+						</div>
 					</div>
-					{/* Activo/Inactivo y Estado */}
-					<div className="col-md-3">
-						<Form.Group
-							controlId="filterEstado"
-							className="mb-4"
-							style={{ paddingRight: "80px" }}
-						>
-							<Form.Label>Activo/Inactivo:</Form.Label>
-							<Form.Select
-								value={filterEstado}
-								onChange={(e) => {
-									setFilterEstado(e.target.value);
-									setPagActual(1);
-								}}
-								className="form_input"
-							>
-								<option value="Todos">Todos</option>
-								<option value="Activo">Activo</option>
-								<option value="Inactivo">Inactivo</option>
-							</Form.Select>
-						</Form.Group>
-						<Form.Group
-							controlId="filterEgresoEstado"
-							style={{ paddingRight: "80px" }}
-						>
-							<Form.Label>Estado de Pago:</Form.Label>
-							<Form.Select
-								value={filterEgresoEstado}
-								onChange={(e) => {
-									setFilterEgresoEstado(e.target.value);
-									setPagActual(1);
-								}}
-								className="form_input"
-							>
-								<option value="Todos">Todos</option>
-								<option value="Pendiente">Pendiente</option>
-								<option value="Aprobado">Aprobado</option>
-								<option value="Rechazado">Rechazado</option>
-							</Form.Select>
-						</Form.Group>
-					</div>
-					{/* Botón para limpiar filtros */}
-					<div className="col-md-4 d-flex align-items-end">
-						<button
-							className="thm-btn btn-gris"
-							onClick={() => {
-								setFilterCliente("");
-								setFilterFecha("");
-								setFilterEstado("Activo");
-								setFilterEstadoPago("Pendiente de pago");
-								setPagActual(1);
-							}}
-						>
-							Limpiar Filtros
-						</button>
+
+					<div className="col-lg-6 col-md-12">
+						<div className="row">
+							<div className="col-sm-4">
+								<Form.Group controlId="filterEstado" className="mb-3">
+									<Form.Label>Activo/Inactivo:</Form.Label>
+									<Form.Select
+										value={filterEstado}
+										onChange={(e) => {
+											setFilterEstado(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="Todos">Todos</option>
+										<option value="Activo">Activo</option>
+										<option value="Inactivo">Inactivo</option>
+									</Form.Select>
+								</Form.Group>
+							</div>
+							<div className="col-sm-4">
+								<Form.Group controlId="filterFecha" className="mb-3">
+									<Form.Label>Fecha:</Form.Label>
+									<Form.Control
+										type="date"
+										value={filterFecha}
+										onChange={(e) => {
+											setFilterFecha(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									/>
+								</Form.Group>
+							</div>
+							<div className="col-sm-4 d-flex align-items-end">
+								<button
+									className="thm-btn btn-gris w-100"
+									style={{ marginBottom: "1rem" }}
+									onClick={() => {
+										setFilterCategoria("Todos");
+										setFilterFecha("");
+										setFilterEstado("Todos");
+										setFilterEgresoEstado("Todos");
+										setPagActual(1);
+									}}
+								>
+									Limpiar Filtros
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 
