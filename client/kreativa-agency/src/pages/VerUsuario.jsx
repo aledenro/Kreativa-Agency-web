@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { User } from "lucide-react";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const VerUsuario = () => {
     const { id } = useParams();
@@ -35,7 +37,7 @@ const VerUsuario = () => {
                 setLoading(false);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:

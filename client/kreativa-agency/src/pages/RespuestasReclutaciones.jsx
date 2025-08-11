@@ -12,6 +12,8 @@ import { Modal } from "react-bootstrap";
 import Loading from "../components/ui/LoadingComponent";
 import { useFormStatus } from "../context/FormStatusContext";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const RespuestasReclutaciones = () => {
 	const [formularios, setFormularios] = useState([]);
@@ -54,7 +56,8 @@ const RespuestasReclutaciones = () => {
 				setFormularios(response.data);
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					
+				navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -93,7 +96,7 @@ const RespuestasReclutaciones = () => {
 				setFormActive(response.data.active);
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -141,7 +144,7 @@ const RespuestasReclutaciones = () => {
 			setFormActive(response.data.active);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCallback } from "react";
 import Alert from "react-bootstrap/Alert";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const VerDetalleCotizacion = () => {
     const { id } = useParams();
@@ -38,7 +40,7 @@ const VerDetalleCotizacion = () => {
             setCotizacion(res.data.cotizacion);
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
@@ -99,7 +101,7 @@ const VerDetalleCotizacion = () => {
             fetchCotizacion(id);
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
@@ -130,7 +132,7 @@ const VerDetalleCotizacion = () => {
         }
     }
 
-    function handleChangeEstado(event) {
+    async function handleChangeEstado(event) {
         const estado = event.target.value;
         const token = localStorage.getItem("token");
 
@@ -156,6 +158,7 @@ const VerDetalleCotizacion = () => {
             setShowAlert(true);
         } catch (error) {
             if (error.status === 401) {
+				await updateSessionStatus();                
                 localStorage.clear();
                 navigate("/error", {
                     state: {

@@ -28,16 +28,104 @@ const Login = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const addSession = async(token) =>{
+         try {
+            await axios.post(
+                `${import.meta.env.VITE_API_URL}/sessions`,
+                {   username: formData.usuario,
+                    token: token
+                }
+            );
+
+        }catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    "Error al iniciar sesión.",
+                confirmButtonColor: " #ff0072",
+            });
+            throw new Error("Error al crear la sesion.")
+        }
+    }
+
+    const checkForExistingSession = async() => {
+         try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/sessions/${formData.usuario}`,
+            );
+
+            return response.data.found
+        }catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    "Error al iniciar sesión.",
+                confirmButtonColor: " #ff0072",
+            });
+            throw new Error("Error al buscar si existe una sesion.")
+        }
+    }
+
+    const updateSessionStatus = async() => {
+
+            try {
+                const response = await axios.put(
+                    `${import.meta.env.VITE_API_URL}/sessions`,
+                    {   username: formData.usuario,
+                        motivo: "Nueva sesion en otro dispositivo"
+                    }
+            );
+
+        }catch(error){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                    "Error al iniciar sesión.",
+                confirmButtonColor: " #ff0072",
+            });
+
+            throw new Error("Error al actualizar la sesion.")
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         try {
+
+            const existingSession =  await checkForExistingSession()
+
+            if(existingSession){
+                const result = await Swal.fire({
+                                title: `Ya tiene una sesión abierta`,
+                                text: `¿Desea cerrar la otra sesión e iniciar una nueva en este dispositivo?`,
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#ff0072",
+                                cancelButtonColor: "#888",
+                                confirmButtonText: `Sí`,
+                                cancelButtonText: "Cancelar",
+                            });
+
+                if(!result.isConfirmed){
+                    return
+                }else if(result.isConfirmed){
+                    await updateSessionStatus()
+                }
+            }
+
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/login`,
                 formData
             );
+
             const { token } = response.data;
             if (!token) return;
+
+            await addSession(token)
 
             localStorage.setItem("token", token);
             const decodedToken = jwtDecode(token);
@@ -50,6 +138,7 @@ const Login = () => {
             });
             localStorage.setItem("tipo_usuario", decodedToken.tipo_usuario);
             localStorage.setItem("user_id", decodedToken.id);
+            localStorage.setItem("user_name", formData.usuario)
 
             Swal.fire({
                 icon: "success",

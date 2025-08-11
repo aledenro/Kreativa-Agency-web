@@ -10,7 +10,7 @@ import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
 import sendEmailExterno from "../../utils/sendEmailExterno";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 import axios from "axios";
 
 const ModalVerContacto = ({ show, handleClose, form, onUpdate }) => {
@@ -99,6 +99,7 @@ const ModalVerContacto = ({ show, handleClose, form, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {

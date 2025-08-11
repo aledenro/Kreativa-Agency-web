@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { UserCog } from "lucide-react";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 	const navigate = useNavigate();
@@ -71,7 +71,7 @@ const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 			});
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -168,7 +168,7 @@ const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 					}
 				} catch (error) {
 					if (error.status === 401) {
-						navigate("/error", {
+				await updateSessionStatus();						navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -226,7 +226,7 @@ const ModalEditarUsuario = ({ show, handleClose, usuarioId, onUpdate }) => {
 			}, 2000);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

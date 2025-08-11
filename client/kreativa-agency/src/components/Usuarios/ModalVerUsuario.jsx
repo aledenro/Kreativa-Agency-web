@@ -46,7 +46,7 @@ const ModalVerUsuario = ({ show, handleClose, usuarioId }) => {
 			setUsuario(data);
 		} catch (error) {
 			if (error.status === 401) {
-				navigate("/error", {
+				await updateSessionStatus();				navigate("/error", {
 					state: {
 						errorCode: 401,
 						mensaje: "Debe volver a iniciar sesión para continuar.",

@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 function construirJsonRequest(titulo, descripcion, urgente) {
     const user_id = localStorage.getItem("user_id");
@@ -65,7 +66,7 @@ const AgregarCotizacion = () => {
             }
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,

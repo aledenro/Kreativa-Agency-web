@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const ModalEditarIngreso = ({
 	show,
@@ -154,7 +154,7 @@ const ModalEditarIngreso = ({
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				handleUnauthorized();
+				await updateSessionStatus();				handleUnauthorized();
 				return;
 			}
 

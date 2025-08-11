@@ -19,6 +19,7 @@ import "../AdminPanel.css";
 import ModalImprimirReportes from "../components/Estadisticas/ModalImprimirReporte";
 import Loading from "../components/ui/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 // Colores de los gráficos
 const COLORS = ["#ff0072", "#8d25fc", "#007bff", "#ffc02c"];
@@ -101,14 +102,33 @@ const Estadisticas = () => {
 		const fetchCategories = async () => {
 			const token = localStorage.getItem("token");
 
-			if (!token) {
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe iniciar sesión para continuar.",
-					},
-				});
-			}
+            try {
+                const res = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/servicios/categorias`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                setCategories(res.data);
+            } catch (error) {
+                if (error.status === 401) {
+				await updateSessionStatus();                    navigate("/error", {
+                        state: {
+                            errorCode: 401,
+                            mensaje:
+                                "Debe volver a iniciar sesión para continuar.",
+                        },
+                    });
+                    return;
+                }
+                console.error(
+                    "Error al obtener las categorías:",
+                    error.message
+                );
+            }
+        };
+        fetchCategories();
+    }, []);
 
 			try {
 				const res = await axios.get(
@@ -135,140 +155,141 @@ const Estadisticas = () => {
 	}, []);
 
 	// Carga de datos según la vista
-	useEffect(() => {
-		const token = localStorage.getItem("token");
-		const promises = [];
+	
+useEffect(() => {
+	const token = localStorage.getItem("token");
+	
+	if (!token) {
+		navigate("/error", {
+			state: {
+				errorCode: 401,
+				mensaje: "Debe iniciar sesión para continuar.",
+			},
+		});
+		return;
+	}
 
-		if (!token) {
-			navigate("/error", {
-				state: {
-					errorCode: 401,
-					mensaje: "Debe iniciar sesión para continuar.",
-				},
-			});
-		}
+	const promises = [];
 
-		if (isAnnualView) {
-			promises.push(
-				axios
-					.get(
-						`${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`,
-						{ headers: { Authorization: `Bearer ${token}` } }
-					)
-					.then((response) => {
-						const data = response.data;
-						setTotalIngresosAnuales(data.resumen.totalIngresos);
-						setDetalleIngresosAnuales(
-							data.detalle.map((item) => ({
-								fecha: item.fecha,
-								monto: item.monto,
-								categoria: item.categoria,
-							}))
-						);
-					})
-					.catch((error) => {
-						if (error.status === 401) {
-							navigate("/error", {
-								state: {
-									errorCode: 401,
-									mensaje: "Debe volver a iniciar sesión para continuar.",
-								},
-							});
-							return;
-						}
-						console.error("Error al obtener los ingresos anuales");
-						setTotalIngresosAnuales(0);
-						setDetalleIngresosAnuales([]);
-					})
-			);
-
-			promises.push(
-				axios
-					.get(
-						`${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`,
-						{ headers: { Authorization: `Bearer ${token}` } }
-					)
-					.then((response) => {
-						const data = response.data;
-						setTotalEgresosAnuales(data.resumen.totalEgresos);
-						setDetalleEgresosAnuales(data.detalle);
-					})
-					.catch((error) => {
-						if (error.status === 401) {
-							navigate("/error", {
-								state: {
-									errorCode: 401,
-									mensaje: "Debe volver a iniciar sesión para continuar.",
-								},
-							});
-							return;
-						}
-						console.error("Error al obtener los egresos anuales");
-						setTotalEgresosAnuales(0);
-						setDetalleEgresosAnuales([]);
-					})
-			);
-		} else {
-			const formattedMonth =
-				selectedMonth < 10 ? `0${selectedMonth}` : selectedMonth;
-			const fecha = `${selectedYear}-${formattedMonth}`;
-			const token = localStorage.getItem("token");
-
-			if (!token) {
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe iniciar sesión para continuar.",
-					},
-				});
-			}
-
-			promises.push(
-				axios
-					.get(
-						`${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`,
-						{ headers: { Authorization: `Bearer ${token}` } }
-					)
-					.then((response) => {
-						if (!response.data.success) {
-							console.error("Error en la respuesta de ingresos mensuales");
-							throw new Error(response.data.message);
-						}
-
-						const { resumen, detalle, datosGrafico } = response.data;
-
-						setTotalIngresos(resumen.totalIngresos);
-						setCantidadIngresos(resumen.cantidadIngresos);
-
-						setResumenIngresos({
-							total: resumen.totalIngresos,
-							cantidad: resumen.cantidadIngresos,
-							detalle: detalle,
-							datosGrafico: datosGrafico,
+	if (isAnnualView) {
+		// Vista Anual - Ingresos
+		promises.push(
+			axios
+				.get(
+					`${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`,
+					{ headers: { Authorization: `Bearer ${token}` } }
+				)
+				.then((response) => {
+					const data = response.data;
+					setTotalIngresosAnuales(data.resumen.totalIngresos);
+					setDetalleIngresosAnuales(
+						data.detalle.map((item) => ({
+							fecha: item.fecha,
+							monto: item.monto,
+							categoria: item.categoria,
+						}))
+					);
+				})
+				.catch(async (error) => {
+					if (error.status === 401) {
+						await updateSessionStatus();
+						navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe volver a iniciar sesión para continuar.",
+							},
 						});
-					})
-					.catch((error) => {
-						if (error.status === 401) {
-							navigate("/error", {
-								state: {
-									errorCode: 401,
-									mensaje: "Debe volver a iniciar sesión para continuar.",
-								},
-							});
-							return;
-						}
-						console.error("Error al obtener ingresos mensuales");
-						setTotalIngresos(0);
-						setCantidadIngresos(0);
-						setResumenIngresos({
-							total: 0,
-							cantidad: 0,
-							detalle: [],
-							datosGrafico: [],
+						return;
+					}
+					console.error("Error al obtener los ingresos anuales");
+					setTotalIngresosAnuales(0);
+					setDetalleIngresosAnuales([]);
+				})
+		);
+
+		// Vista Anual - Egresos
+		promises.push(
+			axios
+				.get(
+					`${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`,
+					{ headers: { Authorization: `Bearer ${token}` } }
+				)
+				.then((response) => {
+					const data = response.data;
+					setTotalEgresosAnuales(data.resumen.totalEgresos);
+					setDetalleEgresosAnuales(data.detalle);
+				})
+				.catch(async (error) => {
+					if (error.status === 401) {
+						await updateSessionStatus();
+						navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe volver a iniciar sesión para continuar.",
+							},
 						});
-					})
-			);
-			// Egresos mensuales activos y con estado aprobado
+						return;
+					}
+					console.error("Error al obtener los egresos anuales");
+					setTotalEgresosAnuales(0);
+					setDetalleEgresosAnuales([]);
+				})
+		);
+	} else {
+		// Vista Mensual
+		const formattedMonth = selectedMonth < 10 ? `0${selectedMonth}` : selectedMonth;
+		const fecha = `${selectedYear}-${formattedMonth}`;
+
+		// Ingresos mensuales
+		promises.push(
+			axios
+				.get(
+					`${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`,
+					{ headers: { Authorization: `Bearer ${token}` } }
+				)
+				.then((response) => {
+					if (!response.data.success) {
+						console.error("Error en la respuesta de ingresos mensuales");
+						throw new Error(response.data.message);
+					}
+
+					const { resumen, detalle, datosGrafico } = response.data;
+
+					setTotalIngresos(resumen.totalIngresos);
+					setCantidadIngresos(resumen.cantidadIngresos);
+
+					setResumenIngresos({
+						total: resumen.totalIngresos,
+						cantidad: resumen.cantidadIngresos,
+						detalle: detalle,
+						datosGrafico: datosGrafico,
+					});
+				})
+				.catch(async (error) => {
+					if (error.status === 401) {
+						await updateSessionStatus();
+						navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe volver a iniciar sesión para continuar.",
+							},
+						});
+						return;
+					}
+					console.error("Error al obtener ingresos mensuales");
+					setTotalIngresos(0);
+					setCantidadIngresos(0);
+					setResumenIngresos({
+						total: 0,
+						cantidad: 0,
+						detalle: [],
+						datosGrafico: [],
+					});
+				})
+		);
+
+		// Egresos mensuales activos y con estado aprobado
+		promises.push(
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`, {
 					headers: { Authorization: `Bearer ${token}` },
@@ -283,8 +304,10 @@ const Estadisticas = () => {
 							.reduce((acc, cur) => acc + cur.monto, 0);
 						return { name: cat, value: categoryValue };
 					}).filter((cat) => cat.value > 0);
+					
 					setEgresos(categoriasData);
 					setTotalEgresos(data.reduce((acc, cur) => acc + cur.monto, 0));
+					
 					const resumen = data.map((e) => ({
 						fecha: e.fecha,
 						categoria: e.categoria,
@@ -293,45 +316,57 @@ const Estadisticas = () => {
 					}));
 					setResumenEgresos(resumen);
 				})
-				.catch((error) => {
+				.catch(async (error) => {
+					if (error.status === 401) {
+						await updateSessionStatus();
+						navigate("/error", {
+							state: {
+								errorCode: 401,
+								mensaje: "Debe volver a iniciar sesión para continuar.",
+							},
+						});
+						return;
+					}
 					console.error("Error al obtener los egresos mensuales:", error);
-				});
-		}
-
-		promises.push(
-			axios
-				.get(
-					`${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`,
-					{ headers: { Authorization: `Bearer ${token}` } }
-				)
-				.then((response) => {
-					const data = response.data;
-					setTotalIngresosAnuales(data.totalIngresos);
-				})
-				.catch((error) => {
-					console.error("Error al obtener total ingresos anuales:", error);
 				})
 		);
+	}
 
-		promises.push(
-			axios
-				.get(
-					`${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`,
-					{ headers: { Authorization: `Bearer ${token}` } }
-				)
-				.then((response) => {
-					const data = response.data;
-					setTotalEgresosAnuales(data.totalEgresos);
-				})
-				.catch((error) => {
-					console.error("Error al obtener total egresos anuales:", error);
-				})
-		);
+	// Totales anuales (siempre se ejecutan)
+	promises.push(
+		axios
+			.get(
+				`${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`,
+				{ headers: { Authorization: `Bearer ${token}` } }
+			)
+			.then((response) => {
+				const data = response.data;
+				setTotalIngresosAnuales(data.totalIngresos);
+			})
+			.catch((error) => {
+				console.error("Error al obtener total ingresos anuales:", error);
+			})
+	);
 
-		Promise.allSettled(promises).finally(() => {
-			setLoading(false);
-		});
-	}, [selectedYear, selectedMonth, isAnnualView]);
+	promises.push(
+		axios
+			.get(
+				`${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`,
+				{ headers: { Authorization: `Bearer ${token}` } }
+			)
+			.then((response) => {
+				const data = response.data;
+				setTotalEgresosAnuales(data.totalEgresos);
+			})
+			.catch((error) => {
+				console.error("Error al obtener total egresos anuales:", error);
+			})
+	);
+
+	Promise.allSettled(promises).finally(() => {
+		setLoading(false);
+	});
+}, [selectedYear, selectedMonth, isAnnualView]);
 
 	const getCategoryName = (catId) => {
 		const cat = categories.find(

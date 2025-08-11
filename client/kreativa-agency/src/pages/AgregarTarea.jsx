@@ -4,6 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import sendEmail from "../utils/emailSender";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 function construirJsonRequest(
     proyecto,
@@ -104,6 +105,7 @@ const AgregarTarea = () => {
             }
         } catch (error) {
             if (error.status === 401) {
+				await updateSessionStatus();                
                 localStorage.clear();
                 navigate("/error", {
                     state: {
@@ -152,7 +154,7 @@ const AgregarTarea = () => {
                 setEmpleados(response.data);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -188,7 +190,7 @@ const AgregarTarea = () => {
                 setProyectos(response.data.proyectos);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:

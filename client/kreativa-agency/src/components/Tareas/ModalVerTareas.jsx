@@ -12,7 +12,7 @@ import lodash from "lodash";
 import { notification } from "antd";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 	const [tarea, setTarea] = useState(tareaModal);
@@ -129,7 +129,7 @@ const ModalVerTareas = ({ tareaModal, show, handleClose, onUpdated }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
