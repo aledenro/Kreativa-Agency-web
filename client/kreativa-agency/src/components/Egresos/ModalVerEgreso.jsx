@@ -1,7 +1,7 @@
 import { Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 import { useNavigate } from "react-router-dom";
 
 const ModalVerEgreso = ({ show, handleClose, egreso, categories = [] }) => {

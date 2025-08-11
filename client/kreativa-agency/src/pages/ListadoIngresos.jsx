@@ -22,6 +22,8 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
 import { notification } from "antd";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const ListadoIngresos = () => {
 	// Datos principales
@@ -134,7 +136,7 @@ const ListadoIngresos = () => {
 			setIngresos(res.data);
 		} catch (error) {
 			if (error.status === 401) {
-				handleUnauthorized();
+				await updateSessionStatus();				handleUnauthorized();
 				return;
 			}
 			openErrorNotification(
@@ -169,7 +171,8 @@ const ListadoIngresos = () => {
 				setCategories(res.data);
 			} catch (error) {
 				if (error.status === 401) {
-					handleUnauthorized();
+				await updateSessionStatus();					
+				handleUnauthorized();
 					return;
 				}
 				openErrorNotification("Error al obtener las categorías.");
@@ -199,7 +202,7 @@ const ListadoIngresos = () => {
 				setClientes(res.data);
 			} catch (error) {
 				if (error.status === 401) {
-					handleUnauthorized();
+				await updateSessionStatus();					handleUnauthorized();
 					return;
 				}
 				openErrorNotification("Error al obtener los clientes.");
@@ -308,7 +311,7 @@ const ListadoIngresos = () => {
 			setToggleIngreso(null);
 		} catch (error) {
 			if (error.status === 401) {
-				handleUnauthorized();
+				await updateSessionStatus();				handleUnauthorized();
 				return;
 			}
 			openErrorNotification(
@@ -389,7 +392,7 @@ const ListadoIngresos = () => {
 			setIngresoNotificar(null);
 		} catch (error) {
 			if (error.status === 401) {
-				handleUnauthorized();
+				await updateSessionStatus();				handleUnauthorized();
 				return;
 			}
 			openErrorNotification(

@@ -14,7 +14,7 @@ import sendEmail from "../../utils/emailSender";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const { Dragger } = Upload;
 
@@ -66,7 +66,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			setProyecto(res.data.proyecto);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -187,7 +187,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			fetchProyecto();
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -231,7 +231,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

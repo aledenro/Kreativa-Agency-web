@@ -11,6 +11,8 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const getEstado = (status) => {
 	switch (status) {
@@ -71,7 +73,7 @@ const VerCotizaciones = () => {
 			setsortOrder("desc");
 		} catch (error) {
 			if (error.status === 401) {
-				navigate("/error", {
+				await updateSessionStatus();				navigate("/error", {
 					state: {
 						errorCode: 401,
 						mensaje: "Debe volver a iniciar sesión para continuar.",

@@ -21,6 +21,8 @@ import Loading from "../components/ui/LoadingComponent";
 import ModalCrearUsuario from "../components/Usuarios/ModalCrearUsuario";
 import ModalEditarUsuario from "../components/Usuarios/ModalEditarUsuario";
 import ModalVerUsuario from "../components/Usuarios/ModalVerUsuario";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const useUsuarios = () => {
 	const navigate = useNavigate();
@@ -55,6 +57,7 @@ const useUsuarios = () => {
 			);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();				
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -289,7 +292,8 @@ const Usuarios = () => {
 				});
 			} catch (error) {
 				if (error.status === 401) {
-					localStorage.clear();
+				await updateSessionStatus();					
+				localStorage.clear();
 					navigate("/error", {
 						state: {
 							errorCode: 401,

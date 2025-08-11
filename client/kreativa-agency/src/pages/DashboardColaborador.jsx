@@ -24,6 +24,8 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const DashboardColaborador = () => {
 	const [proyectos, setProyectos] = useState([]);
@@ -127,7 +129,7 @@ const DashboardColaborador = () => {
 			setTaskSortByProject(taskSort);
 		} catch (error) {
 			if (error.status === 401) {
-				navigate("/error", {
+				await updateSessionStatus();				navigate("/error", {
 					state: {
 						errorCode: 401,
 						mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -169,7 +171,7 @@ const DashboardColaborador = () => {
 			setTareas(todasLasTareas);
 		} catch (error) {
 			if (error.status === 401) {
-				navigate("/error", {
+				await updateSessionStatus();				navigate("/error", {
 					state: {
 						errorCode: 401,
 						mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -203,7 +205,7 @@ const DashboardColaborador = () => {
 			setEmpleados(response.data);
 		} catch (error) {
 			if (error.status === 401) {
-				navigate("/error", {
+				await updateSessionStatus();				navigate("/error", {
 					state: {
 						errorCode: 401,
 						mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -249,7 +251,7 @@ const DashboardColaborador = () => {
 				setEstadosProyecto(estados);
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -282,7 +284,7 @@ const DashboardColaborador = () => {
 				setTareas(response.data.tareas || []);
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -296,9 +298,9 @@ const DashboardColaborador = () => {
 
 		Promise.all([fetchProyectos(), fetchTareas()])
 			.then(() => setLoading(false))
-			.catch((error) => {
+			.catch(async (error) => {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",

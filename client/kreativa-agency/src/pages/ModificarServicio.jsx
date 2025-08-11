@@ -7,6 +7,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import uploadFile from "../utils/fileUpload";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const ModificarServicio = () => {
     const { id } = useParams();
@@ -71,7 +73,7 @@ const ModificarServicio = () => {
             setCategorias(res.data);
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
@@ -123,7 +125,7 @@ const ModificarServicio = () => {
                 setIsLoading(false);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -259,7 +261,7 @@ const ModificarServicio = () => {
             setTimeout(() => navigate("/servicios"), 2000);
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
@@ -326,7 +328,7 @@ const ModificarServicio = () => {
             setNuevaCategoria("");
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,

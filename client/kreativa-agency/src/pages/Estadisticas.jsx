@@ -19,6 +19,7 @@ import "../AdminPanel.css";
 import ModalImprimirReportes from "../components/Estadisticas/ModalImprimirReporte";
 import Loading from "../components/ui/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 // Colores de los gráficos
 const COLORS = ["#ff0072", "#8d25fc", "#007bff", "#ffc02c"];
@@ -113,7 +114,7 @@ const Estadisticas = () => {
                 setCategories(res.data);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -164,9 +165,9 @@ const Estadisticas = () => {
                             }))
                         );
                     })
-                    .catch((error) => {
+                    .catch(async (error) => {
                         if (error.status === 401) {
-                            navigate("/error", {
+				        await updateSessionStatus();                            navigate("/error", {
                                 state: {
                                     errorCode: 401,
                                     mensaje:
@@ -192,9 +193,10 @@ const Estadisticas = () => {
                         setTotalEgresosAnuales(data.resumen.totalEgresos);
                         setDetalleEgresosAnuales(data.detalle);
                     })
-                    .catch((error) => {
+                    .catch(async (error) => {
                         if (error.status === 401) {
-                            navigate("/error", {
+				        await updateSessionStatus();                            
+                        navigate("/error", {
                                 state: {
                                     errorCode: 401,
                                     mensaje:
@@ -251,9 +253,10 @@ const Estadisticas = () => {
                             datosGrafico: datosGrafico,
                         });
                     })
-                    .catch((error) => {
+                    .catch(async (error) => {
                         if (error.status === 401) {
-                            navigate("/error", {
+				        await updateSessionStatus();                            
+                        navigate("/error", {
                                 state: {
                                     errorCode: 401,
                                     mensaje:

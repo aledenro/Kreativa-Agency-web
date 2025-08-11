@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { notification } from "antd";
 import sendEmail from "../../utils/emailSender";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 function construirJsonRequest(
 	proyecto,

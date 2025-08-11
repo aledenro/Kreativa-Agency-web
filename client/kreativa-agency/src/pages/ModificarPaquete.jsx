@@ -6,6 +6,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { notification } from "antd";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const ModificarPaquete = () => {
     const { servicioId, paqueteId } = useParams();
@@ -58,7 +60,7 @@ const ModificarPaquete = () => {
                 setLoading(false);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -181,7 +183,7 @@ const ModificarPaquete = () => {
             }, 2000);
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,
