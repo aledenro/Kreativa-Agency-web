@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const { verificarUsuarioExistente } = require("../services/usuarioService");
+const SessionsService = require("../services/sessionsService");
 
 const verificarToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -20,4 +22,32 @@ const verificarToken = (req, res, next) => {
     }
 };
 
-module.exports = verificarToken;
+const verificarTokenValidoSesion = async (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    const token = authHeader.split(" ")[1];
+
+    const userName = authHeader.split(" ")[2];
+
+    try {
+        const user = await verificarUsuarioExistente(userName);
+
+        if (!user || lodash.isEmpty(user)) {
+            return res.sendStatus(404);
+        }
+
+        const sessionFound = await SessionsService.findActiveSessionByUserId(
+            user._id
+        );
+
+        if (sessionFound.token === token) {
+            next();
+        }
+
+        return res.status(401).json({ mensaje: "Token usado no valido." });
+    } catch (error) {
+        return res.sendStatus(500);
+    }
+};
+
+module.exports = { verificarToken, verificarTokenValidoSesion };
