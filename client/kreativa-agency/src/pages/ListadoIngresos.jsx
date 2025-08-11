@@ -464,7 +464,7 @@ const ListadoIngresos = () => {
 									setFilterCliente(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="">Todos</option>
 								{clientes
@@ -485,7 +485,7 @@ const ListadoIngresos = () => {
 									setFilterFecha(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							/>
 						</Form.Group>
 					</div>
@@ -499,7 +499,7 @@ const ListadoIngresos = () => {
 									setFilterEstado(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="Todos">Todos</option>
 								<option value="Activo">Activo</option>
@@ -514,7 +514,7 @@ const ListadoIngresos = () => {
 									setFilterEstadoPago(e.target.value);
 									setPagActual(1);
 								}}
-								className="thm-btn"
+								className="form_input"
 							>
 								<option value="">Todos</option>
 								<option value="Pendiente de pago">Pendiente de pago</option>
