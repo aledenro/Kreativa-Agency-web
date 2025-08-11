@@ -27,7 +27,6 @@ const DetalleServicio = () => {
 
 	useEffect(() => {
 		const fetchServicio = async () => {
-			
 			try {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/${id}`
@@ -74,9 +73,13 @@ const DetalleServicio = () => {
 				});
 			}
 
-			const response = await axios.put(endpoint, {},{
-				headers: { Authorization: `Bearer ${token}` },
-			});
+			const response = await axios.put(
+				endpoint,
+				{},
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 			setServicio(response.data.servicio);
 		} catch (err) {
 			if (err.status === 401) {
@@ -111,9 +114,13 @@ const DetalleServicio = () => {
 				});
 			}
 
-			const response = await axios.put(endpoint, {},{
-				headers: { Authorization: `Bearer ${token}` },
-			});
+			const response = await axios.put(
+				endpoint,
+				{},
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
 
 			setServicio(response.data);
 		} catch (err) {
@@ -280,9 +287,12 @@ const DetalleServicio = () => {
 												</ul>
 												<div className="row">
 													<div className="col">
-														<p className="card-text">
-															<strong>Precio:</strong> ${paquete.precio}
-														</p>
+														{paquete.precio !== null &&
+															paquete.precio !== undefined && (
+																<p className="card-text">
+																	<strong>Precio:</strong> ${paquete.precio}
+																</p>
+															)}
 													</div>
 													{/* {rol === "Administrador" ? (
                                                     <div className="col text-end">
