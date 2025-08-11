@@ -493,7 +493,7 @@ const GestionPaquetes = () => {
 						</Modal.Body>
 						<Modal.Footer>
 							<button
-								className="thm-btn thm-btn-small btn-rojo"
+								className="thm-btn thm-btn-small btn-gris mx-1"
 								onClick={() => setShowModal(false)}
 							>
 								No

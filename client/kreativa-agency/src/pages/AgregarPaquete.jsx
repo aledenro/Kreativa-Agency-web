@@ -84,10 +84,9 @@ const GestionPaquetes = () => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/servicios/con-paquetes`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -161,11 +160,10 @@ const GestionPaquetes = () => {
 				: `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
 
 			const response = await axios.put(endpoint, null, {
-				headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+				headers: {
+					Authorization: `Bearer ${token}`,
+					user: user,
+				},
 			});
 
 			setServicios((prevServicios) =>
@@ -465,7 +463,7 @@ const GestionPaquetes = () => {
 						</Modal.Body>
 						<Modal.Footer>
 							<button
-								className="thm-btn thm-btn-small btn-rojo"
+								className="thm-btn thm-btn-small btn-gris mx-1"
 								onClick={() => setShowModal(false)}
 							>
 								No

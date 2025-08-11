@@ -358,12 +358,13 @@ const AgregarServicio = () => {
 	return (
 		<div>
 			<AdminLayout>
-				<div className="container main-container">
+				<div className="container main-container mb-4">
+					<div style={{ height: "1px" }}></div>
 					<div className="section-title text-center">
-						<h2>Agregar nuevo servicio</h2>
+						<h1>Agregar nuevo servicio</h1>
 					</div>
 					<div className="mx-auto align-items-center justify-content-center d-flex">
-						<div className="col-xl-8">
+						<div className="col-10">
 							{contextHolder}
 							<Form onSubmit={handleSubmit} className="servicio_form">
 								<div className="row">
