@@ -6,13 +6,13 @@ import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 import {
-  faSearch,
-  faChevronDown,
-  faEye,
-  faPencil,
-  faToggleOff,
-  faToggleOn,
-  faTrash,
+	faSearch,
+	faChevronDown,
+	faEye,
+	faPencil,
+	faToggleOff,
+	faToggleOn,
+	faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
@@ -24,100 +24,96 @@ import ModalVerUsuario from "../components/Usuarios/ModalVerUsuario";
 import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 const useUsuarios = () => {
-  const navigate = useNavigate();
-  const [usuarios, setUsuarios] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+	const navigate = useNavigate();
+	const [usuarios, setUsuarios] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState("");
 
-  const fetchUsuarios = useCallback(async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const user = localStorage.getItem("user_name");
-      if (!token) {
-        navigate("/error", {
-          state: {
-            errorCode: 401,
-            mensaje: "Debe iniciar sesión para continuar.",
-          },
-        });
-        return;
-      }
+	const fetchUsuarios = useCallback(async () => {
+		try {
+			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
 
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/usuarios`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            user: user,
-          },
-        }
-      );
+			const { data } = await axios.get(
+				`${import.meta.env.VITE_API_URL}/usuarios`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
+			);
 
-      setUsuarios(
-        data.sort(
-          (a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
-        )
-      );
-    } catch (error) {
-      if (error.status === 401) {
-        await updateSessionStatus();
-        navigate("/error", {
-          state: {
-            errorCode: 401,
-            mensaje: "Debe volver a iniciar sesión para continuar.",
-          },
-        });
-        return;
-      }
-      console.error(
-        "Error al cargar los usuarios:",
-        error.response?.data || error
-      );
-      setError("Error al cargar los usuarios");
-    } finally {
-      setLoading(false);
-    }
-  }, [navigate]);
+			setUsuarios(
+				data.sort(
+					(a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
+				)
+			);
+		} catch (error) {
+			if (error.status === 401) {
+				await updateSessionStatus();
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe volver a iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+			console.error(
+				"Error al cargar los usuarios:",
+				error.response?.data || error
+			);
+			setError("Error al cargar los usuarios");
+		} finally {
+			setLoading(false);
+		}
+	}, [navigate]);
 
-  const actualizarEstadoUsuario = useCallback((id, nuevoEstado) => {
-    setUsuarios((prevUsuarios) =>
-      prevUsuarios.map((usuario) =>
-        usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
-      )
-    );
-  }, []);
+	const actualizarEstadoUsuario = useCallback((id, nuevoEstado) => {
+		setUsuarios((prevUsuarios) =>
+			prevUsuarios.map((usuario) =>
+				usuario._id === id ? { ...usuario, estado: nuevoEstado } : usuario
+			)
+		);
+	}, []);
 
-  return {
-    usuarios,
-    loading,
-    error,
-    setError,
-    fetchUsuarios,
-    actualizarEstadoUsuario,
-  };
+	return {
+		usuarios,
+		loading,
+		error,
+		setError,
+		fetchUsuarios,
+		actualizarEstadoUsuario,
+	};
 };
 
 const validateUsuario = (usuario) => {
-  return (
-    usuario &&
-    usuario._id &&
-    usuario.cedula &&
-    usuario.nombre &&
-    usuario.email &&
-    usuario.estado
-  );
+	return (
+		usuario &&
+		usuario._id &&
+		usuario.cedula &&
+		usuario.nombre &&
+		usuario.email &&
+		usuario.estado
+	);
 };
 
 const FiltrosUsuarios = memo(
-	({ onSearchChange, onEstadoChange, onTipoChange, onCrearUsuario }) => {
+	({ onSearchChange, onEstadoChange, onTipoChange }) => {
 		return (
-			<div className="row mb-3">
-				<div className="col-lg-3 col-md-12 mb-2 mb-lg-0">
-					<button className="thm-btn btn-verde" onClick={onCrearUsuario}>
-						Crear Usuario
-					</button>
-				</div>
-				<div className="col-lg-3 col-md-12 mb-2 mb-lg-0">
+			<div className="row">
+				<div className="col-md-4 col-12 mb-3">
+					<label className="form-label">Buscar por Cédula:</label>
 					<input
 						type="text"
 						className="form_input"
@@ -125,22 +121,24 @@ const FiltrosUsuarios = memo(
 						onChange={(e) => onSearchChange(e.target.value)}
 					/>
 				</div>
-				<div className="col-lg-3 col-md-12 mb-2 mb-lg-0">
+				<div className="col-md-4 col-12 mb-3">
+					<label className="form-label">Estado:</label>
 					<select
 						className="form-select form_input"
 						onChange={(e) => onEstadoChange(e.target.value)}
 					>
-						<option value="">Todos los estados</option>
+						<option value="">Todos</option>
 						<option value="Activo">Activos</option>
 						<option value="Inactivo">Inactivos</option>
 					</select>
 				</div>
-				<div className="col-lg-3 col-md-12">
+				<div className="col-md-4 col-12 mb-3">
+					<label className="form-label">Tipo de Usuario:</label>
 					<select
 						className="form-select form_input"
 						onChange={(e) => onTipoChange(e.target.value)}
 					>
-						<option value="">Todos los tipos</option>
+						<option value="">Todos</option>
 						<option value="Administrador">Administrador</option>
 						<option value="Colaborador">Colaborador</option>
 						<option value="Cliente">Cliente</option>
@@ -152,38 +150,45 @@ const FiltrosUsuarios = memo(
 );
 
 const AccionesUsuario = memo(
-  ({ usuario, onVer, onEditar, onActivarDesactivar }) => {
-    if (!validateUsuario(usuario)) {
-      return <div className="text-center">Datos inválidos</div>;
-    }
+	({ usuario, onVer, onEditar, onActivarDesactivar }) => {
+		if (!validateUsuario(usuario)) {
+			return <div className="text-center">Datos inválidos</div>;
+		}
 
-    return (
-      <div className="botones-grupo">
-        <button
-          className="thm-btn thm-btn-small btn-amarillo"
-          onClick={() => onVer(usuario._id)}
-        >
-          <FontAwesomeIcon icon={faEye} />
-        </button>
-        <button
-          className="thm-btn thm-btn-small btn-azul"
-          onClick={() => onEditar(usuario._id)}
-        >
-          <FontAwesomeIcon icon={faPencil} />
-        </button>
-        <button
-          className={`thm-btn thm-btn-small ${
-            usuario.estado === "Activo" ? "btn-verde" : "btn-rojo"
-          }`}
-          onClick={() => onActivarDesactivar(usuario._id, usuario.estado)}
-        >
-          <FontAwesomeIcon
-            icon={usuario.estado === "Activo" ? faToggleOff : faToggleOn}
-          />
-        </button>
-      </div>
-    );
-  }
+		return (
+			<div className="botones-grupo">
+				<button
+					className="thm-btn thm-btn-small btn-amarillo"
+					onClick={() => onVer(usuario._id)}
+					title="Ver detalles"
+				>
+					<FontAwesomeIcon icon={faEye} />
+				</button>
+				<button
+					className="thm-btn thm-btn-small btn-azul"
+					onClick={() => onEditar(usuario._id)}
+					title="Editar usuario"
+				>
+					<FontAwesomeIcon icon={faPencil} />
+				</button>
+				<button
+					className={`thm-btn thm-btn-small ${
+						usuario.estado === "Activo" ? "btn-verde" : "btn-rojo"
+					}`}
+					title={
+						usuario.estado === "Activo"
+							? "Desactivar usuario"
+							: "Activar usuario"
+					}
+					onClick={() => onActivarDesactivar(usuario._id, usuario.estado)}
+				>
+					<FontAwesomeIcon
+						icon={usuario.estado === "Activo" ? faToggleOff : faToggleOn}
+					/>
+				</button>
+			</div>
+		);
+	}
 );
 
 const Usuarios = () => {
@@ -281,13 +286,13 @@ const Usuarios = () => {
 
 			try {
 				const token = localStorage.getItem("token");
-        const user = localStorage.getItem("user_name");
+				const user = localStorage.getItem("user_name");
 				if (!token) {
 					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe iniciar sesión para continuar.",
-              user: user,
+							user: user,
 						},
 					});
 					return;
@@ -298,7 +303,7 @@ const Usuarios = () => {
 					{ estado: nuevoEstado },
 					{
 						headers: { Authorization: `Bearer ${token}` },
-            user: user,
+						user: user,
 					}
 				);
 
@@ -313,8 +318,8 @@ const Usuarios = () => {
 				});
 			} catch (error) {
 				if (error.status === 401) {
-				await updateSessionStatus();					
-				localStorage.clear();
+					await updateSessionStatus();
+					localStorage.clear();
 					navigate("/error", {
 						state: {
 							errorCode: 401,
@@ -364,14 +369,21 @@ const Usuarios = () => {
 		<AdminLayout>
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
-				<h1 className="mb-4">Gestión de Usuarios</h1>
-				<div style={{ marginBottom: "30px" }}></div>
+
+				{/* Encabezado con título y botón */}
+				<div className="d-flex justify-content-between align-items-center mb-4">
+					<h1>Gestión de Usuarios</h1>
+					<button className="thm-btn btn-verde" onClick={handleCrearUsuario}>
+						<FontAwesomeIcon icon={faPlus} className="me-2" />
+						Crear Usuario
+					</button>
+				</div>
+
 				<div className="row mb-3">
 					<FiltrosUsuarios
 						onSearchChange={handleSearchChange}
 						onEstadoChange={handleEstadoChange}
 						onTipoChange={handleTipoChange}
-						onCrearUsuario={handleCrearUsuario}
 					/>
 				</div>
 
