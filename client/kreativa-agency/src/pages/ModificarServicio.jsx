@@ -54,7 +54,7 @@ const ModificarServicio = () => {
 
 	const fetchCategorias = async () => {
 		const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user_name");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -70,14 +70,13 @@ const ModificarServicio = () => {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/servicios/categorias`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
-          user: user
+					headers: { Authorization: `Bearer ${token}`, user: user },
 				}
 			);
 			setCategorias(res.data);
 		} catch (error) {
 			if (error.status === 401) {
-        await updateSessionStatus();
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -98,7 +97,7 @@ const ModificarServicio = () => {
 	useEffect(() => {
 		const fetchServicio = async () => {
 			const token = localStorage.getItem("token");
-      const user = localStorage.getItem("user_name");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -114,8 +113,7 @@ const ModificarServicio = () => {
 				const res = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/${id}`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
-            user: user
+						headers: { Authorization: `Bearer ${token}`, user: user },
 					}
 				);
 				setServicio(res.data);
@@ -134,7 +132,7 @@ const ModificarServicio = () => {
 				setIsLoading(false);
 			} catch (error) {
 				if (error.status === 401) {
-          await updateSessionStatus();
+					await updateSessionStatus();
 					navigate("/error", {
 						state: {
 							errorCode: 401,
@@ -218,7 +216,7 @@ const ModificarServicio = () => {
 						);
 
 						const token = localStorage.getItem("token");
-            const user = localStorage.getItem("user_name");
+						const user = localStorage.getItem("user_name");
 
 						if (!token) {
 							navigate("/error", {
@@ -232,7 +230,12 @@ const ModificarServicio = () => {
 						const imageUpdateResponse = await axios.put(
 							`${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
 							imagenes,
-							{ headers: { Authorization: `Bearer ${token}`, user: user } }
+							{
+								headers: {
+									Authorization: `Bearer ${token}`,
+									user: user,
+								},
+							}
 						);
 
 						console.log("Image update response:", imageUpdateResponse.data);
@@ -253,7 +256,7 @@ const ModificarServicio = () => {
 			};
 
 			const token = localStorage.getItem("token");
-      const user = localStorage.getItem("user_name");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -267,7 +270,7 @@ const ModificarServicio = () => {
 			const updateResponse = await axios.put(
 				`${import.meta.env.VITE_API_URL}/servicios/modificar/${id}`,
 				serviceData,
-				{ headers: { Authorization: `Bearer ${token}`,user: user } }
+				{ headers: { Authorization: `Bearer ${token}`, user: user } }
 			);
 
 			openSuccessNotification(
@@ -277,7 +280,7 @@ const ModificarServicio = () => {
 			setTimeout(() => navigate("/admin/servicios"), 2000);
 		} catch (error) {
 			if (error.status === 401) {
-        await updateSessionStatus();
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -321,7 +324,7 @@ const ModificarServicio = () => {
 			return;
 		}
 		const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user_name");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -340,7 +343,7 @@ const ModificarServicio = () => {
 				{
 					nombre: nuevaCategoria,
 				},
-				{ headers: { Authorization: `Bearer ${token}` },user: user }
+				{ headers: { Authorization: `Bearer ${token}`, user: user } }
 			);
 
 			await fetchCategorias();
@@ -353,7 +356,7 @@ const ModificarServicio = () => {
 			setNuevaCategoria("");
 		} catch (error) {
 			if (error.status === 401) {
-        await updateSessionStatus();
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {

@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
-import validTokenActive, { updateSessionStatus } from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 
 const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
 	const [egresoEditado, setEgresoEditado] = useState({});
@@ -115,7 +118,7 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
 		setIsSubmitting(true);
 
 		const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user_name");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			handleUnauthorized("Acceso no autorizado.");
@@ -137,7 +140,7 @@ const ModalEditarEgreso = ({ show, handleClose, egreso, onSave }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-      await updateSessionStatus();
+				await updateSessionStatus();
 				handleUnauthorized();
 				return;
 			}

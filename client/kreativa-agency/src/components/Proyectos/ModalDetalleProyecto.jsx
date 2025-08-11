@@ -14,7 +14,10 @@ import sendEmail from "../../utils/emailSender";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 import Loading from "../../components/ui/LoadingComponent";
 
 const { Dragger } = Upload;
@@ -77,10 +80,9 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -88,7 +90,8 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			setProyecto(res.data.proyecto);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -197,10 +200,12 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${proyectoId}`,
 				data,
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			const respuestaDb = response.data.respuesta;
@@ -269,9 +274,9 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				console.error("Error al enviar el email");
 			}
 		} catch (error) {
-
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

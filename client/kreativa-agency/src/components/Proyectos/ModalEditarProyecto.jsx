@@ -5,7 +5,10 @@ import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/ui/LoadingComponent";
-import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 
 const estados = [
 	"Por Hacer",
@@ -166,10 +169,12 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
 				data,
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (res.status === 200) {
@@ -268,7 +273,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -304,10 +310,12 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
 				{ estado: estadoEdit },
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (response.status === 200) {
@@ -410,7 +418,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -444,14 +453,17 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 					usuario_id: user_id,
 					accion: accion,
 				},
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -495,10 +507,9 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -511,7 +522,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			await fetchClientes();
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -574,10 +586,9 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -589,7 +600,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			setEmpleados(response.data);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -621,10 +633,9 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/clientes`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -632,7 +643,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			setClientes(response.data);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

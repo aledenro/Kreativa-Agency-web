@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { notification } from "antd";
-import validTokenActive from "../../utils/validateToken";
-
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 
 const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 	const navigate = useNavigate();
@@ -19,7 +21,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 		proveedor: "",
 		estado: "Pendiente",
 	});
-	const today = new Date().toISOString().split('T')[0];
+	const today = new Date().toISOString().split("T")[0];
 
 	const [api, contextHolder] = notification.useNotification();
 
@@ -145,9 +147,9 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 				`${import.meta.env.VITE_API_URL}/egresos`,
 				formData,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
+						user: user,
 					},
 				}
 			);
