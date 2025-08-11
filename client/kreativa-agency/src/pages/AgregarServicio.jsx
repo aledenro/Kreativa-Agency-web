@@ -65,17 +65,16 @@ const AgregarServicio = () => {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/servicios/categorias`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
 			setCategorias(res.data);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -154,12 +153,12 @@ const AgregarServicio = () => {
 		}
 
 		try {
-			let imagenes = [];
+			let imagenesTemp = [];
 			try {
 				const file = fileList[0].originFileObj;
 
 				if (file) {
-					imagenes = await fileUpload(
+					imagenesTemp = await fileUpload(
 						[file],
 						"landingpage",
 						"servicios",
@@ -178,23 +177,25 @@ const AgregarServicio = () => {
 					nombre,
 					descripcion,
 					categoria_id: selectedCategoria,
-					imagenes: imagenes,
+					imagenes: imagenesTemp,
 				},
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			const servicioId = res.data._id;
 
-			let imagenes = [];
 			if (fileList.length > 0) {
 				try {
 					const file = fileList[0].originFileObj;
+					let imagenesFinal = [];
 
 					if (file) {
-						imagenes = await fileUpload(
+						imagenesFinal = await fileUpload(
 							[file],
 							"landingpage",
 							"servicios",
@@ -215,16 +216,18 @@ const AgregarServicio = () => {
 
 					await axios.put(
 						`${import.meta.env.VITE_API_URL}/servicios/modificar/${servicioId}`,
-						imagenes,
-						{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+						{ imagenes: imagenesFinal },
+						{
+							headers: {
+								Authorization: `Bearer ${token}`,
+								user: user,
+							},
+						}
 					);
 				} catch (error) {
 					if (error.status === 401) {
-				await updateSessionStatus();						
-				navigate("/error", {
+						await updateSessionStatus();
+						navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -249,7 +252,8 @@ const AgregarServicio = () => {
 			}, 2000);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -259,7 +263,7 @@ const AgregarServicio = () => {
 
 				return;
 			}
-			console.error("Error al agregar el servicio:", error);
+			console.error("Error al agregar el servicio:");
 
 			const mensaje =
 				error.response?.data?.error || "Hubo un error al agregar el servicio";
@@ -296,10 +300,12 @@ const AgregarServicio = () => {
 				{
 					nombre: nuevaCategoria,
 				},
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			await fetchCategorias();
@@ -311,7 +317,8 @@ const AgregarServicio = () => {
 			console.error("Error al agregar la categoria:", error);
 			if (error.response) {
 				if (error.status === 401) {
-				await updateSessionStatus();					navigate("/error", {
+					await updateSessionStatus();
+					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
