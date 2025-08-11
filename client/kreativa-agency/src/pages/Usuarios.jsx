@@ -103,15 +103,15 @@ const validateUsuario = (usuario) => {
 };
 
 const FiltrosUsuarios = memo(
-	({ onSearchChange, onEstadoChange, onCrearUsuario }) => {
+	({ onSearchChange, onEstadoChange, onTipoChange, onCrearUsuario }) => {
 		return (
 			<div className="row mb-3">
-				<div className="col-lg-4 col-md-12 mb-2 mb-lg-0">
+				<div className="col-lg-3 col-md-12 mb-2 mb-lg-0">
 					<button className="thm-btn btn-verde" onClick={onCrearUsuario}>
 						Crear Usuario
 					</button>
 				</div>
-				<div className="col-lg-4 col-md-12 mb-2 mb-lg-0">
+				<div className="col-lg-3 col-md-12 mb-2 mb-lg-0">
 					<input
 						type="text"
 						className="form_input"
@@ -119,14 +119,25 @@ const FiltrosUsuarios = memo(
 						onChange={(e) => onSearchChange(e.target.value)}
 					/>
 				</div>
-				<div className="col-lg-4 col-md-12">
+				<div className="col-lg-3 col-md-12 mb-2 mb-lg-0">
 					<select
 						className="form-select form_input"
 						onChange={(e) => onEstadoChange(e.target.value)}
 					>
-						<option value="">Todos</option>
+						<option value="">Todos los estados</option>
 						<option value="Activo">Activos</option>
 						<option value="Inactivo">Inactivos</option>
+					</select>
+				</div>
+				<div className="col-lg-3 col-md-12">
+					<select
+						className="form-select form_input"
+						onChange={(e) => onTipoChange(e.target.value)}
+					>
+						<option value="">Todos los tipos</option>
+						<option value="Administrador">Administrador</option>
+						<option value="Colaborador">Colaborador</option>
+						<option value="Cliente">Cliente</option>
 					</select>
 				</div>
 			</div>
@@ -187,6 +198,7 @@ const Usuarios = () => {
 
 	const [search, setSearch] = useState("");
 	const [estadoFiltro, setEstadoFiltro] = useState("");
+	const [tipoFiltro, setTipoFiltro] = useState("");
 	const [paginaActual, setPaginaActual] = useState(1);
 	const [usuariosPorPagina, setUsuariosPorPagina] = useState(5);
 
@@ -202,8 +214,11 @@ const Usuarios = () => {
 			})
 			.filter((usuario) =>
 				estadoFiltro ? usuario.estado === estadoFiltro : true
+			)
+			.filter((usuario) =>
+				tipoFiltro ? usuario.tipo_usuario === tipoFiltro : true
 			);
-	}, [usuarios, search, estadoFiltro]);
+	}, [usuarios, search, estadoFiltro, tipoFiltro]);
 
 	const usuariosPaginados = useMemo(() => {
 		const indexOfLastUser = paginaActual * usuariosPorPagina;
@@ -320,6 +335,11 @@ const Usuarios = () => {
 		setPaginaActual(1);
 	}, []);
 
+	const handleTipoChange = useCallback((tipo) => {
+		setTipoFiltro(tipo);
+		setPaginaActual(1);
+	}, []);
+
 	if (loading) {
 		return (
 			<AdminLayout>
@@ -340,6 +360,7 @@ const Usuarios = () => {
 					<FiltrosUsuarios
 						onSearchChange={handleSearchChange}
 						onEstadoChange={handleEstadoChange}
+						onTipoChange={handleTipoChange}
 						onCrearUsuario={handleCrearUsuario}
 					/>
 				</div>
