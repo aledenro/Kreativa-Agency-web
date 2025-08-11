@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 import sendEmail from "../../utils/emailSender";
 
 function construirJsonRequest(
@@ -190,10 +190,10 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 				);
 			}
 		} catch (error) {
-			console.error("Error al crear proyecto");
 
-			if (error.response?.status === 401) {
-				localStorage.clear();
+			if (error.status === 401) {
+				await updateSessionStatus();				localStorage.clear();
+
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -259,7 +259,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			setClientes(response.data);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -301,7 +301,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			setEmpleados(empleadosActivos);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

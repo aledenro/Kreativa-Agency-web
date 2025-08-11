@@ -7,6 +7,7 @@ import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import fileUpload from "../utils/fileUpload";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 const AgregarServicio = () => {
 	const [categorias, setCategorias] = useState([]);
@@ -66,6 +67,7 @@ const AgregarServicio = () => {
 			setCategorias(res.data);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();				
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -173,7 +175,8 @@ const AgregarServicio = () => {
 					);
 				} catch (error) {
 					if (error.status === 401) {
-						navigate("/error", {
+				await updateSessionStatus();						
+				navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -193,7 +196,7 @@ const AgregarServicio = () => {
 			setFileList([]);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -251,7 +254,7 @@ const AgregarServicio = () => {
 			console.error("Error al agregar la categoria:", error);
 			if (error.response) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",

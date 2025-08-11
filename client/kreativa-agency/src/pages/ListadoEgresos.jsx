@@ -24,6 +24,7 @@ import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/ui/LoadingComponent";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 const ListadoEgresos = () => {
 	const [egresos, setEgresos] = useState([]);
@@ -91,6 +92,7 @@ const ListadoEgresos = () => {
 			setEgresos(res.data);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();				
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -200,7 +202,7 @@ const ListadoEgresos = () => {
 				setToggleEgreso(null);
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",

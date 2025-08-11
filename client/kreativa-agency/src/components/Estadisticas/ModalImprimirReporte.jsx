@@ -6,7 +6,7 @@ import { notification } from "antd";
 import lodash from "lodash";
 import forceFileDownload from "../../utils/forceFileDownload";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const columnasIngresos = [
 	"Fecha",

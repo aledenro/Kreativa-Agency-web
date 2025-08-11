@@ -10,6 +10,8 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../components/ui/LoadingComponent";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const VerPTOEmpleados = () => {
 	const navigate = useNavigate();
@@ -45,7 +47,7 @@ const VerPTOEmpleados = () => {
 				setEmpleados(response.data);
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -142,7 +144,7 @@ const VerPTOEmpleados = () => {
 			verDetallesPTO(empleadoId, nombre); // Recargar tabla modal
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

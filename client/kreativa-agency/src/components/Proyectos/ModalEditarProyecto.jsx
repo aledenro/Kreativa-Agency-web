@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const estados = [
 	"Por Hacer",
@@ -262,7 +262,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -400,7 +400,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -437,7 +437,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -492,7 +492,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			fetchClientes();
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -562,7 +562,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			setEmpleados(response.data);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -600,7 +600,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			setClientes(response.data);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

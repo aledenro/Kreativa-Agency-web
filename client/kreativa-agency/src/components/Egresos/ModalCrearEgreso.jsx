@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 	const navigate = useNavigate();
@@ -78,7 +78,7 @@ const ModalCrearEgreso = ({ show, handleClose, onSave }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

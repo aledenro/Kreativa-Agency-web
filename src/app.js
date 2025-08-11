@@ -20,6 +20,7 @@ const reclutacionesRoutes = require("./routes/reclutacionesRoutes");
 const contactoRoutes = require("./routes/contactoRoutes");
 const pagosRoutes = require("./routes/pagosRoutes");
 const configRoutes = require("./routes/configRoutes");
+const sessionRoutes = require("./routes/sessionsRoutes")
 
 connectDB();
 
@@ -48,6 +49,8 @@ app.use("/api/reclutaciones", reclutacionesRoutes);
 app.use("/api/contacto", contactoRoutes);
 app.use("/api/pagos", pagosRoutes);
 app.use("/api/form-status", configRoutes);
+app.use("/api/sessions", sessionRoutes);
+
 
 //end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);
