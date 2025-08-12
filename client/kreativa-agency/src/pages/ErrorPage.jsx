@@ -9,7 +9,7 @@ const ErrorPage = () => {
         <div className="error-container d-flex flex-column justify-content-center align-items-center vh-100">
             <div className="error-logo mb-4">
                 <img
-                    src="src/assets/img/logo.png"
+                    src="https://kreativa-public.s3.us-east-2.amazonaws.com/landing/logo.png"
                     alt="Logo"
                     className="img-fluid"
                 />
