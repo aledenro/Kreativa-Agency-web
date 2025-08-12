@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { UserRound } from "lucide-react";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const VerPerfil = () => {
     const navigate = useNavigate();
@@ -19,6 +21,8 @@ const VerPerfil = () => {
         const fetchPerfil = async () => {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
+
                 if (!token) {
                     navigate("/error", {
                         state: {
@@ -32,7 +36,11 @@ const VerPerfil = () => {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/${decoded.id}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -43,7 +51,7 @@ const VerPerfil = () => {
                 });
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -74,6 +82,8 @@ const VerPerfil = () => {
     const handleSave = async () => {
         try {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
+            
             if (!token) {
                 navigate("/error", {
                     state: {
@@ -87,7 +97,11 @@ const VerPerfil = () => {
                 `${import.meta.env.VITE_API_URL}/usuarios/${usuario._id}`,
                 formData,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                 }
             );
 
@@ -102,7 +116,7 @@ const VerPerfil = () => {
             setEditMode(false);
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,

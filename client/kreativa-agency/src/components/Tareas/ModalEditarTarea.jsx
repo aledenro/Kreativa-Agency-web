@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 function construirJsonRequest(
 	proyecto,
@@ -133,15 +133,20 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		if (!proyectoEncontrado) {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
 			} catch (error) {
-				console.error("Error al obtener proyecto:", error);
+				console.error("Error al obtener proyecto");
 			}
 		}
 
@@ -185,11 +190,16 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		} else {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 
@@ -243,6 +253,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		event.preventDefault();
 		const estadoEdit = event.target.value;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -258,13 +269,39 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
 				{ estado: estadoEdit },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (response.status === 200) {
 				openSuccessNotification("Estado cambiado correctamente.");
 				setEstado(estadoEdit);
 				await addActionLog(`Cambió el estado de la tarea a: ${estadoEdit}.`);
+
+				try {
+					const colaboradorId =
+						typeof tarea.colaborador_id === "object"
+							? tarea.colaborador_id._id
+							: tarea.colaborador_id;
+
+					const nombreProyecto =
+						proyectoSeleccionado?.nombre || "Proyecto no especificado";
+					const nombreTarea = tarea?.nombre || "Tarea";
+
+					const emailBody = `El estado de su tarea "${nombreTarea}" del proyecto "${nombreProyecto}" ha sido actualizado a ${estadoEdit}. Por favor, acceda al sistema para revisar los detalles.`;
+
+					await sendEmail(
+						colaboradorId,
+						emailBody,
+						`Estado de Tarea Actualizado`,
+						"Acceder al Sistema",
+						`tareas`
+					);
+				} catch (emailError) {
+					console.error("Error al enviar email");
+				}
 
 				if (typeof onUpdate === "function") {
 					onUpdate();
@@ -274,7 +311,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -352,6 +389,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		);
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -367,21 +405,70 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
 				data,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 
 			if (res.status === 200) {
 				openSuccessNotification("Tarea editada correctamente.");
 				await addActionLog("Editó la tarea.");
 
-				if (colaboradorOriginal !== colab) {
-					await sendEmail(
-						colab,
-						"Se le ha asignado una nueva tarea.",
-						"Nueva Asignación de Trabajo",
-						"Ver",
-						"test"
-					);
+				const colaboradorCambio = colaboradorOriginal !== colab;
+
+				try {
+					const nombreProyecto =
+						proyectoSeleccionado?.nombre || "Proyecto no especificado";
+					const fechaEntregaFormatted = new Date(
+						fechaEntrega
+					).toLocaleDateString("es-ES");
+
+					if (colaboradorCambio) {
+						try {
+							const emailBodyAnterior = `La tarea "${nombre}" del proyecto ${nombreProyecto} ya no está asignada a usted. Ha sido reasignada a otro colaborador. Por favor, acceda al sistema para revisar sus tareas actuales.`;
+
+							await sendEmail(
+								colaboradorOriginal,
+								emailBodyAnterior,
+								"Tarea Reasignada",
+								"Acceder al Sistema",
+								"tareas"
+							);
+						} catch (emailError) {
+							console.error("Error al enviar email");
+						}
+
+						try {
+							const emailBodyNuevo = `Se le ha asignado la tarea "${nombre}" del proyecto ${nombreProyecto} con fecha de entrega al ${fechaEntregaFormatted}. Por favor, acceda al sistema para revisar todos los detalles.`;
+
+							await sendEmail(
+								colab,
+								emailBodyNuevo,
+								"Nueva Tarea Asignada",
+								"Acceder al Sistema",
+								"tareas"
+							);
+						} catch (emailError) {
+							console.error("Error al enviar email");
+						}
+					} else {
+						try {
+							const emailBody = `Su tarea ${nombre} del proyecto ${nombreProyecto} ha sido actualizada. Por favor, acceda al sistema para revisar los cambios realizados.`;
+
+							await sendEmail(
+								colab,
+								emailBody,
+								"Tarea Actualizada",
+								"Acceder al Sistema",
+								"tareas"
+							);
+						} catch (emailError) {
+							console.error("Error al enviar email");
+						}
+					}
+				} catch (emailError) {
+					console.error("Error al enviar email");
 				}
 
 				if (typeof onUpdate === "function") {
@@ -396,7 +483,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -428,17 +515,21 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
 		try {
 			const user_id = localStorage.getItem("user_id");
+			const user = localStorage.getItem("user_name");
 			await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/actualizarLog/${tareaId}`,
 				{
 					usuario_id: user_id,
 					accion: accion,
 				},
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{ headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
 			);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -454,6 +545,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 	const fetchTarea = useCallback(async () => {
 		if (!tareaId) return;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -469,7 +561,11 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/tareas/id/${tareaId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -482,6 +578,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();				
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -534,6 +631,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 
 	async function fetchEmpleados() {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -549,14 +647,18 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 			setEmpleados(response.data);
 		} catch (error) {
 			console.error(`Error al obtener los empleados`);
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -583,6 +685,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		}
 		const rol = localStorage.getItem("tipo_usuario");
 		const userId = localStorage.getItem("user_id");
+		const user = localStorage.getItem("user_name");
 
 		try {
 			let url = `${import.meta.env.VITE_API_URL}/proyectos`;
@@ -596,14 +699,18 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			}
 
 			const response = await axios.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setProyectos(response.data.proyectos);
 		} catch (error) {
 			console.error(`Error al obtener los proyectos`);
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

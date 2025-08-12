@@ -17,6 +17,7 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 const GestionServicios = () => {
 	const [servicios, setServicios] = useState([]);
@@ -31,10 +32,12 @@ const GestionServicios = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [selectedServicio, setSelectedServicio] = useState(null);
 	const [modalAction, setModalAction] = useState(""); // "activar" or "desactivar"
+	const [filterStatus, setFilterStatus] = useState("");
 
 	useEffect(() => {
 		const fetchServicios = async () => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -49,7 +52,10 @@ const GestionServicios = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/servicios/listado`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 				if (Array.isArray(response.data)) {
@@ -59,6 +65,7 @@ const GestionServicios = () => {
 				}
 			} catch (error) {
 				if (error.status === 401) {
+					await updateSessionStatus();
 					navigate("/error", {
 						state: {
 							errorCode: 401,
@@ -106,6 +113,7 @@ const GestionServicios = () => {
 				: `${import.meta.env.VITE_API_URL}/servicios/${id}/activar`;
 
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -116,9 +124,16 @@ const GestionServicios = () => {
 				});
 			}
 
-			const response = await axios.put(endpoint, {},{
-				headers: { Authorization: `Bearer ${token}` },
-			});
+			const response = await axios.put(
+				endpoint,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
+			);
 
 			setServicios(
 				servicios.map((servicio) =>
@@ -131,6 +146,7 @@ const GestionServicios = () => {
 			setShowModal(false);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -146,7 +162,14 @@ const GestionServicios = () => {
 		}
 	};
 
-	const serviciosOrdenados = [...servicios].sort((a, b) => {
+	const serviciosFiltrados = servicios.filter((servicio) => {
+		if (filterStatus === "") return true;
+		if (filterStatus === "Activos") return servicio.activo === true;
+		if (filterStatus === "Inactivos") return servicio.activo === false;
+		return true;
+	});
+
+	const serviciosOrdenados = [...serviciosFiltrados].sort((a, b) => {
 		let valueA = lodash.get(a, sortField);
 		let valueB = lodash.get(b, sortField);
 
@@ -176,7 +199,7 @@ const GestionServicios = () => {
 		pagActual * itemsPag
 	);
 
-	const totalPags = Math.ceil(servicios.length / itemsPag);
+	const totalPags = Math.ceil(serviciosOrdenados.length / itemsPag);
 
 	const handleSort = (field) => {
 		if (sortField === field) {
@@ -206,6 +229,24 @@ const GestionServicios = () => {
 					<button className="thm-btn" onClick={handleAgregarServicio}>
 						<FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo Servicio
 					</button>
+				</div>
+
+				<div className="row mb-3">
+					<div className="col-3">
+						<label htmlFor="filterStatus">Filtrar por Estado:</label>
+						<select
+							className="form-select form_input"
+							onChange={(e) => {
+								setFilterStatus(e.target.value);
+								setPagActual(1);
+							}}
+							id="filterStatus"
+						>
+							<option value="">Todos</option>
+							<option value="Activos">Activos</option>
+							<option value="Inactivos">Inactivos</option>
+						</select>
+					</div>
 				</div>
 
 				<div className="div-table">
@@ -285,7 +326,7 @@ const GestionServicios = () => {
 							) : (
 								<Tr>
 									<Td colSpan="5" className="text-center">
-										No hay servicios disponibles
+										No hay servicios disponibles con los filtros seleccionados
 									</Td>
 								</Tr>
 							)}
@@ -294,7 +335,7 @@ const GestionServicios = () => {
 				</div>
 
 				<TablaPaginacion
-					totalItems={servicios.length}
+					totalItems={serviciosOrdenados.length}
 					itemsPorPagina={itemsPag}
 					paginaActual={pagActual}
 					onItemsPorPaginaChange={(cant) => {
@@ -313,7 +354,7 @@ const GestionServicios = () => {
 					</Modal.Body>
 					<Modal.Footer>
 						<button
-							className="thm-btn thm-btn-small btn-rojo"
+							className="thm-btn thm-btn-small btn-gris mx-1"
 							onClick={() => setShowModal(false)}
 						>
 							No

@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar/Navbar";
 import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 function construirJsonRequest(titulo, descripcion, urgente) {
     const user_id = localStorage.getItem("user_id");
@@ -39,6 +40,7 @@ const AgregarCotizacion = () => {
 
         const data = construirJsonRequest(titulo, descripcion, urgente);
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -54,7 +56,10 @@ const AgregarCotizacion = () => {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/cotizaciones/crear`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status == 201) {
@@ -65,7 +70,7 @@ const AgregarCotizacion = () => {
             }
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,

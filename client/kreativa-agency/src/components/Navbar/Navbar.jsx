@@ -191,7 +191,7 @@ export default function Navbar() {
 									<li className="nav-item ms-xl-auto d-flex gap-2">
 										{isLoggedIn && (
 											<Link
-												to="/estadisticas"
+												to="/dashboard"
 												className="login-button px-3 nav-link rounded-3 text-base leading-6 fw-semibold text-center"
 											>
 												Dashboard

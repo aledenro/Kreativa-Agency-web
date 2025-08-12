@@ -14,7 +14,11 @@ import sendEmail from "../../utils/emailSender";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
+import Loading from "../../components/ui/LoadingComponent";
 
 const { Dragger } = Upload;
 
@@ -35,15 +39,32 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		api[type]({
 			message: type === "success" ? "Éxito" : "Error",
 			description: message,
-			placement: "bottomRight",
+			placement: "top",
 			duration: 3,
 		});
+	};
+
+	const isProyectoBloqueado = () => {
+		return (
+			proyecto &&
+			(proyecto.estado === "Finalizado" || proyecto.estado === "Cancelado")
+		);
+	};
+
+	const getMensajeBloqueo = () => {
+		if (proyecto.estado === "Finalizado") {
+			return "Este proyecto ha sido finalizado y no permite más interacciones. El proyecto ha sido completado exitosamente.";
+		} else if (proyecto.estado === "Cancelado") {
+			return "Este proyecto ha sido cancelado y no permite más interacciones. Si tiene alguna pregunta, no dude en contactarnos.";
+		}
+		return "";
 	};
 
 	const fetchProyecto = useCallback(async () => {
 		if (!proyectoId) return;
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -59,13 +80,17 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
 				}
 			);
 
 			setProyecto(res.data.proyecto);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -77,6 +102,8 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				return;
 			}
 			console.error("Error al obtener la proyecto");
+		} finally {
+			setLoading(false);
 		}
 	}, [proyectoId]);
 
@@ -109,7 +136,6 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 	}, [show, fetchProyecto, navigate]);
 
 	const handleFileChange = (info) => {
-		// Verificar archivos seleccionados
 		if (info.fileList && info.fileList.length > 0) {
 			const fileObjects = info.fileList.map((file) => file.originFileObj);
 			setFiles(fileObjects);
@@ -118,13 +144,21 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		}
 	};
 
-	// Función para limpiar el dragger
 	const clearDragger = () => {
 		setFiles([]);
 	};
 
 	async function handleSubmit(event) {
 		event.preventDefault();
+
+		if (isProyectoBloqueado()) {
+			showNotification(
+				"error",
+				"No puede responder a un proyecto finalizado o cancelado."
+			);
+			return;
+		}
+
 		setLoading(true);
 
 		const enviar = confirm("¿Desea enviar su respuesta?");
@@ -149,6 +183,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		};
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -157,6 +192,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 					mensaje: "Acceso no autorizado.",
 				},
 			});
+			setLoading(false);
 			return;
 		}
 
@@ -164,7 +200,12 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/agregarRespuesta/${proyectoId}`,
 				data,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			const respuestaDb = response.data.respuesta;
@@ -179,14 +220,62 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				console.log("subidos");
 			}
 
-			// Limpieza
 			event.target.reset();
 			setFiles([]);
 			clearDragger();
 			showNotification("success", "Respuesta enviada correctamente.");
 			fetchProyecto();
+
+			try {
+				const tipoUsuario = localStorage.getItem("tipo_usuario");
+
+				if (tipoUsuario === "Cliente") {
+					for (const colab of proyecto.colaboradores) {
+						try {
+							const colaboradorId =
+								typeof colab.colaborador_id === "object"
+									? colab.colaborador_id._id
+									: colab.colaborador_id;
+
+							if (colaboradorId) {
+								await sendEmail(
+									colaboradorId,
+									`El cliente ha enviado una respuesta/feedback sobre el proyecto "${proyecto.nombre}". Por favor, acceda al sistema para ver los detalles.`,
+									`Nueva Respuesta del Cliente - ${proyecto.nombre}`,
+									"Ver",
+									`dashboard`
+								);
+							}
+						} catch (emailError) {
+							console.error(`Error al enviar email`);
+						}
+					}
+				} else {
+					try {
+						const clienteId =
+							typeof proyecto.cliente_id === "object"
+								? proyecto.cliente_id._id
+								: proyecto.cliente_id;
+
+						if (clienteId) {
+							await sendEmail(
+								clienteId,
+								`Un colaborador de Kreativa Agency ha respondido a su proyecto "${proyecto.nombre}". Por favor, acceda al sistema para ver los detalles.`,
+								`Nueva Respuesta de Kreativa - ${proyecto.nombre}`,
+								"Ver",
+								`dashboard`
+							);
+						}
+					} catch (emailError) {
+						console.error("Error al enviar email");
+					}
+				}
+			} catch (emailError) {
+				console.error("Error al enviar el email");
+			}
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -194,7 +283,6 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 						mensaje: "Debe volver a iniciar sesión para continuar.",
 					},
 				});
-
 				return;
 			}
 			console.error(`Error al enviar la respuesta`);
@@ -202,51 +290,8 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 				"error",
 				"Error al enviar la respuesta, por favor intente de nuevo o contacte al soporte técnico."
 			);
-			return;
 		} finally {
 			setLoading(false);
-		}
-
-		try {
-			const tipoUsuario = localStorage.getItem("tipo_usuario");
-
-			if (tipoUsuario === "Cliente") {
-				proyecto.colaboradores.forEach(async (colab) => {
-					await sendEmail(
-						colab.colaborador_id._id,
-						`El cliente ha enviado una respuesta/feedback sobre el proyecto, ingrese para ver los detalles.`,
-						`Actualización en el proyecto ${proyecto.nombre}`,
-						"Ver",
-						"test"
-					);
-				});
-			} else {
-				await sendEmail(
-					proyecto.cliente_id,
-					`Un colaborador de Kreativa Agency ha respondido a su proyecto, ingrese para ver los detalles.`,
-					`Actualización en su proyecto ${proyecto.nombre}`,
-					"Ver",
-					"test"
-				);
-			}
-		} catch (error) {
-			if (error.status === 401) {
-				localStorage.clear();
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe volver a iniciar sesión para continuar.",
-					},
-				});
-
-				return;
-			}
-			console.error(`Error al enviar la notificacion`);
-			showNotification(
-				"error",
-				"Error al enviar la notificación, por favor intente de nuevo o contacte al soporte técnico."
-			);
-			return;
 		}
 	}
 
@@ -259,7 +304,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 
 			await fileUpload(files, "proyectos", proyecto._id, respuestaDbId);
 		} catch (error) {
-			console.error(`Error al subir los archivos: ${error.message}`);
+			console.error(`Error al subir los archivos`);
 			showNotification(
 				"error",
 				"Error al subir los archivos, por favor intente de nuevo o contacte al soporte técnico."
@@ -280,6 +325,26 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 		}
 	};
 
+	if (loading) {
+		return (
+			<Modal
+				scrollable
+				show={show}
+				onHide={handleClose}
+				size="xl"
+				centered
+				dialogClassName="proyecto-modal"
+			>
+				<Modal.Body
+					className="d-flex justify-content-center align-items-center"
+					style={{ minHeight: "200px" }}
+				>
+					<Loading />
+				</Modal.Body>
+			</Modal>
+		);
+	}
+
 	return (
 		<Modal
 			scrollable
@@ -295,8 +360,8 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 			</Modal.Header>
 			<Modal.Body className="p-0">
 				{!proyecto ? (
-					<div className="text-center p-5">
-						<p>Cargando proyecto...</p>
+					<div className="d-flex justify-content-center align-items-center p-5">
+						<Loading />
 					</div>
 				) : (
 					<div className="proyecto-modal-content">
@@ -516,86 +581,96 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 												</div>
 											)}
 
-											<div className="responder-form mt-4">
-												<form onSubmit={handleSubmit}>
-													<h6 className="mb-3">Responder:</h6>
-													<div className="form-group mb-3">
-														<textarea
-															name="message"
-															className="form-control form_input form-textarea"
-															rows="3"
-															placeholder="Por favor escriba su respuesta"
-															required
-														></textarea>
-													</div>
+											{!isProyectoBloqueado() && (
+												<div className="responder-form mt-4">
+													<form onSubmit={handleSubmit}>
+														<h6 className="mb-3">Responder:</h6>
+														<div className="form-group mb-3">
+															<textarea
+																name="message"
+																className="form-control form_input form-textarea"
+																rows="3"
+																placeholder="Por favor escriba su respuesta"
+																required
+															></textarea>
+														</div>
 
-													{/* Implementación del Dragger */}
-													<div className="form-group mb-3">
-														<label className="form-label">
-															Archivos adjuntos
-														</label>
-														<ConfigProvider
-															theme={{
-																components: {
-																	Upload: {
-																		lineWidth: "1px",
-																		lineType: "solid",
-																		colorBorder: "#8788ab",
-																		colorBgContainer: "transparent",
+														{/* Implementación del Dragger */}
+														<div className="form-group mb-3">
+															<label className="form-label">
+																Archivos adjuntos
+															</label>
+															<ConfigProvider
+																theme={{
+																	components: {
+																		Upload: {
+																			lineWidth: "1px",
+																			lineType: "solid",
+																			colorBorder: "#8788ab",
+																			colorBgContainer: "transparent",
+																		},
 																	},
-																},
-															}}
-														>
-															<Dragger
-																name="filesUploaded"
-																multiple={true}
-																action="#"
-																beforeUpload={() => false}
-																onChange={handleFileChange}
-																className="custom-dragger"
-																style={{
-																	borderRadius: "12px",
-																	borderColor: isHovered
-																		? "#110d27"
-																		: "#8788ab",
-																	borderWidth: "1px",
-																	borderStyle: "solid",
-																	backgroundColor: "transparent",
-																	transition: "border-color 0.3s",
 																}}
-																onMouseEnter={handleMouseEnter}
-																onMouseLeave={handleMouseLeave}
 															>
-																<p className="ant-upload-drag-icon custom-icon">
-																	<InboxOutlined
-																		style={{
-																			color: isHovered ? "#110d27" : "#8788ab",
-																			transition: "color 0.3s",
-																		}}
-																	/>
-																</p>
-																<p className="ant-upload-text">
-																	Haz clic o arrastra tus archivos aquí para
-																	subirlos
-																</p>
-																<p className="ant-upload-hint">
-																	Puedes subir múltiples archivos
-																</p>
-															</Dragger>
-														</ConfigProvider>
-													</div>
+																<Dragger
+																	name="filesUploaded"
+																	multiple={true}
+																	action="#"
+																	beforeUpload={() => false}
+																	onChange={handleFileChange}
+																	className="custom-dragger"
+																	style={{
+																		borderRadius: "12px",
+																		borderColor: isHovered
+																			? "#110d27"
+																			: "#8788ab",
+																		borderWidth: "1px",
+																		borderStyle: "solid",
+																		backgroundColor: "transparent",
+																		transition: "border-color 0.3s",
+																	}}
+																	onMouseEnter={handleMouseEnter}
+																	onMouseLeave={handleMouseLeave}
+																>
+																	<p className="ant-upload-drag-icon custom-icon">
+																		<InboxOutlined
+																			style={{
+																				color: isHovered
+																					? "#110d27"
+																					: "#8788ab",
+																				transition: "color 0.3s",
+																			}}
+																		/>
+																	</p>
+																	<p className="ant-upload-text">
+																		Haz clic o arrastra tus archivos aquí para
+																		subirlos
+																	</p>
+																	<p className="ant-upload-hint">
+																		Puedes subir múltiples archivos
+																	</p>
+																</Dragger>
+															</ConfigProvider>
+														</div>
 
-													<div className="d-flex justify-content-end">
-														<button
-															type="submit"
-															className="thm-btn"
-															disabled={loading}
-														>
-															{loading ? "Enviando..." : "Enviar"}
-														</button>
-													</div>
-												</form>
-											</div>
+														<div className="d-flex justify-content-end">
+															<button
+																type="submit"
+																className="thm-btn"
+																disabled={loading}
+															>
+																{loading ? "Enviando..." : "Enviar"}
+															</button>
+														</div>
+													</form>
+												</div>
+											)}
+
+											{isProyectoBloqueado() && (
+												<div className="descripcion-content p-3 bg-light rounded mt-4">
+													<strong>Información:</strong> {getMensajeBloqueo()}
+												</div>
+											)}
 										</Col>
 									</Row>
 								</Tab.Pane>

@@ -4,6 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import sendEmail from "../utils/emailSender";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 function construirJsonRequest(
     proyecto,
@@ -70,6 +71,7 @@ const AgregarTarea = () => {
         );
 
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -85,7 +87,10 @@ const AgregarTarea = () => {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/tareas/crear`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status == 201) {
@@ -104,6 +109,7 @@ const AgregarTarea = () => {
             }
         } catch (error) {
             if (error.status === 401) {
+				await updateSessionStatus();                
                 localStorage.clear();
                 navigate("/error", {
                     state: {
@@ -132,6 +138,7 @@ const AgregarTarea = () => {
         async function fetchEmpleados() {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
 
                 if (!token) {
                     navigate("/error", {
@@ -145,14 +152,18 @@ const AgregarTarea = () => {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/empleados`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
                 setEmpleados(response.data);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -167,6 +178,7 @@ const AgregarTarea = () => {
 
         async function fetchProyectos() {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             if (!token) {
                 navigate("/error", {
@@ -181,14 +193,18 @@ const AgregarTarea = () => {
                 const response = await axios.get(
                     `${import.meta.env.VITE_API_URL}/proyectos/getAllProyectosLimitedData`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
                 setProyectos(response.data.proyectos);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:

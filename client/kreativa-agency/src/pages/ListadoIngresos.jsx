@@ -17,11 +17,13 @@ import { useNavigate } from "react-router-dom";
 import ModalVerIngreso from "../components/Ingresos/ModalVerIngreso";
 import ModalEditarIngreso from "../components/Ingresos/ModalEditarIngreso";
 import ModalCrearIngreso from "../components/Ingresos/ModalCrearIngreso";
-import sendEmail from "../utils/emailSender";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
+import { notification } from "antd";
+import sendEmail from "../utils/emailSender";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 const ListadoIngresos = () => {
 	// Datos principales
@@ -29,6 +31,37 @@ const ListadoIngresos = () => {
 	const [categories, setCategories] = useState([]);
 	const [clientes, setClientes] = useState([]);
 	const [loading, setLoading] = useState(true);
+
+	const [api, contextHolder] = notification.useNotification();
+
+	const navigate = useNavigate();
+
+	const openSuccessNotification = (message) => {
+		api.success({
+			message: "Éxito",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
+
+	const openErrorNotification = (message) => {
+		api.error({
+			message: "Error",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
+
+	const openWarningNotification = (message) => {
+		api.warning({
+			message: "Advertencia",
+			description: message,
+			placement: "top",
+			duration: 4,
+		});
+	};
 
 	const formatLocalDate = (date) => {
 		const d = new Date(date);
@@ -57,29 +90,35 @@ const ListadoIngresos = () => {
 	const [ingresoEditar, setIngresoEditar] = useState({});
 	const [showModalCrear, setShowModalCrear] = useState(false);
 
-	// Estados para modales de confirmación y edición/creación
+	// Estados para modales de confirmación
 	const [showConfirmToggle, setShowConfirmToggle] = useState(false);
 	const [toggleIngreso, setToggleIngreso] = useState(null);
-	const [showConfirmEditar, setShowConfirmEditar] = useState(false);
-	const [editedIngresoData, setEditedIngresoData] = useState(null);
-	const [showConfirmCrear, setShowConfirmCrear] = useState(false);
 
 	// Estados para notificaciones
 	const [showModalConfirmNotificacion, setShowModalConfirmNotificacion] =
 		useState(false);
-	const [showModalExitoNotificacion, setShowModalExitoNotificacion] =
-		useState(false);
 	const [ingresoNotificar, setIngresoNotificar] = useState(null);
-
-	const navigate = useNavigate();
 
 	const getCategoryName = (catId) => {
 		const cat = categories.find((c) => c._id.toString() === catId.toString());
 		return cat ? cat.nombre : catId;
 	};
 
+	const handleUnauthorized = (
+		errorMessage = "Debe volver a iniciar sesión para continuar."
+	) => {
+		localStorage.clear();
+		navigate("/error", {
+			state: {
+				errorCode: 401,
+				mensaje: errorMessage,
+			},
+		});
+	};
+
 	const fetchIngresos = useCallback(async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -93,22 +132,21 @@ const ListadoIngresos = () => {
 
 		try {
 			const res = await axios.get(`${import.meta.env.VITE_API_URL}/ingresos`, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: {
+					Authorization: `Bearer ${token}`,
+					user: user,
+				},
 			});
 			setIngresos(res.data);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe volver a iniciar sesión para continuar.",
-					},
-				});
-
+				await updateSessionStatus();
+				handleUnauthorized();
 				return;
 			}
-			console.error("Error al obtener los ingresos");
+			openErrorNotification(
+				"Error al obtener los ingresos. Por favor, intente nuevamente."
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -117,6 +155,41 @@ const ListadoIngresos = () => {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
+			if (!token) {
+				navigate("/error", {
+					state: {
+						errorCode: 401,
+						mensaje: "Debe iniciar sesión para continuar.",
+					},
+				});
+				return;
+			}
+
+			try {
+				const res = await axios.get(
+					`${import.meta.env.VITE_API_URL}/servicios/categorias`,
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
+					}
+				);
+				setCategories(res.data);
+			} catch (error) {
+				if (error.status === 401) {
+					await updateSessionStatus();
+					handleUnauthorized();
+					return;
+				}
+				openErrorNotification("Error al obtener las categorías.");
+			}
+		};
+
+		const fetchClientes = async () => {
+			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -125,60 +198,27 @@ const ListadoIngresos = () => {
 						mensaje: "Debe iniciar sesión para continuar.",
 					},
 				});
+				return;
 			}
 
 			try {
-				const res = await axios.get(
-					`${import.meta.env.VITE_API_URL}/servicios/categorias`,
-					{
-						headers: { Authorization: `Bearer ${token}` },
-					}
-				);
-				setCategories(res.data);
-			} catch (error) {
-				if (error.status === 401) {
-					navigate("/error", {
-						state: {
-							errorCode: 401,
-							mensaje: "Debe volver a iniciar sesión para continuar.",
-						},
-					});
-					return;
-				}
-				console.error("Error al obetener las categorias");
-			}
-		};
-
-		const fetchClientes = async () => {
-			try {
-				const token = localStorage.getItem("token");
-
-				if (!token) {
-					navigate("/error", {
-						state: {
-							errorCode: 401,
-							mensaje: "Debe iniciar sesión para continuar.",
-						},
-					});
-				}
 				const res = await axios.get(
 					`${import.meta.env.VITE_API_URL}/usuarios`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 				setClientes(res.data);
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
-						state: {
-							errorCode: 401,
-							mensaje: "Debe volver a iniciar sesión para continuar.",
-						},
-					});
+					await updateSessionStatus();
+					handleUnauthorized();
 					return;
 				}
-				console.error(`Error al obtener los clientes`);
+				openErrorNotification("Error al obtener los clientes.");
 			}
 		};
 
@@ -248,100 +288,67 @@ const ListadoIngresos = () => {
 	};
 
 	const handleConfirmToggle = async () => {
-		if (toggleIngreso) {
-			const token = localStorage.getItem("token");
+		if (!toggleIngreso) return;
 
-			if (!token) {
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe iniciar sesión para continuar.",
-					},
-				});
-			}
-
-			try {
-				const url = toggleIngreso.activo
-					? `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/desactivar`
-					: `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/activar`;
-				await axios.put(url, {},{
-					headers: { Authorization: `Bearer ${token}` },
-				});
-				setIngresos((prev) =>
-					prev.map((i) =>
-						i._id === toggleIngreso._id ? { ...i, activo: !i.activo } : i
-					)
-				);
-				setShowConfirmToggle(false);
-				setToggleIngreso(null);
-			} catch (error) {
-				if (error.status === 401) {
-					navigate("/error", {
-						state: {
-							errorCode: 401,
-							mensaje: "Debe volver a iniciar sesión para continuar.",
-						},
-					});
-					return;
-				}
-				console.error("Error alternar el estado de ingreso");
-			}
-		}
-	};
-
-	// Al editar
-	const onSaveEdit = (data) => {
-		setEditedIngresoData(data);
-		setShowModalEditar(false);
-		setShowConfirmEditar(true);
-	};
-
-	const handleConfirmEdit = async () => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
-			navigate("/error", {
-				state: {
-					errorCode: 401,
-					mensaje: "Acceso no autorizado.",
-				},
-			});
+			handleUnauthorized("Debe iniciar sesión para continuar.");
 			return;
 		}
 
 		try {
+			const url = toggleIngreso.activo
+				? `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/desactivar`
+				: `${import.meta.env.VITE_API_URL}/ingresos/${toggleIngreso._id}/activar`;
+
 			await axios.put(
-				`${import.meta.env.VITE_API_URL}/ingresos/${editedIngresoData._id}`,
-				editedIngresoData,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				url,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
-			setShowConfirmEditar(false);
-			setEditedIngresoData(null);
-			fetchIngresos();
+
+			setIngresos((prev) =>
+				prev.map((i) =>
+					i._id === toggleIngreso._id ? { ...i, activo: !i.activo } : i
+				)
+			);
+
+			openSuccessNotification(
+				`Ingreso ${toggleIngreso.activo ? "desactivado" : "activado"} correctamente.`
+			);
+
+			setShowConfirmToggle(false);
+			setToggleIngreso(null);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe volver a iniciar sesión para continuar.",
-					},
-				});
-
+				await updateSessionStatus();
+				handleUnauthorized();
 				return;
 			}
-			console.error("Error al actualizar ingreso");
+			openErrorNotification(
+				"Error al cambiar el estado del ingreso. Por favor, intente nuevamente."
+			);
 		}
 	};
 
 	// Al crear
 	const onSaveCrear = () => {
 		setShowModalCrear(false);
-		setShowConfirmCrear(true);
+		openSuccessNotification("Ingreso creado exitosamente.");
+		fetchIngresos();
 	};
 
-	const handleConfirmCrear = () => {
-		setShowConfirmCrear(false);
+	// Al editar
+	const onSaveEdit = () => {
+		setShowModalEditar(false);
+		openSuccessNotification("Ingreso actualizado exitosamente.");
 		fetchIngresos();
 	};
 
@@ -364,59 +371,41 @@ const ListadoIngresos = () => {
 		);
 	}
 
-	// Confirmar la notificación
 	const handleConfirmNotificacion = async () => {
 		setShowModalConfirmNotificacion(false);
 
 		try {
 			const cliente = clientes.find(
-				(c) =>
-					c.nombre === ingresoNotificar.nombre_cliente &&
-					c.tipo_usuario === "Cliente"
+				(c) => c.cedula === ingresoNotificar.cedula
 			);
 
 			if (!cliente) {
-				throw new Error("Cliente no encontrado");
+				throw new Error("Cliente no encontrado en el sistema");
 			}
 
 			if (!cliente.email) {
 				throw new Error("El cliente no tiene email registrado");
 			}
 
-			const emailContent = `
-            <html>
-                <body>
-                    Estimado ${ingresoNotificar.nombre_cliente},<br>
-                    Le recordamos que tiene un pago pendiente de ₡${ingresoNotificar.monto} 
-                    con fecha de vencimiento ${new Date(ingresoNotificar.fecha).toLocaleDateString()}.<br>
-                    Por favor, realice el pago a la brevedad.
-                </body>
-            </html>
-        `;
+			const emailContent = `Estimado ${ingresoNotificar.nombre_cliente}, le recordamos que mantiene un pago pendiente por un monto de ₡${ingresoNotificar.monto} con fecha de vencimiento ${new Date(ingresoNotificar.fecha).toLocaleDateString()} por los servicios brindados. Agradecemos su pronta gestión.`;
 
-			const subject = "Notificación de Pago Pendiente";
-
-			await axios.post(`${import.meta.env.VITE_API_URL}/email/externo`, {
-				recipientEmail: cliente.email,
-				subject,
+			await sendEmail(
+				cliente._id, // Usar el ID del cliente, no el email directamente
 				emailContent,
-			});
+				"Notificación de Pago Pendiente"
+			);
 
-			setShowModalExitoNotificacion(true);
+			openSuccessNotification("Correo de notificación enviado correctamente.");
+			setIngresoNotificar(null);
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
-				navigate("/error", {
-					state: {
-						errorCode: 401,
-						mensaje: "Debe volver a iniciar sesión para continuar.",
-					},
-				});
-
+				await updateSessionStatus();
+				handleUnauthorized();
 				return;
 			}
-			console.error("Error al enviar notificación");
-			alert(`Error al enviar la notificación: ${error.message}`);
+			openErrorNotification(
+				`Error al enviar la notificación: ${error.message}`
+			);
 		}
 	};
 
@@ -433,131 +422,142 @@ const ListadoIngresos = () => {
 			<Modal.Body>
 				<p>
 					¿Está seguro de enviar la notificación al cliente{" "}
-					<strong>{ingreso.nombre_cliente}</strong> al correo{" "}
-					<strong>{ingreso.email}</strong>?
+					<strong>{ingreso?.nombre_cliente}</strong>?
 				</p>
 				<p>
 					Se le informará que tiene un pago pendiente de{" "}
-					<strong>₡{ingreso.monto}</strong> con fecha de vencimiento{" "}
-					<strong>{new Date(ingreso.fecha).toLocaleDateString()}</strong>.
+					<strong>₡{ingreso?.monto}</strong> con fecha de vencimiento{" "}
+					<strong>
+						{ingreso && new Date(ingreso.fecha).toLocaleDateString()}
+					</strong>
+					.
 				</p>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button variant="secondary" onClick={onClose}>
+				<button
+					className="thm-btn thm-btn-small btn-gris mx-1"
+					onClick={onClose}
+				>
 					Cancelar
-				</Button>
-				<Button variant="primary" onClick={onConfirm}>
+				</button>
+				<button className="thm-btn thm-btn-small" onClick={onConfirm}>
 					Notificar
-				</Button>
-			</Modal.Footer>
-		</Modal>
-	);
-
-	const ModalExitoNotificacion = ({ show, onClose }) => (
-		<Modal show={show} onHide={onClose}>
-			<Modal.Header closeButton>
-				<Modal.Title>Notificación Enviada</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				<p>Correo de notificación enviado correctamente.</p>
-			</Modal.Body>
-			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>
-					Aceptar
-				</Button>
+				</button>
 			</Modal.Footer>
 		</Modal>
 	);
 
 	return (
 		<AdminLayout>
+			{contextHolder}
 			<div className="main-container mx-auto">
 				<div className="espacio-top-responsive"></div>
 				{/* Encabezado */}
-				<div
-					className="d-flex justify-content-between align-items-center mb-4"
-					style={{ paddingRight: "80px" }}
-				>
+				<div className="d-flex justify-content-between align-items-center mb-4">
 					<h1>Gestión de Ingresos</h1>
 					<button className="thm-btn" onClick={() => setShowModalCrear(true)}>
 						<FontAwesomeIcon icon={faPlus} className="me-2" /> Nuevo Ingreso
 					</button>
 				</div>
 
-				{/* Filtros*/}
 				<div className="row mb-3">
-					{/* Filtro por Cliente */}
-					<div className="col-md-4">
-						<Form.Group controlId="filterCliente">
-							<Form.Label>Cliente:</Form.Label>
-							<Form.Select
-								value={filterCliente}
-								onChange={(e) => {
-									setFilterCliente(e.target.value);
-									setPagActual(1);
-								}}
-								className="thm-btn"
-							>
-								<option value="">Todos</option>
-								{clientes
-									.filter((c) => c.tipo_usuario === "Cliente")
-									.map((cliente) => (
-										<option key={cliente._id} value={cliente.nombre}>
-											{cliente.nombre}
-										</option>
-									))}
-							</Form.Select>
-						</Form.Group>
-						<Form.Group controlId="filterFecha">
-							<Form.Label>Fecha de Vencimiento:</Form.Label>
-							<Form.Control
-								type="date"
-								value={filterFecha}
-								onChange={(e) => {
-									setFilterFecha(e.target.value);
-									setPagActual(1);
-								}}
-								className="thm-btn"
-							/>
-						</Form.Group>
+					<div className="col-lg-6 col-md-12">
+						<div className="row">
+							<div className="col-sm-6">
+								<Form.Group controlId="filterCliente" className="mb-3">
+									<Form.Label>Cliente:</Form.Label>
+									<Form.Select
+										value={filterCliente}
+										onChange={(e) => {
+											setFilterCliente(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="">Todos</option>
+										{clientes
+											.filter((c) => c.tipo_usuario === "Cliente")
+											.map((cliente) => (
+												<option key={cliente._id} value={cliente.nombre}>
+													{cliente.nombre}
+												</option>
+											))}
+									</Form.Select>
+								</Form.Group>
+							</div>
+							<div className="col-sm-6">
+								<Form.Group controlId="filterEstadoPago" className="mb-3">
+									<Form.Label>Estado de Pago:</Form.Label>
+									<Form.Select
+										value={filterEstadoPago}
+										onChange={(e) => {
+											setFilterEstadoPago(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="">Todos</option>
+										<option value="Pendiente de pago">Pendiente de pago</option>
+										<option value="Pagado">Pagado</option>
+									</Form.Select>
+								</Form.Group>
+							</div>
+						</div>
 					</div>
-					{/* Filtros por Estado de Pago y Estado del Ingreso */}
-					<div className="col-md-4" style={{ paddingRight: "80px" }}>
-						<Form.Group controlId="filterEstado">
-							<Form.Label>Activo/Inactivo:</Form.Label>
-							<Form.Select
-								value={filterEstado}
-								onChange={(e) => {
-									setFilterEstado(e.target.value);
-									setPagActual(1);
-								}}
-								className="thm-btn"
-							>
-								<option value="Todos">Todos</option>
-								<option value="Activo">Activo</option>
-								<option value="Inactivo">Inactivo</option>
-							</Form.Select>
-						</Form.Group>
-						<Form.Group controlId="filterEstadoPago" className="mb-2">
-							<Form.Label>Estado de Pago:</Form.Label>
-							<Form.Select
-								value={filterEstadoPago}
-								onChange={(e) => {
-									setFilterEstadoPago(e.target.value);
-									setPagActual(1);
-								}}
-								className="thm-btn"
-							>
-								<option value="">Todos</option>
-								<option value="Pendiente de pago">Pendiente de pago</option>
-								<option value="Pagado">Pagado</option>
-							</Form.Select>
-						</Form.Group>
+
+					<div className="col-lg-6 col-md-12">
+						<div className="row">
+							<div className="col-sm-4">
+								<Form.Group controlId="filterEstado" className="mb-3">
+									<Form.Label>Activo/Inactivo:</Form.Label>
+									<Form.Select
+										value={filterEstado}
+										onChange={(e) => {
+											setFilterEstado(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									>
+										<option value="Todos">Todos</option>
+										<option value="Activo">Activo</option>
+										<option value="Inactivo">Inactivo</option>
+									</Form.Select>
+								</Form.Group>
+							</div>
+							<div className="col-sm-4">
+								<Form.Group controlId="filterFecha" className="mb-3">
+									<Form.Label>Vencimiento:</Form.Label>
+									<Form.Control
+										type="date"
+										value={filterFecha}
+										onChange={(e) => {
+											setFilterFecha(e.target.value);
+											setPagActual(1);
+										}}
+										className="form_input"
+									/>
+								</Form.Group>
+							</div>
+							<div className="col-sm-4 d-flex align-items-end">
+								<button
+									className="thm-btn btn-gris w-100"
+									style={{ marginBottom: "1rem" }}
+									onClick={() => {
+										setFilterCliente("");
+										setFilterFecha("");
+										setFilterEstado("");
+										setFilterEstadoPago("");
+										setPagActual(1);
+									}}
+								>
+									Limpiar Filtros
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 
 				{/* Tabla de Ingresos */}
-
 				<div className="div-table">
 					<Table className="main-table tabla-ingresos">
 						<Thead>
@@ -607,7 +607,6 @@ const ListadoIngresos = () => {
 											{new Date(ingreso.fecha_creacion).toLocaleDateString()}
 										</Td>
 										<Td className="col-cliente">{ingreso.nombre_cliente}</Td>
-
 										<Td className="col-descripcion">{ingreso.descripcion}</Td>
 										<Td className="col-categoria">
 											{getCategoryName(ingreso.categoria)}
@@ -705,44 +704,18 @@ const ListadoIngresos = () => {
 						: "¿Está seguro de que desea activar este ingreso?"}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button
-						variant="secondary"
+					<button
+						className="thm-btn thm-btn-small btn-gris mx-1"
 						onClick={() => setShowConfirmToggle(false)}
 					>
 						Cancelar
-					</Button>
-					<Button variant="primary" onClick={handleConfirmToggle}>
+					</button>
+					<button
+						className="thm-btn thm-btn-small"
+						onClick={handleConfirmToggle}
+					>
 						Aceptar
-					</Button>
-				</Modal.Footer>
-			</Modal>
-
-			{/* Modal de confirmación para editar */}
-			<Modal
-				show={showConfirmEditar}
-				onHide={() => setShowConfirmEditar(false)}
-			>
-				<Modal.Header closeButton>
-					<Modal.Title>Ingreso Editado</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>Ingreso actualizado exitosamente</Modal.Body>
-				<Modal.Footer>
-					<Button variant="primary" onClick={handleConfirmEdit}>
-						Aceptar
-					</Button>
-				</Modal.Footer>
-			</Modal>
-
-			{/* Modal de confirmación para creación */}
-			<Modal show={showConfirmCrear} onHide={() => setShowConfirmCrear(false)}>
-				<Modal.Header closeButton>
-					<Modal.Title>Ingreso Creado</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>Ingreso creado exitosamente.</Modal.Body>
-				<Modal.Footer>
-					<Button variant="primary" onClick={handleConfirmCrear}>
-						Aceptar
-					</Button>
+					</button>
 				</Modal.Footer>
 			</Modal>
 
@@ -776,10 +749,6 @@ const ListadoIngresos = () => {
 					ingreso={ingresoNotificar}
 				/>
 			)}
-			<ModalExitoNotificacion
-				show={showModalExitoNotificacion}
-				onClose={() => setShowModalExitoNotificacion(false)}
-			/>
 		</AdminLayout>
 	);
 };

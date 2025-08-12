@@ -21,7 +21,6 @@ class EgresosController {
                 accion: "creación",
                 descripcion: "Creación del egreso",
                 detalle: { datosNuevos: egreso },
-                usuario: req.user ? req.user.username : "sistema",
             });
             return res.status(201).json(egreso);
         } catch (error) {
@@ -119,7 +118,6 @@ class EgresosController {
                     datosAnteriores: egresoAnterior,
                     datosNuevos: egresoActualizado,
                 },
-                usuario: req.user ? req.user.username : "sistema",
             });
 
             return res.status(200).json(egresoActualizado);
@@ -159,7 +157,6 @@ class EgresosController {
                     datosAnteriores: egresoAnterior,
                     datosNuevos: egreso,
                 },
-                usuario: req.user ? req.user.username : "sistema",
             });
             return res
                 .status(200)
@@ -185,7 +182,6 @@ class EgresosController {
                     datosAnteriores: egresoAnterior,
                     datosNuevos: egreso,
                 },
-                usuario: req.user ? req.user.username : "sistema",
             });
             return res.status(200).json({ mensaje: "Egreso activado", egreso });
         } catch (error) {

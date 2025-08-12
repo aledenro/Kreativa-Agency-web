@@ -4,7 +4,11 @@ import Modal from "react-bootstrap/Modal";
 import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import Loading from "../../components/ui/LoadingComponent";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 
 const estados = [
 	"Por Hacer",
@@ -77,6 +81,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	const [formRef, setFormRef] = useState(null);
 	const [api, contextHolder] = notification.useNotification();
 	const navigate = useNavigate();
+	const [loading, setLoading] = useState(true);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -148,6 +153,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		);
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -163,19 +169,111 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
 				data,
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (res.status === 200) {
 				openSuccessNotification("Proyecto editado correctamente.");
 				await addActionLog("Editó el proyecto.");
 
-				if (typeof onUpdate === "function") {
-					onUpdate();
+				const colaboradoresOriginales = proyecto.colaboradores.map((colab) =>
+					typeof colab.colaborador_id === "object"
+						? colab.colaborador_id._id
+						: colab.colaborador_id
+				);
+				const colaboradoresNuevos = colab;
+
+				const colaboradoresRemovidos = colaboradoresOriginales.filter(
+					(original) => !colaboradoresNuevos.includes(original)
+				);
+				const colaboradoresAgregados = colaboradoresNuevos.filter(
+					(nuevo) => !colaboradoresOriginales.includes(nuevo)
+				);
+
+				try {
+					const fechaEntregaFormatted = new Date(
+						fechaEntrega
+					).toLocaleDateString("es-ES");
+
+					for (const colaboradorId of colaboradoresRemovidos) {
+						try {
+							const emailBodyRemovido = `Ha sido removido del proyecto "${nombre}". Ya no tiene asignado este proyecto. Por favor, acceda al sistema para revisar sus proyectos actuales.`;
+
+							await sendEmail(
+								colaboradorId,
+								emailBodyRemovido,
+								"Removido del Proyecto",
+								"Acceder al Sistema",
+								"dashboard"
+							);
+						} catch (emailError) {
+							console.error(`Error al enviar email`);
+						}
+					}
+
+					for (const colaboradorId of colaboradoresAgregados) {
+						try {
+							const emailBodyAgregado = `Ha sido asignado al proyecto "${nombre}" con fecha de entrega al ${fechaEntregaFormatted}. Por favor, acceda al sistema para revisar todos los detalles del proyecto.`;
+
+							await sendEmail(
+								colaboradorId,
+								emailBodyAgregado,
+								"Nuevo Proyecto Asignado",
+								"Acceder al Sistema",
+								"dashboard"
+							);
+						} catch (emailError) {
+							console.error(`Error al enviar email`);
+						}
+					}
+
+					const colaboradoresQuePerManecen = colaboradoresNuevos.filter(
+						(nuevo) => colaboradoresOriginales.includes(nuevo)
+					);
+
+					if (
+						colaboradoresQuePerManecen.length > 0 &&
+						colaboradoresRemovidos.length === 0 &&
+						colaboradoresAgregados.length === 0
+					) {
+						for (const colaboradorId of colaboradoresQuePerManecen) {
+							try {
+								const emailBodyActualizado = `El proyecto "${nombre}" en el que está trabajando ha sido actualizado. Por favor, acceda al sistema para revisar los cambios realizados.`;
+
+								await sendEmail(
+									colaboradorId,
+									emailBodyActualizado,
+									"Proyecto Actualizado",
+									"Acceder al Sistema",
+									"dashboard"
+								);
+							} catch (emailError) {
+								console.error("Error al enviar email");
+							}
+						}
+					}
+				} catch (emailError) {
+					console.error("Error al enviar email");
 				}
+
+				setTimeout(() => {
+					if (typeof onUpdate === "function") {
+						onUpdate();
+					}
+
+					setTimeout(() => {
+						handleClose();
+					});
+				}, 1000);
 			}
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -196,6 +294,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		event.preventDefault();
 		const estadoEdit = event.target.value;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -211,7 +310,12 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/proyectos/editar/${proyectoId}`,
 				{ estado: estadoEdit },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (response.status === 200) {
@@ -219,30 +323,102 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				setEstado(estadoEdit);
 				await addActionLog(`Cambió el estado del proyecto a: ${estadoEdit}.`);
 
-				if (typeof onUpdate === "function") {
-					onUpdate();
+				setTimeout(() => {
+					if (typeof onUpdate === "function") {
+						onUpdate();
+					}
+
+					setTimeout(() => {
+						handleClose();
+					});
+				}, 1000);
+
+				try {
+					const clienteId =
+						typeof proyecto.cliente_id === "object"
+							? proyecto.cliente_id._id
+							: proyecto.cliente_id;
+
+					if (clienteId) {
+						if (estadoEdit !== "Finalizado") {
+							await sendEmail(
+								clienteId,
+								`El estado de su proyecto ha sido actualizado a ${estadoEdit}.`,
+								`Actualización en su proyecto ${proyecto.nombre}`,
+								"Ver",
+								`dashboard`
+							);
+						} else {
+							await sendEmail(
+								clienteId,
+								`El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingrese para ver más detalles.`,
+								`Actualización en su proyecto ${proyecto.nombre}`,
+								"Ver",
+								`dashboard`
+							);
+						}
+					}
+				} catch (emailError) {
+					console.error("Error al enviar email");
 				}
 
-				if (estadoEdit !== "Finalizado") {
-					await sendEmail(
-						proyecto.cliente_id,
-						`El estado de su proyecto ha sido actualizado a ${estadoEdit}.`,
-						`Actualización en su proyecto ${proyecto.nombre}`,
-						"Ver",
-						"test"
-					);
-				} else {
-					await sendEmail(
-						proyecto.cliente_id,
-						`El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingrese para ver más detalles.`,
-						`Actualización en su proyecto ${proyecto.nombre}`,
-						"Ver",
-						"test"
-					);
+				try {
+					if (proyecto.colaboradores && proyecto.colaboradores.length > 0) {
+						for (const colaborador of proyecto.colaboradores) {
+							try {
+								const colaboradorId =
+									typeof colaborador.colaborador_id === "object"
+										? colaborador.colaborador_id._id
+										: colaborador.colaborador_id;
+
+								let emailBody;
+								let emailSubject;
+								switch (estadoEdit) {
+									case "Finalizado":
+										emailBody = `El proyecto "${proyecto.nombre}" ha sido marcado como Finalizado. Por favor, acceda al sistema para revisar los detalles finales del proyecto.`;
+										emailSubject = "Proyecto Finalizado";
+										break;
+									case "Cancelado":
+										emailBody = `El proyecto "${proyecto.nombre}" ha sido cancelado. Por favor, acceda al sistema para revisar la información actualizada.`;
+										emailSubject = "Proyecto Cancelado";
+										break;
+									case "En Revisión":
+										emailBody = `El proyecto "${proyecto.nombre}" está ahora en revisión. Por favor, acceda al sistema para revisar los comentarios y realizar los ajustes necesarios.`;
+										emailSubject = "Proyecto en Revisión";
+										break;
+									case "En Progreso":
+										emailBody = `El proyecto "${proyecto.nombre}" está ahora en progreso. Por favor, acceda al sistema para continuar con las tareas asignadas.`;
+										emailSubject = "Proyecto en Progreso";
+										break;
+									case "Por Hacer":
+										emailBody = `El proyecto "${proyecto.nombre}" ha cambiado su estado a "Por Hacer". Por favor, acceda al sistema para revisar la información actualizada.`;
+										emailSubject = "Estado de Proyecto Actualizado";
+										break;
+									default:
+										emailBody = `El estado del proyecto "${proyecto.nombre}" ha sido actualizado a ${estadoEdit}. Por favor, acceda al sistema para revisar los cambios.`;
+										emailSubject = "Estado de Proyecto Actualizado";
+										break;
+								}
+
+								await sendEmail(
+									colaboradorId,
+									emailBody,
+									emailSubject,
+									"Acceder al Sistema",
+									"dashboard"
+								);
+							} catch (emailError) {
+								console.error(`Error al enviar email`);
+							}
+						}
+					}
+				} catch (emailError) {
+					console.error("Error general al enviar email");
 				}
 			}
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -250,7 +426,6 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 						mensaje: "Debe volver a iniciar sesión para continuar.",
 					},
 				});
-
 				return;
 			}
 			openErrorNotification("Error al cambiar el estado del proyecto.");
@@ -261,6 +436,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		try {
 			const token = localStorage.getItem("token");
 			const user_id = localStorage.getItem("user_id");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -277,10 +453,16 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 					usuario_id: user_id,
 					accion: accion,
 				},
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -309,6 +491,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	const fetchProyecto = useCallback(async () => {
 		if (!proyectoId) return;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -324,7 +507,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
 				}
 			);
 
@@ -333,9 +519,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				setEstado(response.data.proyecto.estado);
 			}
 
-			fetchClientes();
+			await fetchClientes();
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -347,6 +534,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				return;
 			}
 			console.error(`Error al obtener el proyecto`);
+		} finally {
+			setLoading(false);
 		}
 	}, [proyectoId]);
 
@@ -374,6 +563,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		}
 
 		if (show) {
+			setLoading(true);
 			fetchProyecto();
 			fetchEmpleados();
 		}
@@ -382,6 +572,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	async function fetchEmpleados() {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -395,7 +586,10 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
 				}
 			);
 
@@ -406,6 +600,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			setEmpleados(response.data);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -424,6 +619,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 	async function fetchClientes() {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -437,13 +633,17 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/clientes`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
 				}
 			);
 
 			setClientes(response.data);
 		} catch (error) {
 			if (error.status === 401) {
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -471,6 +671,26 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 		return today.toISOString().split("T")[0];
 	};
 
+	if (loading) {
+		return (
+			<Modal
+				scrollable
+				show={show}
+				onHide={handleClose}
+				size="xl"
+				centered
+				dialogClassName="proyecto-modal"
+			>
+				<Modal.Body
+					className="d-flex justify-content-center align-items-center"
+					style={{ minHeight: "200px" }}
+				>
+					<Loading />
+				</Modal.Body>
+			</Modal>
+		);
+	}
+
 	return (
 		<Modal
 			scrollable
@@ -489,8 +709,8 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 				style={{ maxHeight: "70vh", overflowY: "auto" }}
 			>
 				{!proyecto ? (
-					<div className="text-center p-5">
-						<p>Cargando proyecto...</p>
+					<div className="d-flex justify-content-center align-items-center p-5">
+						<Loading />
 					</div>
 				) : (
 					<>

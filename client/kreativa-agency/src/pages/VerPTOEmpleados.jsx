@@ -10,6 +10,8 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../components/ui/LoadingComponent";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const VerPTOEmpleados = () => {
 	const navigate = useNavigate();
@@ -26,6 +28,7 @@ const VerPTOEmpleados = () => {
 		const fetchEmpleados = async () => {
 			try {
 				const token = localStorage.getItem("token");
+				const user = localStorage.getItem("user_name");
 				if (!token) {
 					navigate("/error", {
 						state: {
@@ -38,14 +41,18 @@ const VerPTOEmpleados = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/pto/empleados-con-pto/listado`,
 					{
-						headers: { Authorization: `Bearer ${token}` },
+						headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 					}
 				);
 
 				setEmpleados(response.data);
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -98,6 +105,7 @@ const VerPTOEmpleados = () => {
 	// Función global de cambio de estado PTO
 	window.toggleEstadoPTO = async (ptoId, estadoActual, empleadoId, nombre) => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -128,7 +136,11 @@ const VerPTOEmpleados = () => {
 				`${import.meta.env.VITE_API_URL}/pto/${ptoId}`,
 				{ estado: nuevoEstado },
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
@@ -142,7 +154,7 @@ const VerPTOEmpleados = () => {
 			verDetallesPTO(empleadoId, nombre); // Recargar tabla modal
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -169,6 +181,7 @@ const VerPTOEmpleados = () => {
 	) => {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -182,7 +195,11 @@ const VerPTOEmpleados = () => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/pto/${empleadoId}`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 

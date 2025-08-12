@@ -14,6 +14,8 @@ import ModalVerEgreso from "../components/Egresos/ModalVerEgreso";
 import TablaPaginacion from "../components/ui/TablaPaginacion";
 import Loading from "../components/ui/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const Movimientos = () => {
 	// Estados para filtros
@@ -68,6 +70,8 @@ const Movimientos = () => {
 		}
 
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+
 		setLoading(true);
 
 		if (!token) {
@@ -82,15 +86,19 @@ const Movimientos = () => {
 
 		axios
 			.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			})
 			.then((response) => {
 				setMovimientos(response.data);
 				setPagActual(1); // Reinicia a la primera página al buscar
 			})
-			.catch((error) => {
+			.catch(async(error) => {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -107,6 +115,8 @@ const Movimientos = () => {
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+
 		if (!token) {
 			navigate("/error", {
 				state: {
@@ -121,7 +131,11 @@ const Movimientos = () => {
 		promises.push(
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/movimientos`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((response) => {
 					setMovimientos(response.data);
@@ -134,14 +148,19 @@ const Movimientos = () => {
 		promises.push(
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/servicios/categorias`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((res) => {
 					setCategories(res.data);
 				})
-				.catch((error) => {
+				.catch(async (error) => {
 					if (error.status === 401) {
-						navigate("/error", {
+					await updateSessionStatus();						
+					navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -217,6 +236,7 @@ const Movimientos = () => {
 			return;
 		}
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -231,15 +251,19 @@ const Movimientos = () => {
 		if (mov.entidad === "ingreso") {
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/ingresos/${mov.idRegistro}`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((response) => {
 					setRegistroSeleccionado(response.data);
 					setShowModalVerIngreso(true);
 				})
-				.catch((error) => {
+				.catch(async (error) => {
 					if (error.status === 401) {
-						navigate("/error", {
+						await updateSessionStatus();						navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -252,15 +276,19 @@ const Movimientos = () => {
 		} else if (mov.entidad === "egreso") {
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/egresos/${mov.idRegistro}`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((response) => {
 					setRegistroSeleccionado(response.data);
 					setShowModalVerEgreso(true);
 				})
-				.catch((error) => {
+				.catch(async(error) => {
 					if (error.status === 401) {
-						navigate("/error", {
+				await updateSessionStatus();						navigate("/error", {
 							state: {
 								errorCode: 401,
 								mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -307,11 +335,16 @@ const Movimientos = () => {
 
 		setTimeout(() => {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 			setLoading(true);
 
 			axios
 				.get(`${import.meta.env.VITE_API_URL}/movimientos`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				})
 				.then((response) => {
 					setMovimientos(response.data);
@@ -392,7 +425,7 @@ const Movimientos = () => {
 										type="date"
 										value={fecha}
 										onChange={(e) => setFecha(e.target.value)}
-										className="thm-btn"
+										className="form_input"
 									/>
 								</Form.Group>
 							)}
@@ -404,7 +437,7 @@ const Movimientos = () => {
 										type="number"
 										value={anio}
 										onChange={(e) => setAnio(e.target.value)}
-										className="thm-btn"
+										className="form_input"
 									/>
 								</Form.Group>
 							)}
@@ -417,7 +450,7 @@ const Movimientos = () => {
 											type="date"
 											value={fechaInicio}
 											onChange={(e) => setFechaInicio(e.target.value)}
-											className="thm-btn"
+											className="form_input"
 										/>
 									</Form.Group>
 									<Form.Group controlId="fechaFin">
@@ -426,7 +459,7 @@ const Movimientos = () => {
 											type="date"
 											value={fechaFin}
 											onChange={(e) => setFechaFin(e.target.value)}
-											className="thm-btn"
+											className="form_input"
 										/>
 									</Form.Group>
 								</>

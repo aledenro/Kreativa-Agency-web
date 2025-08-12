@@ -14,6 +14,8 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const getEstado = (status) => {
 	switch (status) {
@@ -71,7 +73,7 @@ const ListadoTareas = () => {
 		api.success({
 			message: "Éxito",
 			description: message,
-			placement: "bottomRight",
+			placement: "top",
 			duration: 4,
 		});
 	};
@@ -80,7 +82,7 @@ const ListadoTareas = () => {
 		api.error({
 			message: "Error",
 			description: message,
-			placement: "bottomRight",
+			placement: "top",
 			duration: 4,
 		});
 	};
@@ -94,6 +96,7 @@ const ListadoTareas = () => {
 			url += "/tareas";
 			url += rol === "Colaborador" ? `/getByColab/${idUsuario}` : "";
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 
 			if (!token) {
 				navigate("/error", {
@@ -105,13 +108,17 @@ const ListadoTareas = () => {
 			}
 
 			const response = await axios.get(url, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			setTareas(response.data.tareas);
 		} catch (error) {
 			if (error.status === 401) {
-				navigate("/error", {
+				await updateSessionStatus();				navigate("/error", {
 					state: {
 						errorCode: 401,
 						mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -127,6 +134,7 @@ const ListadoTareas = () => {
 	const fetchColabs = async () => {
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -138,14 +146,18 @@ const ListadoTareas = () => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { Authorization: `Bearer ${token}` },
+					headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 				}
 			);
 
 			setEmpleados(response.data);
 		} catch (error) {
 			if (error.status === 401) {
-				navigate("/error", {
+				await updateSessionStatus();				navigate("/error", {
 					state: {
 						errorCode: 401,
 						mensaje: "Debe volver a iniciar sesión para continuar.",

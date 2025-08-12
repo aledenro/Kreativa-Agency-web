@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { CalendarCheck } from "lucide-react";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 const AgregarPTO = () => {
 	const navigate = useNavigate();
@@ -47,7 +48,7 @@ const AgregarPTO = () => {
 				}
 			} catch (error) {
 				if (error.status === 401) {
-					navigate("/error", {
+				await updateSessionStatus();					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe volver a iniciar sesión para continuar.",
@@ -132,6 +133,7 @@ const AgregarPTO = () => {
 
 		try {
 			const token = localStorage.getItem("token");
+			const user = localStorage.getItem("user_name");
 			if (!token) {
 				navigate("/error", {
 					state: {
@@ -144,7 +146,11 @@ const AgregarPTO = () => {
 			}
 
 			await axios.post(`${import.meta.env.VITE_API_URL}/pto`, formData, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
 			});
 
 			Swal.fire({
@@ -157,7 +163,7 @@ const AgregarPTO = () => {
 			});
 		} catch (error) {
 			if (error.status === 401) {
-				localStorage.clear();
+				await updateSessionStatus();				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import validTokenActive from "../../utils/validateToken";
+import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
 
 const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
     const [showAlert, setShowAlert] = useState(false);
@@ -63,6 +63,7 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
             };
 
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             if (!token) {
                 navigate("/error", {
@@ -76,7 +77,10 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
             const res = await axios.post(
                 `${import.meta.env.VITE_API_URL}/pagos/`,
                 data,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
 
             if (res.status === 201) {
@@ -91,7 +95,7 @@ const ModalCrearPago = ({ show, handleClose, clientes, estados }) => {
             }
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,

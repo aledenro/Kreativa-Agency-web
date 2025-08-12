@@ -19,6 +19,7 @@ import "../AdminPanel.css";
 import ModalImprimirReportes from "../components/Estadisticas/ModalImprimirReporte";
 import Loading from "../components/ui/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
 
 // Colores de los gráficos
 const COLORS = ["#ff0072", "#8d25fc", "#007bff", "#ffc02c"];
@@ -89,30 +90,36 @@ const Estadisticas = () => {
 
     const [loading, setLoading] = useState(true);
 
+    const formatCurrency = (value) => {
+        if (value >= 1000000) {
+            return `₡${(value / 1000000).toFixed(1)}M`;
+        } else if (value >= 1000) {
+            return `₡${(value / 1000).toFixed(0)}K`;
+        }
+        return `₡${value.toLocaleString()}`;
+    };
+
     // Carga de categorías
     useEffect(() => {
         const fetchCategories = async () => {
             const token = localStorage.getItem("token");
-
-            if (!token) {
-                navigate("/error", {
-                    state: {
-                        errorCode: 401,
-                        mensaje: "Debe iniciar sesión para continuar.",
-                    },
-                });
-            }
+            const user = localStorage.getItem("user_name");
 
             try {
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/categorias`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
                 setCategories(res.data);
             } catch (error) {
                 if (error.status === 401) {
+                    await updateSessionStatus();
                     navigate("/error", {
                         state: {
                             errorCode: 401,
@@ -132,9 +139,10 @@ const Estadisticas = () => {
     }, []);
 
     // Carga de datos según la vista
+
     useEffect(() => {
         const token = localStorage.getItem("token");
-        const promises = [];
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -143,15 +151,21 @@ const Estadisticas = () => {
                     mensaje: "Debe iniciar sesión para continuar.",
                 },
             });
+            return;
         }
 
+        const promises = [];
+
         if (isAnnualView) {
-            // Vista Anual - agregar promesas
+            // Vista Anual - Ingresos
             promises.push(
                 axios
                     .get(
                         `${import.meta.env.VITE_API_URL}/ingresos/anualesDetalle?anio=${selectedYear}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
+                        { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                     )
                     .then((response) => {
                         const data = response.data;
@@ -164,8 +178,9 @@ const Estadisticas = () => {
                             }))
                         );
                     })
-                    .catch((error) => {
+                    .catch(async (error) => {
                         if (error.status === 401) {
+                            await updateSessionStatus();
                             navigate("/error", {
                                 state: {
                                     errorCode: 401,
@@ -181,19 +196,24 @@ const Estadisticas = () => {
                     })
             );
 
+            // Vista Anual - Egresos
             promises.push(
                 axios
                     .get(
                         `${import.meta.env.VITE_API_URL}/egresos/anualesDetalle?anio=${selectedYear}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
+                        { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                     )
                     .then((response) => {
                         const data = response.data;
                         setTotalEgresosAnuales(data.resumen.totalEgresos);
                         setDetalleEgresosAnuales(data.detalle);
                     })
-                    .catch((error) => {
+                    .catch(async (error) => {
                         if (error.status === 401) {
+                            await updateSessionStatus();
                             navigate("/error", {
                                 state: {
                                     errorCode: 401,
@@ -209,26 +229,20 @@ const Estadisticas = () => {
                     })
             );
         } else {
-            // Vista Mensual - agregar promesas
+            // Vista Mensual
             const formattedMonth =
                 selectedMonth < 10 ? `0${selectedMonth}` : selectedMonth;
             const fecha = `${selectedYear}-${formattedMonth}`;
-            const token = localStorage.getItem("token");
 
-            if (!token) {
-                navigate("/error", {
-                    state: {
-                        errorCode: 401,
-                        mensaje: "Debe iniciar sesión para continuar.",
-                    },
-                });
-            }
-
+            // Ingresos mensuales
             promises.push(
                 axios
                     .get(
                         `${import.meta.env.VITE_API_URL}/ingresos/ingresosPorMes?mes=${formattedMonth}&anio=${selectedYear}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
+                        { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                     )
                     .then((response) => {
                         if (!response.data.success) {
@@ -251,8 +265,9 @@ const Estadisticas = () => {
                             datosGrafico: datosGrafico,
                         });
                     })
-                    .catch((error) => {
+                    .catch(async (error) => {
                         if (error.status === 401) {
+                            await updateSessionStatus();
                             navigate("/error", {
                                 state: {
                                     errorCode: 401,
@@ -273,49 +288,73 @@ const Estadisticas = () => {
                         });
                     })
             );
+
             // Egresos mensuales activos y con estado aprobado
-            axios
-                .get(
-                    `${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                )
-                .then((response) => {
-                    const data = response.data.filter(
-                        (e) => e.activo && e.estado === "Aprobado"
-                    );
-                    const categoriasData = CATEGORIAS.map((cat) => {
-                        const categoryValue = data
-                            .filter((e) => e.categoria === cat)
-                            .reduce((acc, cur) => acc + cur.monto, 0);
-                        return { name: cat, value: categoryValue };
-                    }).filter((cat) => cat.value > 0);
-                    setEgresos(categoriasData);
-                    setTotalEgresos(
-                        data.reduce((acc, cur) => acc + cur.monto, 0)
-                    );
-                    const resumen = data.map((e) => ({
-                        fecha: e.fecha,
-                        categoria: e.categoria,
-                        proveedor: e.proveedor,
-                        monto: e.monto,
-                    }));
-                    setResumenEgresos(resumen);
-                })
-                .catch((error) => {
-                    console.error(
-                        "Error al obtener los egresos mensuales:",
-                        error
-                    );
-                });
+            promises.push(
+                axios
+                    .get(
+                        `${import.meta.env.VITE_API_URL}/egresos/mes?fecha=${fecha}`,
+                        {
+                            headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
+                        }
+                    )
+                    .then((response) => {
+                        const data = response.data.filter(
+                            (e) => e.activo && e.estado === "Aprobado"
+                        );
+                        const categoriasData = CATEGORIAS.map((cat) => {
+                            const categoryValue = data
+                                .filter((e) => e.categoria === cat)
+                                .reduce((acc, cur) => acc + cur.monto, 0);
+                            return { name: cat, value: categoryValue };
+                        }).filter((cat) => cat.value > 0);
+
+                        setEgresos(categoriasData);
+                        setTotalEgresos(
+                            data.reduce((acc, cur) => acc + cur.monto, 0)
+                        );
+
+                        const resumen = data.map((e) => ({
+                            fecha: e.fecha,
+                            categoria: e.categoria,
+                            proveedor: e.proveedor,
+                            monto: e.monto,
+                        }));
+                        setResumenEgresos(resumen);
+                    })
+                    .catch(async (error) => {
+                        if (error.status === 401) {
+                            await updateSessionStatus();
+                            navigate("/error", {
+                                state: {
+                                    errorCode: 401,
+                                    mensaje:
+                                        "Debe volver a iniciar sesión para continuar.",
+                                },
+                            });
+                            return;
+                        }
+                        console.error(
+                            "Error al obtener los egresos mensuales:",
+                            error
+                        );
+                    })
+            );
         }
 
+        // Totales anuales (siempre se ejecutan)
         promises.push(
             axios
                 .get(
                     `${import.meta.env.VITE_API_URL}/ingresos/anio?anio=${selectedYear}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                 )
                 .then((response) => {
                     const data = response.data;
@@ -333,7 +372,10 @@ const Estadisticas = () => {
             axios
                 .get(
                     `${import.meta.env.VITE_API_URL}/egresos/anio?anio=${selectedYear}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
                 )
                 .then((response) => {
                     const data = response.data;
@@ -347,7 +389,6 @@ const Estadisticas = () => {
                 })
         );
 
-        // Ejecutar todas las promesas y manejar el loading
         Promise.allSettled(promises).finally(() => {
             setLoading(false);
         });
@@ -471,8 +512,14 @@ const Estadisticas = () => {
                                             ]}
                                         >
                                             <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
+                                            <XAxis
+                                                dataKey="name"
+                                                tick={{ fontSize: 12 }}
+                                            />
+                                            <YAxis
+                                                tickFormatter={formatCurrency}
+                                                tick={{ fontSize: 12 }}
+                                            />
                                             <Tooltip
                                                 formatter={(value) =>
                                                     `₡${value.toLocaleString()}`
@@ -976,8 +1023,16 @@ const Estadisticas = () => {
                                                 ]}
                                             >
                                                 <CartesianGrid strokeDasharray="3 3" />
-                                                <XAxis dataKey="name" />
-                                                <YAxis />
+                                                <XAxis
+                                                    dataKey="name"
+                                                    tick={{ fontSize: 12 }}
+                                                />
+                                                <YAxis
+                                                    tickFormatter={
+                                                        formatCurrency
+                                                    }
+                                                    tick={{ fontSize: 12 }}
+                                                />
                                                 <Tooltip
                                                     formatter={(value) =>
                                                         `₡${value.toLocaleString()}`
@@ -1027,8 +1082,14 @@ const Estadisticas = () => {
                                             ]}
                                         >
                                             <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
+                                            <XAxis
+                                                dataKey="name"
+                                                tick={{ fontSize: 12 }}
+                                            />
+                                            <YAxis
+                                                tickFormatter={formatCurrency}
+                                                tick={{ fontSize: 12 }}
+                                            />
                                             <Tooltip
                                                 formatter={(value) =>
                                                     `₡${value.toLocaleString()}`

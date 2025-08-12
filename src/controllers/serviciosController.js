@@ -10,7 +10,6 @@ class ServiciosController {
 			);
 			return res.status(201).json(servicio);
 		} catch (error) {
-			console.error("Error al agregar el servicio: " + error.message);
 			return res.status(500).json({ error: error.message });
 		}
 	}
@@ -184,6 +183,18 @@ class ServiciosController {
 		} catch (error) {
 			res.status(500).json({
 				mensaje: "Error al obtener el listado de servicios",
+				error: error.message,
+			});
+		}
+	}
+
+	async getServiciosConPaquetes(req, res) {
+		try {
+			const servicios = await ServiciosService.getServiciosConPaquetes();
+			res.status(200).json(servicios);
+		} catch (error) {
+			res.status(500).json({
+				mensaje: "Error al obtener servicios con paquetes",
 				error: error.message,
 			});
 		}

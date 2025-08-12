@@ -27,6 +27,20 @@ const Restablecer = () => {
             return;
         }
 
+        if(!/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,}$/.test(nuevaContraseña)){
+				Swal.fire({
+                title: "Error",
+                text: "La contraseña debe tener al menos 8 caracteres y al menos 1 caracter especial, 1 mayuscula y un numero.",
+                icon: "error",
+                confirmButtonText: "Intentar de nuevo",
+                customClass: {
+                    confirmButton: "swal-button-kreativa",
+                },
+                confirmButtonColor: " #ff0072",
+            });
+            return; 
+			}
+
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/restablecer`,

@@ -20,6 +20,8 @@ import TablaPaginacion from "../components/ui/TablaPaginacion";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Loading from "../components/ui/LoadingComponent";
+import ModalAgregarPaquete from "../components/Paquetes/ModalAgregarPaquete";
+import ModalEditarPaquete from "../components/Paquetes/ModalEditarPaquete";
 
 const GestionPaquetes = () => {
 	const [servicios, setServicios] = useState([]);
@@ -32,59 +34,85 @@ const GestionPaquetes = () => {
 	const [sortOrder, setSortOrder] = useState("asc");
 	const navigate = useNavigate();
 
+	const [showModalAgregar, setShowModalAgregar] = useState(false);
+	const [showModalEditar, setShowModalEditar] = useState(false);
+	const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
+	const [paqueteSeleccionado, setPaqueteSeleccionado] = useState(null);
+
 	const [showModal, setShowModal] = useState(false);
 	const [selectedPaquete, setSelectedPaquete] = useState(null);
 	const [modalAction, setModalAction] = useState("");
+
+	const [filterStatus, setFilterStatus] = useState("");
 
 	const openErrorNotification = (message) => {
 		api.error({
 			message: "Error",
 			description: message,
-			placement: "bottomRight",
+			placement: "top",
+			duration: 4,
+		});
+	};
+
+	const openSuccessNotification = (message) => {
+		api.success({
+			message: "Éxito",
+			description: message,
+			placement: "top",
 			duration: 4,
 		});
 	};
 
 	useEffect(() => {
-		const fetchServicios = async () => {
-			const token = localStorage.getItem("token");
+		fetchServicios();
+	}, []);
 
-			if (!token) {
+	const fetchServicios = async () => {
+		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
+
+		if (!token) {
+			navigate("/error", {
+				state: {
+					errorCode: 401,
+					mensaje: "Debe iniciar sesión para continuar.",
+				},
+			});
+		}
+
+		try {
+			const response = await axios.get(
+				`${import.meta.env.VITE_API_URL}/servicios/con-paquetes`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
+			);
+
+			if (Array.isArray(response.data)) {
+				setServicios(response.data);
+			} else {
+				setServicios([]);
+			}
+		} catch (err) {
+			if (err.status === 401) {
 				navigate("/error", {
 					state: {
 						errorCode: 401,
-						mensaje: "Debe iniciar sesión para continuar.",
+						mensaje: "Debe volver a iniciar sesión para continuar.",
 					},
 				});
+				return;
 			}
-
-			try {
-				const response = await axios.get(
-					`${import.meta.env.VITE_API_URL}/servicios`,
-					{
-						headers: { Authorization: `Bearer ${token}` },
-					}
-				);
-				setServicios(response.data);
-			} catch (err) {
-				if (err.status === 401) {
-					navigate("/error", {
-						state: {
-							errorCode: 401,
-							mensaje: "Debe volver a iniciar sesión para continuar.",
-						},
-					});
-					return;
-				}
-				setError("Error al cargar los servicios");
-				openErrorNotification("No se pudieron cargar los servicios.");
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchServicios();
-	}, []);
+			setError("Error al cargar los servicios");
+			openErrorNotification("No se pudieron cargar los servicios.");
+			setServicios([]);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const obtenerTodosLosPaquetes = () => {
 		const todosPaquetes = [];
@@ -115,6 +143,7 @@ const GestionPaquetes = () => {
 
 		const { servicioId, paqueteId, estadoActual } = selectedPaquete;
 		const token = localStorage.getItem("token");
+		const user = localStorage.getItem("user_name");
 
 		if (!token) {
 			navigate("/error", {
@@ -131,7 +160,10 @@ const GestionPaquetes = () => {
 				: `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}/activar`;
 
 			const response = await axios.put(endpoint, null, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: {
+					Authorization: `Bearer ${token}`,
+					user: user,
+				},
 			});
 
 			setServicios((prevServicios) =>
@@ -139,6 +171,8 @@ const GestionPaquetes = () => {
 					servicio._id === servicioId ? response.data : servicio
 				)
 			);
+
+			openSuccessNotification(`Paquete ${modalAction}do exitosamente`);
 			setShowModal(false);
 		} catch (err) {
 			if (err.status === 401) {
@@ -156,12 +190,22 @@ const GestionPaquetes = () => {
 		}
 	};
 
-	const handleEditarPaquete = (paquete) => {
-		navigate(`/paquete/modificar/${paquete.servicioId}/${paquete._id}`);
+	const handleAgregarPaquete = (servicioId) => {
+		setServicioSeleccionado(servicioId);
+		setShowModalAgregar(true);
 	};
 
-	const handleAgregarPaqueteAServicio = (servicioId) => {
-		navigate(`/servicio/agregarPaquete/${servicioId}`);
+	const handleEditarPaquete = (paquete) => {
+		setPaqueteSeleccionado(paquete);
+		setShowModalEditar(true);
+	};
+
+	const handlePaqueteAgregado = (nuevoPaquete) => {
+		fetchServicios();
+	};
+
+	const handlePaqueteEditado = (paqueteEditado) => {
+		fetchServicios();
 	};
 
 	const handlePaquete = (servicioId) => {
@@ -170,7 +214,14 @@ const GestionPaquetes = () => {
 
 	const paquetes = obtenerTodosLosPaquetes();
 
-	const paquetesOrdenados = [...paquetes].sort((a, b) => {
+	const paquetesFiltrados = paquetes.filter((paquete) => {
+		if (filterStatus === "") return true;
+		if (filterStatus === "Activos") return paquete.activo === true;
+		if (filterStatus === "Inactivos") return paquete.activo === false;
+		return true;
+	});
+
+	const paquetesOrdenados = [...paquetesFiltrados].sort((a, b) => {
 		let valueA = a[sortField];
 		let valueB = b[sortField];
 
@@ -194,7 +245,7 @@ const GestionPaquetes = () => {
 		pagActual * itemsPag
 	);
 
-	const totalPags = Math.ceil(paquetes.length / itemsPag);
+	const totalPags = Math.ceil(paquetesOrdenados.length / itemsPag);
 
 	const handleSort = (field) => {
 		if (sortField === field) {
@@ -218,9 +269,9 @@ const GestionPaquetes = () => {
 	return (
 		<div>
 			<AdminLayout>
-				<div className="container mt-4">
-					{contextHolder}
-					<div style={{ height: "90px" }}></div>
+				{contextHolder}
+				<div className="main-container mx-auto">
+					<div className="espacio-top-responsive"></div>
 					<div className="d-flex justify-content-between align-items-center mb-4">
 						<h1>Gestión de Paquetes</h1>
 						<Dropdown>
@@ -244,38 +295,59 @@ const GestionPaquetes = () => {
 							>
 								<style>
 									{`
-                                    .dropdown-item:active {
-                                        background-color: #ff0072 !important;
-                                    }
-                                    .dropdown-item:hover {
-                                        background-color: #ffebf4 !important;
-                                        color: #ff0072
-                                    }
-                                `}
+			.dropdown-item:active {
+				background-color: #ff0072 !important;
+			}
+			.dropdown-item:hover {
+				background-color: #ffebf4 !important;
+				color: #ff0072
+			}
+		`}
 								</style>
-								{servicios.length > 0 ? (
-									servicios.map((servicio) => (
-										<Dropdown.Item
-											key={servicio._id}
-											onClick={() =>
-												handleAgregarPaqueteAServicio(servicio._id)
-											}
-											style={{
-												color: "#110d27",
-												backgroundColor: "white",
-											}}
-										>
-											{servicio.nombre}
-										</Dropdown.Item>
-									))
+								{servicios.filter((servicio) => servicio.activo === true)
+									.length > 0 ? (
+									servicios
+										.filter((servicio) => servicio.activo === true)
+										.map((servicio) => (
+											<Dropdown.Item
+												key={servicio._id}
+												onClick={() => handleAgregarPaquete(servicio._id)}
+												style={{
+													color: "#110d27",
+													backgroundColor: "white",
+												}}
+											>
+												{servicio.nombre}
+											</Dropdown.Item>
+										))
 								) : (
 									<Dropdown.Item disabled style={{ backgroundColor: "white" }}>
-										No hay servicios disponibles
+										No hay servicios activos disponibles
 									</Dropdown.Item>
 								)}
 							</Dropdown.Menu>
 						</Dropdown>
 					</div>
+
+					{/* Filtro por Estado */}
+					<div className="row mb-3">
+						<div className="col-3">
+							<label htmlFor="filterStatus">Filtrar por Estado:</label>
+							<select
+								className="form-select form_input"
+								onChange={(e) => {
+									setFilterStatus(e.target.value);
+									setPagActual(1);
+								}}
+								id="filterStatus"
+							>
+								<option value="">Todos</option>
+								<option value="Activos">Activos</option>
+								<option value="Inactivos">Inactivos</option>
+							</select>
+						</div>
+					</div>
+
 					<div className="div-table">
 						<Table className="main-table">
 							<Thead>
@@ -313,6 +385,7 @@ const GestionPaquetes = () => {
 											<FontAwesomeIcon icon={faSort} />
 										</span>
 									</Th>
+
 									<Th
 										onClick={() => handleSort("duracion")}
 										className="col-fecha"
@@ -341,12 +414,17 @@ const GestionPaquetes = () => {
 											<Td
 												className="col-nombre"
 												onClick={() => handlePaquete(paquete.servicioId)}
+												style={{ cursor: "pointer" }}
 											>
 												{paquete.servicioNombre || "Sin servicio asignado"}
 											</Td>
 											<Td className="col-proyecto">{paquete.nombre}</Td>
 											<Td className="col-nivel">{paquete.nivel}</Td>
-											<Td className="col-precio">${paquete.precio}</Td>
+											<Td className="col-precio">
+												{paquete.precio !== null && paquete.precio !== undefined
+													? `$${paquete.precio}`
+													: "N/A"}
+											</Td>
 											<Td className="col-fecha">{paquete.duracion}</Td>
 											<Td className="col-estado">
 												<span
@@ -386,7 +464,7 @@ const GestionPaquetes = () => {
 								) : (
 									<Tr>
 										<Td colSpan="7" className="text-center">
-											No hay paquetes disponibles
+											No hay paquetes disponibles con los filtros seleccionados
 										</Td>
 									</Tr>
 								)}
@@ -395,7 +473,7 @@ const GestionPaquetes = () => {
 					</div>
 
 					<TablaPaginacion
-						totalItems={paquetes.length}
+						totalItems={paquetesOrdenados.length}
 						itemsPorPagina={itemsPag}
 						paginaActual={pagActual}
 						onItemsPorPaginaChange={(cant) => {
@@ -405,6 +483,7 @@ const GestionPaquetes = () => {
 						onPaginaChange={(pagina) => setPagActual(pagina)}
 					/>
 
+					{/* Modal de confirmación para cambio de estado */}
 					<Modal show={showModal} onHide={() => setShowModal(false)}>
 						<Modal.Header closeButton>
 							<Modal.Title>Confirmar Acción</Modal.Title>
@@ -414,7 +493,7 @@ const GestionPaquetes = () => {
 						</Modal.Body>
 						<Modal.Footer>
 							<button
-								className="thm-btn thm-btn-small btn-rojo"
+								className="thm-btn thm-btn-small btn-gris mx-1"
 								onClick={() => setShowModal(false)}
 							>
 								No
@@ -427,6 +506,22 @@ const GestionPaquetes = () => {
 							</button>
 						</Modal.Footer>
 					</Modal>
+
+					{/* Modal para agregar paquete */}
+					<ModalAgregarPaquete
+						show={showModalAgregar}
+						onHide={() => setShowModalAgregar(false)}
+						servicioId={servicioSeleccionado}
+						onPaqueteAgregado={handlePaqueteAgregado}
+					/>
+
+					{/* Modal para editar paquete */}
+					<ModalEditarPaquete
+						show={showModalEditar}
+						onHide={() => setShowModalEditar(false)}
+						paquete={paqueteSeleccionado}
+						onPaqueteEditado={handlePaqueteEditado}
+					/>
 				</div>
 			</AdminLayout>
 		</div>

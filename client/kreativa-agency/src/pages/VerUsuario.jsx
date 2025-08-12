@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { User } from "lucide-react";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const VerUsuario = () => {
     const { id } = useParams();
@@ -15,6 +17,8 @@ const VerUsuario = () => {
         const fetchUsuario = async () => {
             try {
                 const token = localStorage.getItem("token");
+                const user = localStorage.getItem("user_name");
+                
                 if (!token) {
                     navigate("/error", {
                         state: {
@@ -27,7 +31,11 @@ const VerUsuario = () => {
                 const { data } = await axios.get(
                     `${import.meta.env.VITE_API_URL}/usuarios/${id}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -35,7 +43,7 @@ const VerUsuario = () => {
                 setLoading(false);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:

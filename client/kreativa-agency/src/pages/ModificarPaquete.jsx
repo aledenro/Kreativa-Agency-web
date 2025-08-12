@@ -6,6 +6,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import { notification } from "antd";
+import TokenUtils, { updateSessionStatus } from "../utils/validateToken";
+
 
 const ModificarPaquete = () => {
     const { servicioId, paqueteId } = useParams();
@@ -26,6 +28,7 @@ const ModificarPaquete = () => {
     useEffect(() => {
         const fetchPaquete = async () => {
             const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user_name");
 
             if (!token) {
                 navigate("/error", {
@@ -40,7 +43,11 @@ const ModificarPaquete = () => {
                 const res = await axios.get(
                     `${import.meta.env.VITE_API_URL}/servicios/${servicioId}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { 
+						Authorization: `Bearer ${token}`,
+						user: user
+				
+					},
                     }
                 );
 
@@ -58,7 +65,7 @@ const ModificarPaquete = () => {
                 setLoading(false);
             } catch (error) {
                 if (error.status === 401) {
-                    navigate("/error", {
+				await updateSessionStatus();                    navigate("/error", {
                         state: {
                             errorCode: 401,
                             mensaje:
@@ -90,7 +97,7 @@ const ModificarPaquete = () => {
         api.success({
             message: "Éxito",
             description: message,
-            placement: "bottomRight",
+            placement: "top",
             duration: 4,
         });
     };
@@ -99,7 +106,7 @@ const ModificarPaquete = () => {
         api.error({
             message: "Error",
             description: message,
-            placement: "bottomRight",
+            placement: "top",
             duration: 4,
         });
     };
@@ -155,6 +162,7 @@ const ModificarPaquete = () => {
 
     const handleSubmit = async () => {
         const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user_name");
 
         if (!token) {
             navigate("/error", {
@@ -170,7 +178,10 @@ const ModificarPaquete = () => {
             const res = await axios.put(
                 `${import.meta.env.VITE_API_URL}/servicios/${servicioId}/paquetes/${paqueteId}`,
                 paqueteEditado,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+					Authorization: `Bearer ${token}`,
+					user: user
+			 	} }
             );
             console.log("Respuesta del backend:", res.data);
             openSuccessNotification("Paquete editado exitosamente");
@@ -181,7 +192,7 @@ const ModificarPaquete = () => {
             }, 2000);
         } catch (error) {
             if (error.status === 401) {
-                localStorage.clear();
+				await updateSessionStatus();                localStorage.clear();
                 navigate("/error", {
                     state: {
                         errorCode: 401,

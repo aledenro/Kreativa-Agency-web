@@ -1,12 +1,12 @@
 const ProyectoController = require("../controllers/proyectoController");
 const express = require("express");
-const verificarToken = require("../middleware/authMiddleware");
+const {verificarToken, verificarTokenValidoSesion} = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/crear", verificarToken, ProyectoController.createProyecto);
-router.get("/id/:id", verificarToken, ProyectoController.getProyectoById);
-router.put("/editar/:id", verificarToken, ProyectoController.editProyecto);
+router.post("/crear", verificarToken, verificarTokenValidoSesion, ProyectoController.createProyecto);
+router.get("/id/:id", verificarToken, verificarTokenValidoSesion, ProyectoController.getProyectoById);
+router.put("/editar/:id", verificarToken, verificarTokenValidoSesion, ProyectoController.editProyecto);
 router.put(
 	"/editarEstado/:id",
 	verificarToken,
@@ -17,7 +17,7 @@ router.get(
 	verificarToken,
 	ProyectoController.getAllProyectosLimitedData
 );
-router.get("/", verificarToken, ProyectoController.getAllProyectos);
+router.get("/", verificarToken, verificarTokenValidoSesion, ProyectoController.getAllProyectos);
 router.put(
 	"/actualizarLog/:id",
 	verificarToken,
