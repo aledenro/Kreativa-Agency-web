@@ -57,7 +57,7 @@ app.use("/api/sessions", sessionRoutes);
 //end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
   console.log(`CORS origin configurado para: ${process.env.ORIGIN}`);
   console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
