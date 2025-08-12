@@ -22,7 +22,7 @@ const pagosRoutes = require("./routes/pagosRoutes");
 const configRoutes = require("./routes/configRoutes");
 const sessionRoutes = require("./routes/sessionsRoutes")
 
-const HOST = '0.0.0.0';
+app.get('/health', (req, res) => res.send('ok'));
 
 connectDB();
 
@@ -57,6 +57,9 @@ app.use("/api/sessions", sessionRoutes);
 //end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);
 
-app.listen(PORT, HOST, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
+  console.log(`CORS origin configurado para: ${process.env.ORIGIN}`);
+  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+  console.log(`MONGO URL: ${process.env.MONGO_URL}`)
 });
