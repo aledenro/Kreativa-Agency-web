@@ -6,7 +6,11 @@ export default function ProtectedRoute({ children, allowedRoles = [] }) {
 
   if (hydrating) return null;
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate
+        to="/error"
+        replace
+        state={{ errorCode: 401, mensaje: "Acceso no autorizado." }}
+      />;
 
   const userRoles = Array.isArray(user.tipo_usuario)
     ? user.tipo_usuario
