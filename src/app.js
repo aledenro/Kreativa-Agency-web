@@ -22,6 +22,8 @@ const pagosRoutes = require("./routes/pagosRoutes");
 const configRoutes = require("./routes/configRoutes");
 const sessionRoutes = require("./routes/sessionsRoutes")
 
+const HOST = '0.0.0.0';
+
 connectDB();
 
 app.use(
@@ -55,6 +57,6 @@ app.use("/api/sessions", sessionRoutes);
 //end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
