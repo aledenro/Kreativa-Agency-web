@@ -1,24 +1,30 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 
-// Crear el contexto
 export const AuthContext = createContext();
+export const useAuth = () => useContext(AuthContext);
 
-// Crear el provider
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [hydrating, setHydrating] = useState(true);
 
-  // Después de iniciar sesión
+  useEffect(() => {
+    const raw = localStorage.getItem("app_user");
+    if (raw) setUser(JSON.parse(raw));
+    setHydrating(false);
+  }, []);
+
   const login = (userData) => {
     setUser(userData);
+    localStorage.setItem("app_user", JSON.stringify(userData));
   };
 
-  // Para cerrar sesión
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("app_user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, hydrating, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
