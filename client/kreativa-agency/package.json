@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve:dist": "npx serve -s dist -l $PORT"
   },
   "dependencies": {
     "@base-ui-components/react": "^1.0.0-alpha.6",
