@@ -16,6 +16,7 @@
         "express": "^5.1.0",
         "lodash": "^4.17.21",
         "nodemon": "^3.1.9",
-        "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+        "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+        "xlsx-js-style": "^1.2.0"
     }
 }
