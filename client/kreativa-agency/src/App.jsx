@@ -46,48 +46,51 @@ import GestionPaquetes from "./pages/GestionPaquetes";
 import DashboardColaborador from "./pages/DashboardColaborador";
 import VerMiPTO from "./pages/VerMiPTO";
 import ErrorPage from "./pages/ErrorPage";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
 	return (
+		<AuthProvider>
 		<Router>
 			<Routes>
-				<Route path="/usuarios" element={<Usuarios />}></Route>
+				<Route path="/usuarios" element={<ProtectedRoute allowedRoles={["Administrador"]}> <Usuarios /></ProtectedRoute>}></Route>
 
-				<Route path="/usuario/crear" element={<CrearUsuario />}></Route>
+				<Route path="/usuario/crear" element={<ProtectedRoute allowedRoles={["Administrador"]}><CrearUsuario /> </ProtectedRoute>}></Route>
 
-				<Route path="/usuario/:id" element={<VerUsuario />}></Route>
+				<Route path="/usuario/:id" element={<ProtectedRoute allowedRoles={["Administrador"]}><VerUsuario /></ProtectedRoute>}></Route>
 
-				<Route path="/usuario/editar/:id" element={<EditarUsuario />}></Route>
+				<Route path="/usuario/editar/:id" element={<ProtectedRoute allowedRoles={["Administrador"]}><EditarUsuario /></ProtectedRoute>}></Route>
 
-				<Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
+				<Route path="/servicio/agregar" element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarServicio /></ProtectedRoute>}></Route>
 				<Route
 					path="/servicio/modificar/:id"
-					element={<ModificarServicio />}
+					element={<ProtectedRoute allowedRoles={["Administrador"]}><ModificarServicio /></ProtectedRoute>}
 				></Route>
 				<Route
 					path="/servicio/agregarPaquete/:id"
-					element={<AgregarPaquete />}
+					element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarPaquete /></ProtectedRoute>}
 				></Route>
 				<Route
 					path="/paquete/modificar/:servicioId/:paqueteId"
-					element={<ModificarPaquete />}
+					element={<ProtectedRoute allowedRoles={["Administrador"]}><ModificarPaquete /></ProtectedRoute>}
 				></Route>
 
 				<Route
 					path="/cotizacion/agregar"
 					element={<AgregarCotizacion />}
 				></Route>
-				<Route path="/cotizacion/" element={<VerCotizaciones />}></Route>
+				<Route path="/cotizacion/" element={<ProtectedRoute allowedRoles={["Administrador", "Cliente"]}><VerCotizaciones /></ProtectedRoute>}></Route>
 				<Route
 					path="/cotizacion/:id"
-					element={<VerDetalleCotizacion />}
+					element={<ProtectedRoute allowedRoles={["Administrador", "Cliente"]}><VerDetalleCotizacion /></ProtectedRoute>}
 				></Route>
 
-				<Route path="/egresos" element={<ListadoEgresos />} />
+				<Route path="/egresos" element={<ProtectedRoute allowedRoles={["Administrador"]}><ListadoEgresos /></ProtectedRoute>} />
 
-				<Route path="/ingresos" element={<ListadoIngresos />} />
+				<Route path="/ingresos" element={<ProtectedRoute allowedRoles={["Administrador"]}><ListadoIngresos /></ProtectedRoute>} />
 
-				<Route path="/movimientos" element={<Movimientos />} />
+				<Route path="/movimientos" element={<ProtectedRoute allowedRoles={["Administrador"]}><Movimientos /></ProtectedRoute>} />
 
 				{/* <Route path="/egresos" element={<VerEgresos />}></Route> */}
 				{/* <Route
@@ -97,52 +100,49 @@ function App() {
 
 				{/* <Route path="/ingresos" element={<ListadoIngresos />} /> */}
 
-				<Route path="/servicios" element={<ListadoServicios />}></Route>
+				<Route path="/servicios" element={<ProtectedRoute allowedRoles={["Administrador"]}><ListadoServicios /></ProtectedRoute>}></Route>
 
-				<Route path="/servicio/agregar" element={<AgregarServicio />}></Route>
+				<Route path="/servicio/agregar" element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarServicio /></ProtectedRoute>}></Route>
 				<Route
 					path="/servicio/modificar/:id"
-					element={<ModificarServicio />}
+					element={<ProtectedRoute allowedRoles={["Administrador"]}><ModificarServicio /></ProtectedRoute>}
 				></Route>
 				<Route path="/servicio/:id" element={<DetalleServicio />}></Route>
-				<Route path="/proyecto/agregar" element={<AgregarProyecto />}></Route>
-				<Route path="/proyecto/editar/:id" element={<EditarProyecto />}></Route>
-				<Route path="/tarea/agregar" element={<AgregarTarea />}></Route>
-				<Route path="/tarea/editar/:id" element={<EditarTarea />}></Route>
+				<Route path="/proyecto/agregar" element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarProyecto /></ProtectedRoute>}></Route>
+				<Route path="/proyecto/editar/:id" element={<ProtectedRoute allowedRoles={["Administrador"]}><EditarProyecto /></ProtectedRoute>}></Route>
+				<Route path="/tarea/agregar" element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarTarea /></ProtectedRoute>}></Route>
+				<Route path="/tarea/editar/:id" element={<ProtectedRoute allowedRoles={["Administrador"]}><EditarTarea /></ProtectedRoute>}></Route>
 				<Route path="/login" element={<Login />}></Route>
 				<Route path="/vista-clientes" element={<VistaClientes />}></Route>
 				<Route path="/vista-colaborador" element={<VistaColaborador />}></Route>
 				<Route path="/recuperar" element={<Recuperar />}></Route>
 				<Route path="/restablecer/:token" element={<Restablecer />}></Route>
-				<Route path="/tareas" element={<ListadoTareas />}></Route>
-				<Route path="/jerarquia" element={<JerarquiaUsuarios />}></Route>
-				<Route path="/agregar-pto" element={<AgregarPTO />}></Route>
-				<Route path="/ver-pto-empleados" element={<VerPTOEmpleados />}></Route>
+				<Route path="/tareas" element={<ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}><ListadoTareas /></ProtectedRoute>}></Route>
+				<Route path="/jerarquia" element={<ProtectedRoute allowedRoles={["Administrador"]}><JerarquiaUsuarios /></ProtectedRoute>}></Route>
+				<Route path="/agregar-pto" element={<ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}><AgregarPTO /></ProtectedRoute>}></Route>
+				<Route path="/ver-pto-empleados" element={<ProtectedRoute allowedRoles={["Administrador"]}><VerPTOEmpleados /></ProtectedRoute>}></Route>
 				<Route path="/perfil" element={<VerPerfil />}></Route>
 				<Route path="/proyecto/:id" element={<VerDetalleProyecto />}></Route>
 
-				<Route path="/admin" element={<AdminPanel />}></Route>
-				<Route path="/estadisticas" element={<Estadisticas />} />
+				<Route path="/admin" element={<ProtectedRoute allowedRoles={["Administrador"]}><AdminPanel /></ProtectedRoute>}></Route>
+				<Route path="/estadisticas" element={<ProtectedRoute allowedRoles={["Administrador"]}><Estadisticas /></ProtectedRoute>} />
 
-				<Route path="/admin" element={<AdminPanel />}></Route>
+				<Route path="/admin" element={<ProtectedRoute allowedRoles={["Administrador"]}><AdminPanel /></ProtectedRoute>}></Route>
 				<Route path="/" element={<Landing />} />
-				<Route path="/pagos" element={<ListadoPagos />} />
-				<Route path="/admin/contacto" element={<RespuestasContacto />} />
+				<Route path="/pagos" element={<ProtectedRoute allowedRoles={["Administrador"]}><ListadoPagos /></ProtectedRoute>} />
+				<Route path="/admin/contacto" element={<ProtectedRoute allowedRoles={["Administrador"]}><RespuestasContacto /></ProtectedRoute>} />
 				<Route
 					path="/admin/reclutaciones"
-					element={<RespuestasReclutaciones />}
+					element={<ProtectedRoute allowedRoles={["Administrador"]}><RespuestasReclutaciones /></ProtectedRoute>}
 				/>
-				<Route
-					path="/admin/reclutaciones"
-					element={<RespuestasReclutaciones />}
-				/>
-				<Route path="/admin/servicios" element={<GestionServicios />} />
-				<Route path="/admin/paquetes" element={<GestionPaquetes />} />
+				<Route path="/admin/servicios" element={<ProtectedRoute allowedRoles={["Administrador"]}><GestionServicios /></ProtectedRoute>} />
+				<Route path="/admin/paquetes" element={<ProtectedRoute allowedRoles={["Administrador"]}><GestionPaquetes /></ProtectedRoute>} />
 				<Route path="/dashboard" element={<DashboardColaborador />} />
-				<Route path="/mis-pto" element={<VerMiPTO />} />
+				<Route path="/mis-pto" element={<ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}><VerMiPTO /></ProtectedRoute>} />
 				<Route path="/error" element={<ErrorPage />} />
 			</Routes>
 		</Router>
+		</AuthProvider>
 	);
 }
 
