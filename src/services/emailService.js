@@ -22,28 +22,6 @@ const kreativaEmailTemplate = (title, message, buttonLink, buttonText) => `
   </div>
 </div>`;
 
-const enviarCorreoRecuperacion = async (email, token) => {
-	try {
-		const mailOptions = {
-			from: `"Kreativa Agency" <${process.env.EMAIL_USER}>`,
-			to: email,
-			subject: "🔑 Recupera tu contraseña | Kreativa Agency",
-			html: kreativaEmailTemplate(
-				"Recupera tu contraseña",
-				"Para restablecer tu contraseña haz clic en el botón a continuación:",
-				`http://localhost:5173/restablecer/${token}`,
-				"Restablecer contraseña"
-			),
-		};
-
-		await transporter.sendMail(mailOptions);
-		console.log("Correo de recuperación enviado a:", email);
-	} catch (error) {
-		console.error("Error al enviar correo de recuperación:", error);
-		throw new Error("No se pudo enviar el correo.");
-	}
-};
-
 const sendEmail = async (idReceptor, emailContent, subject) => {
 	try {
 		const user = await getEmailUsuario(idReceptor);
@@ -90,4 +68,4 @@ const sendEmailExterno = async (recipientEmail, emailContent, subject) => {
 	}
 };
 
-module.exports = { enviarCorreoRecuperacion, sendEmail, sendEmailExterno };
+module.exports = { sendEmail, sendEmailExterno };
