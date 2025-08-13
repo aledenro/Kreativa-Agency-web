@@ -20,7 +20,7 @@ const Recuperar = () => {
 
 			const { token } = response.data;
 
-			const resetLink = `${window.location.origin}/restablecer/${token}`;
+			const resetLink = `restablecer/${token}`;
 
 			await sendEmailExterno(
 				email,
