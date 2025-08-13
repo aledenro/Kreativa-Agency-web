@@ -1,5 +1,3 @@
-// src/pages/VerMiPTO.jsx
-
 import "../App.css";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -42,18 +40,18 @@ const VerMiPTO = () => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/pto/${userId}`,
 					{
-						headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 
-				setPtoList(response.data);
+				setPtoList(Array.isArray(response.data) ? response.data : []);
 			} catch (err) {
-				console.error("Error al obtener PTO:", err);
+				console.error("Error al obtener PTO");
 				setError("No se pudieron cargar tus solicitudes de PTO.");
+				setPtoList([]);
 			} finally {
 				setLoading(false);
 			}
@@ -66,10 +64,14 @@ const VerMiPTO = () => {
 		setSortOrder(sortOrder === "asc" ? "desc" : "asc");
 	};
 
+	const ptoListSeguro = Array.isArray(ptoList) ? ptoList : [];
+
 	const ptoFiltrado =
 		estadoFiltro === "todos"
-			? ptoList
-			: ptoList.filter((pto) => pto.estado.toLowerCase() === estadoFiltro);
+			? ptoListSeguro
+			: ptoListSeguro.filter(
+					(pto) => pto.estado.toLowerCase() === estadoFiltro
+				);
 
 	const ptoOrdenado = [...ptoFiltrado].sort((a, b) => {
 		const dateA = new Date(a.fecha_inicio);
@@ -98,21 +100,42 @@ const VerMiPTO = () => {
 				<div className="espacio-top-responsive"></div>
 				<h1 className="mb-4">Mis Solicitudes de PTO</h1>
 
-				{loading ? (
-					<p className="text-center">Cargando...</p>
-				) : error ? (
+				{error ? (
 					<p className="text-danger text-center">{error}</p>
-				) : ptoList.length === 0 ? (
-					<p className="text-center text-muted">
-						Aún no has realizado ninguna solicitud de PTO.
-					</p>
+				) : ptoListSeguro.length === 0 ? (
+					<div className="text-end">
+						<div className="mb-4">
+							<a href="/agregar-pto" className="thm-btn">
+								Solicitar PTO
+							</a>
+						</div>
+						<div className="div-table">
+							<Table className="main-table">
+								<Thead>
+									<Tr>
+										<Th>Fecha de Inicio</Th>
+										<Th>Fecha de Fin</Th>
+										<Th>Comentario</Th>
+										<Th>Estado</Th>
+									</Tr>
+								</Thead>
+								<Tbody>
+									<Tr>
+										<Td colSpan="4" className="text-center text-muted">
+											No hay solicitudes de PTO para mostrar
+										</Td>
+									</Tr>
+								</Tbody>
+							</Table>
+						</div>
+					</div>
 				) : (
 					<>
 						{/* Filtro por estado */}
 						<div className="modal-filtro-container mb-3">
-							<div className="modal-select-container">
+							<div className="modal-select-container col-3">
 								<select
-									className="modal-select-input"
+									className="form_input "
 									value={estadoFiltro}
 									onChange={(e) => {
 										setEstadoFiltro(e.target.value);
@@ -126,52 +149,75 @@ const VerMiPTO = () => {
 							</div>
 						</div>
 
-						{/* Tabla de resultados */}
-						<div className="div-table">
-							<Table className="main-table">
-								<Thead>
-									<Tr>
-										<Th onClick={handleSort} style={{ cursor: "pointer" }}>
-											Fecha de Inicio <FontAwesomeIcon icon={faSort} />
-										</Th>
-										<Th>Fecha de Fin</Th>
-										<Th>Comentario</Th>
-										<Th>Estado</Th>
-									</Tr>
-								</Thead>
-								<Tbody>
-									{ptoPaginado.map((pto) => (
-										<Tr key={pto._id}>
-											<Td>{new Date(pto.fecha_inicio).toLocaleDateString()}</Td>
-											<Td>{new Date(pto.fecha_fin).toLocaleDateString()}</Td>
-											<Td>{pto.comentario || "Sin comentario"}</Td>
-											<Td className={`estado-${pto.estado.toLowerCase()}`}>
-												{pto.estado}
+						{ptoFiltrado.length === 0 ? (
+							<div className="div-table">
+								<Table className="main-table">
+									<Thead>
+										<Tr>
+											<Th onClick={handleSort} style={{ cursor: "pointer" }}>
+												Fecha de Inicio <FontAwesomeIcon icon={faSort} />
+											</Th>
+											<Th>Fecha de Fin</Th>
+											<Th>Comentario</Th>
+											<Th>Estado</Th>
+										</Tr>
+									</Thead>
+									<Tbody>
+										<Tr>
+											<Td colSpan="4" className="text-center text-muted">
+												No hay solicitudes de PTO con el estado seleccionado
 											</Td>
 										</Tr>
-									))}
-								</Tbody>
-							</Table>
-						</div>
+									</Tbody>
+								</Table>
+							</div>
+						) : (
+							<>
+								<div className="div-table">
+									<Table className="main-table">
+										<Thead>
+											<Tr>
+												<Th onClick={handleSort} style={{ cursor: "pointer" }}>
+													Fecha de Inicio <FontAwesomeIcon icon={faSort} />
+												</Th>
+												<Th>Fecha de Fin</Th>
+												<Th>Comentario</Th>
+												<Th>Estado</Th>
+											</Tr>
+										</Thead>
+										<Tbody>
+											{ptoPaginado.map((pto) => (
+												<Tr key={pto._id}>
+													<Td>
+														{new Date(pto.fecha_inicio).toLocaleDateString()}
+													</Td>
+													<Td>
+														{new Date(pto.fecha_fin).toLocaleDateString()}
+													</Td>
+													<Td>{pto.comentario || "Sin comentario"}</Td>
+													<Td className={`estado-${pto.estado.toLowerCase()}`}>
+														{pto.estado}
+													</Td>
+												</Tr>
+											))}
+										</Tbody>
+									</Table>
+								</div>
 
-						<TablaPaginacion
-							totalItems={ptoFiltrado.length}
-							itemsPorPagina={itemsPag}
-							paginaActual={pagActual}
-							onItemsPorPaginaChange={(cant) => {
-								setItemsPag(cant);
-								setPagActual(1);
-							}}
-							onPaginaChange={(pagina) => setPagActual(pagina)}
-						/>
+								<TablaPaginacion
+									totalItems={ptoFiltrado.length}
+									itemsPorPagina={itemsPag}
+									paginaActual={pagActual}
+									onItemsPorPaginaChange={(cant) => {
+										setItemsPag(cant);
+										setPagActual(1);
+									}}
+									onPaginaChange={(pagina) => setPagActual(pagina)}
+								/>
+							</>
+						)}
 					</>
 				)}
-
-				<div className="text-center mt-4">
-					<a href="/dashboard" className="thm-btn thm-btn-small btn-gris">
-						Volver
-					</a>
-				</div>
 			</div>
 		</AdminLayout>
 	);
