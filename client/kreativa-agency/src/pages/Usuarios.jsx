@@ -276,8 +276,8 @@ const Usuarios = () => {
 				text: `Este usuario será marcado como ${nuevoEstado.toLowerCase()}.`,
 				icon: "warning",
 				showCancelButton: true,
-				confirmButtonColor: "#3085d6",
-				cancelButtonColor: "#d33",
+				confirmButtonColor: "#FF0072",
+				cancelButtonColor: "#888",
 				confirmButtonText: `Sí, ${nuevoEstado.toLowerCase()}`,
 				cancelButtonText: "Cancelar",
 			});
@@ -287,37 +287,43 @@ const Usuarios = () => {
 			try {
 				const token = localStorage.getItem("token");
 				const user = localStorage.getItem("user_name");
+
 				if (!token) {
 					navigate("/error", {
 						state: {
 							errorCode: 401,
 							mensaje: "Debe iniciar sesión para continuar.",
-							user: user,
 						},
 					});
 					return;
 				}
 
-				await axios.put(
+				const response = await axios.put(
 					`${import.meta.env.VITE_API_URL}/usuarios/${id}`,
 					{ estado: nuevoEstado },
 					{
-						headers: { Authorization: `Bearer ${token}` },
-						user: user,
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 
-				actualizarEstadoUsuario(id, nuevoEstado);
+				if (response.status === 200) {
+					actualizarEstadoUsuario(id, nuevoEstado);
 
-				Swal.fire({
-					title: "¡Éxito!",
-					text: `El usuario ha sido marcado como ${nuevoEstado.toLowerCase()}.`,
-					icon: "success",
-					timer: 2000,
-					showConfirmButton: false,
-				});
+					Swal.fire({
+						title: "¡Éxito!",
+						text: `El usuario ha sido marcado como ${nuevoEstado.toLowerCase()}.`,
+						icon: "success",
+						timer: 2000,
+						showConfirmButton: false,
+					});
+				}
 			} catch (error) {
-				if (error.status === 401) {
+				console.error("Error al cambiar estado del usuario");
+
+				if (error.response?.status === 401) {
 					await updateSessionStatus();
 					localStorage.clear();
 					navigate("/error", {
@@ -332,7 +338,7 @@ const Usuarios = () => {
 
 				Swal.fire({
 					title: "Error",
-					text: "No se pudo actualizar el estado del usuario.",
+					text: errorMessage,
 					icon: "error",
 				});
 			}
