@@ -20,9 +20,9 @@ const reclutacionesRoutes = require("./routes/reclutacionesRoutes");
 const contactoRoutes = require("./routes/contactoRoutes");
 const pagosRoutes = require("./routes/pagosRoutes");
 const configRoutes = require("./routes/configRoutes");
-const sessionRoutes = require("./routes/sessionsRoutes")
+const sessionRoutes = require("./routes/sessionsRoutes");
 
-app.get('/health', (req, res) => res.send('ok'));
+app.get("/health", (req, res) => res.send("ok"));
 
 connectDB();
 
@@ -53,13 +53,9 @@ app.use("/api/pagos", pagosRoutes);
 app.use("/api/form-status", configRoutes);
 app.use("/api/sessions", sessionRoutes);
 
-
 //end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-  console.log(`CORS origin configurado para: ${process.env.ORIGIN}`);
-  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-  console.log(`MONGO URL: ${process.env.MONGO_URL}`)
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
 });
