@@ -11,7 +11,6 @@ const Recuperar = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setLoading(true);
 
 		try {
 			const response = await axios.post(
@@ -64,8 +63,6 @@ const Recuperar = () => {
 				},
 				confirmButtonColor: "#ff0072",
 			});
-		} finally {
-			setLoading(false);
 		}
 	};
 
