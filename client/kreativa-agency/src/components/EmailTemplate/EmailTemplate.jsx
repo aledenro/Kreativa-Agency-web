@@ -39,7 +39,7 @@ const EmailTemplate = ({ header, content, btnLabel, accessLink, logoUrl }) => {
 					{btnLabel && accessLink && (
 						<Section style={buttonSection}>
 							<Button
-								href={`${import.meta.env.VITE_API_URL}/${accessLink}`}
+								href={`${import.meta.env.VITE_URL}/${accessLink}`}
 								style={button}
 							>
 								{btnLabel}

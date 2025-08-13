@@ -177,7 +177,7 @@ const AgregarProyecto = () => {
                         `El estado de su proyecto ha sido actualizado a ${estadoEdit}.`,
                         `Actualización en su proyecto ${proyecto.nombre}`,
                         "Ver",
-                        "test"
+                        "tareas"
                     );
                 } else {
                     await sendEmail(
@@ -185,7 +185,7 @@ const AgregarProyecto = () => {
                         `El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingresse para ver más detalles.`,
                         `Actualización en su proyecto ${proyecto.nombre}`,
                         "Ver",
-                        "test"
+                        "tareas"
                     );
                 }
             }
