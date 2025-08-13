@@ -4179,8 +4179,8 @@ h3 {
 }
 
 .error-logo {
-	max-width: 400px;
-	width: 100%;
+	width: 350px;
+	text-align: center;
 }
 
 .error-logo img {

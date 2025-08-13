@@ -21,49 +21,44 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 
-const handleLogout = async() => {
-    Swal.fire({
-        title: "¿Cerrar sesión?",
-        text: "¿Estás seguro que deseas cerrar tu sesión?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#FF0072",
-        cancelButtonColor: "#888",
-        confirmButtonText: "Sí, cerrar sesión",
-        cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-             await updateSessionStatus()
-            localStorage.clear()
-            window.location.href = "/";
-        }
-    });
+const handleLogout = async () => {
+	Swal.fire({
+		title: "¿Cerrar sesión?",
+		text: "¿Estás seguro que deseas cerrar tu sesión?",
+		icon: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#FF0072",
+		cancelButtonColor: "#888",
+		confirmButtonText: "Sí, cerrar sesión",
+		cancelButtonText: "Cancelar",
+	}).then(async (result) => {
+		if (result.isConfirmed) {
+			await updateSessionStatus();
+			localStorage.clear();
+			window.location.href = "/";
+		}
+	});
 };
 
-const updateSessionStatus = async() => {
+const updateSessionStatus = async () => {
+	const user = localStorage.getItem("user_name");
 
-        const user = localStorage.getItem("user_name")
+	try {
+		const response = await axios.put(
+			`${import.meta.env.VITE_API_URL}/sessions`,
+			{ username: user, motivo: "Logout" }
+		);
+	} catch (error) {
+		Swal.fire({
+			icon: "error",
+			title: "Error",
+			text: "Error al iniciar sesión.",
+			confirmButtonColor: " #ff0072",
+		});
 
-            try {
-                const response = await axios.put(
-                    `${import.meta.env.VITE_API_URL}/sessions`,
-                    {   username: user,
-                        motivo: "Logout"
-                    }
-            );
-
-        }catch(error){
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text:
-                    "Error al iniciar sesión.",
-                confirmButtonColor: " #ff0072",
-            });
-
-            throw new Error("Error al actualizar la sesion.")
-        }
-    }
+		throw new Error("Error al actualizar la sesion.");
+	}
+};
 
 const sidebarItemVariants = {
 	hidden: { opacity: 0, x: -20 },
@@ -154,7 +149,7 @@ const fullMenuStructure = [
 		],
 	},
 	{
-		title: "Página de aterrizaje",
+		title: "Página Principal",
 		icon: Wallpaper,
 		roles: ["Administrador"],
 		items: [
@@ -186,7 +181,7 @@ const fullMenuStructure = [
 		roles: ["Administrador", "Colaborador", "Cliente"],
 		items: [
 			{
-				label: "Página de aterrizaje",
+				label: "Página Principal",
 				path: "/",
 				roles: ["Administrador", "Colaborador", "Cliente"],
 			},

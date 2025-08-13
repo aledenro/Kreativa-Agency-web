@@ -3,35 +3,42 @@ import EmailTemplate from "../components/EmailTemplate/EmailTemplate";
 import { renderToString } from "react-dom/server";
 import React from "react";
 
-const sendEmailExterno = async (recipientEmail, emailContent, subject) => {
-    if (!recipientEmail) {
-        console.error("No se proporcionó un correo electrónico válido.");
-        return false;
-    }
+const sendEmailExterno = async (
+	recipientEmail,
+	emailContent,
+	subject,
+	btnLabel,
+	accessLink
+) => {
+	if (!recipientEmail) {
+		console.error("No se proporcionó un correo electrónico válido.");
+		return false;
+	}
 
-    const emailJSX = React.createElement(EmailTemplate, {
-        header: subject,
-        content: emailContent,
-        btnLabel: "",
-    });
+	const emailJSX = React.createElement(EmailTemplate, {
+		header: subject,
+		content: emailContent,
+		btnLabel: btnLabel,
+		accessLink: accessLink,
+	});
 
-    const htmlEmail = renderToString(emailJSX);
+	const htmlEmail = renderToString(emailJSX);
 
-    try {
-        const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/email/externo`,
-            {
-                recipientEmail,
-                subject,
-                emailContent: htmlEmail,
-            }
-        );
+	try {
+		const response = await axios.post(
+			`${import.meta.env.VITE_API_URL}/email/externo`,
+			{
+				recipientEmail,
+				subject,
+				emailContent: htmlEmail,
+			}
+		);
 
-        return response.status === 200;
-    } catch (error) {
-        console.error("Error al enviar el correo:", error);
-        return false;
-    }
+		return response.status === 200;
+	} catch (error) {
+		console.error("Error al enviar el correo:", error);
+		return false;
+	}
 };
 
 export default sendEmailExterno;
