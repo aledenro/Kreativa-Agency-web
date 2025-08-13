@@ -120,7 +120,7 @@ const VerDetalleProyecto = () => {
 						`El cliente ha enviado una respuesta/feedback sobre el proyecto, ingrese para ver los detalless.`,
 						`Actualización en el proyecto ${proyecto.nombre}`,
 						"Ver",
-						"tareas"
+						"login"
 					);
 				});
 			} else {
@@ -129,7 +129,7 @@ const VerDetalleProyecto = () => {
 					`Un colaborador de Kreativa Agency ha respondido a su proyecto, ingrese para ver los detalles.`,
 					`Actualización en su proyecto ${proyecto.nombre}`,
 					"Ver",
-					"tareas"
+					"login"
 				);
 			}
 		} catch (error) {

@@ -3,7 +3,10 @@ import { useEffect, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 import sendEmail from "../../utils/emailSender";
 
 function construirJsonRequest(
@@ -127,10 +130,12 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/proyectos/crear`,
 				data,
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (res.status === 201 || res.status === 200) {
@@ -154,7 +159,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 							emailBodyCliente,
 							`Nuevo Proyecto Creado: ${nombre}`,
 							"Ver",
-							`dashboard`
+							`login`
 						);
 					} catch (emailError) {
 						console.error("Error al enviar email");
@@ -169,7 +174,7 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 								emailBodyColaborador,
 								`Nuevo Proyecto Asignado: ${nombre}`,
 								"Ver",
-								`dashboard`
+								`login`
 							);
 						} catch (emailError) {
 							console.error(`Error al enviar email`);
@@ -194,9 +199,9 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 				);
 			}
 		} catch (error) {
-
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 
 				navigate("/error", {
 					state: {
@@ -257,10 +262,9 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/clientes`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -268,7 +272,8 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			setClientes(response.data);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -300,10 +305,9 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -315,7 +319,8 @@ const ModalAgregarProyecto = ({ show, handleClose, onUpdate }) => {
 			setEmpleados(empleadosActivos);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

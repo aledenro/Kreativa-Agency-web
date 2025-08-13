@@ -243,7 +243,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 									`El cliente ha enviado una respuesta/feedback sobre el proyecto "${proyecto.nombre}". Por favor, acceda al sistema para ver los detalles.`,
 									`Nueva Respuesta del Cliente - ${proyecto.nombre}`,
 									"Ver",
-									`dashboard`
+									`login`
 								);
 							}
 						} catch (emailError) {
@@ -263,7 +263,7 @@ const ModalVerProyecto = ({ show, handleClose, proyectoId }) => {
 								`Un colaborador de Kreativa Agency ha respondido a su proyecto "${proyecto.nombre}". Por favor, acceda al sistema para ver los detalles.`,
 								`Nueva Respuesta de Kreativa - ${proyecto.nombre}`,
 								"Ver",
-								`dashboard`
+								`login`
 							);
 						}
 					} catch (emailError) {

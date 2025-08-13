@@ -16,7 +16,10 @@ import deleteFile from "../../utils/fileDelete";
 import sendEmail from "../../utils/emailSender";
 import { InboxOutlined } from "@ant-design/icons";
 import { ConfigProvider, Upload, notification } from "antd";
-import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 import Loading from "../../components/ui/LoadingComponent";
 
 const { Dragger } = Upload;
@@ -83,15 +86,15 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/cotizaciones/id/${cotizacionId}`,
 				{
-					headers: { Authorization: `Bearer ${token}`, 
-					user: user},
+					headers: { Authorization: `Bearer ${token}`, user: user },
 				}
 			);
 
 			setCotizacion(res.data.cotizacion);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -205,10 +208,12 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/cotizaciones/agregarRespuesta/${cotizacionId}`,
 				data,
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			showNotification("success", "Respuesta enviada correctamente.");
@@ -247,7 +252,8 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -312,10 +318,12 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/cotizaciones/cambiarEstado/${cotizacionId}`,
 				{ estado: nuevoEstado },
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (response.status === 200) {
@@ -330,7 +338,8 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -385,7 +394,7 @@ const ModalVerCotizacion = ({ show, handleClose, cotizacionId }) => {
 					notificacion.mensaje,
 					notificacion.asunto,
 					"Ver Cotización",
-					"cotizacion"
+					"login"
 				);
 			} catch (emailError) {
 				console.error("Error al enviar notificación de cambio de estado");

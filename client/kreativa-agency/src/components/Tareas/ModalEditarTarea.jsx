@@ -4,7 +4,10 @@ import Modal from "react-bootstrap/Modal";
 import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 
 function construirJsonRequest(
 	proyecto,
@@ -137,11 +140,10 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
@@ -195,11 +197,10 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 
@@ -269,10 +270,12 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
 				{ estado: estadoEdit },
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (response.status === 200) {
@@ -297,7 +300,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 						emailBody,
 						`Estado de Tarea Actualizado`,
 						"Acceder al Sistema",
-						`tareas`
+						`login`
 					);
 				} catch (emailError) {
 					console.error("Error al enviar email");
@@ -311,7 +314,8 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -405,10 +409,12 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const res = await axios.put(
 				`${import.meta.env.VITE_API_URL}/tareas/editar/${tareaId}`,
 				data,
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (res.status === 200) {
@@ -433,7 +439,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 								emailBodyAnterior,
 								"Tarea Reasignada",
 								"Acceder al Sistema",
-								"tareas"
+								"login"
 							);
 						} catch (emailError) {
 							console.error("Error al enviar email");
@@ -447,7 +453,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 								emailBodyNuevo,
 								"Nueva Tarea Asignada",
 								"Acceder al Sistema",
-								"tareas"
+								"login"
 							);
 						} catch (emailError) {
 							console.error("Error al enviar email");
@@ -461,7 +467,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 								emailBody,
 								"Tarea Actualizada",
 								"Acceder al Sistema",
-								"tareas"
+								"login"
 							);
 						} catch (emailError) {
 							console.error("Error al enviar email");
@@ -483,7 +489,8 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -522,14 +529,17 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 					usuario_id: user_id,
 					accion: accion,
 				},
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -561,10 +571,9 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/tareas/id/${tareaId}`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -578,7 +587,7 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			);
 		} catch (error) {
 			if (error.status === 401) {
-				await updateSessionStatus();				
+				await updateSessionStatus();
 				localStorage.clear();
 				navigate("/error", {
 					state: {
@@ -647,10 +656,9 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -658,7 +666,8 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 		} catch (error) {
 			console.error(`Error al obtener los empleados`);
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,
@@ -699,18 +708,18 @@ const ModalEditarTarea = ({ show, handleClose, tareaId, onUpdate }) => {
 			}
 
 			const response = await axios.get(url, {
-				headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+				headers: {
+					Authorization: `Bearer ${token}`,
+					user: user,
+				},
 			});
 
 			setProyectos(response.data.proyectos);
 		} catch (error) {
 			console.error(`Error al obtener los proyectos`);
 			if (error.status === 401) {
-				await updateSessionStatus();				localStorage.clear();
+				await updateSessionStatus();
+				localStorage.clear();
 				navigate("/error", {
 					state: {
 						errorCode: 401,

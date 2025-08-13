@@ -209,7 +209,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 								emailBodyRemovido,
 								"Removido del Proyecto",
 								"Acceder al Sistema",
-								"dashboard"
+								"login"
 							);
 						} catch (emailError) {
 							console.error(`Error al enviar email`);
@@ -225,7 +225,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 								emailBodyAgregado,
 								"Nuevo Proyecto Asignado",
 								"Acceder al Sistema",
-								"dashboard"
+								"login"
 							);
 						} catch (emailError) {
 							console.error(`Error al enviar email`);
@@ -250,7 +250,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 									emailBodyActualizado,
 									"Proyecto Actualizado",
 									"Acceder al Sistema",
-									"dashboard"
+									"login"
 								);
 							} catch (emailError) {
 								console.error("Error al enviar email");
@@ -346,7 +346,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 								`El estado de su proyecto ha sido actualizado a ${estadoEdit}.`,
 								`Actualización en su proyecto ${proyecto.nombre}`,
 								"Ver",
-								`dashboard`
+								`login`
 							);
 						} else {
 							await sendEmail(
@@ -354,7 +354,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 								`El proyecto fue marcado como Finalizado por un colaborador de Kreativa Agency, ingrese para ver más detalles.`,
 								`Actualización en su proyecto ${proyecto.nombre}`,
 								"Ver",
-								`dashboard`
+								`login`
 							);
 						}
 					}
@@ -405,7 +405,7 @@ const ModalEditarProyecto = ({ show, handleClose, proyectoId, onUpdate }) => {
 									emailBody,
 									emailSubject,
 									"Acceder al Sistema",
-									"dashboard"
+									"login"
 								);
 							} catch (emailError) {
 								console.error(`Error al enviar email`);
