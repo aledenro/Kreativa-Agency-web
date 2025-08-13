@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Usuario = require("../models/usuarioModel");
-const { enviarCorreoRecuperacion } = require("../services/emailService");
 
 const {
 	verificarUsuarioExistente,
@@ -235,12 +234,17 @@ const recuperarContraseña = async (req, res) => {
 			expiresIn: "2h",
 		});
 
-		await enviarCorreoRecuperacion(email, token);
-
-		res.json({ mensaje: "Correo de recuperación enviado con éxito" });
+		res.json({
+			mensaje: "Token generado exitosamente",
+			token,
+			email: usuario.email,
+			nombre: usuario.nombre,
+		});
 	} catch (error) {
 		console.error("Error en la recuperación de contraseña:", error);
-		res.status(500).json({ mensaje: "Error al enviar el correo" });
+		res
+			.status(500)
+			.json({ mensaje: "Error al generar el token de recuperación" });
 	}
 };
 
