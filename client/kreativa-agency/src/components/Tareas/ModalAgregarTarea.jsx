@@ -4,7 +4,10 @@ import Modal from "react-bootstrap/Modal";
 import sendEmail from "../../utils/emailSender";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import {validTokenActive, updateSessionStatus} from "../../utils/validateToken";
+import {
+	validTokenActive,
+	updateSessionStatus,
+} from "../../utils/validateToken";
 
 function construirJsonRequest(
 	proyecto,
@@ -243,10 +246,12 @@ const ModalAgregarTarea = ({
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/tareas/crear`,
 				data,
-				{ headers: { 
-					Authorization: `Bearer ${token}`,
-					user: user
-			 	} }
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						user: user,
+					},
+				}
 			);
 
 			if (res.status === 201) {
@@ -267,7 +272,7 @@ const ModalAgregarTarea = ({
 						emailBody,
 						`Nueva Tarea Asignada`,
 						"Acceder al Sistema",
-						`tareas`
+						`login`
 					);
 				} catch (emailError) {
 					console.error("Error al enviar email");
@@ -315,11 +320,10 @@ const ModalAgregarTarea = ({
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 				proyectoEncontrado = response.data.proyecto || response.data;
@@ -375,11 +379,10 @@ const ModalAgregarTarea = ({
 				const response = await axios.get(
 					`${import.meta.env.VITE_API_URL}/proyectos/id/${proyectoSeleccionadoId}`,
 					{
-						headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+						headers: {
+							Authorization: `Bearer ${token}`,
+							user: user,
+						},
 					}
 				);
 
@@ -468,10 +471,9 @@ const ModalAgregarTarea = ({
 			const response = await axios.get(
 				`${import.meta.env.VITE_API_URL}/usuarios/empleados`,
 				{
-					headers: { 
+					headers: {
 						Authorization: `Bearer ${token}`,
-						user: user
-				
+						user: user,
 					},
 				}
 			);
@@ -512,11 +514,10 @@ const ModalAgregarTarea = ({
 			}
 
 			const response = await axios.get(url, {
-				headers: { 
-						Authorization: `Bearer ${token}`,
-						user: user
-				
-					},
+				headers: {
+					Authorization: `Bearer ${token}`,
+					user: user,
+				},
 			});
 
 			setProyectos(response.data);

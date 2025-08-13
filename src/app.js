@@ -27,6 +27,7 @@ const pagosRoutes = require("./routes/pagosRoutes");
 const configRoutes = require("./routes/configRoutes");
 const sessionRoutes = require("./routes/sessionsRoutes");
 
+
 app.get('/health', (req, res) => {
   console.log('Health check solicitado');
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -66,6 +67,7 @@ app.use("/api/contacto", contactoRoutes);
 app.use("/api/pagos", pagosRoutes);
 app.use("/api/form-status", configRoutes);
 app.use("/api/sessions", sessionRoutes);
+
 
 // end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);

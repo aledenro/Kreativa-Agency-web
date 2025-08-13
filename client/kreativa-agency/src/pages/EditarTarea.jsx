@@ -200,7 +200,7 @@ const EditarTarea = () => {
 						"Se le ha asignado una nueva tarea.",
 						"Nueva Asignación de Trabajo",
 						"Ver",
-						"tareas"
+						"login"
 					);
 				}
 			}
