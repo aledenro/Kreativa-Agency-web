@@ -48,102 +48,320 @@ import VerMiPTO from "./pages/VerMiPTO";
 import ErrorPage from "./pages/ErrorPage";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import { useSessionPing } from "./hooks/useSessionPingHook";
+const SessionManager = ({ children }) => {
+  useSessionPing();
+  return children;
+};
 
 function App() {
-	return (
-		<AuthProvider>
-		<Router>
-			<Routes>
-				<Route path="/usuarios" element={<ProtectedRoute allowedRoles={["Administrador"]}> <Usuarios /></ProtectedRoute>}></Route>
+  return (
+    <AuthProvider>
+      <Router>
+        <SessionManager>
+          <Routes>
+            {/* Rutas de Administrador */}
+            <Route
+              path="/usuarios"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <Usuarios />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/usuario/crear" element={<ProtectedRoute allowedRoles={["Administrador"]}><CrearUsuario /> </ProtectedRoute>}></Route>
+            <Route
+              path="/usuario/crear"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <CrearUsuario />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/usuario/:id" element={<ProtectedRoute allowedRoles={["Administrador"]}><VerUsuario /></ProtectedRoute>}></Route>
+            <Route
+              path="/usuario/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <VerUsuario />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/usuario/editar/:id" element={<ProtectedRoute allowedRoles={["Administrador"]}><EditarUsuario /></ProtectedRoute>}></Route>
+            <Route
+              path="/usuario/editar/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <EditarUsuario />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/servicio/agregar" element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarServicio /></ProtectedRoute>}></Route>
-				<Route
-					path="/servicio/modificar/:id"
-					element={<ProtectedRoute allowedRoles={["Administrador"]}><ModificarServicio /></ProtectedRoute>}
-				></Route>
-				<Route
-					path="/servicio/agregarPaquete/:id"
-					element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarPaquete /></ProtectedRoute>}
-				></Route>
-				<Route
-					path="/paquete/modificar/:servicioId/:paqueteId"
-					element={<ProtectedRoute allowedRoles={["Administrador"]}><ModificarPaquete /></ProtectedRoute>}
-				></Route>
+            {/* Rutas de Servicios */}
+            <Route
+              path="/servicio/agregar"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <AgregarServicio />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route
-					path="/cotizacion/agregar"
-					element={<AgregarCotizacion />}
-				></Route>
-				<Route path="/cotizacion/" element={<ProtectedRoute allowedRoles={["Administrador", "Cliente"]}><VerCotizaciones /></ProtectedRoute>}></Route>
-				<Route
-					path="/cotizacion/:id"
-					element={<ProtectedRoute allowedRoles={["Administrador", "Cliente"]}><VerDetalleCotizacion /></ProtectedRoute>}
-				></Route>
+            <Route
+              path="/servicio/modificar/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <ModificarServicio />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/egresos" element={<ProtectedRoute allowedRoles={["Administrador"]}><ListadoEgresos /></ProtectedRoute>} />
+            <Route
+              path="/servicio/agregarPaquete/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <AgregarPaquete />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/ingresos" element={<ProtectedRoute allowedRoles={["Administrador"]}><ListadoIngresos /></ProtectedRoute>} />
+            <Route
+              path="/paquete/modificar/:servicioId/:paqueteId"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <ModificarPaquete />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/movimientos" element={<ProtectedRoute allowedRoles={["Administrador"]}><Movimientos /></ProtectedRoute>} />
+            <Route
+              path="/servicios"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <ListadoServicios />
+                </ProtectedRoute>
+              }
+            />
 
-				{/* <Route path="/egresos" element={<VerEgresos />}></Route> */}
-				{/* <Route
-                    path="/egreso/editar/:id"
-                    element={<EditarEgreso />}
-                ></Route> */}
+            <Route path="/servicio/:id" element={<DetalleServicio />} />
 
-				{/* <Route path="/ingresos" element={<ListadoIngresos />} /> */}
+            {/* Rutas de Cotizaciones */}
+            <Route path="/cotizacion/agregar" element={<AgregarCotizacion />} />
 
-				<Route path="/servicios" element={<ProtectedRoute allowedRoles={["Administrador"]}><ListadoServicios /></ProtectedRoute>}></Route>
+            <Route
+              path="/cotizacion/"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador", "Cliente"]}>
+                  <VerCotizaciones />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/servicio/agregar" element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarServicio /></ProtectedRoute>}></Route>
-				<Route
-					path="/servicio/modificar/:id"
-					element={<ProtectedRoute allowedRoles={["Administrador"]}><ModificarServicio /></ProtectedRoute>}
-				></Route>
-				<Route path="/servicio/:id" element={<DetalleServicio />}></Route>
-				<Route path="/proyecto/agregar" element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarProyecto /></ProtectedRoute>}></Route>
-				<Route path="/proyecto/editar/:id" element={<ProtectedRoute allowedRoles={["Administrador"]}><EditarProyecto /></ProtectedRoute>}></Route>
-				<Route path="/tarea/agregar" element={<ProtectedRoute allowedRoles={["Administrador"]}><AgregarTarea /></ProtectedRoute>}></Route>
-				<Route path="/tarea/editar/:id" element={<ProtectedRoute allowedRoles={["Administrador"]}><EditarTarea /></ProtectedRoute>}></Route>
-				<Route path="/login" element={<Login />}></Route>
-				<Route path="/vista-clientes" element={<VistaClientes />}></Route>
-				<Route path="/vista-colaborador" element={<VistaColaborador />}></Route>
-				<Route path="/recuperar" element={<Recuperar />}></Route>
-				<Route path="/restablecer/:token" element={<Restablecer />}></Route>
-				<Route path="/tareas" element={<ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}><ListadoTareas /></ProtectedRoute>}></Route>
-				<Route path="/jerarquia" element={<ProtectedRoute allowedRoles={["Administrador"]}><JerarquiaUsuarios /></ProtectedRoute>}></Route>
-				<Route path="/agregar-pto" element={<ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}><AgregarPTO /></ProtectedRoute>}></Route>
-				<Route path="/ver-pto-empleados" element={<ProtectedRoute allowedRoles={["Administrador"]}><VerPTOEmpleados /></ProtectedRoute>}></Route>
-				<Route path="/perfil" element={<VerPerfil />}></Route>
-				<Route path="/proyecto/:id" element={<VerDetalleProyecto />}></Route>
+            <Route
+              path="/cotizacion/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador", "Cliente"]}>
+                  <VerDetalleCotizacion />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/admin" element={<ProtectedRoute allowedRoles={["Administrador"]}><AdminPanel /></ProtectedRoute>}></Route>
-				<Route path="/estadisticas" element={<ProtectedRoute allowedRoles={["Administrador"]}><Estadisticas /></ProtectedRoute>} />
+            {/* Rutas Financieras */}
+            <Route
+              path="/egresos"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <ListadoEgresos />
+                </ProtectedRoute>
+              }
+            />
 
-				<Route path="/admin" element={<ProtectedRoute allowedRoles={["Administrador"]}><AdminPanel /></ProtectedRoute>}></Route>
-				<Route path="/" element={<Landing />} />
-				<Route path="/pagos" element={<ProtectedRoute allowedRoles={["Administrador"]}><ListadoPagos /></ProtectedRoute>} />
-				<Route path="/admin/contacto" element={<ProtectedRoute allowedRoles={["Administrador"]}><RespuestasContacto /></ProtectedRoute>} />
-				<Route
-					path="/admin/reclutaciones"
-					element={<ProtectedRoute allowedRoles={["Administrador"]}><RespuestasReclutaciones /></ProtectedRoute>}
-				/>
-				<Route path="/admin/servicios" element={<ProtectedRoute allowedRoles={["Administrador"]}><GestionServicios /></ProtectedRoute>} />
-				<Route path="/admin/paquetes" element={<ProtectedRoute allowedRoles={["Administrador"]}><GestionPaquetes /></ProtectedRoute>} />
-				<Route path="/dashboard" element={<DashboardColaborador />} />
-				<Route path="/mis-pto" element={<ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}><VerMiPTO /></ProtectedRoute>} />
-				<Route path="/error" element={<ErrorPage />} />
-			</Routes>
-		</Router>
-		</AuthProvider>
-	);
+            <Route
+              path="/ingresos"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <ListadoIngresos />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/movimientos"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <Movimientos />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/pagos"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <ListadoPagos />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/estadisticas"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <Estadisticas />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rutas de Proyectos y Tareas */}
+            <Route
+              path="/proyecto/agregar"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <AgregarProyecto />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/proyecto/editar/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <EditarProyecto />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path="/proyecto/:id" element={<VerDetalleProyecto />} />
+
+            <Route
+              path="/tarea/agregar"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <AgregarTarea />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/tarea/editar/:id"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <EditarTarea />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/tareas"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}>
+                  <ListadoTareas />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rutas de Gestión de Personal */}
+            <Route
+              path="/jerarquia"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <JerarquiaUsuarios />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/agregar-pto"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}>
+                  <AgregarPTO />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/ver-pto-empleados"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <VerPTOEmpleados />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/mis-pto"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador", "Colaborador"]}>
+                  <VerMiPTO />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rutas de Panel de Administración */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <AdminPanel />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/contacto"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <RespuestasContacto />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/reclutaciones"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <RespuestasReclutaciones />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/servicios"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <GestionServicios />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/paquetes"
+              element={
+                <ProtectedRoute allowedRoles={["Administrador"]}>
+                  <GestionPaquetes />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Rutas Públicas y de Autenticación */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/recuperar" element={<Recuperar />} />
+            <Route path="/restablecer/:token" element={<Restablecer />} />
+            <Route path="/" element={<Landing />} />
+
+            {/* Rutas de Vista de Clientes y Colaboradores */}
+            <Route path="/vista-clientes" element={<VistaClientes />} />
+            <Route path="/vista-colaborador" element={<VistaColaborador />} />
+            <Route path="/dashboard" element={<DashboardColaborador />} />
+            <Route path="/perfil" element={<VerPerfil />} />
+
+            {/* Página de Error */}
+            <Route path="/error" element={<ErrorPage />} />
+          </Routes>
+        </SessionManager>
+      </Router>
+    </AuthProvider>
+  );
 }
 
 export default App;
