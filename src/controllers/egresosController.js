@@ -44,7 +44,11 @@ class EgresosController {
     // Obtener egreso
     async obtenerEgresos(req, res) {
         try {
-            const egresos = await EgresosService.obtenerEgresos();
+            const { activo } = req.query;
+            let filtro = {};
+            if (activo === 'true') filtro.activo = true;
+            else if (activo === 'false') filtro.activo = false;
+            const egresos = await EgresosService.obtenerEgresos(filtro);
             return res.status(200).json(egresos);
         } catch (error) {
             console.error("Error al obtener egresos: " + error.message);

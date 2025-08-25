@@ -14,9 +14,9 @@ class EgresosService {
     }
 
     //Todos los egresos activos
-    async obtenerEgresos() {
+    async obtenerEgresos(filtro = {}) {
         try {
-            return await EgresosModel.find({ activo: true });
+            return await EgresosModel.find(filtro);
         } catch (error) {
             throw error;
         }

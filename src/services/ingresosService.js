@@ -62,8 +62,8 @@ const ingresosService = {
         }
     },
 
-    async obtenerIngresos() {
-        return await IngresosModel.find({ activo: true }).sort({ fecha: -1 });
+    async obtenerIngresos(filtro = {}) {
+        return await IngresosModel.find(filtro).sort({ fecha: -1 });
     },
 
     async obtenerIngresoPorId(id) {
