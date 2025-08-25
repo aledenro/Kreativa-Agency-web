@@ -3,11 +3,6 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Logging mejorado
-console.log('=== INICIANDO APLICACIÓN ===');
-console.log(`Puerto: ${PORT}`);
-console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-
 const connectDB = require("./config/dbConnection");
 const cors = require("cors");
 const serviciosRoutes = require("./routes/serviciosRoutes");
@@ -27,19 +22,14 @@ const pagosRoutes = require("./routes/pagosRoutes");
 const configRoutes = require("./routes/configRoutes");
 const sessionRoutes = require("./routes/sessionsRoutes");
 
-
-app.get('/health', (req, res) => {
-  console.log('Health check solicitado');
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get("/health", (req, res) => {
+  console.log("Health check solicitado");
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-console.log('=== CONECTANDO A BASE DE DATOS ===');
-connectDB().catch(err => {
-  console.error('Error conectando a DB:', err);
-  // No detener la app si falla la DB para testing
+connectDB().catch((err) => {
+  console.error("Error conectando a DB:", err);
 });
-
-console.log('=== CONFIGURANDO MIDDLEWARE ===');
 
 app.use(
   cors({
@@ -68,29 +58,20 @@ app.use("/api/pagos", pagosRoutes);
 app.use("/api/form-status", configRoutes);
 app.use("/api/sessions", sessionRoutes);
 
-
 // end point aws s3
 app.use("/api/fileManagement", fileManagementRoutes);
 
-// CRÍTICO: Escuchar en 0.0.0.0 para Railway
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log('=== SERVIDOR INICIADO ===');
+const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
-  console.log(`CORS origin configurado para: ${process.env.ORIGIN}`);
-  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-  console.log(`MONGO URL: ${process.env.MONGO_URL ? 'Configurado' : 'NO CONFIGURADO'}`);
-  console.log('=== LISTO PARA RECIBIR REQUESTS ===');
 });
 
-// Error handling para el servidor
-server.on('error', (err) => {
-  console.error('Error del servidor:', err);
+server.on("error", (err) => {
+  console.error("Error del servidor:", err);
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM recibido, cerrando servidor...');
+process.on("SIGTERM", () => {
+  console.log("SIGTERM recibido, cerrando servidor...");
   server.close(() => {
-    console.log('Servidor cerrado');
+    console.log("Servidor cerrado");
   });
 });
