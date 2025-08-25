@@ -28,7 +28,11 @@ const ingresosController = {
 
     async obtenerIngresos(req, res) {
         try {
-            const ingresos = await ingresosService.obtenerIngresos();
+            const { activo } = req.query;
+            let filtro = {};
+            if (activo === 'true') filtro.activo = true;
+            else if (activo === 'false') filtro.activo = false;
+            const ingresos = await ingresosService.obtenerIngresos(filtro);
             const ingresosActualizados = await Promise.all(
                 ingresos.map(async (ingreso) => {
                     const usuario = await Usuario.findOne({
